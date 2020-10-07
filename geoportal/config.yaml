@@ -238,23 +238,9 @@ vars:
     registered: {}
   global_headers:
   - headers: {
-      Content-Security-Policy: '
-        default-src ''self'' https://*;
-        script-src ''self'' ''unsafe-inline'' ''unsafe-eval'' https://map.geoportail.lu https://vt-staging.geoportail.lu https://stackpath.bootstrapcdn.com https://devrm.geoportail.lu https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu https://api.mapbox.com;
-        style-src ''self'' ''unsafe-inline'' https://stackpath.bootstrapcdn.com https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://api.mapbox.com/;
-        img-src * data: blob: ;
-        connect-src *;
-        worker-src ''self'' blob: ;
-        child-src ''self'' https://* blob: ; ',
       Referrer-Policy: origin,
-      Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
-      X-Frame-Options: SAMEORIGIN,
-      X-Xss-Protection: 1; mode=block
+      X-Content-Type-Options: nosniff
   }
-    pattern: .*
-  - headers: {
-      Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
-        'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src *;}
     pattern: ^/apihelp.html
   - headers: {
       Content-Security-Policy: 'default-src ''self''; script-src ''self''
@@ -355,7 +341,7 @@ vars:
         appAuthtktCookieName: auth_tkt_main
         appExcludeThemeLayerSearch: []
         appOverviewMapBaseLayer: basemap_2015_global
-        appOverviewMapShow: true
+        appOverviewMapShow: false
         showAnfLink: false
         showAgeLink: '{AGE_SHOW_LINK}'
         showCruesLink: '{AGE_CRUES_SHOW_LINK}'
@@ -477,7 +463,7 @@ vars:
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: 'https://ws.geoportail.lu/mymaps', mapserver: 'https://ws.geoportail.lu'}
   shortener:
-    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'vt-staging.geoportail.lu', 'devrm.geoportail.lu']
+    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'vt-staging.geoportail.lu', 'devrm.geoportail.lu', 'migration.geoportail.lu', 'nextprod.geoportail.lu']
     base_url: '{SHORTENER_BASE_URL}'
     email_body: 'unused'
     email_from: unused

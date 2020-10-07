@@ -47,9 +47,9 @@ import '../../less/geoportailv3.less';
  import appAskredirectAskredirectController from '../askredirect/AskredirectController.js';
  import appAuthenticationAuthenticationDirective from '../authentication/authenticationDirective.js';
  import appAuthenticationAuthenticationController from '../authentication/AuthenticationController.js';
- import appBackgroundlayerBackgroundlayerDirective from '../backgroundlayer/backgroundlayerDirective.js';
- import appBackgroundlayerBackgroundlayerController from '../backgroundlayer/BackgroundlayerController.js';
  import appBackgroundlayerBlankLayer from '../backgroundlayer/BlankLayer.js';
+ import appBackgroundselectorController from '../backgroundselector/BackgroundselectorController.js';
+ import appBackgroundselectorDirective from '../backgroundselector/BackgroundselectorDirective.js';
  import appCatalogCatalogController from '../catalog/CatalogController.js';
  import appCatalogCatalogDirective from '../catalog/catalogDirective.js';
  import appDrawDrawDirective from '../draw/drawDirective.js';
@@ -184,14 +184,10 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
-function getDefaultHillshadeStyling() {
-  const gettext = t => t;
-  return [{
-    label: gettext('Hillshade'),
-    hillshades: ['hillshade'],
-    visible: true
-  }];
-}
+import DragRotate from 'ol/interaction/DragRotate';
+import {platformModifierKeyOnly} from 'ol/events/condition';
+import Rotate from 'ol/control/Rotate';
+
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling() {
   const gettext = t => t;
@@ -214,6 +210,7 @@ function getDefaultMediumStyling() {
   },{
     label: gettext('Buildings'),
     color: '#D6AA85',
+    opacity : '1',
     fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
     fills: ['lu_building','lu_building_public'],
     lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
@@ -229,16 +226,19 @@ function getDefaultMediumStyling() {
     color: '#e7e7e7',
     backgrounds: ['background'],
     visible: true
+  }, {
+    label: gettext('Hillshade'),
+    hillshades: ['hillshade'],
+    visible: true
   }
-
 ];
 }
 
 function getSimpleStylings() {
   const gettext = t => t;
   return [
-// ['Roads primary','Roads secondary','Vegetation','Buildings','Water']
-// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133'],
+// ['Roads primary','Roads secondary','Vegetation','Buildings','Water', 'Background']
+// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133', '#f2f2f2'],
     {label: gettext('Light grey'), hillshade: false, colors: ['#ffffff', '#ffffff','#d6e0d7','#e1e1e1','#cccccc','#f2f2f2'], selected: false},
     {label: gettext('Dark grey'), hillshade: false, colors: ['#808080', '#808080','#494b4a','#505052','#232426','#454545'], selected: false},
     {label: gettext('Dark sand'), hillshade: false, colors: ['#9e9375', '#9e9375','#6b6249','#403928','#b8aa84','#1a1814'], selected: false},
@@ -322,10 +322,9 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
-  this.hillshadeStylingData = getDefaultHillshadeStyling();
   this.mediumStylingData = getDefaultMediumStyling();
 
-  function applyStyleToItem(mbMap, item) {
+  function applyStyleFromItem(mbMap, item) {
     appMvtStylingService.isCustomStyle = true;
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
@@ -352,17 +351,22 @@ const MainController = function(
     });
   }
 
-  this.debouncedSaveHillshadeStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData));
-  }, 2000, false);
-
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    appMvtStylingService.saveBgStyle(bgLayer)
-    .then(() => this.resetLayerFor3d_());
+    const isPublished = this.is3dEnabled();
+    appMvtStylingService.saveBgStyle(bgLayer, isPublished)
+    .then(() => {
+      const config = JSON.stringify(this.mediumStylingData);
+      this.ngeoLocation_.updateParams({
+        'serial': config
+      });
+      this.appMvtStylingService.apply_mvt_config(config);
+      this.ngeoLocation_.refresh();
+      this.resetLayerFor3d_();
+    });
   }, 2000, false);
 
   this.resetLayerFor3d_ = () => {
@@ -377,43 +381,48 @@ const MainController = function(
     this.simpleStylingData.forEach(function(data) {data['selected'] = false;});
   };
 
+  // Set the selected attribute on the simple style which matches the current medium style
   this.checkSelectedSimpleData = () => {
-    this.simpleStylingData.forEach(function(simpleStyle) {
-        var found = true;
+    this.simpleStylingData.forEach(simpleStyle => {
         simpleStyle['selected'] = false;
+        const mediumColors = this.mediumStylingData.filter(m => 'color' in m);
         for (let i = 0; i < simpleStyle['colors'].length; ++i) {
-          if (!this.mediumStylingData[i].visible ||
-              this.mediumStylingData[i].color !== simpleStyle['colors'][i]) {
-            found = false;
-            break;
+          if (!mediumColors[i].visible || mediumColors[i].color !== simpleStyle['colors'][i]) {
+            return;
           }
         }
-        if (found && simpleStyle['hillshade'] === this.hillshadeStylingData[0].visible) {
+        const hillshadeMediumItem = this.mediumStylingData.find(m => 'hillshades' in m);
+        if (simpleStyle['hillshade'] === hillshadeMediumItem.visible) {
           simpleStyle['selected'] = true;
         }
-    }, this);
+    });
   };
 
 
 
   this.onSimpleStylingSelected = selectedItem => {
+    // First we reset the selected 'style' items
+    this.resetSelectedSimpleData();
+    // Then we select this item
     selectedItem['selected'] = true;
+  
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
+    const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
     const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
-      const item = this.mediumStylingData[i];
+      const item = mediumStyles[i];
       item.color = selectedItem['colors'][i];
       item.visible = true;
-      applyStyleToItem(mbMap, item);
+      applyStyleFromItem(mbMap, item);
     }
+
+    const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
+    hillshadeItem.visible = false;
+    applyStyleFromItem(mbMap, hillshadeItem)
+
     this.debouncedSaveBgStyle_(bgLayer);
-    this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
-      item.color = selectedItem['colors'][idx];
-      item.visible = true;
-      return item;
-    });
     this.debouncedSaveMediumStyle_();
-    this.onHillshadeVisibilityChanged(selectedItem['hillshade']);
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
@@ -424,32 +433,15 @@ const MainController = function(
         this.checkSelectedSimpleData();
       });
   }
-  const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-  if (hillshadeStyle !== undefined) {
-    hillshadeStyle.then((style) => {
-      Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-      this.checkSelectedSimpleData();
-    });
-  }
+
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
-    applyStyleToItem(mbMap, item);
+    applyStyleFromItem(mbMap, item);
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
     this.checkSelectedSimpleData();
   };
-
-  this.onHillshadeVisibilityChanged = function(visible) {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const mbMap =  bgLayer.getMapBoxMap();
-    const item = this.hillshadeStylingData[0];
-    item.visible = visible;
-    applyStyleToItem(mbMap, item);
-    this.debouncedSaveHillshadeStyle_();
-    this.debouncedSaveBgStyle_();
-    this.checkSelectedSimpleData();
-};
 
   if (navigator.serviceWorker) {
     // Force online state on load since iOS/Safari does not support clientIds.
@@ -457,6 +449,10 @@ const MainController = function(
       fetch('/switch-lux-online');
     })
   }
+
+  this.ngeoOlcsService_ = ngeoOlcsService;
+
+  this.$rootScope_ = $rootScope
 
   /**
    * @type {string}
@@ -799,6 +795,13 @@ const MainController = function(
   this['selectedLayers'] = [];
 
   /**
+   * @type {function}
+   */
+  this.selectedLayersLength = function() {
+    return this.selectedLayers.filter(l => !l.get('metadata').hidden).length
+  }
+
+  /**
    * @type {Array}
    */
   this['ageLayers'] = [];
@@ -836,6 +839,11 @@ const MainController = function(
   this.appUserManager_.getUserInfo();
 
   /**
+   * @type {boolean}
+   */
+  this.embedded = !!(new URL(window.location).searchParams.get('embedded'))
+
+  /**
    * @const {!app.Map}
    * @private
    */
@@ -844,7 +852,11 @@ const MainController = function(
   // Super hack because we do not have access to the offline button controller
   this.map_.superHackIsItOKToSaveOffline = () => {
     const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
-    return !isIOS || !this.backgroundLayerMgr_.get(this.map).getMapBoxMap
+    if (isIOS) {
+      const layer = this.backgroundLayerMgr_.get(this.map);
+      return layer && !layer.getMapBoxMap;
+    }
+    return true;
   };
 
   /**
@@ -871,12 +883,7 @@ const MainController = function(
     this.ol3dm_.init3dTiles(this.tiles3dVisible);
   });
 
-  ngeoOlcsService.initialize(this.ol3dm_);
-  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
-  this.map_.set('ol3dm', this.ol3dm_);
-
-  // Add the zoom to extent control in a second step since it depends on ol3dm.
-  this.map_.addControl(new appOlcsZoomToExtent(this.defaultExtent_, this.ol3dm_));
+  this.ngeoOlcsService_.initialize(this.ol3dm_);
 
   this.initLanguage_();
 
@@ -896,26 +903,18 @@ const MainController = function(
     }
   }.bind(this));
 
-  // Hide the vector editor panel when we choose non-vt layer with the selector
-  $scope.$watch(() => {
-    return this.activeMvt;
-  }, (newVal, oldVal) => {
-    if (newVal !== null && oldVal !== null && newVal !== oldVal) {
-      this.restoreLastOpenedPanel();
-    }
-  });
-
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-  this.loadThemes_().then(function() {
+  this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
-          function(bgLayers) {
+          bgLayers => {
+            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
-                (bgLayers.find(function(layer) {
+                (bgLayers.find(layer => {
                   return layer.get('label') === appOverviewMapBaseLayer;
                 }));
               this.map_.addControl(
@@ -924,12 +923,12 @@ const MainController = function(
                     collapseLabel: '\u00BB',
                     label: '\u00AB'}));
             }
-          }.bind(this));
+          });
     this['ageLayers'].splice(0, this['ageLayers'].length);
 
     this.appThemes_.getFlatCatalog().then(
-      function(flatCatalogue) {
-      flatCatalogue.forEach(function(catItem) {
+      flatCatalogue => {
+      flatCatalogue.forEach(catItem => {
         var layerIdsArray = ageLayerIds.split(',');
         if (layerIdsArray.indexOf('' + catItem.id) >= 0) {
           var layer = this.getLayerFunc_(catItem);
@@ -937,8 +936,8 @@ const MainController = function(
             this['ageLayers'].push (layer);
           }
         }
-      }.bind(this));
-    }.bind(this));
+      });
+    });
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
@@ -953,27 +952,27 @@ const MainController = function(
     !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
     !this['feedbackAgeOpen'] &&
-    this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
-    true : false;
+    this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') &&
+    !this.embedded;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         this.ngeoLocation_.getParam('map_id') !== undefined &&
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen) ? true : false;
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this['layersOpen'];
-    }.bind(this), function(newVal) {
+    }, newVal => {
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
       }
-    }.bind(this));
+    });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
 
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this.sidebarOpen();
-    }.bind(this), function(newVal) {
+    }, newVal => {
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -982,16 +981,16 @@ const MainController = function(
         var feature = this.selectedFeatures_.getArray()[0];
         feature.set('__refreshProfile__', true);
       }
-    }.bind(this));
+    });
 
     this.appThemes_.getThemeObject(
-      this.appTheme_.getCurrentTheme()).then(function() {
+      this.appTheme_.getCurrentTheme()).then(() => {
         var zoom = Number(appStateManager.getInitialValue('zoom'));
         if (zoom > 19) {
           this.map_.getView().setZoom(zoom);
         }
-      }.bind(this));
-  }.bind(this));
+      });
+  });
   var waypoints = appStateManager.getInitialValue('waypoints');
   if (waypoints !== undefined && waypoints !== null) {
     this['routingOpen'] = true;
@@ -1035,29 +1034,27 @@ const MainController = function(
   /**
    * Listen on login to finish to reload the mvt style
    */
-    $scope.$on('authenticated', () => {
-      // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-      const bgLayer = this.backgroundLayerMgr_.get(this.map);
-      if (bgLayer) {
-        this.appMvtStylingService.getBgStyle().then(config => {
-          bgLayer.getMapBoxMap().setStyle(config.style);
+  $scope.$on('authenticated', () => {
+    // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    if (bgLayer) {
+      this.appMvtStylingService.getBgStyle().then(config => {
+        bgLayer.getMapBoxMap().setStyle(config.style);
+      });
+    }
+    let mediumStyle = appMvtStylingService.getMediumStyle();
+    if (mediumStyle !== undefined) {
+      mediumStyle.then((style) => {
+          Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+          this.checkSelectedSimpleData();
         });
-      }
-      let mediumStyle = appMvtStylingService.getMediumStyle();
-      if (mediumStyle !== undefined) {
-        mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-      let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-      if (hillshadeStyle !== undefined) {
-        hillshadeStyle.then((style) => {
-            Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-    });
+    }
+  });
+
+  $scope.$on('mvtPanelOpen', () => {
+    this.vectorEditorOpen = true;
+    this.trackOpenVTEditor('openVTEditor');
+  });
 
   /**
    * Read a json file and store custom style to local storage
@@ -1073,7 +1070,17 @@ const MainController = function(
       const result = e.target.result;
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.appMvtStylingService.saveBgStyle(bgLayer);
+      const isPublished = true;
+      this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
+        const id = result[0];
+        this.ngeoLocation_.updateParams({
+          'serial': id
+        });
+        this.ngeoLocation_.refresh();
+
+        // Remove unused mediumStyling key stored in ls/db
+        this.appMvtStylingService.removeMediumStyle();
+      });
     });
 
     // Reset form value
@@ -1085,10 +1092,10 @@ const MainController = function(
     this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
-    this.hillshadeStylingData = getDefaultHillshadeStyling();
     this.resetLayerFor3d_();
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();
+    this.ngeoLocation_.deleteParam('serial');
   };
 
   /**
@@ -1148,28 +1155,16 @@ MainController.prototype.getUrlVtStyle = function() {
 };
 
 /**
- * @param {string} visible The item visibility.
- * @return {string} The visibility of the item.
- * @export
- */
-MainController.prototype.getSetHillshadeVisible = function(visible) {
-  const item = this.hillshadeStylingData[0];
-  if (arguments.length) {
-    item.visible = visible;
-    this.onHillshadeVisibilityChanged(visible);
-  } else {
-    return item.visible;
-  }
-};
-
-/**
  * @private
  * @param {boolean} active 3d state
  */
 MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
+    this.appMvtStylingService.unpublishIfSerial(this.map_);
     return;
   }
+  this.appMvtStylingService.publishIfSerial(this.map_);
+
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setDocumentTitle', 'enable3d']);
   piwik.push(['trackPageView']);
@@ -1215,9 +1210,16 @@ MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
 MainController.prototype.createMap_ = function() {
   var interactions = interactionDefaults({
     altShiftDragRotate: false,
-    pinchRotate: false,
+    pinchRotate: true,
     constrainResolution: true
   });
+
+  const rotate = new DragRotate({
+    condition: platformModifierKeyOnly
+  });
+
+  let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
+
   var map = this['map'] = new appMap({
     logo: false,
     controls: [
@@ -1225,19 +1227,29 @@ MainController.prototype.createMap_ = function() {
       // the zoom to extent control will be added later since it depends on ol3dm
       new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
       new olControlAttribution({collapsible: false,
-        collapsed: false, className: 'geoportailv3-attribution'})
+        collapsed: false, className: 'geoportailv3-attribution'}),
+      new Rotate({})
     ],
-    interactions: interactions,
+    interactions: interactions.extend([rotate]),
     keyboardEventTarget: document,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new olView({
       maxZoom: 19,
       minZoom: 8,
-      enableRotation: false,
-      extent: this.maxExtent_
+      enableRotation: true,
+      extent: this.maxExtent_,
+      rotation,
     })
   });
+
+  map.on('moveend', e => {
+    const rotation = map.getView().getRotation();
+    this.ngeoLocation_.updateParams({
+      rotation,
+    });
+  });
+
   return map;
 };
 
@@ -1262,7 +1274,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
  * @return {boolean} Whether 3D is active.
  */
 MainController.prototype.is3dEnabled = function() {
-  return this.ol3dm_.is3dEnabled();
+  return this.ol3dm_ && this.ol3dm_.is3dEnabled();
 };
 
 
@@ -1461,32 +1473,6 @@ MainController.prototype.trackOpenVTEditor = function (documentTitle) {
 
 
 /**
- * Remember the last panel opened when opening vector editor panel
- * @param {string} tab A tab name.
- * @export
- */
-MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
-  if (tab === this.lastPanelOpened) {
-    this.restoreLastOpenedPanel();
-  } else {
-    this.lastPanelOpened = tab;
-  }
-};
-
-/**
- * Allows to get back to last panel when closing the vector editor panel.
- * @export
- */
-MainController.prototype.restoreLastOpenedPanel = function () {
-  if (this.lastPanelOpened) {
-    this[this.lastPanelOpened] = true;
-    this.lastPanelOpened = undefined;
-  } else {
-    new Error('The panel to open does not exist...');
-  }
-};
-
-/**
  * @param {string} lang Language code.
  * @param {boolean=} track track page view
  * @export
@@ -1587,6 +1573,14 @@ MainController.prototype.initMymaps_ = function() {
       this.compareLayers_();
     }
   });
+};
+
+MainController.prototype.initCesium3D_ = function(cesiumURL, $rootScope, $scope) {
+  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
+  this.map_.set('ol3dm', this.ol3dm_);
+
+  // Add the zoom to extent control in a second step since it depends on ol3dm.
+  this.map_.addControl(new appOlcsZoomToExtent(this.defaultExtent_, this.ol3dm_));
 };
 
 

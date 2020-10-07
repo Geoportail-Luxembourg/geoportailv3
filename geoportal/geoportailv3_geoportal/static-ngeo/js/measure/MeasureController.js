@@ -19,13 +19,20 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
+import draw from '../draw/DrawController.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleText from 'ol/style/Text.js';
 import olStyleStyle from 'ol/style/Style.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olFeature from 'ol/Feature.js';
+import { fromCircle } from 'ol/geom/Polygon';
+
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -71,7 +78,13 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
-  var sketchStyle = new olStyleStyle({
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
+
+  var sketchStyle_ = new olStyleStyle({
     fill: new olStyleFill({
       color: 'rgba(255, 255, 255, 0.4)'
     }),
@@ -88,12 +101,75 @@ const exports = function($scope, $q, $http, $compile, gettext,
       fill: new olStyleFill({
         color: 'rgba(255, 255, 255, 0.4)'
       })
+    }),
+    text: new olStyleText({
+      font: '12px Calibri,sans-serif',
+      fill: new olStyleFill({
+        color: 'rgba(255, 255, 255, 1)'
+      }),
+      stroke: new olStyleStroke({
+        color: 'rgba(0, 0, 0, 0.8)',
+        width: 3
+      }),
+      overflow: true
     })
   });
 
-  var style = new olStyleStyle({
+  const clearText = text => {
+    text = text.replace('&nbsp;', ' ')
+    text = text.replace('<sup>2</sup>', '²')
+    text = text.replace('<br>', '\n')
+    return text.startsWith('NaN') ? '' : text
+  }
+  const generateStyle = baseStyle => f => {
+    const geomType = f.getGeometry().getType()
+
+    if (['Point', 'Circle'].includes(geomType)) {
+      return baseStyle;
+    }
+    if (this['measureArea'].getActive() && (geomType !== 'Polygon')) {
+      return baseStyle;
+    }
+    // Clone style because text style should not be shared
+    const style = baseStyle.clone()
+    const getCollectionStyle = (s, transform) => {
+      let clone = s.clone()
+      clone.getText().setText('')
+      let geometries = f.getGeometry().getGeometries()
+      let radius = geometries.find(g => g.getType() === 'LineString')
+      let circle = geometries.find(g => g.getType() === 'Circle')
+      s.setGeometry(radius);
+      clone.setGeometry(transform ? fromCircle(circle, 64) : circle);
+      return [ clone, s ]
+    }
+
+    // once interaction is deactivated, one cannot access to its tooltip,
+    // we have to store measure text on `measureend`
+    if (f.get('text')) {
+      style.getText().setText(f.get('text'))
+      if (geomType === 'GeometryCollection') {
+        return getCollectionStyle(style, true)
+      }
+      return style
+    }
+
+    let text = (this[
+      geomType === 'LineString' ? 'measureLength' :
+      geomType === 'Polygon' ? 'measureArea' :
+      geomType === 'GeometryCollection' ? 'measureAzimut' : ''
+    ].getTooltipElement() || this['measureProfile'].getTooltipElement()).innerHTML
+
+    style.getText().setText(clearText(text))
+    if (geomType === 'GeometryCollection') {
+      return getCollectionStyle(style)
+    }
+    return style
+  }
+  let sketchStyle = generateStyle(sketchStyle_)
+
+  let style_ = new olStyleStyle({
     fill: new olStyleFill({
-      color: 'rgba(255, 204, 51, 0.3)'
+      color: 'rgba(255, 204, 51, 0.2)'
     }),
     stroke: new olStyleStroke({
       color: 'rgba(255, 204, 51, 1)',
@@ -104,15 +180,29 @@ const exports = function($scope, $q, $http, $compile, gettext,
       fill: new olStyleFill({
         color: 'rgba(255, 204, 51, 0.3)'
       })
+    }),
+    text: new olStyleText({
+      font: 'bold 12px Calibri,sans-serif',
+      fill: new olStyleFill({
+        color: 'rgb(0 0 0)'
+      }),
+      stroke: new olStyleStroke({
+        color: 'rgba(255, 204, 51, 1)',
+        width: 4
+      }),
+      overflow: true
     })
   });
+  var style = generateStyle(style_)
 
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
+  const layer = new olLayerVector({
+    source: new olSourceVector(),
+    style: style,
+    metadata: {
+      hidden: true
+    }
+  })
+  this.map_.addLayer(layer)
 
   var helpMsg = gettext('Click to start drawing profile');
   var contMsg = gettext('Click to continue drawing the line<br>' +
@@ -122,7 +212,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
-      sketchStyle: sketchStyle
+      sketchStyle: sketchStyle,
+      style: style
     });
 
   /**
@@ -139,7 +230,9 @@ const exports = function($scope, $q, $http, $compile, gettext,
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
-      sketchStyle: sketchStyle
+      sketchStyle: sketchStyle,
+      style: style,
+      layer: layer
     });
 
   /**
@@ -159,14 +252,31 @@ const exports = function($scope, $q, $http, $compile, gettext,
   helpMsg = gettext('Click to start drawing area');
   contMsg = gettext('Click to continue drawing the polygon<br>' +
       'Double-click or click last point to finish');
+
+  /**
+   * @type {ol.layer.Vector}
+   */
+  this['layer'] = layer
+
+  /**
+   * @type {ol.Feature}
+   */
+  this['persistedFeature'] = undefined
+
   var measureArea = new ngeoInteractionMeasureArea(
     $filter('ngeoUnitPrefix'),
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
+
+  this['removeFeatures'] = function() {
+    this['persistedFeature'] = undefined
+    layer.getSource().clear()
+  }
 
   /**
    * @type {ngeo.interaction.MeasureArea}
@@ -186,7 +296,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
 
   /**
@@ -200,6 +311,9 @@ const exports = function($scope, $q, $http, $compile, gettext,
 
   listen(measureAzimut, 'measureend',
       function(evt) {
+        this['persistedFeature'] = evt.detail.feature
+        this['persistedFeature'].set('text',
+          clearText(this['measureAzimut'].getTooltipElement().innerHTML))
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
             (evt.detail.feature.getGeometry());
@@ -212,16 +326,21 @@ const exports = function($scope, $q, $http, $compile, gettext,
           this.getElevation_(radiusCoordinates[1])]
         ).then(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
-            var el = evt.target.getTooltipElement();
+            var el = measureAzimut.getTooltipElement();
             var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
-            el.innerHTML += '<br> &Delta;h : ' +
-                parseInt(elevationOffset, 0) + 'm';
+            this['persistedFeature'].set('text',
+              this['persistedFeature'].get('text') + 
+              '\nΔh : ' + parseInt(elevationOffset, 0) + 'm')
+            layer.changed()
           }
         }.bind(this));
       }.bind(this));
 
   listen(measureProfile, 'measureend',
       function(evt) {
+        this['persistedFeature'] = evt.detail.feature
+        this['persistedFeature'].set('text',
+          clearText(this['measureProfile'].getTooltipElement().innerHTML))
         var geom = /** @type {ol.geom.LineString} */
             (evt.detail.feature.getGeometry());
         this.getProfile_(geom).then(
@@ -229,6 +348,18 @@ const exports = function($scope, $q, $http, $compile, gettext,
               this['profileData'] = resp;
             }.bind(this));
       }, this);
+
+  listen(measureLength, 'measureend', evt => {
+    this['persistedFeature'] = evt.detail.feature
+    this['persistedFeature'].set('text',
+      clearText(this['measureLength'].getTooltipElement().innerHTML))
+  })
+  listen(measureArea, 'measureend', evt => {
+    this['persistedFeature'] = evt.detail.feature
+    this['persistedFeature'].set('text',
+      clearText(this['measureArea'].getTooltipElement().innerHTML))
+  })
+
 
   listen(measureProfile, getChangeEventType('active'),
       /**
@@ -281,8 +412,12 @@ exports.prototype.onChangeActive_ = function(event) {
       this['measureAzimut'].getActive() ||
       this['measureProfile'].getActive()) {
     this.appActivetool_.measureActive = true;
+    this['layer'].getSource().clear()
   } else {
     this.appActivetool_.measureActive = false;
+      if (this['persistedFeature']) {
+        this['layer'].getSource().addFeature(this['persistedFeature'])
+      }
   }
 };
 

@@ -4,6 +4,8 @@ from c2cgeoportal_commons.models import DBSession
 from geoportailv3_geoportal.userconfig import UserConfig
 
 import json
+import urllib.request
+import re
 
 import logging
 log = logging.getLogger(__name__)
@@ -75,3 +77,47 @@ class Config(object):
                     UserConfig.id == config.id,
                     UserConfig.key == key
                 ).delete()
+
+    @view_config(route_name="apply_mvt_config", renderer='json')
+    def apply_mvt_config(self):
+        # Parse and make a dict from the styles config to apply
+        config = json.loads(self.request.params['config'])
+        paint_conf_dict = {}
+        layout_conf_dict = {}
+        color_keys = ['background', 'line', 'fill', 'fill-extrusion']
+        for conf in json.loads(config):
+            if 'color' in conf:
+                color = conf['color']
+                if 'opacity' in conf:
+                    opacity = conf['opacity']
+                for color_key in color_keys:
+                    if 'fill-extrusion' in color_key:
+                        prop = 'fillExtrusions'
+                    else:
+                        prop = color_key + 's'
+
+                    if prop in conf:
+                        for layer in conf[prop]:
+                            paint_conf_dict.setdefault(layer, {})[color_key + '-color'] = color
+                            if 'opacity' in conf:
+                                paint_conf_dict.setdefault(layer, {})[color_key + '-opacity'] = int(opacity)
+                            if 'visible' in conf:
+                                layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
+
+            for layer in conf.get('hillshades', []):
+                layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
+
+
+        # Parse and modify the default config with the styles to apply
+        style_url = self.request.params['style_url']
+        with urllib.request.urlopen(style_url) as file:
+            default_styles = file.read().decode('utf-8')
+            myjson = json.loads(default_styles)
+
+            for layer in myjson['layers']:
+                for key, value in paint_conf_dict.get(layer['id'], {}).items():
+                    layer['paint'][key] = value
+                for key, value in layout_conf_dict.get(layer['id'], {}).items():
+                    layer.setdefault('layout', {})[key] = value
+
+        return myjson

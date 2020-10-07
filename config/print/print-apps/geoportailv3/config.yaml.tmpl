@@ -49,6 +49,11 @@ templates:
       scalebar: !scalebar
         width: 150
         height: 30
+      northArrow: !northArrow
+        size: 40
+        default:
+          graphic: "file://NorthArrow_10.svg"
+          backgroundColor: "rgba(214, 214, 214, 0)"
     processors: &processors
       - !reportBuilder  # compile all reports in current directory
         directory: '.'
@@ -65,6 +70,7 @@ templates:
         inputMapper: {map: map}
         outputMapper: {mapSubReport: mapSubReport}
       - !createScalebar {}
+      - !createNorthArrow {}
   A4 landscape: !template
     pdfConfig: !pdfConfig
       title: "A4 Landscape by geoportail.lu"

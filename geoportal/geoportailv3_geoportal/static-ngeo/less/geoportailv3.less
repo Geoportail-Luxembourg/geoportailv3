@@ -20,6 +20,7 @@
 @import "mymaps.less";
 @import "featurepopup.less";
 @import "routing.less";
+@import "backgroundselector.less";
 
 
 @font-face {
@@ -32,6 +33,10 @@
 
 body {
   font-family: 'DINNextLTPro-Condensed', Arial, sans-serif;
+}
+
+body.embedded {
+  padding: 0;
 }
 
 .map-wrapper {
@@ -73,8 +78,7 @@ app-map {
     white-space: nowrap;
   }
   .ngeo-tooltip-measure {
-    opacity: 1;
-    font-weight: bold;
+    display: none;
   }
   .ngeo-tooltip-static {
     background-color: #ffcc33;
@@ -95,6 +99,22 @@ app-map {
   .ngeo-tooltip-static:before {
     border-top-color: #ffcc33;
   }
+  .ol-rotate {
+    right: auto;
+    left: 8px;
+    top: 196px;
+    button {
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .ol-viewport .ol-rotate {
+    top: 96px;
+  }
 }
 
 .hidden-2d {
@@ -112,6 +132,72 @@ body.enabled-3d {
 }
 .olcs-hideoverlay .ol-overlay-container {
   visibility:hidden;
+}
+
+header,
+footer,
+.routing-goto-route,
+.routing-rounded-button {
+  display: none;
+}
+
+body.embedded {
+  app-backgroundselector,
+  app-toggle-3d,
+  app-infobar,
+  .location-button,
+  .ol-full-screen {
+    display: none;
+  }
+  #sidebar {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    max-height: ~"calc(100% - 1em)";
+    width: ~"calc(50% - 0.5em)";
+    background: white;
+    z-index: 100;
+    display: none;
+    .close-panel,
+    h2 {
+      color: #111;
+      background: #eee;
+      font-size: 20px;
+    }
+    h2 {
+      padding: 8px 0 8px 8px;
+    }
+    .close-panel {
+      top: 6px;
+      right: 6px;
+    }
+    #infos {
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+      .tab-content {
+        background: white;
+        color: #333;
+      }
+    }
+    &.open {
+      display: block;
+    }
+  }
+}
+
+body.full header,
+body.full footer {
+  display: block;
+}
+@media (max-width: @screen-xs-max) {
+  body.full .routing-goto-route {
+    display: block;
+  }
+  body.full .routing-rounded-button {
+    display: inline-block;
+  }
 }
 
 
