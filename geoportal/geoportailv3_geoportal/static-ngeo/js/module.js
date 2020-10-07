@@ -32,6 +32,7 @@ import ngeoSearchModule from 'ngeo/search/module.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import mockProviderModule, {MockProvider} from './MockProvider.js';
 import angular from 'angular';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
@@ -62,12 +63,17 @@ const exports = angular.module('Appmain', [
   ngeoQueryModule.name,
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
+  mockProviderModule.name,
   'gettext']).run(function() {
     if (!TOUCH) {
       document.body.classList.add('no-touch');
     }
   });
 
+// Use ngeo's mockLocationProvider to work around a problem in Angular
+// and avoid problems when using both ngeoLocation and ng-include in
+// the application.
+exports.config(MockProvider)
 
 exports.config(['$compileProvider', function($compileProvider) {
   // activate pre-assigning bindings
