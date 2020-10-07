@@ -148,7 +148,7 @@ exports.prototype.setThemeZooms = function(tree) {
 
     let rotation = 0;
     if (this.ngeoLocation_.getParam('rotation') !== undefined) {
-      rotation = this.ngeoLocation_.getParam('rotation');
+      rotation = Number(this.ngeoLocation_.getParam('rotation'));
     }
 
     map.setView(new olView({
