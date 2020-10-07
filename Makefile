@@ -38,6 +38,9 @@ help:
 .PHONY: build
 build: docker-build-geoportal docker-build-config docker-build-print docker-build-ldap
 
+.PHONY: build-prod
+build: docker-build-geoportal docker-build-config
+
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
 	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) geoportal
