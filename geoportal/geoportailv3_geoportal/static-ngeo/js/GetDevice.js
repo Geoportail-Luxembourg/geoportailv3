@@ -40,9 +40,9 @@ const exports = function($document, $window) {
 exports.prototype.findBootstrapEnvironment = function() {
   const envs = {
     'lg': '(min-width: 1200px)',
-    'md': '(max-width: 1199px)',
-    'sm': '(max-width: 992px)',
     'xs': '(max-width: 768px)',
+    'sm': '(max-width: 992px)',
+    'md': '(max-width: 1199px)',
   }
 
   for (const [env, mq] of Object.entries(envs)) {
