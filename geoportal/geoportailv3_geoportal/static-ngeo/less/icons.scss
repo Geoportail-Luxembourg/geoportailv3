@@ -75,7 +75,7 @@ li.icon > a {
   text-transform: uppercase;
   text-align: center;
 
-  @media (max-width: map-get($grid-breakpoints, "sm")) {
+  @media (max-width: map-get($grid-breakpoints, "md")) {
     width: 48px;
     font-size: 0.8em;
   }
@@ -88,7 +88,7 @@ li.icon > a {
     width: 100%;
     font-size: 2em;
     text-indent: 0;
-    @media (max-width: map-get($grid-breakpoints, "sm")) {
+    @media (max-width: map-get($grid-breakpoints, "md")) {
       top: 10px;
     }
   }
@@ -99,7 +99,7 @@ button.search:after {
 }
 li.icon > a {
   padding-top: 32px;
-  @media (max-width: map-get($grid-breakpoints, "sm")) {
+  @media (max-width: map-get($grid-breakpoints, "md")) {
     padding-top: 30px;
   }
 }

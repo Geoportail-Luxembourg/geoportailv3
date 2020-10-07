@@ -122,7 +122,7 @@ span.twitter-typeahead {
   }
 }
 
-@media (min-width: map-get($grid-breakpoints, "sm")) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   header .search-container {
     white-space: nowrap;
     margin-left: auto;
@@ -139,7 +139,7 @@ span.twitter-typeahead {
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .navbar-form {
   border: 0;
   }

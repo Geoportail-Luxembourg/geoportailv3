@@ -19,14 +19,14 @@ $alert-warning-bg: #fcf850;
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: portrait) {
+@media (max-width: map-get($grid-breakpoints, "md")) and (orientation: portrait) {
   .notify {
 	top: 40px;
 	max-width: 80%;
     width: calc(#{$notify-width-sm} - 10px);
   }
 }
-@media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: landscape) {
+@media (max-width: map-get($grid-breakpoints, "md")) and (orientation: landscape) {
   .notify {
 	left: 35%;
 	top: 40px;
