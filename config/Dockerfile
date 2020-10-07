@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM python:3.7
 LABEL maintainer Camptocamp "info@camptocamp.com"
 ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
@@ -7,7 +7,7 @@ ENV https_proxy $HTTPS_PROXY_URL
 
 RUN \
   apt-get update && \
-  apt-get install --assume-yes --no-install-recommends gettext-base python3 && \
+  apt-get install --assume-yes --no-install-recommends gettext-base && \
   apt-get clean && \
   rm --recursive --force /var/lib/apt/lists/*
 
