@@ -19,7 +19,10 @@ RUN mv /tmp/config/bin/* /usr/bin/ && \
     chmod g+w -R /etc /usr/local/tomcat/webapps && \
     adduser www-data root
 
-VOLUME \
-    /usr/local/tomcat/webapps/ROOT/print-apps
+#VOLUME \
+#    /usr/local/tomcat/webapps/ROOT/print-apps
+ENV VISIBLE_ENTRY_POINT /
+ENV VISIBLE_WEB_HOST localhost:8080
 
+RUN eval-templates
 ENTRYPOINT [ "/usr/bin/entrypoint" ]

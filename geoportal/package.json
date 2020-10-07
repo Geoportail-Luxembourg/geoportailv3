@@ -87,7 +87,7 @@
     "ls": "0.2.1",
     "mapbox-gl": "1.7.0",
     "moment": "2.22.1",
-    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/81ab841",
+    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/b178a9e7451a4b660c728fedcf015e9f9854cd50",
     "ol-cesium": "2.0.0",
     "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/f284b95cb897b3ce1b49b985b58ebe1ca76be1fe",
     "phantomjs-polyfill-string-includes": "1.0.0",

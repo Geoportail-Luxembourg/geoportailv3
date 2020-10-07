@@ -37,7 +37,8 @@ const exports = function($window, ngeoLocation, appThemes) {
     'atlas_demographique': 29,
     'urban_farming': 30,
     'logement': 32,
-    'energie': 40
+    'energie': 40,
+    'embedded': 44
   };
 
   /**
@@ -73,6 +74,9 @@ exports.prototype.setCurrentTheme = function(themeId) {
   this.currentTheme_ = themeId;
 
   var piwikSiteId = this.piwikSiteIdLookup_[this.currentTheme_];
+  if (!!(new URL(window.location).searchParams.get('embedded'))) {
+    piwikSiteId = this.piwikSiteIdLookup_['embedded'];
+  }
   var isApp =
     location.search.includes('localforage=android') ||
     location.search.includes('localforage=ios') ||

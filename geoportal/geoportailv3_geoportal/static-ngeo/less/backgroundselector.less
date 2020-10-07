@@ -1,0 +1,186 @@
+.background-layer {
+    width: auto;
+    height: auto;
+
+    position: absolute;
+    top: .5em;
+    right: .5em;
+
+    text-align: center;
+
+    overflow: hidden; // Fix scrollbar visible
+
+    .bg-selector-layer-0 { // roadmap (mvt)
+        background-image: url(../images/backgroundselector/routiere.png);
+    }
+    .bg-selector-layer-1 { // topographic b&w
+        background-image: url(../images/backgroundselector/topo_nb.png);
+    }
+    .bg-selector-layer-2 { // topographic
+        background-image: url(../images/backgroundselector/topo.png);
+    }
+    .bg-selector-layer-3 { // orthophoto
+        background-image: url(../images/backgroundselector/orthophoto.png);
+    }
+    .bg-selector-layer-4 { // hybrid orthophoto+label
+        background-image: url(../images/backgroundselector/hybrid.png);
+    }
+    .bg-selector-layer-5 { // blank map
+        background-color: white;
+        border: black solid 0.5px;
+    }
+
+    .bg-selector-layer-0,
+    .bg-selector-layer-1,
+    .bg-selector-layer-2,
+    .bg-selector-layer-3,
+    .bg-selector-layer-4,
+    .bg-selector-layer-5 {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border-radius: 2px;
+
+        background-repeat: no-repeat;
+        background-color: white;
+        background-size: 90px 58px;
+    }
+
+    .bg-selector-layer {
+        float: left;
+        width: 90px;
+        height: 58px;
+        padding: 3px;
+    }
+
+    .bg-selector-layer,
+    .bg-selector-opener {
+        cursor: pointer;
+        border: 1px solid black;
+        border-radius: 2px;
+        background-color: white;
+    }
+
+    .active{
+        border: 3px solid red;
+    }
+
+    .bg-selector-layer:hover {
+        background-color: #2980b9;
+    }
+
+    .bg-selector-opener {
+        width: 90px;
+        height: 58px;
+
+        position: absolute;
+        right: 0;
+
+        padding: 3px;
+    }
+
+    .opened {
+        opacity: 1; // cannot use display:hidden with transition
+        transition: opacity .5s,transform .5s ease-out;
+        transform: translateX(0);
+    }
+
+    .closed {
+        opacity: 0; // cannot use display:hidden with transition
+        transform: translateX(120%);
+        transition: opacity .5s,transform .5s ease-out;
+    }
+}
+
+@media (max-width: @screen-xs-max) and (orientation: portrait) {
+    .background-layer {
+        width: 41px; // force top-bottom alignement
+    }
+}
+
+@media (max-width: @screen-xs-max) {
+    .background-layer {
+        .bg-selector-layer,
+        .bg-selector-opener {
+            width: 41px;
+            height: 41px;
+        }
+
+        .bg-selector-opener {
+            top: 0;
+        }
+
+        .bg-selector-layer-0,
+        .bg-selector-layer-1,
+        .bg-selector-layer-2,
+        .bg-selector-layer-3,
+        .bg-selector-layer-4,
+        .bg-selector-layer-5 {
+            background-size: 41px 41px;
+        }
+
+        .bg-selector-layer-0 { // roadmap (mvt)
+            background-image: url(../images/backgroundselector/routiere_sm.png);
+        }
+        .bg-selector-layer-1 { // topographic b&w
+            background-image: url(../images/backgroundselector/topo_nb_sm.png);
+        }
+        .bg-selector-layer-2 { // topographic
+            background-image: url(../images/backgroundselector/topo_sm.png);
+        }
+        .bg-selector-layer-3 { // orthophoto
+            background-image: url(../images/backgroundselector/orthophoto_sm.png);
+        }
+        .bg-selector-layer-4 { // hybrid orthophoto+label
+            background-image: url(../images/backgroundselector/hybrid_sm.png);
+        }
+        .bg-selector-layer-5 { // blank map
+            background-color: white;
+            border: black solid 0.5px;
+        }
+    }
+}
+
+@media
+only screen and ( min-device-pixel-ratio: 1.25),
+only screen and ( min-resolution: 200dpi),
+only screen and ( min-resolution: 1.25dppx)
+{
+    .background-layer {
+        // Retina for thumbnails
+        .bg-selector-layer-0 { // roadmap (mvt)
+            background-image: url(../images/backgroundselector/routiere_retina.png);
+        }
+        .bg-selector-layer-1 { // topographic b&w
+            background-image: url(../images/backgroundselector/topo_nb_retina.png);
+        }
+        .bg-selector-layer-2 { // topographic
+            background-image: url(../images/backgroundselector/topo_retina.png);
+        }
+        .bg-selector-layer-3 { // orthophoto
+            background-image: url(../images/backgroundselector/orthophoto_retina.png);
+        }
+        .bg-selector-layer-4 { // hybrid orthophoto+label
+            background-image: url(../images/backgroundselector/hybrid_retina.png);
+        }
+    
+        // Retina for small thumbnails
+        @media (max-width: @screen-xs-max) {
+            .bg-selector-layer-0 { // roadmap (mvt)
+                background-image: url(../images/backgroundselector/routiere_sm_retina.png);
+            }
+            .bg-selector-layer-1 { // topographic b&w
+                background-image: url(../images/backgroundselector/topo_nb_sm_retina.png);
+            }
+            .bg-selector-layer-2 { // topographic
+                background-image: url(../images/backgroundselector/topo_sm_retina.png);
+            }
+            .bg-selector-layer-3 { // orthophoto
+                background-image: url(../images/backgroundselector/orthophoto_sm_retina.png);
+            }
+            .bg-selector-layer-4 { // hybrid orthophoto+label
+                background-image: url(../images/backgroundselector/hybrid_sm_retina.png);
+            }
+        }
+    }
+}

@@ -19,10 +19,9 @@ body {
   .modal-dialog {
     margin: 30px auto;
   }
-
 }
-[ng-cloak]
-{
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
 
@@ -50,6 +49,21 @@ body {
 
 app-share > div {
   padding-top: 15px;
+}
+app-share hr {
+  margin: 10px 0;
+}
+.share-embedded .input-group {
+  display: flex;
+  margin-bottom: 10px;
+}
+.share-embedded input {
+  flex: 1;
+  margin-left: 10px;
+}
+.share-embedded button {
+  width: auto;
+  margin-right: 10px;
 }
 
 app-map > div {
@@ -304,6 +318,8 @@ app-map > div {
 
 .ol-full-screen {
   .hidden-xs;
+  left: .5em;
+  top: 9em;
 }
 
 div.ol-full-screen > button {
