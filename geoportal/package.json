@@ -17,7 +17,7 @@
     "@geoblocks/mapboxlayer-legacy": "0.0.9",
     "@sentry/browser": "5.5.0",
     "@sentry/integrations": "5.5.0",
-    "angular": "1.6.10",
+    "angular": "1.8.1",
     "angular-animate": "1.6.10",
     "angular-dynamic-locale": "0.1.36",
     "angular-float-thead": "0.1.2",
