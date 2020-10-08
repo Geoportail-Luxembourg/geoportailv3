@@ -39,7 +39,7 @@ help:
 build: docker-build-geoportal docker-build-config docker-build-print docker-build-ldap
 
 .PHONY: build-prod
-build: docker-build-geoportal docker-build-config
+build-prod: docker-build-geoportal docker-build-config
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
