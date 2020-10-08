@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM camptocamp/geomapfish-tools:2.5.0.86
 LABEL maintainer Camptocamp "info@camptocamp.com"
 ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
