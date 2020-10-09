@@ -24,7 +24,7 @@ create_ui_jsons() {
     files="$c2cprefix-client.po $c2cprefix-tooltips.po $prefix/ngeo.po"
     echo "-> $APP_OUTPUT_DIR/$lang.json"
     mkdir -p $APP_OUTPUT_DIR
-    node node_modules/.bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
+    node /usr/bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
   done
 }
 
