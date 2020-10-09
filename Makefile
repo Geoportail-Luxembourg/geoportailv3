@@ -110,7 +110,7 @@ run: build
 dev: build
 	echo "Once the composition is up open the following URL:"
 	echo "browse http://localhost:8080/dev/main.html"
-	docker-compose down; docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
+	docker-compose down; docker-compose up
 
 .PHONY: attach
 attach:
