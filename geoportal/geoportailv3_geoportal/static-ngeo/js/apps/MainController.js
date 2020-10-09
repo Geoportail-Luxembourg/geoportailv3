@@ -40,7 +40,7 @@ import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 
-import '../../less/geoportailv3.scss';
+import '../../sass/geoportailv3.scss';
 
  /* eslint-disable no-unused-vars */
  import appAskredirectAskredirectDirective from '../askredirect/askredirectDirective.js';
