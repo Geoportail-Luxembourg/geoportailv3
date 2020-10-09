@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-controller="MainController as mainCtrl"
-ng-strict-di="true"
- >
+<html lang={{mainCtrl.lang}} ng-controller="MainController as mainCtrl" ng-strict-di>
 
   <head>
     <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
@@ -468,6 +466,7 @@ ng-strict-di="true"
 
     </footer>
 
+    <script src="${htmlWebpackPlugin.options.vars.entry_point}static-ngeo/build/vendor.js?${htmlWebpackPlugin.options.vars.cache_version}"></script>
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>

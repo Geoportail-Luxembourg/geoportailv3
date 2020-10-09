@@ -57,7 +57,7 @@ services:
       file: docker-compose-lib.yaml
       service: webpack_dev_server
     command:
-      [ "./node_modules/.bin/webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
+      [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
     environment:
       - CASIPO_STAGING_URL
       - PAG_OWNCLOUD_PASSWORD
