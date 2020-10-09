@@ -8,7 +8,7 @@
 
     text-align: center;
 
-    overflow: hidden; // Fix scrollbar visible
+    //overflow: hidden; // Fix scrollbar visible
 
     .bg-selector-layer-0 { // roadmap (mvt)
         background-image: url(../images/backgroundselector/routiere.png);
@@ -83,12 +83,14 @@
         opacity: 1; // cannot use display:hidden with transition
         transition: opacity .5s,transform .5s ease-out;
         transform: translateX(0);
+        display: block;
     }
 
     .closed {
         opacity: 0; // cannot use display:hidden with transition
         transform: translateX(120%);
         transition: opacity .5s,transform .5s ease-out;
+        display: none;
     }
 }
 
