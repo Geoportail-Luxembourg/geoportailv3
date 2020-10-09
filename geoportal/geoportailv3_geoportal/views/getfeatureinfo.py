@@ -3,8 +3,10 @@ import logging
 import re
 
 import urllib.request
-import geojson
+import datetime
 import pyproj
+import shapely
+import geojson
 import os
 import json
 from urllib.parse import urlencode
@@ -26,7 +28,6 @@ from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, Metad
 from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from functools import partial
-
 
 
 log = logging.getLogger(__name__)
@@ -471,6 +472,26 @@ class Getfeatureinfo(object):
 
         return results
 
+    def transform_(self, geometry, source, dest):
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=source), # source coordinate system
+            pyproj.Proj(init=dest)) # destination coordinate system
+
+        return transform(project, shape(geometry))  # apply projection
+
+    def pixel2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
+        box3857 = bbox.split(',')
+        the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
+        print (self.transform_(the_box, epsg_source, epsg_dest))
+        box2169 = shape(self.transform_(the_box, epsg_source, epsg_dest)).bounds
+        if (box2169[2] - box2169[0]) > 0:
+            scale_x = (box2169[2] - box2169[0]) / width
+        else :
+            scale_x = (box2169[0] - box2169[2]) / width
+
+        return scale_x * pixels
+
     def remove_features_outside_tolerance(self, features, coords):
         features_to_keep = []
 
@@ -483,7 +504,15 @@ class Getfeatureinfo(object):
                 if the_box.intersects(s):
                     features_to_keep.append(feature)
             else:
-                features_to_keep.append(feature)
+                width = self.request.params.get('WIDTH', None)
+                height = self.request.params.get('HEIGHT', None)
+                bbox = self.request.params.get('BBOX', None)
+                if width is None or height is None or bbox is None:
+                    features_to_keep.append(feature)
+                else:
+                    buffer = self.pixel2meter(float(width), float(height), bbox, "epsg:3857", "epsg:2169", 10)
+                    if the_box.intersects(s.buffer(buffer, 1)):
+                        features_to_keep.append(feature)
         return features_to_keep
 
     def to_feature(self, layer_id, fid, geometry, attributes,
@@ -653,6 +682,20 @@ class Getfeatureinfo(object):
                                 proxy_url + "?id=" + str(entry.id) +\
                                 "&filename=" + value.split(entry.url)[1]
                             break
+            modified_features.append(feature)
+        return modified_features
+
+    def format_esridate(self, features, attribute="date_time", format="%Y-%m-%d %H:%M:%S"):
+        modified_features = []
+        for feature in features:
+            try:
+                if attribute in feature['attributes']:
+                    value = feature['attributes'][attribute]
+                    if value is not None:
+                            feature['attributes'][attribute] =\
+                                datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
+            except Exception as e:
+                log.exception(e)
             modified_features.append(feature)
         return modified_features
 
@@ -1070,7 +1113,17 @@ class Getfeatureinfo(object):
         if 'features' in esricoll:
             for rawfeature in esricoll['features']:
                 geometry = ''
-                if (rawfeature['geometry'] and
+                if 'geometry' not in rawfeature:
+                    box = bbox.split(',')
+                    x1 = float(box[0])
+                    y1 = float(box[1])
+                    x2 = float(box[2])
+                    y2 = float(box[3])
+                    geometry = {'type': 'Polygon',
+                                'coordinates': [[
+                                    [x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]
+                                ]]}
+                elif (rawfeature['geometry'] and
                     'x' in rawfeature['geometry'] and
                         'y' in rawfeature['geometry']):
                     geometry = {'type': 'Point',
