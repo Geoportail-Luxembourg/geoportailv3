@@ -26,6 +26,8 @@ git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
 Build
 -----
 
+copy `docker-compose.override.sample.yaml` to `docker-compose.override.yaml`
+
 ```bash
 cd geoportailv3
 # Create symlink to the env you want to use
