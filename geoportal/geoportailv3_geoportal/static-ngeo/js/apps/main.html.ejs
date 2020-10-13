@@ -466,7 +466,7 @@
 
     </footer>
 
-    <script src="${htmlWebpackPlugin.options.vars.entry_point}static-ngeo/build/vendor.js?${htmlWebpackPlugin.options.vars.cache_version}"></script>
+    <script src="${htmlWebpackPlugin.options.vars.entry_point}static-ngeo/vendor.js?${htmlWebpackPlugin.options.vars.cache_version}"></script>
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>
