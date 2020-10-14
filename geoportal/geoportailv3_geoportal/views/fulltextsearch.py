@@ -104,6 +104,20 @@ class FullTextSearchView(object):
                             }
                         },
                         {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Parcelle", "boost": 1
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "FLIK", "boost": 1
+                                }
+                            }
+                        },
+                        {
                             "wildcard": {
                                 "layer_name": {
                                     "value": "editus_poi*",
@@ -122,6 +136,24 @@ class FullTextSearchView(object):
         if layer:
             for cur_layer in layer.split(","):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
+
+        extent = self.request.params.get('extent', False)
+        if extent:
+            extent = extent.split(',')
+            filters['must'].append({
+                "geo_shape": {
+                    "ts": {
+                        "shape": {
+                            "type": "envelope",
+                            "coordinates": [
+                                [ extent[0], extent[3] ],
+                                [ extent[2], extent[1] ]
+                                ]
+                            },
+                        "relation": "within"
+                        }
+                    }
+                })
 
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})

@@ -2,14 +2,85 @@
   &#10005;
 </button>
 
-<div class="search-container">
+<div class="search-container" ng-class="{
+    hideCms: !ctrl.facets.cms,
+    hideLayers: !ctrl.facets.layers,
+  }">
   <form class="navbar-form" role="search">
-      <div class="form-group">
-          <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
-              ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
-              <span class="clear-button" ng-click="click($event)">&#10005;</span>
-          </input>
+    <div class="form-group">
+        <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
+            ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
+            <span class="clear-button" ng-click="click($event)">&#10005;</span>
+        </input>
+    </div>
+    <button
+      class="btn btn-link facet-toggle"
+      ng-click="ctrl.facetsPanelOpen = !ctrl.facetsPanelOpen"
+      ng-class="{active: ctrl.facetsPanelOpen}">
+      <i class="fa fa-filter"></i>
+    </button>
+    <div class="facet-container" ng-show="ctrl.facetsPanelOpen">
+      <button class="close-panel" ng-click="ctrl.facetsPanelOpen = false">&times;</button>
+      <h3 translate>Paramètres de recherche</h3>
+      <h5 translate>Inclure</h5>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.cms ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.cms">
+          <span translate>Pages du site</span>
+        </label>
       </div>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.layers ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.layers">
+          <span translate>Couches</span>
+        </label>
+      </div>
+      <h5 translate>Limiter la recherche à</h5>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.address ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.address">
+          <span translate>Adresses</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.parcels ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.parcels">
+          <span translate>Numéros parcelles</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.flik ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.flik">
+          <span translate>Adresses FLIK</span>
+        </label>
+      </div>
+      <hr>
+      <h5 translate>Étendue</h5>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.extent ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.extent">
+          <span translate>Uniquement dans la partie actuellement visible de la carte</span>
+        </label>
+      </div>
+      <hr>
+      <h5 translate>Avancée</h5>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.activeLayers ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.activeLayers">
+          <span translate>Chercher dans les couches actives</span>
+        </label>
+      </div>
+      <hr>
+      <button class="btn btn-primary pull-right" ng-click="ctrl.saveSearch()" translate>Sauvegarder la recherche</button>
+      <button class="btn btn-text" ng-click="ctrl.resetFacets()" translate>Réinitialiser</button>
+    </div>
   </form>
   <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group itinary-button">
     <button ng-click="ctrl.addLastSuggestedFeature();" class="create-itinerary">
