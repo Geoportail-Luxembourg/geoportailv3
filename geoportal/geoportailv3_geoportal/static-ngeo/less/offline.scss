@@ -79,7 +79,7 @@ ngeo-offline {
     padding-left: 1rem;
     line-height: $topbar-height;
 
-    @media (max-width: map-get($grid-breakpoints, "sm")) {
+    @media (max-width: map-get($grid-breakpoints, "md")) {
       height: 40px;
       line-height: 40px;
     }

@@ -1,4 +1,4 @@
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .hidden-xs {
     display: none !important;
   }
@@ -19,7 +19,7 @@ body {
   font-size: 1rem;
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .modal-backdrop {
     display: none !important;
   }
@@ -42,7 +42,7 @@ app-search {
 }
 
 .navbar-nav {
-  // keep margin and padding the same as for media width > map-get($grid-breakpoints, "sm")
+  // keep margin and padding the same as for media width > map-get($grid-breakpoints, "md")
   margin: 0;
   > li > a {
     padding-top: 15px;
@@ -144,26 +144,26 @@ app-map > div {
   margin-left: 0,
 }
 
-@media (min-width: map-get($grid-breakpoints, "sm")) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   #sidebar {
     margin-left: -($leftbar-width);
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   #sidebar {
     margin-left: -100%;
     width: 100%;
   }
 }
 
-@media (min-width: map-get($grid-breakpoints, "sm")) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   body {
     /* padding bottom by footer height */
     padding-bottom: $bottombar-height;
   }
 }
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   body {
     padding-bottom: 0;
     padding-top: 40px;

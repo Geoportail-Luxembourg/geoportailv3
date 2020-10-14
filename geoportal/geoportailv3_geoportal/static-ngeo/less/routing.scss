@@ -462,7 +462,7 @@
   left: 50%;
   margin: 0 0 0 -12px;
 }
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .routing-goto-route {
     bottom: 8px;
 	position: absolute;
@@ -478,7 +478,7 @@
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .routing-goto-plan {
     bottom: 8px;
 	position: absolute;

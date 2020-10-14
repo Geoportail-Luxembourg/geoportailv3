@@ -25,7 +25,7 @@ $popup-title-height: 10px + 8px * 2;
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   [ngeo-popup] {
     position: fixed;
     top: 0;
