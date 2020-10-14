@@ -7,7 +7,7 @@ $grid-float-breakpoint-max: 0px;
 header {
   &.navbar {
     border-width: 0;
-    @media (max-width: map-get($grid-breakpoints, "sm")) {
+    @media (max-width: map-get($grid-breakpoints, "md")) {
       min-height: 40px;
     }
   }
@@ -162,7 +162,7 @@ header {
   flex-direction: row;
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .sidebar-controls,
   .toolbox {
     position: absolute;
@@ -174,7 +174,7 @@ header {
     }
   }
   .sidebar-controls {
-    bottom: 100px;
+    bottom: 106px;
     .enabled-3d &{
       bottom: 61px;
     }
@@ -265,13 +265,13 @@ header {
   }
 }
 
-@media (min-width: map-get($grid-breakpoints, "sm")){
+@media (min-width: map-get($grid-breakpoints, "md")){
   .brand > img {
     margin: 5px;
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .brand,
   .navbar-nav,
   .navbar-nav > li > a {
@@ -320,21 +320,22 @@ header {
   text-transform: uppercase;
 }
 
-@media (min-width: map-get($grid-breakpoints, "sm")) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   footer {
     box-shadow: 0px 2px 6px 1px rgba(0, 0, 0, 0.5);
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: map-get($grid-breakpoints, "md")) {
   .sidebar-controls,
   .toolbox {
+    flex-direction: column;
     > li {
       background-color: white;
       > a {
         border-right: 1px solid $navbars-button-border-color;
         border-bottom: 1px solid $navbars-button-border-color;
-        width: 150px;
+        width: 48px;
       }
     }
     > li:first-child > a {
