@@ -32,6 +32,7 @@ const exports = function(appSearchTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appSearchMap',
+      'selectedLayers': '=appSearchSelectedLayers',
       'language': '=appSearchLanguage',
       'mobileActive': '=appSearchMobileactive',
       'routingOpen': '=appSearchRoutingOpen'

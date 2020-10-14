@@ -503,6 +503,21 @@ const exports = function($scope, $window, $compile,
       (function(e) {
         this.featureOverlay.clear();
       }), this);
+
+  this.facetsPanelOpen = false;
+  this.initialFacets = {
+    layers: true,
+    cms: true,
+    address: false,
+    parcels: false,
+    flik: false,
+    extent: false,
+    activeLayers: false
+  };
+  this.facets = Object.assign({}, localStorage.getItem('searchFacets')
+    ? JSON.parse(localStorage.getItem('searchFacets'))
+    :this.initialFacets
+  );
 };
 
 
@@ -735,12 +750,42 @@ exports.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: function(query, settings) {
-            settings.url = settings.url +
-                '?query=' + encodeURIComponent(query) +
-                '&limit=' + this.limitResults;
-            return settings;
-          }.bind(this),
+          prepare: (query, settings) => {
+            const url = new URL(settings.url)
+            const params = url.searchParams
+            params.set('query', encodeURIComponent(query))
+            params.set('limit', this.limitResults)
+            // Facets
+            let layers = [ 'address', 'parcels', 'flik' ]
+              .filter(k => this.facets[k])
+              .map(k => ({
+                address: 'Adresse',
+                parcels: 'Parcelle',
+                flik: 'FLIK',
+              }[k]))
+            if (layers.length > 0) params.set('layer', layers.join(','))
+            // Restrict to area
+            if (this.facets.extent) {
+              let extent = transformExtent(
+                this.map.getView().calculateExtent(),
+                'EPSG:3857',
+                'EPSG:4326'
+              );
+              params.set('extent', extent.join(','))
+            }
+            if (this.facets.activeLayers) {
+              let layers = this.selectedLayers
+                .map(l => l.get('label'))
+                .filter(Boolean)
+              if (layers.length > 0) {
+                params.set('layer', layers.join(','))
+              } else {
+                console.error('Filter on active layers but no queryable layers')
+              }
+            }
+            settings.url = url.toString()
+            return settings
+          },
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
@@ -771,6 +816,7 @@ exports.prototype.createAndInitLayerBloodhoundEngine_ =
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       datumTokenizer: function() {},
       remote: {
+        cache: false,
         url: layerSearchServiceUrl,
         rateLimitWait: 50,
         replace: function(url, query) {
@@ -1002,6 +1048,22 @@ exports.prototype.isSearchFeature = function() {
  */
 exports.prototype.addLastSuggestedFeature = function() {
   this.addRoutePoint(this.lastSelectedSuggestion);
+};
+
+/**
+ * Reset facets search to initial state
+ * @export
+ */
+exports.prototype.resetFacets = function() {
+  this.facets = Object.assign({}, this.initialFacets);
+};
+
+/**
+ * Save facets state
+ * @export
+ */
+exports.prototype.saveSearch = function() {
+  localStorage.setItem('searchFacets', JSON.stringify(this.facets))
 };
 
 appModule.controller('AppSearchController',
