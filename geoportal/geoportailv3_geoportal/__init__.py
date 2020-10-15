@@ -65,11 +65,10 @@ def locale_negotiator(request):
 def main(global_config, **settings):
     del global_config  # Unused
 
-    if len(os.environ.get('SENTRY_URL', '')) > 0:
-        sentry_sdk.init(
-            dsn=os.environ.get('SENTRY_URL', ''),
-            integrations=[PyramidIntegration()]
-        )
+    sentry_sdk.init(
+        dsn=os.environ.get('SENTRY_URL', ''),
+        integrations=[PyramidIntegration()]
+    )
 
     """
     This function returns a Pyramid WSGI application.

@@ -33,7 +33,6 @@ def get_urls(request):
         urls.append('/dev/main.css')
         urls.append('/dev/main.js')
 
-    woffs = glob.glob('/etc/static-ngeo/*.woff')
     for stuff in get_built_filenames('*.woff'):
         urls.append(UNUSED + stuff)
 
