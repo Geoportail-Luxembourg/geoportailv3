@@ -118,11 +118,6 @@ const exports = function($scope, $compile, $sce,
   this.map_ = this['map'];
 
   /**
-   * @const {?app.olcs.Lux3DManager}
-   */
-  this.ol3dm = /** @type {?app.olcs.Lux3DManager} */ (this.map_.get('ol3dm'));
-
-  /**
    * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
@@ -1180,7 +1175,7 @@ exports.prototype.openMergeLinesModal = function() {
  * @export
  */
 exports.prototype.openModifyMapModal = function() {
-  if (this.ol3dm.is3dEnabled()) {
+  if (this.map_.get('ol3dm').is3dEnabled()) {
     return;
   }
   if (this.appMymaps_.isEditable()) {
