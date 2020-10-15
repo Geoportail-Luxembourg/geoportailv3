@@ -13,6 +13,8 @@ import urllib.parse
 import socket
 import base64
 import os
+import json
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,7 @@ class Wms(object):
 
     def __init__(self, request):
         self.request = request
+        self.auth_token = {}
 
     def _check_token(self, token):
         config = self.request.registry.settings
@@ -138,6 +141,7 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         param_wms = ""
+        arcgis_headers = None
         if internal_wms.ogc_server.type == 'arcgis':
 
             # deactivated code for debug purpose
@@ -193,6 +197,39 @@ class Wms(object):
                         ) + "&f=image&"
 
             remote_host = internal_wms.rest_url + "/export"
+            if internal_wms.use_auth:
+                # renew token if it expires in the next 30s
+                if datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000 - 30) <= datetime.now():
+                    config = self.request.registry.settings
+                    token_data = {
+                        'f': 'json',
+                        'username': config["arcgis_token_username"],
+                        'password': config["arcgis_token_password"],
+                        'referer': 'x',
+                        'expiration': 600
+                    }
+                    encoded_token_data = urllib.parse.urlencode(token_data).encode()
+                    token_url = urllib.parse.urljoin(internal_wms.rest_url + '/', 'generateToken')
+                    url_request = urllib.request.Request(token_url, data=encoded_token_data)
+                    try:
+                        log.info(f"Get token from: {url_request.full_url}")
+                        rep = urllib.request.urlopen(url_request, timeout=15)
+                        self.auth_token = json.load(rep)
+                        log.info("Success: token valid until "
+                                 f"{datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000)}")
+                    except Exception as e:
+                        log.info(f"Failed getting token from: {url_request.full_url}")
+                        self.auth_token = {}
+                        log.exception(e)
+                        log.error(url_request)
+                        return HTTPBadGateway()
+                    if 'error' in self.auth_token:
+                        log.info(f"Failed getting token from: {url_request.full_url} - "
+                                 f"server answered {self.auth_token['error']}")
+                        self.auth_token = {}
+
+                if 'token' in self.auth_token:
+                    arcgis_headers = ('X-Esri-Authorization', 'Bearer ' + self.auth_token['token'])
 
         else:
             remote_host = internal_wms.url
@@ -249,8 +286,9 @@ class Wms(object):
         url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
+        if arcgis_headers is not None:
+            url_request.add_header(*arcgis_headers)
         try:
-            log.info('my url: '+url_request.full_url)
             f = urllib.request.urlopen(url_request, None, timeout)
             data = f.read()
         except:
