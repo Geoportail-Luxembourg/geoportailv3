@@ -200,20 +200,19 @@ class Wms(object):
                     log.info('check token')
                     auth_token = self.request.session['auth_token']
                     log.info('token exists')
+                    # renew token if it expires in the next 30s
                     assert datetime.fromtimestamp(float(auth_token['expires'])/1000 - 30) > datetime.now()
                     log.info('token still valid')
                 except Exception as e:
                     log.info(e)
                     log.info('token invalid')
-                    # renew token if it expires in the next 30s
-#                 if datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000 - 30) <= datetime.now():
                     config = self.request.registry.settings
                     token_data = {
                         'f': 'json',
                         'username': config["arcgis_token_username"],
                         'password': config["arcgis_token_password"],
                         'referer': 'x',
-                        'expiration': 1
+                        'expiration': 600
                     }
                     encoded_token_data = urllib.parse.urlencode(token_data).encode()
                     token_url = urllib.parse.urljoin(internal_wms.rest_url + '/', 'generateToken')
