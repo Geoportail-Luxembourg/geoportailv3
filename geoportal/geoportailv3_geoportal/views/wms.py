@@ -23,7 +23,6 @@ class Wms(object):
 
     def __init__(self, request):
         self.request = request
-        self.auth_token = {}
 
     def _check_token(self, token):
         config = self.request.registry.settings
@@ -72,7 +71,6 @@ class Wms(object):
 
     @view_config(route_name='wmspoi')
     def wmspoi(self):
-        config = self.request.registry.settings
         remote_host = os.environ["poi_server"]
         param_wms = ''
         for param in self.request.params:
@@ -198,15 +196,24 @@ class Wms(object):
 
             remote_host = internal_wms.rest_url + "/export"
             if internal_wms.use_auth:
-                # renew token if it expires in the next 30s
-                if datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000 - 30) <= datetime.now():
+                try:
+                    log.info('check token')
+                    auth_token = self.request.session['auth_token']
+                    log.info('token exists')
+                    assert datetime.fromtimestamp(float(auth_token['expires'])/1000 - 30) > datetime.now()
+                    log.info('token still valid')
+                except Exception as e:
+                    log.info(e)
+                    log.info('token invalid')
+                    # renew token if it expires in the next 30s
+#                 if datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000 - 30) <= datetime.now():
                     config = self.request.registry.settings
                     token_data = {
                         'f': 'json',
                         'username': config["arcgis_token_username"],
                         'password': config["arcgis_token_password"],
                         'referer': 'x',
-                        'expiration': 600
+                        'expiration': 1
                     }
                     encoded_token_data = urllib.parse.urlencode(token_data).encode()
                     token_url = urllib.parse.urljoin(internal_wms.rest_url + '/', 'generateToken')
@@ -214,22 +221,24 @@ class Wms(object):
                     try:
                         log.info(f"Get token from: {url_request.full_url}")
                         rep = urllib.request.urlopen(url_request, timeout=15)
-                        self.auth_token = json.load(rep)
-                        log.info("Success: token valid until "
-                                 f"{datetime.fromtimestamp(float(self.auth_token.get('expires', 0))/1000)}")
+                        auth_token = json.load(rep)
+                        if 'error' in auth_token:
+                            log.info(f"Failed getting token from: {url_request.full_url} - "
+                                     f"server answered {auth_token['error']}")
+                            auth_token = {}
+                        else:
+                            log.info("Success: token valid until "
+                                     f"{datetime.fromtimestamp(float(auth_token.get('expires', 0))/1000)}")
                     except Exception as e:
                         log.info(f"Failed getting token from: {url_request.full_url}")
-                        self.auth_token = {}
+                        auth_token = {}
                         log.exception(e)
                         log.error(url_request)
                         return HTTPBadGateway()
-                    if 'error' in self.auth_token:
-                        log.info(f"Failed getting token from: {url_request.full_url} - "
-                                 f"server answered {self.auth_token['error']}")
-                        self.auth_token = {}
+                    self.request.session['auth_token'] = auth_token
 
-                if 'token' in self.auth_token:
-                    arcgis_headers = ('X-Esri-Authorization', 'Bearer ' + self.auth_token['token'])
+                if 'token' in auth_token:
+                    arcgis_headers = ('X-Esri-Authorization', 'Bearer ' + auth_token['token'])
 
         else:
             remote_host = internal_wms.url
