@@ -13,6 +13,7 @@ import urllib.parse
 import socket
 import base64
 import os
+import re
 import json
 from datetime import datetime
 
@@ -30,17 +31,30 @@ class Wms(object):
             return True
         return False
 
-    def _get_arcgis_token(self, internal_wms):
-        try:
+    def _get_arcgis_token(self, internal_wms, force_renew=False):
+        try:  # try to retrieve token from session storage
+            assert not force_renew
             log.info('check token')
             auth_token = self.request.session['auth_token']
             log.info('token exists')
             # renew token if it expires in the next 30s
             assert datetime.fromtimestamp(float(auth_token['expires'])/1000 - 30) > datetime.now()
             log.info('token still valid')
-        except Exception as e:
-            log.info(e)
-            log.info('token invalid')
+            # systematic token check below is disabled
+            # token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token}).encode()
+            # token_check_request = urllib.request.Request(internal_wms.rest_url, data=token_check_data)
+            # try:
+            #     log.info(f"Check token at: {token_check_request.full_url}")
+            #     rep = urllib.request.urlopen(token_check_request, timeout=15)
+            #     check = json.load(rep)
+            #     if 'error' in check:
+            #         log.error(f"Token refused by: {token_check_request.full_url} - "
+            #                   f"server answered {check['error']}")
+            # except:
+            #     log.error(f"Failed token check at: {token_check_request.full_url}")
+            # assert 'error' not in check
+        except (KeyError, AssertionError) as e:
+            log.info('No valid token found in session storage')
             config = self.request.registry.settings
             token_data = {
                 'f': 'json',
@@ -57,8 +71,8 @@ class Wms(object):
                 rep = urllib.request.urlopen(url_request, timeout=15)
                 auth_token = json.load(rep)
                 if 'error' in auth_token:
-                    log.info(f"Failed getting token from: {url_request.full_url} - "
-                             f"server answered {auth_token['error']}")
+                    log.error(f"Failed getting token from: {url_request.full_url} - "
+                              f"server answered {auth_token['error']}")
                     auth_token = {}
                 else:
                     log.info("Success: token valid until "
@@ -184,7 +198,6 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         param_wms = ""
-        arcgis_headers = None
         if internal_wms.ogc_server.type == 'arcgis':
 
             # deactivated code for debug purpose
@@ -237,13 +250,16 @@ class Wms(object):
                             (kw.get('width', '')
                              + ','
                              + kw.get('height', '')).encode('utf-8')
-                        ) + "&f=image&"
+                        )
 
-            remote_host = internal_wms.rest_url + "/export"
             if internal_wms.use_auth:
                 auth_token = self._get_arcgis_token(internal_wms)
                 if 'token' in auth_token:
-                    arcgis_headers = ('X-Esri-Authorization', 'Bearer ' + auth_token['token'])
+                    param_wms += f"&token={auth_token['token']}"
+
+            param_wms += "&f=image&"
+
+            remote_host = internal_wms.rest_url + "/export"
 
         else:
             remote_host = internal_wms.url
@@ -300,11 +316,29 @@ class Wms(object):
         url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
-        if arcgis_headers is not None:
-            url_request.add_header(*arcgis_headers)
         try:
             f = urllib.request.urlopen(url_request, None, timeout)
             data = f.read()
+            try:
+                resp = json.loads(data)
+            except Exception as e:
+                resp = {}
+                log.info(type(e))
+                log.info(e)
+            if 'error' in resp:
+                log.error(f"Token refused at: {urllib.parse.splitquery(url_request.full_url)[0]} - "
+                          f"server answered {resp['error']}")
+                log.info("Try to get new token")
+                auth_token = self._get_arcgis_token(internal_wms, force_renew=True)
+                if 'token' in auth_token:
+                    url_request.full_url = re.sub(
+                        '&token=[^&]*&',
+                        f"&token={auth_token['token']}&",
+                        url_request.full_url
+                    )
+                # Try to re-read with new token
+                f = urllib.request.urlopen(url_request, None, timeout)
+                data = f.read()
         except:
             try:
                 # Retry to get the result
