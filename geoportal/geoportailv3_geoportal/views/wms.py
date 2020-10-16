@@ -197,7 +197,7 @@ class Wms(object):
             if restriction is None or not restriction.readwrite:
                 return HTTPUnauthorized()
 
-        param_wms = ""
+        query_params = {}
         if internal_wms.ogc_server.type == 'arcgis':
 
             # deactivated code for debug purpose
@@ -210,54 +210,33 @@ class Wms(object):
                 'transparent': 'transparent',
                 'bbox': 'bbox',
             }
-            for param in self.request.params:
-                if param.lower() in param_dict:
-                    param_wms = param_wms + param_dict[param.lower()] + "=" + \
-                                urllib.parse.quote(
-                                self.request.params.get(param, '').encode('utf-8')
-                                ) + "&"
-                elif param.lower() == 'crs':
-                    crs = self.request.params.get(param, '')
-                    # strip EPSG: tag from mapserver to make it understandable for arcgis
-                    if "EPSG:" in crs:
-                        crs = crs[5:]
-                    param_wms = param_wms + "imageSR=" + \
-                                urllib.parse.quote(crs.encode('utf-8')
-                                ) + "&" \
-                                + "bboxSR=" + \
-                                urllib.parse.quote(crs.encode('utf-8')
-                                ) + "&"
-                elif param.lower() == 'layers':
-                    param_wms = param_wms + param + "=" + \
-                                urllib.parse.quote(('show:' +
-                                internal_wms.layers).encode('utf-8')
-                                ) + "&"
-                elif param.lower() == 'format':
-                    param_wms = param_wms + param + "=" + \
-                                urllib.parse.quote(
-                                    self.request.params.get(param, '')
-                                    .split('/')[-1].encode('utf-8')
-                                ) + "&"
+            for param, value in self.request.params.items():
+                lparam = param.lower()
+                if lparam in param_dict:
+                    query_params[param_dict[lparam]] = value
+                elif lparam == 'crs':
+                    if "EPSG:" in value:
+                        crs = value[5:]
+                    query_params["imageSR"] = crs
+                    query_params["bboxSR"] = crs
+                elif lparam == 'layers':
+                    query_params["layers"] = 'show:' + internal_wms.layers
+                elif lparam == 'format':
+                    query_params["format"] = value.split('/')[-1]
                 else:
                     pass
 
             kw = {k.lower(): v for (k, v) in self.request.params.items()
                   if k.lower() in ('width', 'height')}
-            log.info(kw)
 
-            param_wms = param_wms + "size=" + \
-                        urllib.parse.quote(
-                            (kw.get('width', '')
-                             + ','
-                             + kw.get('height', '')).encode('utf-8')
-                        )
+            query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
 
             if internal_wms.use_auth:
                 auth_token = self._get_arcgis_token(internal_wms)
                 if 'token' in auth_token:
-                    param_wms += f"&token={auth_token['token']}"
+                    query_params["token"] = auth_token['token']
 
-            param_wms += "&f=image&"
+            query_params["f"] = "image"
 
             remote_host = internal_wms.rest_url + "/export"
 
@@ -276,20 +255,16 @@ class Wms(object):
             base64user = base64.b64encode(
                 "%s:%s" % (remote_user, remote_password)).replace("\n", "")
 
-        if param_wms == "":
-            for param in self.request.params:
-                if param.lower() == "styles" and \
-                   remote_host.lower().find("styles") > -1:
+        # if query_params have not been set by arcgis proxy
+        if not query_params:
+            for param, value in self.request.params.items():
+                if param.lower() == "styles" and remote_host.lower().find("styles") > -1:
                     continue
 
-                if param.lower() != 'layers':
-                    param_wms = param_wms + param + "=" + \
-                                urllib.parse.quote(
-                                    self.request.params.get(param, '').encode('utf-8')
-                                ) + "&"
+                if param.lower() == 'layers':
+                    query_params[param] = internal_wms.layers
                 else:
-                    param_wms = param_wms + param + "=" + \
-                                urllib.parse.quote(internal_wms.layers.encode('utf-8')) + "&"
+                    query_params[param] = value
 
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
@@ -297,11 +272,11 @@ class Wms(object):
         if self.request.user and hasattr(self.request.user, 'ogc_role') and \
            self.request.user.ogc_role is not None and \
            self.request.user.ogc_role != -1:
-            param_wms += "roleOGC=%s&" % str(self.request.user.ogc_role)
+            query_params['roleOGC'] = self.request.user.ogc_role
 
         url = ""
         t = "transparent=true"
-        if remote_host.lower().find(t) > -1 and param_wms.lower().find(t) > -1:
+        if remote_host.lower().find(t) > -1 and urllib.parse.urlencode(query_params).lower().find(t) > -1:
             remote_host = remote_host.replace(t, "")
 
         if remote_host.find("?") == -1:
@@ -311,7 +286,7 @@ class Wms(object):
         if remote_host[:-1] != "?" and remote_host[:-1] != "&":
             separator = "&"
 
-        url = remote_host + separator + param_wms[:-1]
+        url = remote_host + separator + urllib.parse.urlencode(query_params)
         timeout = 15
         url_request = urllib.request.Request(url)
         if base64user is not None:
@@ -323,19 +298,17 @@ class Wms(object):
                 resp = json.loads(data)
             except Exception as e:
                 resp = {}
-                log.info(type(e))
-                log.info(e)
+                # log.info(f"Response is no valid json, {type(e)}: {str(e)}")
             if 'error' in resp:
                 log.error(f"Token refused at: {urllib.parse.splitquery(url_request.full_url)[0]} - "
                           f"server answered {resp['error']}")
                 log.info("Try to get new token")
                 auth_token = self._get_arcgis_token(internal_wms, force_renew=True)
                 if 'token' in auth_token:
-                    url_request.full_url = re.sub(
-                        '&token=[^&]*&',
-                        f"&token={auth_token['token']}&",
-                        url_request.full_url
-                    )
+                    query_params["token"] = auth_token['token']
+                    url = remote_host + separator + urllib.parse.urlencode(query_params)
+                    url_request.full_url = url
+
                 # Try to re-read with new token
                 f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()
