@@ -1,0 +1,5 @@
+Dockerfile
+vars*.yaml
+CONST_vars.yaml
+CONST_config-schema.yaml
+geoportailv3_geoportal/static
