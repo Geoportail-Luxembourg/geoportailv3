@@ -22,11 +22,11 @@ class JsapiEntry(Entry):
         themes, errors = self._themes(None, 1, u'main', True, 2, True)
         client = TranslationStringFactory("geoportailv3_geoportal-client")
         registry = get_current_registry()
-        dir = registry.queryUtility(ITranslationDirectories, default=[])
-        localizer_fr = make_localizer("fr", dir)
-        localizer_de = make_localizer("de", dir)
-        localizer_en = make_localizer("en", dir)
-        localizer_lb = make_localizer("lb", dir)
+        translation_dir = registry.queryUtility(ITranslationDirectories, default=[])
+        localizer_fr = make_localizer("fr", translation_dir)
+        localizer_de = make_localizer("de", translation_dir)
+        localizer_en = make_localizer("en", translation_dir)
+        localizer_lb = make_localizer("lb", translation_dir)
 
         for theme in themes:
             entry = models.DBSession.query(main.Theme).filter(main.Theme.id == theme['id']).one()
@@ -61,20 +61,20 @@ class JsapiEntry(Entry):
         self._extract_layers(group, layers, True)
         l = []
         registry = get_current_registry()
-        dir = registry.queryUtility(ITranslationDirectories, default=[])
-        localizer_fr = make_localizer("fr", dir)
-        localizer_de = make_localizer("de", dir)
-        localizer_en = make_localizer("en", dir)
-        localizer_lb = make_localizer("lb", dir)
+        translation_dir = registry.queryUtility(ITranslationDirectories, default=[])
+        localizer_fr = make_localizer("fr", translation_dir)
+        localizer_de = make_localizer("de", translation_dir)
+        localizer_en = make_localizer("en", translation_dir)
+        localizer_lb = make_localizer("lb", translation_dir)
 
         client = TranslationStringFactory("geoportailv3_geoportal-client")
         all_errors = set()
 
-        for id in layers:
+        for layer in layers:
             url = None
-            if 'ogcServer' in layers[id]:
-                if 'source for' in layers[id]['ogcServer']:
-                    for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[id]['ogcServer']).all():
+            if 'ogcServer' in layers[layer]:
+                if 'source for' in layers[layer]['ogcServer']:
+                    for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[layer]['ogcServer']).all():
                         # required to do every time to validate the url.
                         if ogc_server.auth != main.OGCSERVER_AUTH_NOAUTH:
                             url = self.request.route_url("mapserverproxy", _query={"ogcserver": ogc_server.name})
@@ -84,20 +84,20 @@ class JsapiEntry(Entry):
                                 ogc_server.url, self.request, errors=all_errors
                             )
 
-            entry = models.DBSession.query(main.Layer).filter(main.Layer.id == id).one()
+            entry = models.DBSession.query(main.Layer).filter(main.Layer.id == layer).one()
             is_public = entry.public
 
             l.append({
-                'id': layers[id]['id'],
+                'id': layers[layer]['id'],
                 'public': is_public,
-                'name': layers[id]['name'],
-                'name_fr': localizer_fr.translate(client(layers[id]['name'])),
-                'name_de': localizer_de.translate(client(layers[id]['name'])),
-                'name_en': localizer_en.translate(client(layers[id]['name'])),
-                'name_lb': localizer_lb.translate(client(layers[id]['name'])),
+                'name': layers[layer]['name'],
+                'name_fr': localizer_fr.translate(client(layers[layer]['name'])),
+                'name_de': localizer_de.translate(client(layers[layer]['name'])),
+                'name_en': localizer_en.translate(client(layers[layer]['name'])),
+                'name_lb': localizer_lb.translate(client(layers[layer]['name'])),
                 'external_url': url,
-                'groups': layers[id].get('came_from'),
-                'metadata_id': layers[id]['metadata']['metadata_id'] if 'metadata_id' in layers[id]['metadata'] else None,
+                'groups': layers[layer].get('came_from'),
+                'metadata_id': layers[layer]['metadata']['metadata_id'] if 'metadata_id' in layers[layer]['metadata'] else None,
                 })
         return l
 
@@ -120,11 +120,11 @@ class JsapiEntry(Entry):
         group, errors = self._get_group(None, u'background', None, u'main', 2)
         self._extract_layers(group, layers, True)
         all_errors = set()
-        for id in layers:
+        for layer in layers:
             url = None
-            if 'ogcServer' in layers[id]:
-                if 'source for' in layers[id]['ogcServer']:
-                    for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[id]['ogcServer']).all():
+            if 'ogcServer' in layers[layer]:
+                if 'source for' in layers[layer]['ogcServer']:
+                    for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[layer]['ogcServer']).all():
                         # required to do every time to validate the url.
                         if ogc_server.auth != main.OGCSERVER_AUTH_NOAUTH:
                             url = self.request.route_url("mapserverproxy", _query={"ogcserver": ogc_server.name})
@@ -133,7 +133,7 @@ class JsapiEntry(Entry):
                                 "The OGC server '{}'".format(ogc_server.name),
                                 ogc_server.url, self.request, errors=all_errors
                             )
-                    layers[id]['url'] = url
+                    layers[layer]['url'] = url
 
         return layers
 

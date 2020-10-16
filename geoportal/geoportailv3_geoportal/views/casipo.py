@@ -42,7 +42,6 @@ class Casipo(object):
                 shutil.copyfileobj(data, fp)
         except:
             log.error(sys.exc_info()[0])
-            data = None
             log.debug(url)
         return
 

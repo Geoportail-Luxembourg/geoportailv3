@@ -24,12 +24,12 @@ class Metadata(object):
                  'en': 'eng',
                  'lb': 'ltz'}
 
-        id = self.request.params.get("uid", None)
+        uid = self.request.params.get("uid", None)
         callback_param =  self.request.params.get("cb", None)
-        if id is None:
+        if uid is None:
             return HTTPBadRequest()
         base_url = os.environ["GEONETWORK_BASE_URL"]
-        url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs[lang], id)
+        url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs[lang], uid)
 
         timeout = 15
         try:
@@ -41,7 +41,7 @@ class Metadata(object):
             return HTTPBadGateway()
         if lang != 'fr':
             try:
-                url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs["fr"], id)
+                url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs["fr"], uid)
                 f = urllib.request.urlopen(url, None, timeout)
                 data_fr = json.loads(f.read())
             except Exception as e:

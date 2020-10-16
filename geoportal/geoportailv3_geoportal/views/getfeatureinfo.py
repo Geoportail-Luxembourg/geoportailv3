@@ -440,7 +440,6 @@ class Getfeatureinfo(object):
                     "features": features}
                 if r['remote_template'] is not None and\
                    r['remote_template']:
-                    data = ""
                     try:
                         url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
@@ -558,12 +557,12 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinitions.append(res)
                         else:
                             for res in query.filter(
-                                LuxGetfeatureDefinition.role == None
+                                LuxGetfeatureDefinition.role is None
                                     ).all():  # noqa
                                 luxgetfeaturedefinitions.append(res)
                     else:
                         for res in query.filter(
-                            LuxGetfeatureDefinition.role == None
+                            LuxGetfeatureDefinition.role is None
                                 ).all():  # noqa
                             luxgetfeaturedefinitions.append(res)
         except Exception as e:
@@ -648,7 +647,7 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
-    def replace_resource_by_html_link(self, features, attributes_to_remove):
+    def replace_resource_by_html_link(self, features):
         modified_features = []
 
         for feature in features:
@@ -725,8 +724,8 @@ class Getfeatureinfo(object):
         timeout = 15
         for feature in features:
             feature['attributes']['has_sketch'] = False
-            id = feature['attributes']['OBJECTID']
-            url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+            obj_id = feature['attributes']['OBJECTID']
+            url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': obj_id}
             try:
                 f = urllib.request.urlopen(url1, None, timeout)
                 data = f.read()
@@ -885,7 +884,6 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
-        content = ""
         try:
             result = urllib.request.urlopen(query, None, 15)
             content = result.read()
@@ -910,7 +908,6 @@ class Getfeatureinfo(object):
         except Exception as e:
             log.exception(e)
             return []
-        return []
 
     def get_additional_external_data(
             self, features, geometry_name, layer_id, url, id_column,

@@ -27,12 +27,12 @@ class Download(object):
 
     @view_config(route_name='download')
     def download_generic(self):
-        id = self.request.params.get('id', None)
+        download_id = self.request.params.get('id', None)
         filename = self.request.params.get('filename', None)
-        if id is None or filename is None:
+        if download_id is None or filename is None:
             return HTTPBadRequest()
         entry = DBSession.query(LuxDownloadUrl).filter(
-                    LuxDownloadUrl.id == id).first()
+                    LuxDownloadUrl.id == download_id).first()
         if entry is not None:
             if entry.protected and self.request.user is None:
                 return HTTPUnauthorized()
@@ -44,11 +44,11 @@ class Download(object):
                 data = None
                 log.debug(url)
             mimetypes.init()
-            type = "application/octet-stream"
+            content_type = "application/octet-stream"
             mimetype = mimetypes.guess_type(url)
             if mimetype[0] is not None:
-                type = mimetype[0]
-            headers = {"Content-Type": type,
+                content_type = mimetype[0]
+            headers = {"Content-Type": content_type,
                        "Content-Disposition": "attachment; filename=\""
                        + str(filename) + "\""}
             if data is not None:
@@ -56,11 +56,11 @@ class Download(object):
         return HTTPBadRequest()
 
     def download_sketch_by_id(self):
-        id = self.request.params.get('id', None)
+        download_id = self.request.params.get('id', None)
         timeout = 15
         ng_url = os.environ["NG_URL"]
 
-        url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+        url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': download_id}
         pdf_id = None
         pdf_name = None
         try:
@@ -77,7 +77,7 @@ class Download(object):
         if pdf_name is None or pdf_id is None:
             print (url1)
             return HTTPBadRequest()
-        url2 = ng_url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
+        url2 = ng_url + "%(id)s/attachments/%(pdf_id)s" %{'id': download_id, 'pdf_id': pdf_id}
 
         try:
             f = urllib.request.urlopen(url2, None, timeout)
@@ -93,8 +93,8 @@ class Download(object):
 
     @view_config(route_name='download_sketch')
     def download_sketch(self):
-        type = self.request.params.get('type', None)
-        if type == 'new':
+        download_type = self.request.params.get('type', None)
+        if download_type == 'new':
             return self.download_sketch_by_id()
 
         filename = self.request.params.get('name', None)

@@ -55,11 +55,6 @@ class Geocode(object):
 
             return HTTPBadRequest("Missing or invalid coordinates")
 
-        distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
-            "x": easting,
-            "y": northing
-        }, srid=2169), Address.geom)
-
         if os.environ.get('FAKE_REVERSE_GEOCODING') == '1':
             return json.loads('{"count": 1, "results": [{"id_caclr_street": "461", "distance": 33.7389366951768, "street": "Rue Jean-Pierre Brasseur", "postal_code": "1258", "id_caclr_bat": "21478", "geom": {"type": "Point", "coordinates": [76302.2077999998, 75334.6180995487]}, "locality": "Luxembourg", "number": "16"}]}')  # noqa
 
@@ -407,9 +402,9 @@ class Geocode(object):
     def encode_result(self, result):
         try:
             feature = result['feature']
-        except Exception as e:
+        except Exception:
             feature = result
-        
+
         numero = getattr(feature, 'numero', '')
         if numero is None:
             numero = ""
@@ -496,7 +491,7 @@ class Geocode(object):
             if isinstance(geom, str):
                 geom = loads(geom)
             return geom
-        except Exception as e:
+        except Exception:
             self.db_ecadastre.rollback()
         return None
 
@@ -609,7 +604,7 @@ class Geocode(object):
         else:
             return best_locality_name
 
-    def get_main_word(self, string, p_debug=False):
+    def get_main_word(self, string):
         words = string.split()
 
         if len(words) == 0:
@@ -624,12 +619,12 @@ class Geocode(object):
 
     # Find the main word in the 2 search sentences and compare them together
     # to find the best one
-    def search_for_street(self, features, search, ratio, p_debug=False):
+    def search_for_street(self, features, search, ratio):
         results = []
         if search is not None:
             string1 = self.replace_words(
                 search.lower()).strip()
-            mw1 = self.get_main_word(string1, True)
+            mw1 = self.get_main_word(string1)
 
             for feature in features:
                 string2 = self.replace_words(self.supprime_accent(
@@ -676,10 +671,10 @@ class Geocode(object):
         results = []
         # List of zip code belonging to the locality
         if len(p_locality) > 0:
-            filter = " lower(localite) = '" + p_locality + \
+            filter_clause = " lower(localite) = '" + p_locality + \
                 "' and lower('" + str(p_num).replace("'", "") + \
                 "') = ANY  (regexp_split_to_array (lower(numero), '-'))"
-            features = p_session.query(Address).filter(text(filter)).all()
+            features = p_session.query(Address).filter(text(filter_clause)).all()
 
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -747,9 +742,8 @@ class Geocode(object):
                                         feature.name).strip().lower()),
                                 self.replace_words(self.supprime_accent(p_street)).
                                 strip().lower()).ratio()
-                            if (cur_ratio > p_ratio):
-                                result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
-                                result['ratio'] = cur_ratio
+                            if cur_ratio > p_ratio:
+                                result = {'ratio': cur_ratio, 'accuracy': 0, 'feature': feature}
                                 # feature.numero = None
                                 feature.localite = feature.locality
                                 feature.code_postal = feature.zip
@@ -776,9 +770,8 @@ class Geocode(object):
                         self.replace_words(
                             self.supprime_accent(p_street)).strip().lower()).\
                         ratio()
-                    if (cur_ratio > p_ratio):
-                        result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
-                        result['ratio'] = cur_ratio
+                    if cur_ratio > p_ratio:
+                        result = {'ratio': cur_ratio, 'accuracy': 0, 'feature': feature}
                         # feature.numero = None
                         feature.localite = feature.locality
                         feature.code_postal = feature.zip
@@ -822,8 +815,7 @@ class Geocode(object):
                         """
                             accuracy = 6   Street level accuracy.
                         """
-                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
-                        result['accuracy'] = 6
+                        result = {'ratio': feature['ratio'], 'accuracy': 6, 'feature': feature['feature']}
                         # feature['feature'].numero = None
                         results.append(self.encode_result(result))
 
@@ -888,8 +880,7 @@ class Geocode(object):
             if len(features) > 0:
                 # accuracy = 6   Street level accuracy.
                 for feature in features:
-                    result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
-                    result['accuracy'] = 6
+                    result = {'ratio': feature['ratio'], 'accuracy': 6, 'feature': feature['feature']}
                     feature['feature'].numero = ""
                     results.append(self.encode_result(result))
         return results
@@ -907,8 +898,7 @@ class Geocode(object):
                 if len(features) > 0:
                     # accuracy = 8   Address level accuracy.
                     for feature in features:
-                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
-                        result['accuracy'] = 8
+                        result = {'ratio': feature['ratio'], 'accuracy': 8, 'feature': feature['feature']}
                         results.append(self.encode_result(result))
         return results
 
@@ -929,9 +919,7 @@ class Geocode(object):
         if len(features) > 0:
             # accuracy = 8   Address level accuracy.
             for feature in features:
-                result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
-                result['accuracy'] = 8
-                result['ratio'] = 0.5
+                result = {'ratio': 0.5, 'accuracy': 8, 'feature': feature}
                 results.append(self.encode_result(result))
 
         return results
@@ -977,8 +965,7 @@ class Geocode(object):
             if len(features) > 0:
                 # accuracy = 8   Address level accuracy.
                 for feature in features:
-                    result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
-                    result['accuracy'] = 8
+                    result = {'ratio': feature['ratio'], 'accuracy': 8, 'feature': feature['feature']}
                     results.append(self.encode_result(result))
         return results
 
@@ -1152,7 +1139,6 @@ class Geocode(object):
 
     @view_config(route_name="geocode")
     def search(self):
-        results = []
         try:
             self.returnParcelInfo = (
                 self.request.params.get('returnParcelInfo', 'False').lower() ==
@@ -1263,7 +1249,6 @@ class Geocode(object):
 
         nums = re.findall(r'\d+', streetandhouse)
 
-        street = None
         house_num = None
         if nums is not None and len(nums) > 0:
             idx = streetandhouse.find(nums[0])
@@ -1320,24 +1305,24 @@ class Geocode(object):
         return house_num, street
 
     def _split_zip_and_town(self, address):
-        zip = None
+        zip_code = None
         town = None
 
         nums = re.findall(r'\d+', address)
         if nums is not None and len(nums) > 0:
             for num in nums:
                 if len(num) == 4:
-                    zip = num
-                    town = self.get_locality_from_zip(zip)
+                    zip_code = num
+                    town = self.get_locality_from_zip(zip_code)
                     if town is not None:
                         break
             if town is None:
                 for num in nums:
                     if len(num) == 4:
-                        zip = num
-                        town = address[address.find(str(zip)):]
+                        zip_code = num
+                        town = address[address.find(str(zip_code)):]
                         break
-        return zip, town
+        return zip_code, town
 
     # Split address
     # Fist number is house number
@@ -1348,14 +1333,14 @@ class Geocode(object):
 
         street = None
         house_num = None
-        zip = None
+        zip_code = None
         locality = None
 
         if address is None:
             return {
                     'street': street,
                     'num': house_num,
-                    'zip': zip,
+                    'zip': zip_code,
                     'locality': locality}
 
         stripped_address = address.strip()
@@ -1364,14 +1349,14 @@ class Geocode(object):
         stripped_address = stripped_address.replace("l-", "")
 
         house_num, rest = self.split_street_and_house_number(stripped_address)
-        zip, locality = self._split_zip_and_town(rest)
-        idx = rest.find(str(zip))
+        zip_code, locality = self._split_zip_and_town(rest)
+        idx = rest.find(str(zip_code))
         street = rest[0:idx]
 
         return {
                 'street': street,
                 'num': house_num,
-                'zip': zip,
+                'zip': zip_code,
                 'locality': locality}
 
     # We start with house number + street or street + house number
@@ -1554,7 +1539,6 @@ class Geocode(object):
 
             # Todo: Find the street and find if the number is the house number
             if len(num) < 4:
-                street = stripped_address
                 # Le numéro est au début de la chaine
                 if stripped_address[0:len(num)].isdigit():
                     house_num = stripped_address[0:len(num)]
@@ -1685,7 +1669,6 @@ class Geocode(object):
         # the house number
         for i in range(1, len(stripped_address)):
             if stripped_address[0:i].isdigit():
-                num = stripped_address[0:i]
                 stripped_address = stripped_address[i:]
             else:
                 break
@@ -1703,13 +1686,6 @@ class Geocode(object):
                         street = stripped_address[
                             0:stripped_address.lower().find("l-")]
                     break
-
-        # We start with street name
-        for i in range(1, len(stripped_address)):
-            if stripped_address[0:i].isdigit():
-                num = stripped_address[0:i]
-                stripped_address = stripped_address[i:]
-                break
 
         return {
                 'street': street,

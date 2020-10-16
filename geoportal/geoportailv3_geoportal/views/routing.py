@@ -37,7 +37,6 @@ class RouterController(object):
 
         # At least two waypoints (4 coordinates) are required
         if len(coords) < 4:
-            routing_success = False
             return HTTPBadRequest("Not enough waypoints (At least 2 required)")
         else:
             # Use Graphhopper for bicycle routing, Mapquest for all other modes

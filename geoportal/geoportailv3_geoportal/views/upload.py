@@ -14,36 +14,34 @@ class Upload(object):
 
     @view_config(route_name='upload_vt_style', renderer='json')
     def upload_vt_style(self):
-        filename = self.request.POST['style'].filename
         input_file = self.request.POST['style'].file
         if 'VT_DIR' in os.environ:
-            dir = os.environ['VT_DIR']
+            vt_dir = os.environ['VT_DIR']
         else:
-            dir = "/tmp"
-        id = uuid.uuid4()
-        file_path = os.path.join(dir, '%s.json' %id)
+            vt_dir = "/tmp"
+        vt_id = uuid.uuid4()
+        file_path = os.path.join(vt_dir, '%s.json' %vt_id)
 
         input_file.seek(0)
         with open(file_path, 'wb') as output_file:
             try:
-                data = json.load(input_file)
+                json.load(input_file)
             except:
                 return {"status":"KO"}
             input_file.seek(0)
             shutil.copyfileobj(input_file, output_file)
 
-            return {"status":"OK", "id": str(id)}
+            return {"status":"OK", "id": str(vt_id)}
 
     @view_config(route_name='get_vt_style', renderer='json')
     def get_vt_style(self):
-        # id = self.request.matchdict['id']
-        id = self.request.params.get("id")
+        vt_id = self.request.params.get("id")
         if 'VT_DIR' in os.environ:
-            dir = os.environ['VT_DIR']
+            vt_dir = os.environ['VT_DIR']
         else:
-            dir = "/tmp"
+            vt_dir = "/tmp"
 
-        file_path = os.path.join(dir, '%s.json' %id)
+        file_path = os.path.join(vt_dir, '%s.json' %vt_id)
         if not os.path.exists(file_path):
             return HTTPBadRequest("File does not exist")
         with open(file_path) as json_file:
@@ -53,13 +51,13 @@ class Upload(object):
 
     @view_config(route_name='delete_vt_style', renderer='json')
     def delete_vt_style(self):
-        id = self.request.params.get("id")
+        vt_id = self.request.params.get("id")
         if 'VT_DIR' in os.environ:
-            dir = os.environ['VT_DIR']
+            vt_dir = os.environ['VT_DIR']
         else:
-            dir = "/tmp"
+            vt_dir = "/tmp"
 
-        file_path = os.path.join(dir, '%s.json' %id)
+        file_path = os.path.join(vt_dir, '%s.json' %vt_id)
         if os.path.exists(file_path):
             os.remove(file_path)
 

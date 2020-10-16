@@ -31,7 +31,7 @@ from sentry_sdk.integrations.pyramid import PyramidIntegration
 mailer = None
 
 def add_cors_headers_response_callback(event):
-    def cors_headers(request, response):
+    def cors_headers(_, response):
         response.headers.update({
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
@@ -453,7 +453,7 @@ def main(global_config, **settings):
     config.add_route('sw', '/sw.js')
 
     config.add_static_view('proj/{version}', path='geoportailv3_geoportal:jsapi/')
-    
+
     # Appcache manifest
     config.add_route(
         'appcache',

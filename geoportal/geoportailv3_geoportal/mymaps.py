@@ -56,9 +56,9 @@ class Map(Base):
         return None
 
     def todict(self):
-        def convert_datetime(value):
-            if value is not None:
-                return value.strftime("%Y-%m-%d %H:%M:%S")
+        def convert_datetime(v):
+            if v is not None:
+                return v.strftime("%Y-%m-%d %H:%M:%S")
             else:
                 return None
 
@@ -76,9 +76,9 @@ class Map(Base):
         return self.todict()
 
     @staticmethod
-    def get(id, session):
+    def get(map_id, session):
         """ Get map by its id. """
-        return session.query(Map).get(id)
+        return session.query(Map).get(map_id)
 
     @staticmethod
     def belonging_to(user, session):
@@ -87,14 +87,14 @@ class Map(Base):
             func.lower(Map.user_login) == func.lower(user)) \
             .order_by("category_id asc,title asc").all()
 
-        return [{'title': map.title,
-                 'uuid': map.uuid,
-                 'public': map.public,
-                 'create_date': map.create_date,
-                 'update_date': map.update_date,
-                 'category': map.category.name
-                 if map.category_id is not None else None,
-                 'owner': map.user_login.lower()} for map in maps]
+        return [{'title': m.title,
+                 'uuid': m.uuid,
+                 'public': m.public,
+                 'create_date': m.create_date,
+                 'update_date': m.update_date,
+                 'category': m.category.name
+                 if m.category_id is not None else None,
+                 'owner': m.user_login.lower()} for m in maps]
 
 
 class Feature(Base):

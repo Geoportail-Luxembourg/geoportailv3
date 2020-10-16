@@ -68,7 +68,6 @@ class Wms(object):
 
     @view_config(route_name='wmspoi')
     def wmspoi(self):
-        config = self.request.registry.settings
         remote_host = os.environ["poi_server"]
         param_wms = ''
         for param in self.request.params:
@@ -82,19 +81,20 @@ class Wms(object):
                     public = 'public/'
                 remote_host = remote_host + "map=/home/mapserv/" + public + \
                     self.request.params.get(param, '') + "/generic.map"
-        url = ""
         if remote_host[:-1] == '?':
             url = remote_host + param_wms[:-1]
         else:
             url = remote_host + "&" + param_wms[:-1]
+        data = ""
+        headers = {}
         try:
             f = urllib.request.urlopen(url)
             data = f.read()
+            headers = {"Content-Type": f.info()['Content-Type']}
         except Exception as e:
             log.exception(e)
             log.error(url)
 
-        headers = {"Content-Type": f.info()['Content-Type']}
         return Response(data, headers=headers)
 
     @view_config(route_name='wms')
@@ -172,7 +172,6 @@ class Wms(object):
            self.request.user.ogc_role != -1:
             param_wms += "roleOGC=%s&" % str(self.request.user.ogc_role)
 
-        url = ""
         t = "transparent=true"
         if remote_host.lower().find(t) > -1 and param_wms.lower().find(t) > -1:
             remote_host = remote_host.replace(t, "")

@@ -116,7 +116,6 @@ class Profile(Raster):
         ordered_lines = []
         is_reverse = False
         line_no = 0
-        j = 0
         biggest_distance = 0
 
         # Il faut rechercher la première ligne.

@@ -33,7 +33,7 @@ def get_cursor():
     return cursor
 
 
-def update_document(index, type, obj_id, obj=None):
+def update_document(index, obj_id, obj=None):
     doc = {
         "_index": index,
         "_type": "poi",
@@ -88,7 +88,6 @@ def main():
             doc_list = []
             for result in results:
                 doc = update_document(get_index(request),
-                                      'poi',
                                       result['id'],
                                       result)
                 doc_list.append(doc)

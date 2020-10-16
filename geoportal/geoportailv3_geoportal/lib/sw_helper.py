@@ -31,7 +31,6 @@ def get_urls(request):
         urls.append('/dev/main.css')
         urls.append('/dev/main.js')
 
-    woffs = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/*.woff')
     for stuff in get_built_filenames('*.woff'):
         urls.append(UNUSED + stuff)
 

@@ -78,9 +78,9 @@ class MapquestRouter:
                     "&roadGradeStrategy=AVOID_ALL_HILLS"
 
         # Avoid
-        for type in self.avoid:
+        for avoid_type in self.avoid:
             request_url = request_url + "&avoids=%s"\
-                % (urlquote(self.__lu_avoid(type)))
+                % (urlquote(self.__lu_avoid(avoid_type)))
         res = json_loads(urllib.request.urlopen(request_url).read())
         return res
 

@@ -140,7 +140,6 @@ class Import:
         self.imported = set()
         self.layers = []
 
-        settings = {}
         with open("config.yaml") as f:
             settings = yaml.load(f)
 
@@ -157,7 +156,7 @@ class Import:
         self.session = DBSession()
 
         self._ = {}
-        self.metadata_service_url = base_url = os.environ["GEONETWORK_BASE_URL"]
+        self.metadata_service_url = os.environ["GEONETWORK_BASE_URL"]
 
         with bootstrap(self.options.app_config, options=escape_variables(os.environ)) as env:
             registry = env['registry']
@@ -239,12 +238,12 @@ class Import:
                 for metadata in item.metadatas:
                     if metadata.name == 'metadata_id':
                         try:
-                            id = metadata.value
+                            metadata_id = metadata.value
                             langs = {'fr': 'fre',
                                      'de': 'ger',
                                      'en': 'eng',
                                      'lb': 'ltz'}
-                            url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(self.metadata_service_url, langs[lang], id)
+                            url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(self.metadata_service_url, langs[lang], metadata_id)
 
                             resp = requests.get(url=url)
                             data = {}

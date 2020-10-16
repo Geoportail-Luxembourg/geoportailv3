@@ -44,14 +44,14 @@ def main():
     for luxwms in session.query(LuxLayerInternalWMS).distinct(LuxLayerInternalWMS.url).all():
       url = luxwms.url
       if url is not None:
-        type = OGCSERVER_TYPE_GEOSERVER if 'arcgis' in url else OGCSERVER_TYPE_MAPSERVER
+        server_type = OGCSERVER_TYPE_GEOSERVER if 'arcgis' in url else OGCSERVER_TYPE_MAPSERVER
         already_exists = session.query(OGCServer).filter(OGCServer.url == url).one_or_none()
         if already_exists is None:
           ogc_server = OGCServer(
             name=url,
             description='Generated during migration to GMF 2.3',
             url=url,
-            type_=type,
+            type_=server_type,
             image_type='image/png',
             auth=OGCSERVER_AUTH_NOAUTH,
           )
