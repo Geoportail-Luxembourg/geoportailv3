@@ -726,7 +726,7 @@ class Getfeatureinfo(object):
         for feature in features:
             for key in feature['attributes']:
                 value = feature['attributes'][key]
-                if key == field_to_use:
+                if value is not None and key == field_to_use:
                     feature["attributes"]["percentage"] = "%s" \
                         % str(value * 100) + "%"
                     del feature["attributes"][field_to_use]
