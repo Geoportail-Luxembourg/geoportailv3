@@ -59,30 +59,6 @@ class FullTextSearchView(object):
                     "minimum_should_match": 2,
                     "should": [
                         {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label^2",
-                                    "label.ngram^2",
-                                    "label.simplified^2"
-                                ],
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label.ngram",
-                                    "label.simplified"
-                                ],
-                                "fuzziness": fuzziness,
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
                             "term": {
                                 "layer_name": {
                                     "value": "Commune", "boost": 2
@@ -136,6 +112,25 @@ class FullTextSearchView(object):
         if layer:
             for cur_layer in layer.split(","):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
+
+
+        matches = [{
+            "fields": [ "label^2", "label.ngram^2", "label.simplified^2" ],
+        }, {
+            "fields": [ "label.ngram", "label.simplified" ],
+            "fuzziness": fuzziness,
+        }]
+        for term in query.split('%20'):
+            for match in matches:
+               part = {
+                    "multi_match": {
+                        "type": "best_fields",
+                        "operator": "and",
+                        "query": term
+                    }
+               }
+               part['multi_match'].update(match)
+               query_body['query']['bool']['should'].append(part)
 
         extent = self.request.params.get('extent', False)
         if extent:
