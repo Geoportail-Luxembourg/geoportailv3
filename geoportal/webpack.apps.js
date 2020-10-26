@@ -1,5 +1,5 @@
 const path = require('path');
-const ls = require('./ls.js');
+const ls = require('ngeo/buildtools/ls.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const plugins = [];
@@ -11,7 +11,7 @@ const dev = nodeEnv == 'development'
 
 for (const filename of ls(path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/js/apps/*.html.ejs'))) {
   const name = filename.file.substr(0, filename.file.length - '.html.ejs'.length);
-  entry[name] = '/app/geoportailv3_geoportal/static-ngeo/js/apps/' + name.charAt(0).toUpperCase() + name.slice(1) + 'Controller.js';
+  entry[name] = 'geoportailv3/apps/' + name.charAt(0).toUpperCase() + name.slice(1) + 'Controller.js';
   plugins.push(
     new HtmlWebpackPlugin({
       template: filename.full,
@@ -21,7 +21,7 @@ for (const filename of ls(path.resolve(__dirname, 'geoportailv3_geoportal/static
       chunks: [name],
       vars: {
         entry_point: '${VISIBLE_ENTRY_POINT}',
-        version: '2.5.0.77',
+        version: '2.5.0.88',
         cache_version: '${CACHE_VERSION}',
        },
     })
