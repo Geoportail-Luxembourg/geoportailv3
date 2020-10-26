@@ -1,4 +1,4 @@
-FROM camptocamp/geomapfish-tools:2.5.0.77 as builder
+FROM camptocamp/geomapfish-tools:2.5.0.88 as builder
 
 ENV LANGUAGES="en fr de"
 ENV VARS_FILE=vars.yaml
@@ -36,19 +36,31 @@ RUN \
 
 ###############################################################################
 
-FROM camptocamp/geomapfish-config:2.5.0.77
+FROM camptocamp/geomapfish-config:2.5.0.88
 
 ARG PGSCHEMA
 ENV PGSCHEMA=$PGSCHEMA
 
 COPY --from=builder /tmp/config/ /tmp/config/
 
-RUN mkdir --parent /usr/local/tomcat/webapps/ROOT/ && \
+RUN \
+    if [ -e /tmp/config/mapserver ]; then mv /tmp/config/mapserver /etc/; fi && \
+    if [ -e /tmp/config/tilegeneration ]; then mv /tmp/config/tilegeneration /etc/; fi && \
+    if [ -e /tmp/config/qgisserver ]; then mv /tmp/config/qgisserver /etc/qgisserver; fi && \
+    mkdir --parent /usr/local/tomcat/webapps/ROOT/ && \
     if [ -e /tmp/config/print ]; then mv /tmp/config/print/print-apps /usr/local/tomcat/webapps/ROOT/; fi && \
     mv /tmp/config/geoportal/geoportailv3_geoportal/ /etc/geomapfish/ && \
     chmod g+w -R /etc /usr/local/tomcat/webapps && \
-    adduser www-data root
+    adduser www-data root && \
+    sed 's#bind :80#bind *:443 ssl crt /etc/haproxy_dev/localhost.pem#g' /etc/haproxy/haproxy.cfg.tmpl \
+        > /etc/haproxy_dev/haproxy.cfg.tmpl && \
+    echo '    http-request set-header X-Forwarded-Proto https' >> /etc/haproxy_dev/haproxy.cfg.tmpl
 
 VOLUME /etc/geomapfish \
+    /etc/mapserver \
+    /etc/qgisserver \
+    /etc/tilegeneration \
     /usr/local/tomcat/webapps/ROOT/print-apps \
-    /etc/gunicorn
+    /etc/gunicorn \
+    /etc/haproxy_dev \
+    /etc/haproxy
