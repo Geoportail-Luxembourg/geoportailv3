@@ -1,0 +1,11 @@
+*
+!bin/
+!mapserver/
+!qgisserver/
+!tilegeneration/
+!print/print-apps/
+!geoportal/vars*.yaml
+!geoportal/CONST_vars.yaml
+!geoportal/CONST_config-schema.yaml
+!geoportal/geoportailv3_geoportal/static
+!geoportal/geoportailv3_geoportal/locale

@@ -145,7 +145,7 @@ services:
     environment:
       ES_JAVA_OPTS: -Xmx512m -Xms512m
     volumes:
-      - ./config/elasticsearch-config:/usr/share/elasticsearch/config:ro
+      - ./elasticsearch-config:/usr/share/elasticsearch/config:ro
     ports:
       - 9200:9200
 
