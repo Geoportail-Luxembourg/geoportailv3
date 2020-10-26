@@ -1,5 +1,5 @@
 const path = require('path');
-const ls = require('ls');
+const ls = require('ngeo/buildtools/ls.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const plugins = [];
@@ -21,7 +21,7 @@ for (const filename of ls(path.resolve(__dirname, 'geoportailv3_geoportal/static
       chunks: [name],
       vars: {
         entry_point: '${VISIBLE_ENTRY_POINT}',
-        version: '2.5.0.77',
+        version: '2.5.0.88',
         cache_version: '${CACHE_VERSION}',
        },
     })
