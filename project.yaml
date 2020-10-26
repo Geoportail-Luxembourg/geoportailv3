@@ -3,7 +3,14 @@ project_folder: geoportailv3
 project_package: geoportailv3
 application_url: https://localhost:8484/
 checker_url: https://172.17.0.1:8484/c2c/health_check?max_level=9
-managed_files: []
+managed_files:
+  - geoportal/geoportailv3_geoportal/models.py
+  - .gitignore
+  - .travis.yml
+  - alembic.ini
+  - development.ini
+  - docker-compose.override.sample.yaml
+  - Makefile
 unmanaged_files: []
 template_vars:
   package: geoportailv3
