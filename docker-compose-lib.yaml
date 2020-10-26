@@ -5,7 +5,7 @@ version: '2.0'
 services:
   config:
     image: ${DOCKER_BASE}-config:${DOCKER_TAG}
-    # user: www-data
+    user: www-data
     environment:
       - VISIBLE_WEB_HOST
       - VISIBLE_WEB_PROTOCOL
@@ -137,7 +137,7 @@ services:
 
   geoportal:
     image: ${DOCKER_BASE}-geoportal:${DOCKER_TAG}
-    # user: www-data
+    user: www-data
     restart: unless-stopped
     environment: &env
       - VISIBLE_ENTRY_POINT
@@ -197,7 +197,7 @@ services:
 
   alembic:
     image: ${DOCKER_BASE}-geoportal:${DOCKER_TAG}
-    # user: www-data
+    user: www-data
     entrypoint: []
     command:
       - alembic
