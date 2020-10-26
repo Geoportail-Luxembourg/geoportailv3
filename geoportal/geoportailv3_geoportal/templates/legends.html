@@ -1,0 +1,18 @@
+## -*- coding: utf-8 -*-
+% for l in data['layers']:
+  % if str(l['layerId']) in active_layers:
+    <h4>${_l(wms_layer + " : " + l['layerName'])}</h4>
+    % for leg in l['legend']:
+      <div class="legend-row">
+        <div class="legend-icon">
+          <img class="legend-media"
+               src="data:image/png;base64,${leg['imageData']}"
+               />
+        </div>
+        <span class="legend-label">
+           ${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}
+        </span>
+      </div>
+    % endfor
+  % endif
+% endfor
