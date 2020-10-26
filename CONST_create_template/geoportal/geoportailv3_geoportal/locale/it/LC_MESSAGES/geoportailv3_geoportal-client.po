@@ -13,19 +13,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: contribs/gmf/apps/desktop/Controller.js:126
-#: contribs/gmf/apps/desktop_alt/Controller.js:168
+#: contribs/gmf/apps/desktop_alt/Controller.js:169
 #: contribs/gmf/apps/oeedit/Controller.js:222
 msgid "Add a layer"
 msgstr "Aggiungi Layer"
 
 #: contribs/gmf/apps/desktop/Controller.js:125
-#: contribs/gmf/apps/desktop_alt/Controller.js:167
+#: contribs/gmf/apps/desktop_alt/Controller.js:168
 #: contribs/gmf/apps/oeedit/Controller.js:221
 msgid "Add a sub theme"
 msgstr ""
 
 #: contribs/gmf/apps/desktop/Controller.js:124
-#: contribs/gmf/apps/desktop_alt/Controller.js:166
+#: contribs/gmf/apps/desktop_alt/Controller.js:167
 #: contribs/gmf/apps/oeedit/Controller.js:220
 msgid "Add a theme"
 msgstr ""
@@ -136,7 +136,7 @@ msgstr ""
 msgid "In order to use the editing tool, you must log in first."
 msgstr ""
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:165
+#: contribs/gmf/apps/desktop_alt/Controller.js:166
 msgid "Learning [merged]"
 msgstr ""
 
@@ -178,11 +178,11 @@ msgstr ""
 msgid "Mobile Application"
 msgstr ""
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:164
+#: contribs/gmf/apps/desktop_alt/Controller.js:165
 msgid "OSM_time (merged)"
 msgstr ""
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:163
+#: contribs/gmf/apps/desktop_alt/Controller.js:164
 msgid "OSM_time_merged"
 msgstr ""
 
