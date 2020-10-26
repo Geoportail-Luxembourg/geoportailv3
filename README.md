@@ -28,10 +28,7 @@ Build
 
 ```bash
 cd geoportailv3
-# Create symlink to the env you want to use
-# You can create a custom env if you need to
-ln -s env-localdev .env
-./build
+make build
 ```
 
 Local run and development

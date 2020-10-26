@@ -36,7 +36,8 @@ help:
 
 
 .PHONY: build
-build: docker-build-geoportal docker-build-config docker-build-ldap
+build: docker-build-ldap
+	./build
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
