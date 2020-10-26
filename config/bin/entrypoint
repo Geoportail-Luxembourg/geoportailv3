@@ -1,5 +1,0 @@
-#!/bin/bash -e
-
-eval-templates
-
-exec "$@"
