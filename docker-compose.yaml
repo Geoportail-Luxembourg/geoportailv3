@@ -134,6 +134,8 @@ services:
       - ROUTING_MAPQUEST_API_KEY
       - AUTHTKT_SECURE=false
       - AUTHTKT_SECRET=a_super_secret_for_auth_at_least_64_characters_long_for_sha512_algo_otherwise_not_good
+      - ARCGIS_USER
+      - ARCGIS_PASS
     ports:
       - 8080:8080
 
