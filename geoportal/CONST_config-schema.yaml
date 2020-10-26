@@ -174,11 +174,6 @@ mapping:
                         required: True
                       append:
                         type: str
-              wfs_permalink:
-                type: map
-                mapping:
-                  regex;.+:
-                    type: any
               redirect_interface:
                 type: str
               do_redirect:
