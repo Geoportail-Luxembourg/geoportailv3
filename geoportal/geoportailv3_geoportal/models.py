@@ -99,6 +99,9 @@ class LuxLayerInternalWMS(LayerWMS):
     is_poi = Column(Boolean, info={
         'colanderalchemy': {'title': _('Is a POI')}
     })
+    use_auth = Column(Boolean, info={
+        'colanderalchemy': {'title': _('Authentication needed')}
+    })
     collection_id = Column(Integer, info={
         'colanderalchemy': {'title': _('Collection ID')}
     })
