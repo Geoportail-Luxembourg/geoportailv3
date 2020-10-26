@@ -31,7 +31,7 @@ import appModule from '../module.js';
  * @ngInject
  * @export
  */
-const exports = function($http, $sce, gettextCatalog,
+const exports = function($http, $sce, $window, gettextCatalog,
     getPngLegendUrl, getHtmlLegendUrl, ngeoBackgroundLayerMgr) {
   /**
    * @type {ol.Map}
@@ -62,6 +62,7 @@ const exports = function($http, $sce, gettextCatalog,
    * @private
    */
   this.$http_ = $http;
+  this.$window_ = $window;
 
   /**
    * @type {string}
@@ -106,11 +107,15 @@ exports.prototype.hasLegend = function(layer) {
 
     var legend_name = ('legend_name' in localMetadata) ?
         localMetadata['legend_name'] : '';
+    var id = layer.get('queryable_id');
     var currentLanguage = this.gettextCatalog.currentLanguage;
 
     var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
-        currentLanguage + '&name=' + legend_name;
-
+        currentLanguage + '&name=' + legend_name + '&id=' + id;
+    // handle high resolution screens
+    if (this.$window_.devicePixelRatio > 1) {
+      legendUrl += '&dpi=' + this.$window_.devicePixelRatio*96;
+    }
 
     if (!(legendUrl in this.promises_)) {
       this.promises_[legendUrl] = this.$http_.get(legendUrl).then(
@@ -208,8 +213,13 @@ exports.prototype.getLegendHtml = function(layer) {
         localMetadata['legend_name'] : '';
     var currentLanguage = this.gettextCatalog.currentLanguage;
 
+    var id = layer.get('queryable_id');
     var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
-        currentLanguage + '&name=' + legend_name;
+        currentLanguage + '&name=' + legend_name + '&id=' + id;
+    // handle high resolution screens
+    if (this.$window_.devicePixelRatio > 1) {
+      legendUrl += '&dpi=' + this.$window_.devicePixelRatio*96;
+    }
 
     if (legendUrl in this.results_) {
       return this.results_[legendUrl];
