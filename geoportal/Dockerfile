@@ -26,7 +26,7 @@ CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progr
 
 FROM camptocamp/geomapfish:2.5 as runner
 
-COPY requirements.txt /tmp/requirements.txt
+COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
   python3 -m pip install --disable-pip-version-check --no-cache-dir --requirement=/tmp/requirements.txt && \
   rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
