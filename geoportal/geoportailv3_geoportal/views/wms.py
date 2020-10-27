@@ -1,6 +1,5 @@
-from typing import Optional, Dict
+from typing import Optional
 
-import requests
 from ipaddr import IPv4Network
 from pyramid.view import view_config
 from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
@@ -16,7 +15,8 @@ import socket
 import base64
 import os
 import json
-from datetime import datetime, timedelta
+
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token
 
 log = logging.getLogger(__name__)
 
@@ -28,51 +28,6 @@ class Wms:
     def _check_token(self, token: str) -> bool:
         config = self.request.registry.settings
         return config["authtkt_secret"] == token
-
-    def _get_arcgis_token(self, internal_wms: LuxLayerInternalWMS, force_renew=False) -> Dict:
-        auth_token = {}
-        if force_renew:
-            log.info('force renew token')
-            auth_token = self._renew_arcgis_token(internal_wms.rest_url)
-        elif 'auth_token' not in self.request.session:
-            log.info('could not find token in session - request new token')
-            auth_token = self._renew_arcgis_token(internal_wms.rest_url)
-        else:
-            auth_token = self.request.session['auth_token']
-            token_expire = datetime.fromtimestamp(float(auth_token['expires']))
-            # check if token is expired in the next 30s.
-            is_outdated = token_expire > (datetime.now() + timedelta(seconds=30))
-            if is_outdated:
-                log.info('token expired - request new token')
-                auth_token = self._renew_arcgis_token(internal_wms.rest_url)
-            else:
-                log.info('token still valid')
-
-        return auth_token
-
-    def _renew_arcgis_token(self, rest_url: str):
-        config = self.request.registry.settings
-        token_data = {
-            'f': 'json',
-            'username': config["arcgis_token_username"],
-            'password': config["arcgis_token_password"],
-            'referer': 'x',
-            'expiration': 600
-        }
-        generate_token_url = urllib.parse.urljoin(f"{rest_url}/", "generateToken")
-        response = requests.post(generate_token_url, data=token_data, timeout=15)
-        response.raise_for_status()
-        auth_token = response.json()
-        if 'error' in auth_token:
-            log.error(f"Failed getting token from: {generate_token_url} - "
-                      f"server answered {auth_token['error']}")
-            auth_token = {}
-            self.request.session.pop('auth_token', None)
-        else:
-            log.info("Success: token valid until "
-                     f"{datetime.fromtimestamp(float(auth_token.get('expires', 0)) / 1000)}")
-            self.request.session['auth_token'] = auth_token
-        return auth_token
 
     def _check_ip(self, client_ip: str) -> bool:
         client_ip = IPv4Network(client_ip).ip
@@ -142,7 +97,7 @@ class Wms:
         query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
 
         if internal_wms.use_auth:
-            auth_token = self._get_arcgis_token(internal_wms)
+            auth_token = get_arcgis_token(internal_wms.rest_url, self.request, log)
             if 'token' in auth_token:
                 query_params["token"] = auth_token['token']
 
@@ -286,7 +241,7 @@ class Wms:
                 log.error(f"Token refused at: {urllib.parse.splitquery(url_request.full_url)[0]} - "
                           f"server answered {resp['error']}")
                 log.info("Try to get new token")
-                auth_token = self._get_arcgis_token(internal_wms, force_renew=True)
+                auth_token = get_arcgis_token(internal_wms.rest_url, self.request, log, force_renew=True)
                 if 'token' in auth_token:
                     query_params["token"] = auth_token['token']
                     url = remote_host + separator + urllib.parse.urlencode(query_params)
