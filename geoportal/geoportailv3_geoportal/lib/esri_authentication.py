@@ -17,14 +17,29 @@ def get_arcgis_token(rest_url: str, request, log, force_renew=False) -> Dict:
         auth_token = _renew_arcgis_token(rest_url, session, config, log)
     else:
         auth_token = session['auth_token']
-        token_expire = datetime.fromtimestamp(float(auth_token['expires']))
+        token_expire = datetime.fromtimestamp(float(auth_token['expires'])/1000)
         # check if token is expired in the next 30s.
-        is_outdated = token_expire > (datetime.now() + timedelta(seconds=30))
-        if is_outdated:
+        is_expired = token_expire < (datetime.now() + timedelta(seconds=30))
+        if is_expired:
             log.info('token expired - request new token')
-            auth_token = renew_arcgis_token(rest_url, session, config, log)
+            auth_token = _renew_arcgis_token(rest_url, session, config, log)
         else:
             log.info('token still valid')
+            # TODO: disable systematic token check below in prod, enable only in dev
+            token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token['token']}).encode()
+            token_check_request = urllib.request.Request(rest_url, data=token_check_data)
+            try:
+                log.info(f"Check token at: {token_check_request.full_url}")
+                rep = urllib.request.urlopen(token_check_request, timeout=15)
+                check = json.load(rep)
+                if 'error' in check:
+                    log.error(f"Token refused by: {token_check_request.full_url} - "
+                              f"server answered {check['error']}")
+                else:
+                    log.info(f"Token OK, answer: {check}")
+            except:
+                log.error(f"Failed token check at: {token_check_request.full_url}")
+            assert 'error' not in check
 
     return auth_token
 
