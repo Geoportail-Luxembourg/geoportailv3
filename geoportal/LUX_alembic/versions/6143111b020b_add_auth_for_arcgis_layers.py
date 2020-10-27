@@ -26,8 +26,17 @@ def upgrade():
                             ),
                   schema=schema
                   )
+    op.add_column('lux_getfeature_definition',
+                  sa.Column('use_auth',
+                            sa.BOOLEAN,
+                            autoincrement=False,
+                            nullable=True
+                            ),
+                  schema=schema
+                  )
 
 
 def downgrade():
     schema = context.get_context().config.get_main_option('schema')
     op.drop_column('lux_layer_internal_wms', 'use_auth', schema=schema)
+    op.drop_column('lux_getfeature_definition', 'use_auth', schema=schema)

@@ -187,6 +187,9 @@ class LuxGetfeatureDefinition(Base):
     rest_url = Column(String(255), info={
         'colanderalchemy': {'title': _('URL Rest')}
     })
+    use_auth = Column(Boolean, info={
+        'colanderalchemy': {'title': _('Authentication needed')}
+    })
     engine_gfi = Column('engine', Unicode, nullable=False, info={
         'colanderalchemy': {'title': _('Engine')}
     })
