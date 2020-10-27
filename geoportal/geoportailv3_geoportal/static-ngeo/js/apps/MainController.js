@@ -322,7 +322,7 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
-  this.mediumStylingData = getDefaultMediumStyling();
+  //this.mediumStylingData = getDefaultMediumStyling();
 
   this.configObject = {
     medium: undefined,
@@ -376,7 +376,7 @@ const MainController = function(
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
     // save({'medium': {}})
     //appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.configObject.medium));
+    appMvtStylingService.saveMediumStyle(this.configObject);
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     //const bgLayer = this.backgroundLayerMgr_.get(this.map);
@@ -384,7 +384,7 @@ const MainController = function(
     const isPublished = false;
     // save({'background': {}})
     //appMvtStylingService.saveBgStyle(bgLayer, isPublished)
-    appMvtStylingService.saveBgStyle(this.configObject.background, isPublished)
+    appMvtStylingService.saveBgStyle(this.configObject, isPublished)
     .then(() => {
       //const config = JSON.stringify(this.mediumStylingData);
       const config = JSON.stringify(this.configObject.medium);
@@ -1125,7 +1125,7 @@ const MainController = function(
       const isPublished = true;
       // save('bg':{})
       //this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
-      this.appMvtStylingService.saveBgStyle(this.configObject.background, isPublished).then(result => {
+      this.appMvtStylingService.saveBgStyle(this.configObject, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
           'serial': id
@@ -1144,7 +1144,7 @@ const MainController = function(
   this.clearCustomStyle = () => {
     const bgLayer = this.configObject.background;
     // remove({'background': {}})
-    this.appMvtStylingService.removeStyles(bgLayer);
+    this.appMvtStylingService.removeStyles(this.configObject);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     //this.mediumStylingData = getDefaultMediumStyling();
     this.configObject.medium = getDefaultMediumStyling();

@@ -8,7 +8,6 @@ const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
-const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
 
@@ -49,7 +48,7 @@ class MvtStylingService {
   getBgStyle() {
     const label = 'basemap_2015_global';
     const itemKey = this.createRemoteItemKey_(label);
-    let remoteId = this.getLS_(itemKey);
+    let remoteId = window.localStorage.getItem(itemKey);
     const xyz_custom = remoteId ? this.createXYZCustom_(remoteId) : undefined;
 
 
@@ -83,7 +82,7 @@ class MvtStylingService {
             if (resultFromDB.data.length > 0) {
                 console.log('Load mvt expert style from database and save it to local storage');
                 this.isCustomStyle = true;
-                this.saveLS_(LS_KEY_EXPERT, resultFromDB.data[0].value);
+                window.localStorage.setItem(LS_KEY_EXPERT, resultFromDB.data[0].value);
                 config.style = JSON.parse(resultFromDB.data[0].value)
                 return config;
             } else {
@@ -93,7 +92,7 @@ class MvtStylingService {
                 return config;
             }
         });
-    } else if (hasLocalStorage() && this.hasLS_(itemKey)) {
+    } else if (hasLocalStorage() && !!window.localStorage.getItem(itemKey)) {
         // If there is a mvt expert style in the local storage, force parameter in the url
         this.ngeoLocation_.updateParams({
             'serial': remoteId
@@ -101,19 +100,19 @@ class MvtStylingService {
         console.log('Load mvt expert style from local storage');
         this.isCustomStyle = true;
         config.customStyle = this.isCustomStyle;
-        config.style = JSON.parse(this.getLS_(LS_KEY_EXPERT));
+        config.style = JSON.parse(window.localStorage.getItem(LS_KEY_EXPERT));
         return Promise.resolve(config);
-    } else if (hasLocalStorage() && this.hasLS_(LS_KEY_MEDIUM)) {
+    } else if (hasLocalStorage() && !!window.localStorage.getItem(LS_KEY_MEDIUM)) {
         // If there is a mvt medium config in the local storage, force parameter in the url
         this.ngeoLocation_.updateParams({
-            'serial': this.getLS_(LS_KEY_MEDIUM)
+            'serial': window.localStorage.getItem(LS_KEY_MEDIUM)
         });
         console.log('Load mvt medium style from local storage');
         this.isCustomStyle = true;
         config.customStyle = this.isCustomStyle;
 
         // Should work offline as well
-        config.style = JSON.parse(this.getLS_(LS_KEY_EXPERT));
+        config.style = JSON.parse(window.localStorage.getItem(LS_KEY_EXPERT));
         return Promise.resolve(config);
     } else {
         // Default style if no existing in LS or DB
@@ -172,7 +171,6 @@ unpublishIfSerial(map) {
     }
 }
 
-
 publishStyle(layer, data) {
   const label = layer.get('label');
 
@@ -187,7 +185,7 @@ publishStyle(layer, data) {
     return fetch(this.uploadvtstyleUrl_, options)
       .then(response => response.json())
       .then(result => {
-        this.saveLS_(this.createRemoteItemKey_(label), result.id);
+        window.localStorage.setItem(this.createRemoteItemKey_(label), result.id);
         layer.set('xyz_custom', this.createXYZCustom_(result.id));
         return result.id;
       });
@@ -197,10 +195,10 @@ publishStyle(layer, data) {
 unpublishStyle(layer) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
-  let id = this.getLS_(itemKey);
+  let id = window.localStorage.getItem(itemKey);
 
   if (id) {
-    this.deleteLS_(this.createRemoteItemKey_(label));
+    window.localStorage.removeItem(this.createRemoteItemKey_(label));
     const url = `${this.deletevtstyleUrl_}?id=${id}`;
     layer.unset('xyz_custom');
     return fetch(url).catch(() => '');
@@ -208,23 +206,32 @@ unpublishStyle(layer) {
   return Promise.resolve();
 }
 
-saveBgStyle(layer, isPublished) {
-    const mbMap =  layer.getMapBoxMap();
+saveBgStyle(configObject, isPublished) {
+    const mbMap =  configObject.background.getMapBoxMap();
     const data = JSON.stringify(mbMap.getStyle());
     const promises = [];
     if (this.appUserManager_.isAuthenticated()) {
-      console.log('Saving expert style in database');
-      promises.push(this.saveDB_(LS_KEY_EXPERT, data));
+        console.log('Saving expert style in database');
+        const body = {
+            key: LS_KEY_EXPERT,
+            value: data
+        }
+        const options = {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        }
+        promises.push(fetch(url_save, options));
     }
     this.isCustomStyle = true;
-    this.saveLS_(LS_KEY_EXPERT, data);
+    window.localStorage.setItem(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
 
     if (isPublished) {
-        promises.push(this.publishStyle(layer, data));
+        promises.push(this.publishStyle(configObject.background, data));
     } else  {
         // Remove unused remoteIdForStyle{layer} key stored in ls
-        promises.push(this.unpublishStyle(layer));
+        promises.push(this.unpublishStyle(configObject.background));
     }
 
     return Promise.all(promises);
@@ -237,13 +244,13 @@ getMediumStyle() {
             if (styleFromDB.length > 0) {
                 console.log('Load mvt medium config from database and save it to local storage');
                 this.isCustomStyle = true;
-                this.saveLS_(LS_KEY_MEDIUM, styleFromDB[0].value);
+                window.localStorage.setItem(LS_KEY_MEDIUM, styleFromDB[0].value);
                 return styleFromDB[0].value;
             }
         });
-    } else if (hasLocalStorage() && this.hasLS_(LS_KEY_MEDIUM)) {
+    } else if (hasLocalStorage() && !!window.localStorage.getItem(LS_KEY_MEDIUM)) {
         console.log('Load mvt medium config from local storage');
-        return Promise.resolve(this.getLS_(LS_KEY_MEDIUM));
+        return Promise.resolve(window.localStorage.getItem(LS_KEY_MEDIUM));
     }
 }
 
@@ -253,36 +260,45 @@ removeMediumStyle() {
         return this.deleteDB_(LS_KEY_MEDIUM);
     }
     console.log('Removed mvt medium config from local storage');
-    return this.deleteLS_(LS_KEY_MEDIUM);
+    return window.localStorage.removeItem(LS_KEY_MEDIUM);
 }
 
 getUrlVtStyle(layer) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
-  let id = this.getLS_(itemKey);
+  let id = window.localStorage.getItem(itemKey);
 
   if (id == null) return defaultMapBoxStyle;
   return this.getvtstyleUrl_ + '?id=' + id;
 }
 
-saveMediumStyle(config) {
+saveMediumStyle(configObject) {
     const promises = [];
     this.isCustomStyle = true;
     if (this.appUserManager_.isAuthenticated()) {
-        promises.push(this.saveDB_(LS_KEY_MEDIUM, config));
+        const body = {
+            key: LS_KEY_MEDIUM,
+            value: JSON.stringify(configObject.medium)
+        }
+        const options = {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        }
+        promises.push(fetch(url_save, options));
         console.log('Medium config saved in database');
     }
-    this.saveLS_(LS_KEY_MEDIUM, config);
+    window.localStorage.setItem(LS_KEY_MEDIUM, JSON.stringify(configObject.medium));
     console.log('Medium config saved in local storage');
 
     return Promise.all(promises);
 }
 
-removeStyles(layer) {
-    this.deleteLS_(LS_KEY_EXPERT);
-    this.deleteLS_(LS_KEY_MEDIUM);
+removeStyles(configObject) {
+    window.localStorage.removeItem(LS_KEY_EXPERT);
+    window.localStorage.removeItem(LS_KEY_MEDIUM);
     const promises = [];
-    promises.push(this.unpublishStyle(layer));
+    promises.push(this.unpublishStyle(configObject.background));
     console.log('Removed mvt styles from local storage');
     if (this.appUserManager_.isAuthenticated()) {
         promises.push(this.deleteDB_(LS_KEY_EXPERT));
@@ -299,35 +315,6 @@ apply_mvt_config(mvt_config) {
     params.set('config', JSON.stringify(mvt_config));
     params.set('style_url', defaultMapBoxStyle);
     return `${url.origin}${url_config_mvt}?${params.toString()}`;
-}
-
-// Local Storage methods
-/**
- * @private
- */
-getLS_(key) {
-    return ls_.getItem(key);
-}
-
-/**
- * @private
- */
-saveLS_(key, value) {
-    return ls_.setItem(key, value);
-}
-
-/**
- * @private
- */
-deleteLS_(key) {
-    return ls_.removeItem(key);
-}
-
-/**
- * @private
- */
-hasLS_(key) {
-    return !!ls_.getItem(key);
 }
 
 
