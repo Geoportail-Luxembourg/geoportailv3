@@ -336,6 +336,10 @@ const MainController = function(
       mbMap.setPaintProperty(path, 'line-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
+    (item.symbols || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'symbol-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
     (item.fillExtrusions || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
       mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
@@ -351,13 +355,15 @@ const MainController = function(
     });
   }
 
-  this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
-  }, 2000, false);
-  this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
+  this.debouncedSaveStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const isPublished = this.is3dEnabled();
-    appMvtStylingService.saveBgStyle(bgLayer, isPublished)
+    const isPublished = false;
+    const dataObject = {
+      medium: this.mediumStylingData,
+      background: bgLayer
+    }
+
+    appMvtStylingService.saveStyle(dataObject, isPublished)
     .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
       this.ngeoLocation_.updateParams({
@@ -421,12 +427,11 @@ const MainController = function(
     hillshadeItem.visible = false;
     applyStyleFromItem(mbMap, hillshadeItem)
 
-    this.debouncedSaveBgStyle_(bgLayer);
-    this.debouncedSaveMediumStyle_();
+    this.debouncedSaveStyle_();
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
-  const mediumStyle = appMvtStylingService.getMediumStyle();
+  const mediumStyle = appMvtStylingService.getStyle();
   if (mediumStyle !== undefined) {
     mediumStyle.then((style) => {
         Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
@@ -438,8 +443,7 @@ const MainController = function(
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
     applyStyleFromItem(mbMap, item);
-    this.debouncedSaveMediumStyle_();
-    this.debouncedSaveBgStyle_();
+    this.debouncedSaveStyle_();
     this.checkSelectedSimpleData();
   };
 
@@ -912,6 +916,7 @@ const MainController = function(
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
+
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1037,12 +1042,12 @@ const MainController = function(
   $scope.$on('authenticated', () => {
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    if (bgLayer) {
+    if (bgLayer && bgLayer.getMapBoxMap()) {
       this.appMvtStylingService.getBgStyle().then(config => {
         bgLayer.getMapBoxMap().setStyle(config.style);
       });
     }
-    let mediumStyle = appMvtStylingService.getMediumStyle();
+    let mediumStyle = appMvtStylingService.getStyle();
     if (mediumStyle !== undefined) {
       mediumStyle.then((style) => {
           Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
@@ -1071,16 +1076,22 @@ const MainController = function(
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
       const isPublished = true;
-      this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
+
+      const dataObject = {
+        medium: undefined, // empty for the save function
+        background: bgLayer
+      }
+
+      this.appMvtStylingService.saveStyle(dataObject, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
           'serial': id
         });
         this.ngeoLocation_.refresh();
-
-        // Remove unused mediumStyling key stored in ls/db
-        this.appMvtStylingService.removeMediumStyle();
       });
+
+      // If undefined, medium style UI is empty (was undefined for saving purpose)
+      this.mediumStylingData = getDefaultMediumStyling();
     });
 
     // Reset form value
