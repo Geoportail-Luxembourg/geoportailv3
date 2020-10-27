@@ -1,0 +1,224 @@
+---
+
+extends: CONST_vars.yaml
+
+vars:
+
+  srid: 2056
+
+  # The application's default language. This is the language used by
+  # the application if no specific language is specified in the URLs.
+  # This also defines the language used for the text search.
+  default_locale_name: fr
+
+  # The set of languages supported by the applications.
+  available_locale_names:
+    - en
+    - fr
+    - de
+
+  # All the application interfaces used to create the apache rewrite rules
+  interfaces:
+    - name: desktop
+      default: True
+    - name: mobile
+    - name: iframe_api
+
+  interfaces_config:
+    default:
+      constants:
+        defaultTheme: Demo
+        defaultLang: '{default_locale_name}'
+        ngeoWfsPermalinkOptions:
+          wfsTypes:
+            - featureType: fuel
+              label: display_name
+            - featureType: osm_scale
+              label: display_name
+    desktop_alt:
+      constants:
+        ngeoWfsPermalinkOptions:
+          wfsTypes:
+            - featureType: osm_hospitals
+              label: name
+            - featureType: osm_firestations
+              label: name
+          defaultFeatureNS: http://www.qgis.org/gml
+          defaultFeaturePrefix: feature
+      routes:
+        ngeoPermalinkOgcserverUrl:
+          name: mapserverproxy
+          params:
+            ogcserver: QGIS server
+
+  admin_interface:
+    # Default values for the admin interface's maps.
+    map:
+      baseLayers:
+        - type_: "OSM"
+      view:
+        projection: 'EPSG:3857'
+        center: [829170, 5933942]
+        zoom: 7
+      fitSource: false
+      fitMaxZoom: 14
+      focusOnly: false
+
+  functionalities:
+    # Functionalities that are made available to Mako templates.
+    available_in_templates:
+      - default_basemap
+
+  layers:
+    geometry_validation: True
+
+  fulltextsearch:
+    languages:
+      fr: french
+      en: english
+      de: german
+
+  # proxies:
+  #   http: https://someproxy
+
+  shortener:
+    # Used to send a confirmation email
+    email_from: info@example.com
+    email_subject: "Geoportal URL"
+    email_body: |
+      Hello,
+
+      Somebody sent you the following link:
+      {short_url}
+
+      With the message:
+      {message}
+
+      Sincerely yours
+      The GeoMapFish team
+
+  smtp:
+    # Used to send email from various feature
+    host: smtp.example.com
+    ssl: true
+    user: <username>
+    password: <password>
+    starttls: false
+
+  reset_password:
+    # Used to send a reset password email
+    email_from: info@camptocamp.com
+    email_subject: New password generated for GeoMapFish
+    email_body: |
+      Hello {user},
+
+      You have asked for a new password,
+      the newly generated password is: {password}
+
+      Sincerely yours
+      The GeoMapFish team
+
+  welcome_email:
+    # Used to send a welcome email for new user
+    email_from: info@camptocamp.com
+    email_subject: Welcome to GeoMapFish
+    email_body: |
+      Hello {user},
+
+      You have a new account on GeoMapFish: https://geomapfish-demo-2-5.camptocamp.com
+      Your user name is: {user}
+      Your password is: {password}
+
+      Sincerely yours
+      The GeoMapFish team
+
+  # Checker configuration
+  checker:
+    fulltextsearch:
+      search: text to search
+    # print:
+    #   spec:
+    #     layout: "1 A4 portrait"
+    #     outputFormat: "pdf"
+    #     attributes:
+    #       title: ""
+    #       comments: ""
+    #       datasource: []
+    #       map:
+    #         projection: "EPSG:2056"
+    #         dpi: 254
+    #         rotation: 0
+    #         center: [2600000, 1200000]
+    #         scale: 100000
+    #         longitudeFirst: true
+    #         layers: []
+    #       legend: {}
+    phantomjs:
+      disable: [apihelp]
+
+  check_collector:
+    hosts: []
+    # - display: Child:
+    #   url: {web_protocol}://{host}/child/wsgi
+
+update_paths:
+  - admin_interface.available_functionalities
+  - admin_interface.available_metadata
+  - admin_interface.functionalities
+  - admin_interface.available_in_templates
+  - api
+  - authorized_referers
+  - cache.std.arguments
+  - cache.obj
+  - check_collector.disabled
+  - check_collector.hosts
+  - checker.fulltextsearch
+  - checker.lang
+  - checker.phantomjs
+  - checker.print
+  - checker.routes
+  - checker.themes
+  - content_security_policy.main
+  - content_security_policy.admin
+  - content_security_policy.apihelp
+  - fulltextsearch
+  - functionalities.available_in_templates
+  - global_headers
+  - headers.index
+  - headers.api
+  - headers.profile
+  - headers.raster
+  - headers.error
+  - headers.themes
+  - headers.config
+  - headers.print
+  - headers.fulltextsearch
+  - headers.mapserver
+  - headers.tinyows
+  - headers.layers
+  - headers.shortener
+  - headers.login
+  - interfaces_config.default.constants.ngeoWfsPermalinkOptions
+  - interfaces_config.default.dynamic_constants
+  - interfaces_config.default.static
+  - interfaces_config.default.routes
+  - interfaces_config.desktop.constants
+  - interfaces_config.desktop.routes
+  - interfaces_config.desktop_alt.constants
+  - interfaces_config.desktop_alt.routes
+  - interfaces_config.mobile.constants
+  - interfaces_config.mobile_alt.constants
+  - interfaces_config.iframe_api.constants
+  - interfaces_config.oeedit.routes
+  - interfaces_theme
+  - resourceproxy
+  - servers
+  - shortener.allowed_hosts
+  - sqlalchemy
+  - sqlalchemy_slave
+  - tinyowsproxy
+
+no_interpreted:
+  - reset_password.email_body
+  - shortener.email_body
+  - welcome_email.email_body
