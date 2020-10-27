@@ -15,7 +15,7 @@ RUN make apps
 
 COPY . /app
 
-RUN make checks
+# RUN make checks
 RUN make build
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 
@@ -45,6 +45,8 @@ RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python3 -m compileall -q /usr/local/lib/python3.7 \
         -x '/usr/local/lib/python3.7/dist-packages/(pydevd|ptvsd|pipenv)/' && \
     python3 -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.*
+
+COPY ./bin/eval-templates /usr/bin/
 
 ARG GIT_HASH
 RUN c2cwsgiutils_genversion.py ${GIT_HASH}
