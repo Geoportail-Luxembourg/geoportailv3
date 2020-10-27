@@ -13,6 +13,7 @@ ENV CONFIG_VARS sqlalchemy.url sqlalchemy.pool_recycle sqlalchemy.pool_size sqla
     lingua_extractor interfaces_config interfaces devserver_url api authentication intranet metrics pdfreport
 
 COPY . /tmp/config/
+RUN mkdir -p /tmp/config/geoportal/geoportailv3_geoportal/static
 
 RUN \
     for lang in ${LANGUAGES}; \
