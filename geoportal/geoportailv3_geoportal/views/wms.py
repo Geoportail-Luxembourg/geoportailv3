@@ -178,7 +178,8 @@ class Wms:
                 return HTTPUnauthorized()
 
         query_params = {}
-        if internal_wms.ogc_server.type == 'arcgis':
+        # arcgis rest api shall be used whenever rest_url is not empty
+        if (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
             remote_host = internal_wms.rest_url + "/export"
             query_params = self._process_arcgis_server(internal_wms)
         else:
