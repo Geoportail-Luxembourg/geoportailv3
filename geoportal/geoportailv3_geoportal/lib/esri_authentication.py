@@ -50,8 +50,8 @@ def _renew_arcgis_token(session, config, log):
         'f': 'json',
         'username': config["arcgis_token_username"],
         'password': config["arcgis_token_password"],
-        'referer': 'x',
-        'expiration': 600
+        'referer': config.get('arcgis_token_referer', 'x'),
+        'expiration': config.get('arcgis_token_validity', 600)
     }
     generate_token_url = urllib.parse.urljoin(f"{config['arcgis_token_url']}/", "generateToken")
     response = requests.post(generate_token_url, data=token_data, timeout=15)
