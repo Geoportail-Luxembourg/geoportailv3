@@ -12,6 +12,24 @@ ENV CONFIG_VARS sqlalchemy.url sqlalchemy.pool_recycle sqlalchemy.pool_size sqla
     dbsessions urllogin host_forward_host smtp c2c.base_path welcome_email \
     lingua_extractor interfaces_config interfaces devserver_url api authentication intranet metrics pdfreport
 
+# Custom config vars
+ENV CONFIG_VARS ${CONFIG_VARS} \
+    authorized_ips \
+    default_mymaps_role \
+    elastic \
+    exclude_theme_layer_search \
+    excluded_themes_from_search \
+    https_proxy \
+    ldap \
+    lidar \
+    mailer \
+    modify_notification \
+    referrer \
+    reverse_geocode \
+    routing \
+    sync_ms_path \
+    anf age age_crues casipo pag pds
+
 COPY . /tmp/config/
 RUN mkdir -p /tmp/config/geoportal/geoportailv3_geoportal/static
 

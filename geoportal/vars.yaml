@@ -4,7 +4,108 @@ extends: CONST_vars.yaml
 
 vars:
 
-  srid: 2056
+  # Custom keys
+  authorized_ips: null
+  default_mymaps_role: '{DEFAULT_MYMAPS_ROLE}'
+  elastic:
+    index: '{ELASTIC_INDEX}'
+    servers: '{ELASTIC_SERVERS}'
+  exclude_theme_layer_search: null
+  excluded_themes_from_search: null
+
+  https_proxy:
+    unauthorized_ips: '{HTTPS_PROXY_UNAUTHORIZED_IPS}'
+    authorized_hosts: '{HTTPS_PROXY_AUTHORIZED_HOSTS}'
+
+  ldap:
+    base_dn: '{LDAP_BASE_DN}'
+    bind: '{LDAP_BIND}'
+    passwd: '{LDAP_PASSWD}'
+    filter_tmpl: '{LDAP_FILTER_TMPL}'
+    url: '{LDAP_URL}'
+
+  lidar:
+    demo_url: ''
+    maxx: 81500
+    maxy: 108600
+    minx: 71500
+    miny: 98600
+    srs: 'EPSG:2169'
+
+  mailer:
+    message.encoding: UTF-8
+    transport.host: server-relay.mail.etat.lu
+    transport.use: smtp
+
+  modify_notification:
+    admin_email: null
+    email_cc: null
+    url: null
+
+  referrer: null
+
+  reverse_geocode:
+    api_key: '{REVERSE_GEOCODE_API_KEY}'
+    url: '{REVERSE_GEOCODE_URL}'
+
+  routing:
+    graphhopper:
+      api_key: '{ROUTING_GRAPHHOPPER_API_KEY}'
+      url: 'https://graphhopper.com/api/1/route'
+    mapquest:
+      api_key: '{ROUTING_MAPQUEST_API_KEY}'
+      url: 'http://open.mapquestapi.com/directions/v2/route'
+
+  sync_ms_path: /app/scripts/sync_ms.sh
+
+  anf:
+    email: '{ANF_EMAIL}'
+    map_id: '{ANF_MAP_ID}'
+  age:
+    email: '{AGE_EMAIL}'
+    map_ids: '{AGE_MAP_IDS}'
+    show_link: '{AGE_SHOW_LINK}'
+    layers: '{AGE_LAYERS}'
+  age_crues:
+    email: '{AGE_CRUES_EMAIL}'
+    map_id: '{AGE_CRUES_MAP_ID}'
+    show_link: '{AGE_CRUES_SHOW_LINK}'
+    layers: '{AGE_CRUES_LAYERS}'
+    roles: '{AGE_CRUES_ROLES}'
+  casipo:
+    bcc_address: '{CASIPO_BCC_ADDRESS}'
+    fme_token: '{CASIPO_FME_TOKEN}'
+    owncloud_external_url: '{CASIPO_OWNCLOUD_EXTERNAL_URL}'
+    owncloud_internal_url: '{CASIPO_OWNCLOUD_INTERNAL_URL}'
+    owncloud_password: '{CASIPO_OWNCLOUD_PASSWORD}'
+    owncloud_user: '{CASIPO_OWNCLOUD_USER}'
+    prod_url: '{CASIPO_PROD_URL}'
+    smtp_server: '{CASIPO_SMTP_SERVER}'
+    staging_url: '{CASIPO_STAGING_URL}'
+  pag:
+    bcc_address: '{PAG_BCC_ADDRESS}'
+    file_server: '{PAG_FILE_SERVER}'
+    fme_token: '{PAG_FME_TOKEN}'
+    owncloud_external_url: '{PAG_OWNCLOUD_EXTERNAL_URL}'
+    owncloud_internal_url: '{PAG_OWNCLOUD_INTERNAL_URL}'
+    owncloud_password: '{PAG_OWNCLOUD_PASSWORD}'
+    owncloud_user: '{PAG_OWNCLOUD_USER}'
+    prod_url: '{PAG_PROD_URL}'
+    smtp_server: '{PAG_SMTP_SERVER}'
+    staging_url: '{PAG_STAGING_URL}'
+  pds:
+    staging_url: '{PDS_STAGING_URL}'
+    prod_url: '{PDS_PROD_URL}'
+    fme_token:
+    owncloud_internal_url:
+    owncloud_external_url:
+    owncloud_user:
+    owncloud_password:
+    smtp_server: '{PDS_SMTP_SERVER}'
+    bcc_address: '{PDS_BCC_ADDRESS}'
+  # End of custom keys
+
+  srid: 2169
 
   # The application's default language. This is the language used by
   # the application if no specific language is specified in the URLs.
@@ -14,44 +115,170 @@ vars:
   # The set of languages supported by the applications.
   available_locale_names:
     - en
-    - fr
     - de
+    - fr
+    - lb
 
   # All the application interfaces used to create the apache rewrite rules
   interfaces:
-    - name: desktop
+    - name: main
       default: True
-    - name: mobile
-    - name: iframe_api
 
   interfaces_config:
-    default:
+    main:
       constants:
-        defaultTheme: Demo
-        defaultLang: '{default_locale_name}'
-        ngeoWfsPermalinkOptions:
-          wfsTypes:
-            - featureType: fuel
-              label: display_name
-            - featureType: osm_scale
-              label: display_name
-    desktop_alt:
-      constants:
-        ngeoWfsPermalinkOptions:
-          wfsTypes:
-            - featureType: osm_hospitals
-              label: name
-            - featureType: osm_firestations
-              label: name
-          defaultFeatureNS: http://www.qgis.org/gml
-          defaultFeaturePrefix: feature
+        appAuthtktCookieName: auth_tkt_main
+        appExcludeThemeLayerSearch: []
+        appOverviewMapBaseLayer: basemap_2015_global
+        appOverviewMapShow: true
+        showAnfLink: false
+        showAgeLink: '{AGE_SHOW_LINK}'
+        showCruesLink: '{AGE_CRUES_SHOW_LINK}'
+        showCruesRoles: '{AGE_CRUES_ROLES}'
+        ageLayerIds: '{AGE_LAYERS}'
+        ageCruesLayerIds: '{AGE_CRUES_LAYERS}'
+        bboxLidar: [46602, 53725, 106944, 141219]
+        bboxSrsLidar: 'EPSG:2169'
+        defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
+        defaultLang: en
+        defaultTheme: main
+        fulltextsearch_param: {}
+        gmfExternalOGCServers: []
+        gmfSearchActions: []
+        lidarDemoUrl: https://lidar.geoportail.lu
+        maxExtent: [2.6, 47.7, 8.6, 51]
+        remoteProxyWms: false
+        requestScheme: https
+        sentryUrl: ''
+        tags: {interface: main, service: js}
+        tiles3dLayers: [buildings25d, buildings3d, bridges3d]
+        tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
+        proxyWmsUrl: '{PROXYWMSURL}'
+        geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+      dynamic_constants:
+        cacheVersion: cache_version
+        langUrls: lang_urls
+        gmfTwoFactorAuth: two_factor
+        gmfSearchGroups: fulltextsearch_groups
       routes:
-        ngeoPermalinkOgcserverUrl:
-          name: mapserverproxy
-          params:
-            ogcserver: QGIS server
+        ping: {name: ping}
+        arrowUrl: {name: get_arrow_color}
+        authenticationBaseUrl: {name: base}
+        casipoUrl: {name: casipo_url}
+        cmsSearchServiceUrl: {name: cmssearch}
+        downloadmeasurementUrl: {name: download_measurement}
+        downloadresourceUrl: {name: download_resource}
+        downloadsketchUrl: {name: download_sketch}
+        echocsvUrl: {name: echocsv}
+        elevationServiceUrl: {name: raster}
+        exportgpxkmlUrl: {name: exportgpxkml}
+        geocodingServiceUrl: {name: geocode}
+        getHtmlLegendUrl: {name: get_html}
+        getInfoServiceUrl: {name: getfeatureinfo}
+        getPngLegendUrl: {name: get_png}
+        getRemoteTemplateServiceUrl: {name: getremotetemplate}
+        getRouteUrl: {name: getroute}
+        getuserinfoUrl: {name: getuserinfo}
+        gmfLayersUrl: {name: layers_root}
+        gmfPrintUrl: {name: printproxy}
+        gmfProfileCsvUrl: {name: profile.csv}
+        gmfProfileJsonUrl: {name: profile.json}
+        gmfRasterUrl: {name: raster}
+        gmfShortenerCreateUrl: {name: shortener_create}
+        gmfTreeUrl:
+          name: themes
+          params: {limit: 30, partitionlimit: 5}
+          dynamic_params: {interface: interface}
+        gmfShortenerCreateUrl: {name: shortener_create}
+        httpsProxyUrl: {name: https_proxy}
+        isThemePrivateUrl: {name: isthemeprivate}
+        layerSearchServiceUrl: {name: layersearch}
+        loginUrl: {name: login}
+        logoutUrl: {name: logout}
+        mymapsImageUrl: {name: mymaps_image}
+        mymapsMapsUrl: {name: mymaps_getmaps}
+        mymapsUrl: {name: mymaps}
+        pagUrl: {name: pag_url}
+        pdsUrl: {name: pds_url}
+        poiSearchServiceUrl: {name: fulltextsearch}
+        postFeedbackAnfUrl: {name: feedbackanf}
+        postFeedbackAgeUrl: {name: feedbackage}
+        postFeedbackCruesUrl: {name: feedbackcrues}
+        postFeedbackUrl: {name: feedback}
+        predefinedWmsUrl: {name: predefined_wms}
+        previewMesurementUrl: {name: preview_measurement}
+        printServiceUrl: {name: printproxy}
+        profileServiceUrl: {name: profile.json}
+        qrServiceUrl: {name: qr}
+        reverseGeocodingServiceUrl: {name: reverse_geocode}
+        routingServiceUrl: {name: getremoteroute}
+        shorturlServiceUrl: {name: shortener_create}
+        uploadvtstyleUrl: {name: upload_vt_style}
+        deletevtstyleUrl: {name: delete_vt_style}
+        getvtstyleUrl: {name: get_vt_style}
+      static:
+        appImagesPath: {name: 'geoportailv3_geoportal:static-ngeo/images/'}
+        appQueryTemplatesPath: {name: 'geoportailv3_geoportal:static-ngeo/js/query/'}
+        arrowModelUrl: {name: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb'}
+        assetsBaseUrl: {name: 'geoportailv3_geoportal:static-ngeo/'}
+        cesiumURL: {name: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
 
   admin_interface:
+    exclude_pages:
+      - layers_wms
+    include_pages:
+      - url_path: lux_download_url
+        model: geoportailv3_geoportal.admin:LuxDownloadUrl
+      - url_path: lux_measurement_login_commune
+        model: geoportailv3_geoportal.admin:LuxMeasurementLoginCommune
+      - url_path: lux_measurement_directory
+        model: geoportailv3_geoportal.admin:LuxMeasurementDirectory
+      - url_path: lux_getfeature_definition
+        model: geoportailv3_geoportal.admin:LuxGetfeatureDefinition
+      - url_path: lux_print_servers
+        model: geoportailv3_geoportal.admin:LuxPrintServers
+      - url_path: lux_predefined_wms
+        model: geoportailv3_geoportal.admin:LuxPredefinedWms
+      - url_path: lux_layer_external_wms
+        model: geoportailv3_geoportal.admin:LuxLayerExternalWMS
+      - url_path: lux_layer_internal_wms
+        model: geoportailv3_geoportal.admin:LuxLayerInternalWMS
+    available_metadata:
+    - {name: attribution}
+    - {name: bg_layer}
+    - {name: bg_opacity, type: float}
+    - {name: css}
+    - {name: display_in_switcher, type: boolean}
+    - {name: exclusion}
+    - {name: fake_scales, type: list}
+    - {name: hasRetina, type: boolean}
+    - {name: is_queryable, type: boolean}
+    - {name: legend_name}
+    - {name: link, type: url}
+    - {name: link_title}
+    - {name: max_dpi, type: float}
+    - {name: metadata_id}
+    - {name: ogc_info_format}
+    - {name: ogc_info_srs}
+    - {name: page_title}
+    - {name: print_img}
+    - {name: print_long_txt_de}
+    - {name: print_long_txt_en}
+    - {name: print_long_txt_fr}
+    - {name: print_long_txt_lu}
+    - {name: print_scales, type: list}
+    - {name: print_short_txt_de}
+    - {name: print_short_txt_en}
+    - {name: print_short_txt_fr}
+    - {name: print_short_txt_lu}
+    - {name: resolutions, type: list}
+    - {name: show_in_mobile, type: boolean}
+    - {name: start_layers, type: list}
+    - {name: start_opacity, type: float}
+    - {name: start_x, type: float}
+    - {name: start_y, type: float}
+    - {name: start_zoom, type: float}
+    layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
       baseLayers:
@@ -66,11 +293,17 @@ vars:
 
   functionalities:
     # Functionalities that are made available to Mako templates.
-    available_in_templates:
-      - default_basemap
+    available_in_templates: []
 
   layers:
     geometry_validation: True
+
+  dbsessions:
+    db_ecadastre: {url: '{DB_ECADASTRE}'}
+    ecadastre: {url: '{DB_ECADASTRE}'}
+    mymaps: {url: '{DB_MYMAPS}'}
+    pgroute: {url: '{DB_PGROUTE}'}
+    poi: {url: '{DB_POI}'}
 
   fulltextsearch:
     languages:
@@ -81,61 +314,65 @@ vars:
   # proxies:
   #   http: https://someproxy
 
+  raster:
+    dhm:
+      file: '{DHM_DEM_FILE}'
+      round: 0.01
+      type: '{DHM_DEM_TYPE}'
+
+  servers:
+    my_maps: 'https://ws.geoportail.lu/mymaps'
+    mapserver: 'https://ws.geoportail.lu'
+
   shortener:
     # Used to send a confirmation email
     email_from: info@example.com
     email_subject: "Geoportal URL"
-    email_body: |
-      Hello,
-
-      Somebody sent you the following link:
-      {short_url}
-
-      With the message:
-      {message}
-
-      Sincerely yours
-      The GeoMapFish team
+    email_body: unused
 
   smtp:
     # Used to send email from various feature
-    host: smtp.example.com
+    host: not-set
     ssl: true
-    user: <username>
-    password: <password>
+    user: not-set
+    password: not-set
     starttls: false
 
   reset_password:
     # Used to send a reset password email
     email_from: info@camptocamp.com
-    email_subject: New password generated for GeoMapFish
-    email_body: |
-      Hello {user},
+    email_subject: unused
+    email_body: unused
 
-      You have asked for a new password,
-      the newly generated password is: {password}
+  resourceproxy:
+    allowed_headers: []
 
-      Sincerely yours
-      The GeoMapFish team
+  shortener:
+    allowed_hosts:
+      - '{SHORTENER_ALLOWED_HOST}'
+      - map.geoportail.lu
+      - maps.geoportail.lu
+      - maps.geoportal.lu
+      - map.geoportal.lu
+      - map.app.geoportail.lu
+      - vt-staging.geoportail.lu
+      - devrm.geoportail.lu
+      - migration.geoportail.lu
+    base_url: '{SHORTENER_BASE_URL}'
+    email_body: unused
+    email_from: unused
+    email_subject: unused
 
   welcome_email:
     # Used to send a welcome email for new user
     email_from: info@camptocamp.com
-    email_subject: Welcome to GeoMapFish
-    email_body: |
-      Hello {user},
-
-      You have a new account on GeoMapFish: https://geomapfish-demo-2-5.camptocamp.com
-      Your user name is: {user}
-      Your password is: {password}
-
-      Sincerely yours
-      The GeoMapFish team
+    email_subject: unused
+    email_body: unused
 
   # Checker configuration
   checker:
     fulltextsearch:
-      search: text to search
+      search: bat
     # print:
     #   spec:
     #     layout: "1 A4 portrait"
@@ -161,10 +398,73 @@ vars:
     # - display: Child:
     #   url: {web_protocol}://{host}/child/wsgi
 
+runtime_environment:
+  - {name: AGE_CRUES_EMAIL, default: ''}
+  - {name: AGE_CRUES_LAYERS, default: ''}
+  - {name: AGE_CRUES_MAP_ID, default: ''}
+  - {name: AGE_CRUES_ROLES, default: ''}
+  - {name: AGE_CRUES_SHOW_LINK, default: 'false'}
+  - {name: AGE_EMAIL, default: ''}
+  - {name: AGE_LAYERS, default: ''}
+  - {name: AGE_MAP_IDS, default: ''}
+  - {name: AGE_SHOW_LINK, default: 'false'}
+  - {name: ANF_EMAIL}
+  - {name: ANF_MAP_ID}
+  - {name: AUTHTKT_SECRET}
+  - {name: AUTHTKT_SECURE}
+  - {name: AUTHTKT_TIMEOUT}
+  - {name: CASIPO_STAGING_URL}
+  - {name: CASIPO_PROD_URL}
+  - {name: CASIPO_FME_TOKEN}
+  - {name: CASIPO_OWNCLOUD_INTERNAL_URL}
+  - {name: CASIPO_OWNCLOUD_EXTERNAL_URL}
+  - {name: CASIPO_OWNCLOUD_USER}
+  - {name: CASIPO_OWNCLOUD_PASSWORD}
+  - {name: CASIPO_SMTP_SERVER}
+  - {name: CASIPO_BCC_ADDRESS}
+  - {name: DB_MYMAPS}
+  - {name: DB_PGROUTE}
+  - {name: DB_ECADASTRE}
+  - {name: DB_POI}
+  - {name: DEFAULT_MYMAPS_ROLE, default: '999'}
+  - {name: DHM_DEM_FILE, default: /var/sig/bt.shp}
+  - {name: DHM_DEM_TYPE, default: shp_index}
+  - {name: ELASTIC_INDEX}
+  - {name: ELASTIC_SERVERS}
+  - {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork/srv'}
+  - {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
+  - {name: HTTPS_PROXY_UNAUTHORIZED_IPS, default: '10.0.0.0/8, 127.0.0.1'}
+  - {name: LDAP_BASE_DN, default: 'ou=portail,dc=act,dc=lu'}
+  - {name: LDAP_BIND, default: 'cn=system,dc=act,dc=lu'}
+  - {name: LDAP_PASSWD, default: to_be_defined}
+  - {name: LDAP_URL, default: 'ldap://willie.geoportal.lu:3890'}
+  - {name: LDAP_FILTER_TMPL}
+  - {name: PAG_STAGING_URL}
+  - {name: PAG_PROD_URL}
+  - {name: PAG_FME_TOKEN}
+  - {name: PAG_OWNCLOUD_INTERNAL_URL}
+  - {name: PAG_OWNCLOUD_EXTERNAL_URL}
+  - {name: PAG_OWNCLOUD_USER}
+  - {name: PAG_OWNCLOUD_PASSWORD}
+  - {name: PAG_SMTP_SERVER}
+  - {name: PAG_BCC_ADDRESS}
+  - {name: PAG_FILE_SERVER}
+  - {name: PDS_STAGING_URL}
+  - {name: PDS_PROD_URL}
+  - {name: PDS_SMTP_SERVER}
+  - {name: PDS_BCC_ADDRESS}
+  - {name: PROXYWMSURL, default: 'https://wmsproxy.geoportail.lu/ogcproxywms'}
+  - {name: REVERSE_GEOCODE_API_KEY, default: ''}
+  - {name: REVERSE_GEOCODE_URL, default: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'}
+  - {name: ROUTING_GRAPHHOPPER_API_KEY, default: null}
+  - {name: ROUTING_MAPQUEST_API_KEY, default: null}
+  - {name: SHORTENER_ALLOWED_HOST}
+  - {name: SHORTENER_BASE_URL}
+
 update_paths:
   - admin_interface.available_functionalities
-  - admin_interface.available_metadata
-  - admin_interface.functionalities
+  # - admin_interface.available_metadata
+  # - admin_interface.functionalities
   - admin_interface.available_in_templates
   - api
   - authorized_referers
@@ -198,21 +498,21 @@ update_paths:
   - headers.layers
   - headers.shortener
   - headers.login
-  - interfaces_config.default.constants.ngeoWfsPermalinkOptions
-  - interfaces_config.default.dynamic_constants
-  - interfaces_config.default.static
-  - interfaces_config.default.routes
-  - interfaces_config.desktop.constants
-  - interfaces_config.desktop.routes
-  - interfaces_config.desktop_alt.constants
-  - interfaces_config.desktop_alt.routes
-  - interfaces_config.mobile.constants
-  - interfaces_config.mobile_alt.constants
-  - interfaces_config.iframe_api.constants
-  - interfaces_config.oeedit.routes
+  # - interfaces_config.default.constants.ngeoWfsPermalinkOptions
+  # - interfaces_config.default.dynamic_constants
+  # - interfaces_config.default.static
+  # - interfaces_config.default.routes
+  # - interfaces_config.desktop.constants
+  # - interfaces_config.desktop.routes
+  # - interfaces_config.desktop_alt.constants
+  # - interfaces_config.desktop_alt.routes
+  # - interfaces_config.mobile.constants
+  # - interfaces_config.mobile_alt.constants
+  # - interfaces_config.iframe_api.constants
+  # - interfaces_config.oeedit.routes
   - interfaces_theme
   - resourceproxy
-  - servers
+  # - servers
   - shortener.allowed_hosts
   - sqlalchemy
   - sqlalchemy_slave
