@@ -82,6 +82,8 @@ class Wms:
             elif lparam == 'crs':
                 if "EPSG:" in value:
                     crs = value[5:]
+                else:
+                    crs = value
                 query_params["imageSR"] = crs
                 query_params["bboxSR"] = crs
             elif lparam == 'layers':
