@@ -99,6 +99,9 @@ class LuxLayerInternalWMS(LayerWMS):
     is_poi = Column(Boolean, info={
         'colanderalchemy': {'title': _('Is a POI')}
     })
+    use_auth = Column(Boolean, info={
+        'colanderalchemy': {'title': _('Authentication needed')}
+    })
     collection_id = Column(Integer, info={
         'colanderalchemy': {'title': _('Collection ID')}
     })
@@ -182,7 +185,18 @@ class LuxGetfeatureDefinition(Base):
         'colanderalchemy': {'title': _('Table name')}
     })
     rest_url = Column(String(255), info={
-        'colanderalchemy': {'title': _('URL Rest')}
+        'colanderalchemy': {
+            'title': _('URL Rest'),
+            'description': 'Entry point to the arcgis rest api. The /query entry point is needed here including '
+            'the "/query" path'
+        }
+    })
+    use_auth = Column(Boolean, info={
+        'colanderalchemy': {
+            'title': _('Authentication needed'),
+            'description': ('If ' + _('URL Rest') + ' is given and this option is enabled, get an authentication '
+                            + 'token from token server using environment variables '
+                            + 'ARCGIS_TOKEN_URL, ARCGIS_USER, ARCGIS_PASS before making calls to rest api')}
     })
     engine_gfi = Column('engine', Unicode, nullable=False, info={
         'colanderalchemy': {'title': _('Engine')}
