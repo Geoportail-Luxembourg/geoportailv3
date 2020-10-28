@@ -1,11 +1,55 @@
-from typing import Dict
+from typing import Optional, Dict
 import json
 from datetime import datetime, timedelta
 import requests
 import urllib
+from collections import namedtuple
 
 
-def get_arcgis_token(rest_url: str, request, log, force_renew=False) -> Dict:
+class ESRITokenException(Exception):
+    pass
+
+
+ResultTuple = namedtuple('ResultTuple', ['data', 'content_type'])
+
+
+def read_request_with_token(url_request, parent_request, log, timeout=15, renew_token=True):
+    result = urllib.request.urlopen(url_request, None, timeout)
+    data = result.read()
+    try:
+        resp = json.loads(data)
+    except Exception as e:
+        resp = {}
+        # log.info(f"Response is no valid json, {type(e)}: {str(e)}")
+    if 'error' in resp:
+        log.error(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
+                  f"server answered {resp['error']}")
+        if renew_token:
+            log.info("Try to get new token")
+            auth_token = get_arcgis_token(parent_request, log, force_renew=True)
+            if 'token' in auth_token:
+                (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url_request.full_url)
+                query_params = dict(urllib.parse.parse_qsl(query))
+                query_params["token"] = auth_token['token']
+                url_tuple = (scheme, netloc, path, urllib.parse.urlencode(query_params), fragment)
+                url = urllib.parse.urlunsplit(url_tuple)
+                url_request.full_url = url
+
+                # Try to re-read with new token
+                result = urllib.request.urlopen(url_request, None, timeout)
+                data = result.read()
+
+            try:
+                resp = json.loads(data)
+            except Exception as e:
+                resp = {}
+                log.info(f"Response is no valid json, {type(e)}: {str(e)}")
+            if 'error' in resp:
+                raise ESRITokenException(f'Original server error: {resp}')
+    return ResultTuple(data, result.info()['Content-Type'])
+
+
+def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None) -> Dict:
     session = request.session
     config = request.registry.settings
     auth_token = {}
@@ -25,10 +69,14 @@ def get_arcgis_token(rest_url: str, request, log, force_renew=False) -> Dict:
             auth_token = _renew_arcgis_token(session, config, log)
         else:
             log.info('token still valid')
+            # the parameter token_check_url allows to check the token directly on the
+            # destination url, by default the check is performed on the token issuing url
             # TODO: disable systematic token check below in prod, enable only in dev
             token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token['token']}).encode()
-            token_check_request = urllib.request.Request(config['arcgis_token_url'], data=token_check_data)
-            # token_check_request = urllib.request.Request(rest_url, data=token_check_data)
+            if token_check_url is None:
+                token_check_request = urllib.request.Request(config['arcgis_token_url'], data=token_check_data)
+            else:
+                token_check_request = urllib.request.Request(token_check_url, data=token_check_data)
             try:
                 log.info(f"Check token at: {token_check_request.full_url}")
                 rep = urllib.request.urlopen(token_check_request, timeout=15)

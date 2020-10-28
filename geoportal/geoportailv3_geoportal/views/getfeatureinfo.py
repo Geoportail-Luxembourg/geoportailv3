@@ -27,9 +27,8 @@ from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from functools import partial
 
-
-
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 log = logging.getLogger(__name__)
 
@@ -1027,7 +1026,7 @@ class Getfeatureinfo(object):
             id_column = 'objectid'
 
         if use_auth:
-            auth_token = get_arcgis_token(url, self.request, log)
+            auth_token = get_arcgis_token(self.request, log)
             if 'token' in auth_token:
                 body["token"] = auth_token['token']
 
@@ -1061,8 +1060,11 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
-            result = urllib.request.urlopen(query, None, 15)
-            content = result.read()
+            url_request = urllib.request.Request(query)
+            result = read_request_with_token(url_request, self.request, log)
+            content = result.data
+        except ESRITokenException as e:
+            raise HTTPBadGateway(e)
         except Exception as e:
             log.exception(e)
             log.error(url)
