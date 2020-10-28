@@ -16,7 +16,8 @@ import base64
 import os
 import json
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 log = logging.getLogger(__name__)
 
@@ -99,7 +100,7 @@ class Wms:
         query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
 
         if internal_wms.use_auth:
-            auth_token = get_arcgis_token(internal_wms.rest_url, self.request, log)
+            auth_token = get_arcgis_token(self.request, log)
             if 'token' in auth_token:
                 query_params["token"] = auth_token['token']
 
@@ -233,37 +234,22 @@ class Wms:
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
         try:
-            f = urllib.request.urlopen(url_request, None, timeout)
-            data = f.read()
-            try:
-                resp = json.loads(data)
-            except Exception as e:
-                resp = {}
-                # log.info(f"Response is no valid json, {type(e)}: {str(e)}")
-            if 'error' in resp:
-                log.error(f"Token refused at: {urllib.parse.splitquery(url_request.full_url)[0]} - "
-                          f"server answered {resp['error']}")
-                log.info("Try to get new token")
-                auth_token = get_arcgis_token(internal_wms.rest_url, self.request, log, force_renew=True)
-                if 'token' in auth_token:
-                    query_params["token"] = auth_token['token']
-                    url = remote_host + separator + urllib.parse.urlencode(query_params)
-                    url_request.full_url = url
-
-                # Try to re-read with new token
-                f = urllib.request.urlopen(url_request, None, timeout)
-                data = f.read()
+            data, content_type = read_request_with_token(url_request, self.request, log)
+        except ESRITokenException as e:
+            raise HTTPBadGateway(e)
+        # retry for other errors not related to tokens
         except:
             try:
                 # Retry to get the result
                 f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()
+                content_type = f.info()['Content-Type']
             except Exception as e:
                 log.exception(e)
                 log.error(url)
                 return HTTPBadGateway()
 
-        headers = {"Content-Type": f.info()['Content-Type']}
+        headers = {"Content-Type": content_type}
 
         return Response(data, headers=headers)
 
