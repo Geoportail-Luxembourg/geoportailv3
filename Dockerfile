@@ -1,6 +1,6 @@
 FROM camptocamp/geomapfish-tools:2.5.0.88 as builder
 
-ENV LANGUAGES="en fr de"
+ENV LANGUAGES="en fr de lb"
 ENV VARS_FILE=vars.yaml
 ENV CONFIG_VARS sqlalchemy.url sqlalchemy.pool_recycle sqlalchemy.pool_size sqlalchemy.max_overflow \
     sqlalchemy.use_batch_mode sqlalchemy_slave.url sqlalchemy_slave.pool_recycle sqlalchemy_slave.pool_size \
