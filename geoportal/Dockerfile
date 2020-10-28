@@ -11,9 +11,24 @@ RUN \
 
 COPY webpack.*.js Makefile CONST_Makefile /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
-RUN make apps
+# RUN make apps
 
 COPY . /app
+
+# jsapi generation
+RUN mkdir /etc/apiv3
+WORKDIR /etc/apiv3
+RUN node --version
+RUN mkdir -p /etc/apiv3/.build/externs && mkdir -p /etc/apiv3/build
+RUN curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js -o /etc/apiv3/.build/externs/angular-1.6.js && \
+    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js -o /etc/apiv3/.build/externs/angular-1.6-q_templated.js && \
+    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js -o /etc/apiv3/.build/externs/angular-1.6-http-promise_templated.js && \
+    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js -o /etc/apiv3/.build/externs/jquery-1.9.js
+COPY ./jsapi/package.json /etc/apiv3/
+RUN npm install --no-optional && npm cache clear --force
+ADD ./jsapi /etc/apiv3/jsapi
+RUN /etc/apiv3/jsapi/rebuild_api.sh
+
 
 # RUN make checks
 RUN make build
@@ -36,6 +51,7 @@ COPY . /app
 COPY --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
 COPY --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
 COPY --from=builder /etc/static-ngeo/* /etc/static-ngeo/
+COPY --from=builder /etc/apiv3/* /etc/apiv3/
 COPY --from=builder /app/alembic.ini /app/alembic.yaml ./
 RUN chmod go+w /etc/static-ngeo/ \
     /app/geoportailv3_geoportal/locale/ \
