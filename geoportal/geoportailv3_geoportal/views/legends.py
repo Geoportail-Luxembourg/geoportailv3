@@ -58,15 +58,8 @@ class Legends(object):
         if id != "":
             internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                 LuxLayerInternalWMS.id == id).first()
-            if internal_wms is not None:
-                ogc_server_id = internal_wms.ogc_server_id
-                ogc_server = DBSession.query(OGCServer).filter(OGCServer.id == ogc_server_id).first()
-                # ogc_server = DBSession.query(OGCServer).filter(
-                #     OGCServer.id == LuxLayerInternalWMS.ogc_server_id,
-                #     LuxLayerInternalWMS.id == id).first()
-                log.info('ogc_server type: %s, url: %s, id: %s, name: %s' %(ogc_server.type, ogc_server.url, ogc_server_id, ogc_server.name))
 
-            if internal_wms is not None and ogc_server.type == 'arcgis':
+            if internal_wms is not None and internal_wms.rest_url is not None and internal_wms.rest_url != '':
                 log.info('found arcgis layer')
 
                 legend = TranslationStringFactory("geoportailv3_geoportal-legends")
@@ -77,9 +70,6 @@ class Legends(object):
 
                 f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, 15)
                 data = json.load(f)
-                log.info('data keys: %s' % data.keys())
-                log.info('data keys: %s' % len(data['layers']))
-                log.info('data keys: %s' % [(l['layerName'], l['layerId']) for l in data['layers']])
                 html_legend = ''
 
                 active_layers = internal_wms.layers.split(',')
@@ -99,11 +89,8 @@ class Legends(object):
             "id=%s:legend:%s&do=export_html" % \
             (lang, name)
 
-        log.info('info here')
-        log.info('url: %s' % url)
         f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
         data = f.read()
-        log.info('data head: %s' % data[:50])
         data = data.replace(
             b"/lib/exe/fetch.php",
             b"https://wiki.geoportail.lu/lib/exe/fetch.php")
