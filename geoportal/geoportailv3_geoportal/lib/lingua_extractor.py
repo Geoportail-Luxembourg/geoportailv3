@@ -134,11 +134,9 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
 
         from c2cgeoportal_commons.models import DBSession  # pylint: disable=import-outside-toplevel
         from geoportailv3_geoportal.models import LuxLayerInternalWMS
-        from c2cgeoportal_commons.models.main import OGCServer
 
         results = (DBSession.query(LuxLayerInternalWMS)
-                   .join(OGCServer, LuxLayerInternalWMS.ogc_server_id == OGCServer.id)
-                   .filter(OGCServer.type == 'arcgis'))
+                   .filter(LuxLayerInternalWMS.rest_url.isnot(sqlalchemy.null)))
         print("%d ESRI layers to parse" % results.count())
 
         for result in results:

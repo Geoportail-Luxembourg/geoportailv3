@@ -130,11 +130,6 @@ RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
 COPY ./tools/ /app/tools
 RUN ln -s . geoportal
 
-# patch to enable running the arcgis mod before update to geoportal 2.5
-RUN sed -i -e "s/ OGCSERVER_TYPE_GEOSERVER,/ OGCSERVER_TYPE_GEOSERVER,\n            'arcgis',/" \
-           -e "s/(OGCSERVER_TYPE_GEOSERVER, OGCSERVER_TYPE_GEOSERVER),/(OGCSERVER_TYPE_GEOSERVER, OGCSERVER_TYPE_GEOSERVER),\n                        ('arcgis', 'arcgis server'),/" \
-        /usr/local/lib/python3.6/dist-packages/c2cgeoportal_commons/models/main.py
-
 WORKDIR /app/apiv3
 ADD ./jsapi /app/apiv3/jsapi
 RUN /app/apiv3/jsapi/rebuild_api.sh
