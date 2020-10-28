@@ -323,6 +323,7 @@ vars:
   servers:
     my_maps: 'https://ws.geoportail.lu/mymaps'
     mapserver: 'https://ws.geoportail.lu'
+    proxywms: '{PROXYWMSURL}'
 
   shortener:
     # Used to send a confirmation email
