@@ -392,6 +392,8 @@ vars:
     #       legend: {}
     phantomjs:
       disable: [apihelp]
+    routes:
+      disable: [mapserverproxy_wms,mapserverproxy_wfs]
 
   check_collector:
     hosts: []
