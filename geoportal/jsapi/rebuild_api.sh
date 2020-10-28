@@ -12,7 +12,7 @@ cp node_modules/font-awesome/fonts/* /app/geoportailv3_geoportal/jsapi/webfonts/
 cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geoportal/jsapi/build/fonts/
 cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geoportal/jsapi/webfonts/
 
-node node_modules/openlayers/tasks/build.js /opt/apiv3/jsapi/config.json /etc/static-ngeo/build/apiv3.js
+node node_modules/openlayers/tasks/build.js /etc/apiv3/jsapi/config.json /etc/static-ngeo/build/apiv3.js
 # The sourcemap is nonsensical, probably due to a GCC version way too old
 # so it is better to disable it
 # echo '//# sourceMappingURL=apiv3.js.map' >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js
@@ -28,22 +28,22 @@ node_modules/js-autocomplete/auto-complete.min.js \
 node_modules/promise-polyfill/promise.min.js \
 node_modules/url-polyfill/url-polyfill.min.js > /etc/static-ngeo/build/vendor.js
 
-./node_modules/.bin/lessc --clean-css /opt/apiv3/jsapi/less/geoportailv3.api.less /etc/static-ngeo/build/apiv3.css
-node /opt/apiv3/jsapi/jsdoc/get-ol3-doc-ref.js > /opt/apiv3/.build/jsdocOl3.js
+./node_modules/.bin/lessc --clean-css /etc/apiv3/jsapi/less/geoportailv3.api.less /etc/static-ngeo/build/apiv3.css
+node /etc/apiv3/jsapi/jsdoc/get-ol3-doc-ref.js > /etc/apiv3/.build/jsdocOl3.js
 
 node node_modules/.bin/jsdoc /opt/apiv3/jsapi/jsdoc/api/index.md -c /opt/apiv3/jsapi/jsdoc/api/conf.json  -d /app/geoportailv3_geoportal/jsapi/build/apidoc
 cp -R /opt/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
 
 
-cp /opt/apiv3/node_modules/@camptocamp/closure-util/.deps/library/*/closure/goog/base.js /etc/static-ngeo/build/
-cp /opt/apiv3/node_modules/mapbox-gl/dist/mapbox-gl.js.map /etc/static-ngeo/build/
+cp /etc/apiv3/node_modules/@camptocamp/closure-util/.deps/library/*/closure/goog/base.js /etc/static-ngeo/build/
+cp /etc/apiv3/node_modules/mapbox-gl/dist/mapbox-gl.js.map /etc/static-ngeo/build/
 
 cd /etc/static-ngeo/build/
-rm -f jsapi_node_modules; ln -s /opt/apiv3/node_modules jsapi_node_modules
-rm -f jsapi_src; ln -s /opt/apiv3/jsapi/src/ jsapi_src
-rm -f jsapi_closure; ln -s /opt/apiv3/jsapi/closure/ jsapi_closure
+rm -f jsapi_node_modules; ln -s /etc/apiv3/node_modules jsapi_node_modules
+rm -f jsapi_src; ln -s /etc/apiv3/jsapi/src/ jsapi_src
+rm -f jsapi_closure; ln -s /etc/apiv3/jsapi/closure/ jsapi_closure
 
-python3 /opt/apiv3/jsapi/closure/depswriter.py --root_with_prefix=". ../../.." \
+python3 /etc/apiv3/jsapi/closure/depswriter.py --root_with_prefix=". ../../.." \
   --root_with_prefix="jsapi_node_modules/openlayers/src ./jsapi_node_modules/openlayers/src" \
   --root_with_prefix="jsapi_src jsapi_src" \
   --root_with_prefix="jsapi_closure jsapi_closure" \
