@@ -29,6 +29,8 @@ from functools import partial
 
 
 
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token
+
 log = logging.getLogger(__name__)
 
 
@@ -61,7 +63,8 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.id_column,
                 None, fid, None,
                 luxgetfeaturedefinition.attributes_to_remove,
-                luxgetfeaturedefinition.columns_order)
+                luxgetfeaturedefinition.columns_order,
+                use_auth=luxgetfeaturedefinition.use_auth)
             if attribute not in features[0]['attributes']:
                 return HTTPBadRequest("Bad attribute")
             url = features[0]['attributes'][attribute]
@@ -389,7 +392,8 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.id_column,
                         big_box, None, None,
                         luxgetfeaturedefinition.attributes_to_remove,
-                        luxgetfeaturedefinition.columns_order)
+                        luxgetfeaturedefinition.columns_order,
+                        use_auth=luxgetfeaturedefinition.use_auth)
 
                 else:
                     features = self._get_external_data(
@@ -398,7 +402,8 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.id_column,
                         None, fid, None,
                         luxgetfeaturedefinition.attributes_to_remove,
-                        luxgetfeaturedefinition.columns_order)
+                        luxgetfeaturedefinition.columns_order,
+                        use_auth=luxgetfeaturedefinition.use_auth)
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
@@ -943,7 +948,7 @@ class Getfeatureinfo(object):
 
     def get_additional_external_data(
             self, features, geometry_name, layer_id, url, id_column,
-            attributes_to_remove, columns_order, where_key):
+            attributes_to_remove, columns_order, where_key, use_auth=False):
         groups = []
         modified_features = []
         for feature in features:
@@ -960,7 +965,7 @@ class Getfeatureinfo(object):
                     groups.append(group)
                     new_features = self._get_external_data(
                         layer_id, url, id_column, None, None, None,
-                        attributes_to_remove, columns_order, where_clause)
+                        attributes_to_remove, columns_order, where_clause, use_auth)
                     lines = []
                     for new_feature in new_features:
                         for line in shape(new_feature[geometry_name]):
@@ -975,7 +980,7 @@ class Getfeatureinfo(object):
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None,
-                           where_clause=None):
+                           where_clause=None, use_auth=False):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -1020,6 +1025,11 @@ class Getfeatureinfo(object):
                 'objectIds': ''}
         if id_column is None:
             id_column = 'objectid'
+
+        if use_auth:
+            auth_token = get_arcgis_token(url, self.request, log)
+            if 'token' in auth_token:
+                body["token"] = auth_token['token']
 
         if featureid is not None:
             if id_column == 'objectid':

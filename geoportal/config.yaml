@@ -10,6 +10,11 @@ environment:
 - {default: '999', name: DEFAULT_MYMAPS_ROLE}
 - {name: AUTHTKT_SECURE}
 - {name: AUTHTKT_SECRET}
+- {name: ARCGIS_TOKEN_URL}
+- {name: ARCGIS_TOKEN_VALIDITY}
+- {name: ARCGIS_TOKEN_REFERER}
+- {name: ARCGIS_USER}
+- {name: ARCGIS_PASS}
 - {name: DB_MYMAPS}
 - {name: DB_PGROUTE}
 - {name: DB_ECADASTRE}
