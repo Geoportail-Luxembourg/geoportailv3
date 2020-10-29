@@ -17,10 +17,10 @@ node node_modules/openlayers/tasks/build.js /etc/apiv3/jsapi/config.json /etc/st
 # so it is better to disable it
 # echo '//# sourceMappingURL=apiv3.js.map' >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js
 
-sed -i /etc/static-ngeo/build/apiv3.js.map \
-  -e 'sY/app/apiv3/node_modules/Y./jsapi_node_modules/Yg' \
-  -e 'sY/app/apiv3/jsapi/src/Y./jsapi_src/Yg' \
-  -e 'sY/app/apiv3/jsapi/closure/Y./jsapi_closure/Yg'
+# sed -i /etc/static-ngeo/build/apiv3.js.map \
+#   -e 'sY/app/apiv3/node_modules/Y./jsapi_node_modules/Yg' \
+#   -e 'sY/app/apiv3/jsapi/src/Y./jsapi_src/Yg' \
+#   -e 'sY/app/apiv3/jsapi/closure/Y./jsapi_closure/Yg'
 
 cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/build/d3.min.js \
 node_modules/mapbox-gl/dist/mapbox-gl.js \
@@ -31,8 +31,9 @@ node_modules/url-polyfill/url-polyfill.min.js > /etc/static-ngeo/build/vendor.js
 ./node_modules/.bin/lessc --clean-css /etc/apiv3/jsapi/less/geoportailv3.api.less /etc/static-ngeo/build/apiv3.css
 node /etc/apiv3/jsapi/jsdoc/get-ol3-doc-ref.js > /etc/apiv3/.build/jsdocOl3.js
 
-node node_modules/.bin/jsdoc /opt/apiv3/jsapi/jsdoc/api/index.md -c /opt/apiv3/jsapi/jsdoc/api/conf.json  -d /app/geoportailv3_geoportal/jsapi/build/apidoc
-cp -R /opt/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
+# FIXME restore doc generation
+# node node_modules/.bin/jsdoc /etc/apiv3/jsapi/jsdoc/api/index.md -c /etc/apiv3/jsapi/jsdoc/api/conf.json  -d /app/geoportailv3_geoportal/jsapi/build/apidoc
+# cp -R /etc/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
 
 
 cp /etc/apiv3/node_modules/@camptocamp/closure-util/.deps/library/*/closure/goog/base.js /etc/static-ngeo/build/
