@@ -91,6 +91,8 @@ vars:
     available_functionalities: [default_basemap, default_theme, print_template, mapserver_substitution,
       filterable_layers, preset_layer_filter, open_panel]
     available_metadata:
+    - {name: service_metadata_id}
+    - {name: dataportaldatasetid}
     - {name: attribution}
     - {name: bg_layer}
     - {name: bg_opacity, type: float}
