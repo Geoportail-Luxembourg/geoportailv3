@@ -228,17 +228,17 @@ class LuxPrintProxy(PrintProxy):
             spec["attributes"].pop('firstPagesUrls', None)
         self.request.body = str.encode(json.dumps(spec))
 
-        resp, content = self._proxy("%s/report.%s" % (
+        resp = self._proxy("%s/report.%s" % (
             print_url,
             self.request.matchdict.get("format")
         ))
-        job.id = json.loads(content)["ref"]
+        job.id = json.loads(resp.content)["ref"]
         job.print_url = print_url
         job.creation = datetime.now()
         DBSession.add(job)
 
         return self._build_response(
-            resp, content, False, "print"
+            resp, resp.content, False, "print"
         )
 
     @view_config(route_name="lux_printproxy_status")
