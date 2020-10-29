@@ -4,7 +4,7 @@ LABEL maintainer Camptocamp "info@camptocamp.com"
 WORKDIR /app
 
 COPY package.json /app
-RUN \
+RUN npm set progress=false && \
     npm-packages --src=/app/package.json --dst=/tmp/npm-packages && \
     npm install --no-optional --global --unsafe-perm --no-package-lock `cat /tmp/npm-packages` && \
     npm cache clear --force
