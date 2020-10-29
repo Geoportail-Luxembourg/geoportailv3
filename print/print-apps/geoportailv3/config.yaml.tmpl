@@ -1,166 +1,222 @@
 ---
+pdfConfig: !pdfConfig
+  compressed: false
+  author: "Jeff Konnen"
+  subject: "map.geoportail.lu Print"
+  creator: "Mapfish Print"
 
 throwErrorOnExtraParameters: true
-defaultToSvg: true
 
-allowedReferers:
-  - !hostnameMatch
-    host: ${VISIBLE_WEB_HOST}
-  - !localMatch {}
 
 templates:
-  1 A4 portrait: !template
-    reportTemplate: A4_Portrait.jrxml
-    attributes:
-      title:
-        !string &title
+  A4 portrait: !template
+    pdfConfig: !pdfConfig
+      title: "A4 Portrait by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a4_portrait.jrxml
+    attributes: &attributes
+      name: !string {}
+      scale: !string {}
+      url: !string {}
+      qrimage: !string {}
+      dataOwner: !string
         default: ""
-      comments:
-        !string &comments
+      queryResults: !string
         default: ""
-      debug:
-        !boolean &debug
-        default: false
-      legend: !legend &legend {}
-      map:
-        !map &map
-        maxDpi: 254
-        dpiSuggestions: [254]
-        zoomLevels:
-          !zoomLevels
-          scales: [100, 250, 500, 2500, 5000, 10000, 25000, 50000, 100000, 500000]
-        width: 555
-        height: 675
-      northArrow:
-        !northArrow &northArrow
-        size: 40
-        default:
-          graphic: "file:///north.svg"
-      scalebar:
-        !scalebar &scalebar
-        width: 150
-        height: 20
-        default:
-          fontSize: 8
-      datasource:
-        !datasource &datasource
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 470
+        height: 650
+      lang: !string {}
+      legend: !datasource
         attributes:
-          title: !string {}
-          table: !table {}
-
+          name: !string {}
+        default: []
+      scalebar: !scalebar
+        width: 150
+        height: 30
+      northArrow: !northArrow
+        size: 50
+        default:
+          graphic: "file://NorthArrow_10.svg"
+          backgroundColor: "rgba(214, 214, 214, 0)"
     processors: &processors
       - !reportBuilder  # compile all reports in current directory
         directory: '.'
-      - !configureHttpRequests &configureHttpRequests
+      - !configureHttpRequests
         httpProcessors:
-          ## For internal print
-          ## - !mapUri
-          ##   mapping:
-          ##     https?://${VISIBLE_WEB_HOST_RE_ESCAPED}${VISIBLE_ENTRY_POINT_RE_ESCAPED}tiles(.*): "${TILECLOUDCHAIN_INTERNAL_URL}${VISIBLE_ENTRY_POINT}tiles$1"
-          ## - !mapUri
-          ##   mapping:
-          ##     https?://${VISIBLE_WEB_HOST_RE_ESCAPED}${VISIBLE_ENTRY_POINT_RE_ESCAPED}(.*): "${GEOPORTAL_INTERNAL_URL}${VISIBLE_ENTRY_POINT}$1"
-          ## - !forwardHeaders
-          ##   matchers:
-          ##     - !hostnameMatch
-          ##       host: ${GEOPORTAL_INTERNAL_HOST}
-          ##       port: ${GEOPORTAL_INTERNAL_PORT}
-          - !forwardHeaders
-            matchers:
-              - !hostnameMatch
-                host: ${VISIBLE_WEB_HOST}
-                port: ${VISIBLE_WEB_PORT}
-            headers:
-              - Cookie
-              ## - Host
-          - !forwardHeaders
+          - !mapUri  # Rule to rewrite the local dev queries
+            mapping:
+              http://localhost:8080/(.*): "http://geoportal:8080/$1"
+          - !forwardHeaders  # Rule to forward the referer
             headers:
               - Referer
               - X-Request-ID
-              - Forwarded
-          - !restrictUris
-            matchers:
-              - !localMatch
-                reject: true
-              ## For internal print
-              ## - !hostnameMatch
-              ##   host: ${GEOPORTAL_INTERNAL_HOST}
-              ##   port: ${GEOPORTAL_INTERNAL_PORT}
-              ## - !hostnameMatch
-              ##   host: ${TILECLOUDCHAIN_INTERNAL_HOST}
-              ##   port: ${TILECLOUDCHAIN_INTERNAL_PORT}
-              - !ipMatch
-                ip: 10.0.0.0
-                mask: 255.0.0.0
-                reject: true
-              - !ipMatch
-                ip: 172.16.0.0
-                mask: 255.240.0.0
-                reject: true
-              - !ipMatch
-                ip: 192.168.0.0
-                mask: 255.255.0.0
-                reject: true
-              - !acceptAll {}
-      - !prepareLegend
-        maxWidth: 185
-        template: legend.jrxml
-      - !createMap {}
-      - !createNorthArrow {}
+      - !createMap
+        inputMapper: {map: map}
+        outputMapper: {mapSubReport: mapSubReport}
       - !createScalebar {}
-      - !createDataSource
-        processors:
-          - !prepareTable
-            dynamic: true
-            columns:
-              icon: !urlImage
-                urlExtractor: (.*)
-                urlGroup: 1
-
-  2 A4 landscape: !template
-    reportTemplate: A4_Landscape.jrxml
+      - !createNorthArrow {}
+  A4 landscape: !template
+    pdfConfig: !pdfConfig
+      title: "A4 Landscape by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a4_landscape.jrxml
     attributes:
-      title: *title
-      comments: *comments
-      debug: *debug
-      legend: *legend
+      <<: *attributes
       map: !map
-        <<: *map
-        width: 800
-        height: 441
-      northArrow: *northArrow
-      scalebar: *scalebar
-      datasource: *datasource
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 715
+        height: 395
+      scalebar: !scalebar
+        width: 150
+        height: 30
     processors: *processors
-
-  3 A3 portrait: !template
-    reportTemplate: A3_Portrait.jrxml
+  A3 portrait: !template
+    pdfConfig: !pdfConfig
+      title: "A3 Portrait by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a3_portrait.jrxml
     attributes:
-      title: *title
-      comments: *comments
-      debug: *debug
-      legend: *legend
+      <<: *attributes
       map: !map
-        <<: *map
-        width: 800
-        height: 1000
-      northArrow: *northArrow
-      scalebar: *scalebar
-      datasource: *datasource
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 715
+        height: 975
+      scalebar: !scalebar
+        width: 230
+        height: 40
     processors: *processors
-
-  4 A3 landscape: !template
-    reportTemplate: A3_Landscape.jrxml
+  A3 landscape: !template
+    pdfConfig: !pdfConfig
+      title: "A3 Landscape by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a3_landscape.jrxml
     attributes:
-      title: *title
-      comments: *comments
-      debug: *debug
-      legend: *legend
+      <<: *attributes
       map: !map
-        <<: *map
-        width: 1150
-        height: 673
-      northArrow: *northArrow
-      scalebar: *scalebar
-      datasource: *datasource
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 1064
+        height: 640
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A2 portrait: !template
+    pdfConfig: !pdfConfig
+      title: "A2 Portrait by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a2_portrait.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 1064
+        height: 1475
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A2 landscape: !template
+    pdfConfig: !pdfConfig
+      title: "A2 Landscape by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a2_landscape.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 1558
+        height: 985
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A1 portrait: !template
+    pdfConfig: !pdfConfig
+      title: "A1 Portrait by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a1_portrait.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 1558
+        height: 2175
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A1 landscape: !template
+    pdfConfig: !pdfConfig
+      title: "A1 Landscape by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a1_landscape.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 2255
+        height: 1482
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A0 portrait: !template
+    pdfConfig: !pdfConfig
+      title: "A0 Portrait by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a0_portrait.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 2254
+        height: 3155
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  A0 landscape: !template
+    pdfConfig: !pdfConfig
+      title: "A0 Landscape by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a0_landscape.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 3241
+        height: 2173
+      scalebar: !scalebar
+        width: 230
+        height: 40
+    processors: *processors
+  thumbnail: !template
+    reportTemplate: thumbnail.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 470
+        height: 650
     processors: *processors
