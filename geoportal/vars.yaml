@@ -374,23 +374,25 @@ vars:
   checker:
     fulltextsearch:
       search: bat
-    # print:
-    #   spec:
-    #     layout: "1 A4 portrait"
-    #     outputFormat: "pdf"
-    #     attributes:
-    #       title: ""
-    #       comments: ""
-    #       datasource: []
-    #       map:
-    #         projection: "EPSG:2056"
-    #         dpi: 254
-    #         rotation: 0
-    #         center: [2600000, 1200000]
-    #         scale: 100000
-    #         longitudeFirst: true
-    #         layers: []
-    #       legend: {}
+    print:
+      spec:
+        layout: "A4 portrait"
+        outputFormat: "pdf"
+        attributes:
+          name: ""
+          scale: ""
+          url: ""
+          qrimage: ""
+          map:
+            projection: "EPSG:2169"
+            dpi: 127
+            rotation: 0
+            center: [680000, 6403000]
+            scale: 100000
+            longitudeFirst: true
+            layers: []
+          lang: "fr"
+          legend: {}
     phantomjs:
       disable: [desktop,mobile,iframe_api,apihelp]
       routes:
