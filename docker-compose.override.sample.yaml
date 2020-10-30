@@ -171,3 +171,10 @@ services:
       - DOGPILECACHE_LOG_LEVEL
       - LOG_TYPE
       - C2CWSGIUTILS_LOG_LEVEL=WARN
+    # db is repo is located at camptocamp/luxembourg_dev_db
+    # you need to build the image first (make build) in the db repo.
+    luxdb:
+      image: lux_db
+      ports:
+      - "5432:5432"
+
