@@ -140,7 +140,7 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
         results = (DBSession.query(LuxLayerInternalWMS)
                    .filter(LuxLayerInternalWMS.rest_url.isnot(None))
                    .filter(LuxLayerInternalWMS.id == 808))
-        print("%d ESRI layers to parse" % results.count())
+        print(f"{results.count} ESRI layers to parse")
 
         for result in results:
             self._load_result(result)
