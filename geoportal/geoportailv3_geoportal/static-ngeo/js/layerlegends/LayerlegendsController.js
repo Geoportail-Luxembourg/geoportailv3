@@ -99,12 +99,6 @@ exports.prototype.hasLegend = function(layer) {
     var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
 
-    var isLegendAvailable = (localMetadata !== undefined &&
-      'legend_name' in localMetadata);
-    if (!isLegendAvailable) {
-      return false;
-    }
-
     var legend_name = ('legend_name' in localMetadata) ?
         localMetadata['legend_name'] : '';
     var id = layer.get('queryable_id');

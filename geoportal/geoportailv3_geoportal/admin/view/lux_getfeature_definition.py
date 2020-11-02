@@ -20,6 +20,7 @@ class LuxGetfeatureDefinitionViews(AbstractViews):
         _list_field('query'),
         _list_field('template'),
         _list_field('rest_url'),
+        _list_field('use_auth'),
         _list_field('layer'),
     ]
     _id_field = 'id'

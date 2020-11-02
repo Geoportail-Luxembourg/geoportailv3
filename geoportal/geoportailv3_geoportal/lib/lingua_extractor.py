@@ -8,12 +8,10 @@ import httplib2
 import json
 import yaml
 from geojson import loads as geojson_loads
-import sqlalchemy
 from sqlalchemy.exc import NoSuchTableError, OperationalError, ProgrammingError
 from lingua.extractors import Extractor, Message
 
-import c2cwsgiutils.db
-import c2cgeoportal_commons.models
+from c2cgeoportal_geoportal import init_dbsessions
 from c2cgeoportal_commons.config import config
 from c2cgeoportal_geoportal.lib.bashcolor import RED, colorize
 
@@ -29,6 +27,7 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
 
     def __init__(self):
         super().__init__()
+        log.info(f'entering into {self.__class__} lux extractor')
         if os.path.exists("geoportal/config.yaml"):
             config.init("geoportal/config.yaml")
             self.config = config.get_config()
@@ -50,18 +49,20 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
         del fileobj, lineno
 
         try:
-            engine = sqlalchemy.engine_from_config(self.config, "sqlalchemy_slave.")
-            factory = sqlalchemy.orm.sessionmaker(bind=engine)
-            db_session = sqlalchemy.orm.scoped_session(factory)
-            c2cgeoportal_commons.models.DBSession = db_session
-            c2cgeoportal_commons.models.Base.metadata.bind = engine
-            for dbsession_name, dbsession_config in self.config.get("dbsessions", {}).items():  # pragma: nocover
-                c2cgeoportal_commons.models.DBSessions[dbsession_name] = c2cwsgiutils.db.create_session(
-                    config, dbsession_name, **dbsession_config
-                )
+            # initialize DB connections in a way similar to c2cgeoportal_geoportal.lib.lingua_extractor
+            settings = config.get_config()
 
+            class R:
+                settings = None
+
+            class C:
+                registry = R()
+
+            config_ = C()
+            config_.registry.settings = settings
+            init_dbsessions(settings, config_)
             try:
-                self._extract_messages(db_session)
+                self._extract_messages()
 
             except ProgrammingError as e:
                 print(
@@ -129,17 +130,17 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     """
     extensions = [".ini"]
 
-    def _extract_messages(self, db_session):
+    def _extract_messages(self):
         print('Entering into ESRI extractor')
 
+        # import of DBSession must be done after call of init_dbsessions
         from c2cgeoportal_commons.models import DBSession  # pylint: disable=import-outside-toplevel
         from geoportailv3_geoportal.models import LuxLayerInternalWMS
-        from c2cgeoportal_commons.models.main import OGCServer
 
         results = (DBSession.query(LuxLayerInternalWMS)
-                   .join(OGCServer, LuxLayerInternalWMS.ogc_server_id == OGCServer.id)
-                   .filter(OGCServer.type == 'arcgis'))
-        print("%d ESRI layers to parse" % results.count())
+                   .filter(LuxLayerInternalWMS.rest_url.isnot(None))
+                   .filter(LuxLayerInternalWMS.id == 808))
+        print(f"{results.count} ESRI layers to parse")
 
         for result in results:
             self._load_result(result)
@@ -309,13 +310,14 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             return []
         return []
 
-    def _extract_messages(self, session):  # pragma: nocover
+    def _extract_messages(self):  # pragma: nocover
         print('Entering into the tooltip extractor')
 
+        # import of DBSessions must be done after call of init_dbsessions
         from c2cgeoportal_commons.models import DBSession, DBSessions
         from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS
 
-        results = session.query(LuxGetfeatureDefinition).\
+        results = DBSession.query(LuxGetfeatureDefinition).\
                   filter(LuxGetfeatureDefinition.remote_template == False).\
                   filter(
                       LuxGetfeatureDefinition.template.in_

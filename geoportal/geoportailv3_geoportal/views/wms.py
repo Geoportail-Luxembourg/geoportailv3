@@ -1,9 +1,10 @@
+from typing import Optional
+
 from ipaddr import IPv4Network
 from pyramid.view import view_config
 from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
 from c2cgeoportal_commons.models import DBSession
 from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
-from c2cgeoportal_geoportal.lib import get_url2
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
@@ -13,83 +14,23 @@ import urllib.parse
 import socket
 import base64
 import os
-import re
 import json
-from datetime import datetime
+
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 log = logging.getLogger(__name__)
 
 
-class Wms(object):
-
+class Wms:
     def __init__(self, request):
         self.request = request
 
-    def _check_token(self, token):
+    def _check_token(self, token: str) -> bool:
         config = self.request.registry.settings
-        if config["authtkt_secret"] == token:
-            return True
-        return False
+        return config["authtkt_secret"] == token
 
-    def _get_arcgis_token(self, internal_wms, force_renew=False):
-        try:  # try to retrieve token from session storage
-            assert not force_renew
-            log.info('check token')
-            auth_token = self.request.session['auth_token']
-            log.info('token exists')
-            # renew token if it expires in the next 30s
-            assert datetime.fromtimestamp(float(auth_token['expires'])/1000 - 30) > datetime.now()
-            log.info('token still valid')
-            # systematic token check below is disabled
-            # token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token}).encode()
-            # token_check_request = urllib.request.Request(internal_wms.rest_url, data=token_check_data)
-            # try:
-            #     log.info(f"Check token at: {token_check_request.full_url}")
-            #     rep = urllib.request.urlopen(token_check_request, timeout=15)
-            #     check = json.load(rep)
-            #     if 'error' in check:
-            #         log.error(f"Token refused by: {token_check_request.full_url} - "
-            #                   f"server answered {check['error']}")
-            # except:
-            #     log.error(f"Failed token check at: {token_check_request.full_url}")
-            # assert 'error' not in check
-        except (KeyError, AssertionError) as e:
-            log.info('No valid token found in session storage')
-            config = self.request.registry.settings
-            token_data = {
-                'f': 'json',
-                'username': config["arcgis_token_username"],
-                'password': config["arcgis_token_password"],
-                'referer': 'x',
-                'expiration': 600
-            }
-            encoded_token_data = urllib.parse.urlencode(token_data).encode()
-            token_url = urllib.parse.urljoin(internal_wms.rest_url + '/', 'generateToken')
-            url_request = urllib.request.Request(token_url, data=encoded_token_data)
-            try:
-                log.info(f"Get token from: {url_request.full_url}")
-                rep = urllib.request.urlopen(url_request, timeout=15)
-                auth_token = json.load(rep)
-                if 'error' in auth_token:
-                    log.error(f"Failed getting token from: {url_request.full_url} - "
-                              f"server answered {auth_token['error']}")
-                    auth_token = {}
-                else:
-                    log.info("Success: token valid until "
-                             f"{datetime.fromtimestamp(float(auth_token.get('expires', 0))/1000)}")
-            except Exception as e:
-                log.info(f"Failed getting token from: {url_request.full_url}")
-                auth_token = {}
-                log.exception(e)
-                log.error(url_request)
-                return HTTPBadGateway()
-
-            self.request.session['auth_token'] = auth_token
-
-        return auth_token
-
-
-    def _check_ip(self, client_ip):
+    def _check_ip(self, client_ip: str) -> bool:
         client_ip = IPv4Network(client_ip).ip
         config = self.request.registry.settings
         if "authorized_ips" in config:
@@ -103,7 +44,7 @@ class Wms(object):
                         return True
         return False
 
-    def _check_ip_for_httpsproxy(self, url):
+    def _check_ip_for_httpsproxy(self, url: str) -> bool:
         parsedurl = urllib.parse.urlparse(url)
         hostname = parsedurl.netloc.split(":")
         remote_ip = IPv4Network(socket.gethostbyname(hostname[0])).ip
@@ -128,6 +69,45 @@ class Wms(object):
                         return False
         return True
 
+    def _process_arcgis_server(self, internal_wms: LuxLayerInternalWMS) -> str:
+        query_params = {}
+        param_dict = {
+            'map_resolution': 'dpi',
+            'transparent': 'transparent',
+            'bbox': 'bbox',
+        }
+        for param, value in self.request.params.items():
+            lparam = param.lower()
+            if lparam in param_dict:
+                query_params[param_dict[lparam]] = value
+            elif lparam == 'crs':
+                if "EPSG:" in value:
+                    crs = value[5:]
+                else:
+                    crs = value
+                query_params["imageSR"] = crs
+                query_params["bboxSR"] = crs
+            elif lparam == 'layers':
+                query_params["layers"] = 'show:' + internal_wms.layers
+            elif lparam == 'format':
+                query_params["format"] = value.split('/')[-1]
+            else:
+                pass
+
+        kw = {k.lower(): v for (k, v) in self.request.params.items()
+              if k.lower() in ('width', 'height')}
+
+        query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
+
+        if internal_wms.use_auth:
+            auth_token = get_arcgis_token(self.request, log)
+            if 'token' in auth_token:
+                query_params["token"] = auth_token['token']
+
+        query_params["f"] = "image"
+
+        return query_params
+
     @view_config(route_name='wmspoi')
     def wmspoi(self):
         remote_host = os.environ["poi_server"]
@@ -144,7 +124,7 @@ class Wms(object):
                 remote_host = remote_host + "map=/home/mapserv/" + public + \
                     self.request.params.get(param, '') + "/generic.map"
         url = ""
-        if remote_host[:-1] == '?':
+        if remote_host[-1] == '?':
             url = remote_host + param_wms[:-1]
         else:
             url = remote_host + "&" + param_wms[:-1]
@@ -164,11 +144,14 @@ class Wms(object):
         layers = layers.split(',')
         if len(layers) == 0:
             return HTTPBadRequest()
+        if len(layers) > 1:
+            log.warning(f"Only the first layer can be requested. Found {len(layers)}. "
+                        "Only the first one will be processed.")
         # TODO: Multiple layers could be requested with a single request
         # Today the first layer wins.
         layer = layers[0]
 
-        internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
+        internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.layer == layer).first()
         if internal_wms is None:
             return HTTPNotFound()
@@ -185,8 +168,8 @@ class Wms(object):
 
         # If the layer is not public and we are connected check the rights
         if not internal_wms.public and self.request.user is not None:
-            # Check if the layer has a resctriction area
-            restriction = DBSession.query(RestrictionArea).filter(
+            # Check if the layer has a restriction area
+            restriction: Optional[RestrictionArea] = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
                     Role.id == self.request.user.role.id)).filter(
                 RestrictionArea.layers.any(
@@ -198,50 +181,20 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         query_params = {}
-        if internal_wms.ogc_server.type == 'arcgis':
-
-            # deactivated code for debug purpose
-            if False:
-                return Response('this is another hires layer\n',
-                                headers={"Content-Type": "text/plain"})
-
-            param_dict = {
-                'map_resolution': 'dpi',
-                'transparent': 'transparent',
-                'bbox': 'bbox',
-            }
-            for param, value in self.request.params.items():
-                lparam = param.lower()
-                if lparam in param_dict:
-                    query_params[param_dict[lparam]] = value
-                elif lparam == 'crs':
-                    if "EPSG:" in value:
-                        crs = value[5:]
-                    query_params["imageSR"] = crs
-                    query_params["bboxSR"] = crs
-                elif lparam == 'layers':
-                    query_params["layers"] = 'show:' + internal_wms.layers
-                elif lparam == 'format':
-                    query_params["format"] = value.split('/')[-1]
-                else:
-                    pass
-
-            kw = {k.lower(): v for (k, v) in self.request.params.items()
-                  if k.lower() in ('width', 'height')}
-
-            query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
-
-            if internal_wms.use_auth:
-                auth_token = self._get_arcgis_token(internal_wms)
-                if 'token' in auth_token:
-                    query_params["token"] = auth_token['token']
-
-            query_params["f"] = "image"
-
+        # arcgis rest api shall be used whenever rest_url is not empty
+        if (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
             remote_host = internal_wms.rest_url + "/export"
-
+            query_params = self._process_arcgis_server(internal_wms)
         else:
             remote_host = internal_wms.url
+            for param, value in self.request.params.items():
+                if param.lower() == "styles" and remote_host.lower().find("styles") > -1:
+                    continue
+
+                if param.lower() == 'layers':
+                    query_params[param] = internal_wms.layers
+                else:
+                    query_params[param] = value
 
         idx_arobase = remote_host.find("@")
         base64user = None
@@ -254,17 +207,6 @@ class Wms(object):
                 remote_host[idx1:idx_arobase+1], "")
             base64user = base64.b64encode(
                 "%s:%s" % (remote_user, remote_password)).replace("\n", "")
-
-        # if query_params have not been set by arcgis proxy
-        if not query_params:
-            for param, value in self.request.params.items():
-                if param.lower() == "styles" and remote_host.lower().find("styles") > -1:
-                    continue
-
-                if param.lower() == 'layers':
-                    query_params[param] = internal_wms.layers
-                else:
-                    query_params[param] = value
 
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
@@ -283,7 +225,7 @@ class Wms(object):
             remote_host = remote_host + "?"
 
         separator = ""
-        if remote_host[:-1] != "?" and remote_host[:-1] != "&":
+        if remote_host[-1] != "?" and remote_host[-1] != "&":
             separator = "&"
 
         url = remote_host + separator + urllib.parse.urlencode(query_params)
@@ -292,37 +234,22 @@ class Wms(object):
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
         try:
-            f = urllib.request.urlopen(url_request, None, timeout)
-            data = f.read()
-            try:
-                resp = json.loads(data)
-            except Exception as e:
-                resp = {}
-                # log.info(f"Response is no valid json, {type(e)}: {str(e)}")
-            if 'error' in resp:
-                log.error(f"Token refused at: {urllib.parse.splitquery(url_request.full_url)[0]} - "
-                          f"server answered {resp['error']}")
-                log.info("Try to get new token")
-                auth_token = self._get_arcgis_token(internal_wms, force_renew=True)
-                if 'token' in auth_token:
-                    query_params["token"] = auth_token['token']
-                    url = remote_host + separator + urllib.parse.urlencode(query_params)
-                    url_request.full_url = url
-
-                # Try to re-read with new token
-                f = urllib.request.urlopen(url_request, None, timeout)
-                data = f.read()
+            data, content_type = read_request_with_token(url_request, self.request, log)
+        except ESRITokenException as e:
+            raise HTTPBadGateway(e)
+        # retry for other errors not related to tokens
         except:
             try:
                 # Retry to get the result
                 f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()
+                content_type = f.info()['Content-Type']
             except Exception as e:
                 log.exception(e)
                 log.error(url)
                 return HTTPBadGateway()
 
-        headers = {"Content-Type": f.info()['Content-Type']}
+        headers = {"Content-Type": content_type}
 
         return Response(data, headers=headers)
 
