@@ -3,9 +3,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from c2cgeoportal_commons.models import DBSession
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
-from c2cgeoportal_commons.models.main import OGCServer
 from pyramid.renderers import render
-from pyramid.i18n import get_localizer, TranslationStringFactory
 from io import StringIO
 from bs4 import BeautifulSoup
 import weasyprint
@@ -13,10 +11,13 @@ import urllib.request
 import httplib2
 import json
 
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
 import logging
 
-_ = TranslationStringFactory("geoportailv3_geoportal-legends")
 log = logging.getLogger(__name__)
+
 
 class Legends(object):
 
@@ -55,35 +56,61 @@ class Legends(object):
         if lang == 'lb':
             lang = 'lu'
 
+        # for an ESRI legend service the layer id is given, whereas the getDoku service
+        # depends on the name parameter
         if id != "":
             internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                 LuxLayerInternalWMS.id == id).first()
 
-            if internal_wms is not None and internal_wms.rest_url is not None and internal_wms.rest_url != '':
-                log.info('found arcgis layer')
-
-                legend = TranslationStringFactory("geoportailv3_geoportal-legends")
-
-                full_url = internal_wms.rest_url + '/legend?f=pjson'
-                if 'dpi' in self.request.params:
-                    full_url += "&dpi=" + self.request.params["dpi"]
-
-                f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, 15)
-                data = json.load(f)
+            # use ESRI rest service if no legend_name metadata defined
+            metadatas = internal_wms.get_metadatas('legend_name')
+            if len(metadatas) == 0:
                 html_legend = ''
+                has_rest_url = (internal_wms is not None and internal_wms.rest_url is not None
+                                and internal_wms.rest_url != '')
+                # use rest service if rest_url is defined
+                # otherwise return empty legend (no legend available for this layer)
+                if has_rest_url:
+                    log.info('found arcgis legend')
 
-                active_layers = internal_wms.layers.split(',')
-                localizer = self.request.localizer
-                context = {
-                    "data": data,
-                    "active_layers": active_layers,
-                    "wms_layer": internal_wms.layer,
-                    "_l": lambda s: localizer.translate(legend(s)),
-                }
+                    query_params = {'f': 'pjson'}
+                    full_url = internal_wms.rest_url + '/legend?f=pjson'
+                    if 'dpi' in self.request.params:
+                        query_params['dpi'] = self.request.params["dpi"]
+
+                    if internal_wms.use_auth:
+                        auth_token = get_arcgis_token(self.request, log)
+                        if 'token' in auth_token:
+                            query_params["token"] = auth_token['token']
+
+                    full_url = internal_wms.rest_url + '/legend?' + urllib.parse.urlencode(query_params)
+                    log.info(full_url)
+                    try:
+                        url_request = urllib.request.Request(full_url)
+                        result = read_request_with_token(url_request, self.request, log)
+                        content = result.data
+                    except ESRITokenException as e:
+                        raise e
+                    except Exception as e:
+                        log.exception(e)
+                        log.error(full_url)
+                        return []
+                    # f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, 15)
+                    data = json.loads(content)
+
+                    active_layers = internal_wms.layers.split(',')
+                    localizer = self.request.localizer
+                    context = {
+                        "data": data,
+                        "active_layers": active_layers,
+                        "wms_layer": internal_wms.layer,
+                        "_l": lambda s: localizer.translate(legend(s)),
+                    }
                 headers = {"Content-Type": "text/html; charset=utf-8"}
                 html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 return Response(html_legend, headers=headers)
 
+        log.info(f'Found metadata for layer -- legend_name: {metadatas[0].value} -> using doku server')
         url = \
             "https://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
