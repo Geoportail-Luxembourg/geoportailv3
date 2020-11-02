@@ -94,23 +94,30 @@ const exports = function($http, $sce, $window, gettextCatalog,
  * @return {boolean} True if the layer as a legend.
  * @export
  */
-exports.prototype.hasLegend = function(layer) {
-  if (layer !== undefined && layer !== null) {
+exports.prototype.buildLegendUrl = function(layer) {
     var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
 
-    var legend_name = ('legend_name' in localMetadata) ?
-        localMetadata['legend_name'] : '';
-    var id = layer.get('queryable_id');
     var currentLanguage = this.gettextCatalog.currentLanguage;
+      var queryParams = {'lang': currentLanguage};
 
-    var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
-        currentLanguage + '&name=' + legend_name + '&id=' + id;
+    if (localMetadata != undefined && 'legend_name' in localMetadata) {
+        queryParams['name'] = localMetadata['legend_name']
+    }
+    var id = layer.get('queryable_id');
+    if (id != undefined) {
+        queryParams['id'] = id;
+    }
     // handle high resolution screens
     if (this.$window_.devicePixelRatio > 1) {
-      legendUrl += '&dpi=' + this.$window_.devicePixelRatio*96;
+      queryParams['dpi'] = this.$window_.devicePixelRatio*96;
     }
+    return this.getHtmlLegendUrl_ + '?' + (new URLSearchParams(queryParams)).toString();
+}
 
+exports.prototype.hasLegend = function(layer) {
+  if (layer !== undefined && layer !== null) {
+    var legendUrl = this.buildLegendUrl(layer);
     if (!(legendUrl in this.promises_)) {
       this.promises_[legendUrl] = this.$http_.get(legendUrl).then(
         function(resp) {
@@ -201,20 +208,7 @@ exports.prototype.getBgLayer = function() {
  */
 exports.prototype.getLegendHtml = function(layer) {
   if (layer !== undefined && layer !== null) {
-    var localMetadata = /** @type {Object.<string, string>} */
-      (layer.get('metadata'));
-    var legend_name = ('legend_name' in localMetadata) ?
-        localMetadata['legend_name'] : '';
-    var currentLanguage = this.gettextCatalog.currentLanguage;
-
-    var id = layer.get('queryable_id');
-    var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
-        currentLanguage + '&name=' + legend_name + '&id=' + id;
-    // handle high resolution screens
-    if (this.$window_.devicePixelRatio > 1) {
-      legendUrl += '&dpi=' + this.$window_.devicePixelRatio*96;
-    }
-
+    var legendUrl = this.buildLegendUrl(layer);
     if (legendUrl in this.results_) {
       return this.results_[legendUrl];
     }
