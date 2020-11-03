@@ -5,10 +5,11 @@ from pyramid.events import subscriber, BeforeRender, NewRequest
 
 
 # use two translator to translate each strings in Make
-tsf_server = TranslationStringFactory('geoportailv3_geoportal-server')
-tsf_geoportal = TranslationStringFactory('c2cgeoportal')
-tsf_admin = TranslationStringFactory('c2cgeoportal_admin')
-tsf_c2cgeoform = TranslationStringFactory('c2cgeoform')
+tsf_server = TranslationStringFactory("geoportailv3_geoportal-server")
+tsf_geoportal = TranslationStringFactory("c2cgeoportal")
+tsf_admin = TranslationStringFactory("c2cgeoportal_admin")
+tsf_c2cgeoform = TranslationStringFactory("c2cgeoform")
+tsf_getitfixed = TranslationStringFactory("getitfixed")
 
 
 @subscriber(NewRequest)
@@ -17,8 +18,10 @@ def add_localizer(event):
     localizer = get_localizer(request)
 
     def auto_translate(string):
-        if request.path_info.startswith('/admin/'):
+        if request.path_info.startswith("/admin/"):
             tsf_list = [tsf_admin, tsf_c2cgeoform]
+        elif request.path_info.startswith("/getitfixed"):
+            tsf_list = [tsf_getitfixed, tsf_c2cgeoform]
         else:
             tsf_list = [tsf_server, tsf_geoportal]
         for tsf in tsf_list:
@@ -33,7 +36,7 @@ def add_localizer(event):
 
 @subscriber(BeforeRender)
 def add_renderer_globals(event):
-    request = event.get('request')
+    request = event.get("request")
     if request:
-        event['_'] = request.translate
-        event['localizer'] = request.localizer
+        event["_"] = request.translate
+        event["localizer"] = request.localizer
