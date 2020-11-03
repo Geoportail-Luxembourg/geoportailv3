@@ -36,7 +36,8 @@ help:
 
 
 .PHONY: build
-build: docker-build-geoportal docker-build-config docker-build-ldap
+build: docker-build-ldap
+	./build
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
@@ -110,7 +111,7 @@ run: build
 dev: build
 	echo "Once the composition is up open the following URL:"
 	echo "browse http://localhost:8080/dev/main.html"
-	docker-compose down; docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
+	docker-compose down; docker-compose up
 
 .PHONY: attach
 attach:
@@ -128,4 +129,4 @@ reload:
 
 .PHONY: rebuild-js-api
 rebuild-js-api:
-	docker-compose exec geoportal /app/apiv3/jsapi/rebuild_api.sh
+	docker-compose exec geoportal /app/jsapi/rebuild_api.sh

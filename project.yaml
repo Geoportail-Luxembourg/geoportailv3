@@ -1,0 +1,25 @@
+---
+project_folder: geoportailv3
+project_package: geoportailv3
+application_url: https://localhost:8484/
+checker_url: https://172.17.0.1:8484/c2c/health_check?max_level=9
+managed_files:
+  - geoportal/geoportailv3_geoportal/models.py
+  - .gitignore
+  - .travis.yml
+  - alembic.ini
+  - development.ini
+  - docker-compose.override.sample.yaml
+  - Makefile
+unmanaged_files: []
+template_vars:
+  package: geoportailv3
+  srid: 2056
+  extent: 2489246.40,1078873.38,2837119.80,1296543.09
+  authtkt_secret: aed4ma7pah7Riph9paMoow3raeB5ooSa2ayee4fooQuohT7Etinohshah7eib4Re
+env:
+  files:
+    - env.default
+    - env.project
+  required_args: 0
+  help: No arguments needed.
