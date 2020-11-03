@@ -35,10 +35,17 @@ class Legends(object):
         lang = self.request.params.get("lang")
         name = self.request.params.get("name")
 
-        url = \
-            "https://wiki.geoportail.lu/doku.php?" \
-            "id=%s:legend:%s&do=export_html" % \
-            (lang, name)
+        if 'id' in self.request.params:
+            # use ESRI rest mechanism
+            path = self.request.route_url('get_html')
+            url = path + '?' + urllib.parse.urlencode(self.request.params)
+
+        else:
+
+            url = \
+                  "https://wiki.geoportail.lu/doku.php?" \
+                  "id=%s:legend:%s&do=export_html" % \
+                  (lang, name)
 
         legend_buffer = StringIO()
         weasyprint.HTML(url, media_type="screen").write_png(

@@ -226,6 +226,7 @@ class LuxPrintProxy(PrintProxy):
             spec["attributes"].pop('longUrl', None)
         if "firstPagesUrls" in spec["attributes"]:
             spec["attributes"].pop('firstPagesUrls', None)
+        # spec['attributes']['legend'] = [{'name': el['name']} for el in spec['attributes']['legend']]
         self.request.body = str.encode(json.dumps(spec))
 
         resp, content = self._proxy("%s/report.%s" % (
@@ -328,6 +329,21 @@ class LuxPrintProxy(PrintProxy):
         return legend_buffer
 
     @cache_region.cache_on_arguments()
+    def _create_legend_from_url(self, url):
+        css = weasyprint.CSS(
+            string="img {max-height: 800px}"
+        )
+
+        log.info("Get legend from URL:\n%s." % url)
+
+        legend_buffer = BytesIO()
+        weasyprint.HTML(url).write_pdf(
+            legend_buffer,
+            stylesheets=[css]
+        )
+        return legend_buffer
+
+    @cache_region.cache_on_arguments()
     def _get_legend(self, name, lang):
         css = weasyprint.CSS(
             string="img {max-height: 800px}"
@@ -399,6 +415,8 @@ class LuxPrintProxy(PrintProxy):
 
                 for item in attributes["legend"]:
                     if "legendUrl" in item and item["legendUrl"] is not None:
+                        merger.append(self._create_legend_from_url(item["legendUrl"]))
+                    elif "legendUrl" in item and item["legendUrl"] is not None:
                         legend_title = ""
                         if "legendTitle" in item and\
                            item["legendTitle"] is not None:
