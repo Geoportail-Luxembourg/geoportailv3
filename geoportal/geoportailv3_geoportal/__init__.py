@@ -6,11 +6,11 @@ import distutils.core
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
 from c2cgeoportal_geoportal import locale_negotiator, add_interface, \
-    INTERFACE_TYPE_NGEO, INTERFACE_TYPE_NGEO_CATALOGUE, set_user_validator
+    INTERFACE_TYPE_NGEO, set_user_validator
 # from c2cgeoportal_geoportal.lib.authentication import create_authentication
 from geoportailv3_geoportal.resources import Root
 
-from geoportal.geoportailv3_geoportal.lib.lux_authentication import create_authentication
+from geoportailv3_geoportal.lib.lux_authentication import create_authentication
 
 from pyramid.renderers import JSON
 from pyramid_mako import add_mako_renderer
@@ -123,7 +123,7 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('geoportailv3_geoportal:locale/')
 
-    add_interface(config, 'main', INTERFACE_TYPE_NGEO_CATALOGUE, default=True)
+    add_interface(config, 'main', INTERFACE_TYPE_NGEO, default=True)
 
     # ping routes
     config.add_route(
@@ -448,12 +448,16 @@ def main(global_config, **settings):
     config.add_route('upload_vt_style', '/uploadvtstyle')
     config.add_route('delete_vt_style', '/deletevtstyle')
     config.add_route('get_vt_style', '/getvtstyle')
+    config.add_route('profile.csv', '/profile.csv')
 
     # Service worker
     config.add_route('sw', '/sw.js')
 
     config.add_static_view('proj/{version}', path='geoportailv3_geoportal:jsapi/')
-    
+    config.add_static_view('static-ngeo', path='geoportailv3_geoportal:static-ngeo/')
+    config.override_asset(to_override='geoportailv3_geoportal:static-ngeo/',
+                          override_with='/etc/static-ngeo/')
+
     # Appcache manifest
     config.add_route(
         'appcache',
@@ -483,7 +487,7 @@ def main(global_config, **settings):
             scope=ldap.SUBTREE,
             )
 
-        config.set_request_property(
+        config.add_request_method(
             get_user_from_request,
             name='user',
             reify=True
@@ -508,39 +512,6 @@ def main(global_config, **settings):
     global mailer
     mailer = Mailer(mail_config)
     mailer.start()
-
-    # Add custom table in admin interace, that means re-add all normal table
-
-    from c2cgeoform.routes import register_models
-    from c2cgeoportal_commons.models.main import (
-        Role, LayerWMS, LayerWMTS, Theme, LayerGroup, LayerV1, Interface, OGCServer,
-        Functionality, RestrictionArea)
-    from c2cgeoportal_commons.models.static import User
-    from geoportailv3_geoportal.models import LuxDownloadUrl, \
-        LuxMeasurementLoginCommune, LuxMeasurementDirectory, LuxGetfeatureDefinition, \
-        LuxPrintServers, LuxPredefinedWms, LuxLayerExternalWMS, LuxLayerInternalWMS
-
-    register_models(config, (
-        ('themes', Theme),
-        ('layer_groups', LayerGroup),
-        # ('layers_wms', LayerWMS), removed we use LuxLayerExternalWMS and LuxLayerInternalWMS instead
-        ('layers_wmts', LayerWMTS),
-        ('layers_v1', LayerV1),
-        ('ogc_servers', OGCServer),
-        ('restriction_areas', RestrictionArea),
-        ('users', User),
-        ('roles', Role),
-        ('functionalities', Functionality),
-        ('interfaces', Interface),
-        ('lux_download_url', LuxDownloadUrl),
-        ('lux_measurement_login_commune', LuxMeasurementLoginCommune),
-        ('lux_measurement_directory', LuxMeasurementDirectory),
-        ('lux_getfeature_definition', LuxGetfeatureDefinition),
-        ('lux_print_servers', LuxPrintServers),
-        ('lux_predefined_wms', LuxPredefinedWms),
-        ('lux_layer_external_wms', LuxLayerExternalWMS),
-        ('lux_layer_internal_wms', LuxLayerInternalWMS),
-    ), 'admin')
 
     # scan view decorator for adding routes
     config.scan()

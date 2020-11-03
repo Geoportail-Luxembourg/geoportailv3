@@ -10,7 +10,7 @@ var taffy = require('taffydb').taffy;
 var template = require('jsdoc/template');
 var util = require('util');
 var jsdocType = require("jsdoc/tag/type")
-var jsdocOl3 = require('/app/apiv3/.build/jsdocOl3.js');
+var jsdocOl3 = require('/etc/apiv3/.build/jsdocOl3.js');
 
 var htmlsafe = helper.htmlsafe;
 var linkto = helper.linkto;
