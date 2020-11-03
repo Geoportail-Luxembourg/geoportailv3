@@ -114,8 +114,8 @@ class Legends(object):
                         "wms_layer": internal_wms.layer,
                         "_l": lambda s: localizer.translate(legend(s)),
                     }
+                    html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 headers = {"Content-Type": "text/html; charset=utf-8"}
-                html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 return Response(html_legend, headers=headers)
 
             else:
