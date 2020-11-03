@@ -2,8 +2,10 @@
 from pyramid.view import view_config
 from pyramid.response import Response
 from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models.main import TreeItem
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from pyramid.renderers import render
+from pyramid.i18n import TranslationStringFactory
 from io import StringIO
 from bs4 import BeautifulSoup
 import weasyprint
@@ -59,19 +61,25 @@ class Legends(object):
         # for an ESRI legend service the layer id is given, whereas the getDoku service
         # depends on the name parameter
         if id != "":
-            internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
-                LuxLayerInternalWMS.id == id).first()
-
-            # use ESRI rest service if no legend_name metadata defined
-            metadatas = internal_wms.get_metadatas('legend_name')
-            if len(metadatas) == 0:
-                html_legend = ''
+            has_rest_url = False
+            treeitem = DBSession.query(TreeItem).filter(TreeItem.id == id).first()
+            if isinstance(treeitem, LuxLayerInternalWMS):
+                internal_wms = treeitem
                 has_rest_url = (internal_wms is not None and internal_wms.rest_url is not None
                                 and internal_wms.rest_url != '')
+            else:
+                has_rest_url = False
+
+            metadatas = treeitem.get_metadatas('legend_name')
+            # use ESRI rest service if no legend_name metadata defined
+            if len(metadatas) == 0:
+                html_legend = ''
                 # use rest service if rest_url is defined
                 # otherwise return empty legend (no legend available for this layer)
                 if has_rest_url:
                     log.info('found arcgis legend')
+
+                    legend = TranslationStringFactory("geoportailv3_geoportal-legends")
 
                     query_params = {'f': 'pjson'}
                     full_url = internal_wms.rest_url + '/legend?f=pjson'
@@ -106,11 +114,12 @@ class Legends(object):
                         "wms_layer": internal_wms.layer,
                         "_l": lambda s: localizer.translate(legend(s)),
                     }
+                    html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 headers = {"Content-Type": "text/html; charset=utf-8"}
-                html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 return Response(html_legend, headers=headers)
 
-        log.info(f'Found metadata for layer -- legend_name: {metadatas[0].value} -> using doku server')
+            else:
+                log.info(f'Found metadata for layer -- legend_name: {metadatas[0].value} -> using doku server')
         url = \
             "https://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
