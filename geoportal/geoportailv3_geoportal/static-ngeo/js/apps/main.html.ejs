@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl"
-ng-strict-di="true"
- >
+<html lang={{mainCtrl.lang}} ng-controller="MainController as mainCtrl" ng-strict-di>
 
   <head>
     <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
@@ -9,6 +7,8 @@ ng-strict-di="true"
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
         content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="dynamicUrl" content="/dynamic.json">
+    <meta name="interface" content="main">
     <meta name="apple-mobile-web-app-title" content="geoportail.lu">
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -466,10 +466,10 @@ ng-strict-di="true"
 
     </footer>
 
+    <script src="${htmlWebpackPlugin.options.vars.entry_point}static-ngeo/vendor.js?${htmlWebpackPlugin.options.vars.cache_version}"></script>
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>
-        <script src="/dynamic.js?interface=main"></script>
 
         <!-- Piwik -->
           <script type="text/javascript">
