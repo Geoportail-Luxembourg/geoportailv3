@@ -80,6 +80,7 @@ class Wms:
             lparam = param.lower()
             if lparam in param_dict:
                 query_params[param_dict[lparam]] = value
+            # shall accept both v1.1.1 (srs) and v1.3.0 (crs) format
             elif lparam in ['crs', 'srs']:
                 if "EPSG:" in value:
                     crs = value[5:]
