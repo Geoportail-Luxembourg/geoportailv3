@@ -80,7 +80,7 @@ class Wms:
             lparam = param.lower()
             if lparam in param_dict:
                 query_params[param_dict[lparam]] = value
-            elif lparam == 'crs':
+            elif lparam in ['crs', 'srs']:
                 if "EPSG:" in value:
                     crs = value[5:]
                 else:
