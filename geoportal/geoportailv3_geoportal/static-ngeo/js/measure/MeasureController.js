@@ -153,11 +153,16 @@ const exports = function($scope, $q, $http, $compile, gettext,
       return style
     }
 
-    let text = (this[
-      geomType === 'LineString' ? 'measureLength' :
-      geomType === 'Polygon' ? 'measureArea' :
-      geomType === 'GeometryCollection' ? 'measureAzimut' : ''
-    ].getTooltipElement() || this['measureProfile'].getTooltipElement()).innerHTML
+    let text
+    try {
+      text = (this[
+        geomType === 'LineString' ? 'measureLength' :
+        geomType === 'Polygon' ? 'measureArea' :
+        geomType === 'GeometryCollection' ? 'measureAzimut' : ''
+      ].getTooltipElement() || this['measureProfile'].getTooltipElement()).innerHTML
+    } catch {
+      text = ''
+    }
 
     style.getText().setText(clearText(text))
     if (geomType === 'GeometryCollection') {
