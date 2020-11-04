@@ -54,13 +54,12 @@ import urllib.parse
 import urllib.request
 from io import BytesIO
 from datetime import datetime
-from json import dumps, loads
+from json import dumps
 
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -226,7 +225,6 @@ class LuxPrintProxy(PrintProxy):
             spec["attributes"].pop('longUrl', None)
         if "firstPagesUrls" in spec["attributes"]:
             spec["attributes"].pop('firstPagesUrls', None)
-        # spec['attributes']['legend'] = [{'name': el['name']} for el in spec['attributes']['legend']]
         self.request.body = str.encode(json.dumps(spec))
 
         resp, content = self._proxy("%s/report.%s" % (
@@ -414,8 +412,8 @@ class LuxPrintProxy(PrintProxy):
                 lang = attributes.get("lang")
 
                 for item in attributes["legend"]:
-                    if "legendUrl" in item and item["legendUrl"] is not None:
-                        merger.append(self._create_legend_from_url(item["legendUrl"]))
+                    if "restUrl" in item and item["restUrl"] is not None:
+                        merger.append(self._create_legend_from_url(item["restUrl"]))
                     elif "legendUrl" in item and item["legendUrl"] is not None:
                         legend_title = ""
                         if "legendTitle" in item and\

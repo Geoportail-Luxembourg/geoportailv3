@@ -62,6 +62,7 @@ class Legends(object):
         lang = self.request.params.get("lang")
         name = self.request.params.get("name")
         id = self.request.params.get("id", "")
+        legend_title = self.request.params.get("legend_title")
         if lang == 'lb':
             lang = 'lu'
 
@@ -87,6 +88,7 @@ class Legends(object):
                     log.info('found arcgis legend')
 
                     legend = TranslationStringFactory("geoportailv3_geoportal-legends")
+                    client = TranslationStringFactory("geoportailv3_geoportal-client")
 
                     query_params = {'f': 'pjson'}
                     full_url = internal_wms.rest_url + '/legend?f=pjson'
@@ -120,7 +122,10 @@ class Legends(object):
                         "active_layers": active_layers,
                         "wms_layer": internal_wms.layer,
                         "_l": lambda s: localizer.translate(legend(s)),
+                        "_c": lambda s: localizer.translate(client(s)),
+                        "legend_title": legend_title
                     }
+
                     html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 headers = {"Content-Type": "text/html; charset=utf-8"}
                 return Response(html_legend, headers=headers)
