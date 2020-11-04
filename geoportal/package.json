@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
-    "@camptocamp/cesium": "1.45.0",
+    "@camptocamp/cesium": "1.56.1",
     "@geoblocks/mapboxlayer-legacy": "0.0.9",
     "@sentry/browser": "5.5.0",
     "@sentry/integrations": "5.5.0",
