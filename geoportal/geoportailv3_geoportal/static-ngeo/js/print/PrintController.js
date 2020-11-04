@@ -516,11 +516,12 @@ exports.prototype.print = function(format) {
           var queryParams = {
               'lang': curLang,
               'id': id,
-              'dpi': dpi
+              'dpi': dpi,
+              'legend_title': layer.get('label')
           };
           legend.push({
               'name': layer.get('label'),
-              'legendUrl': url + '?' + (new URLSearchParams(queryParams)).toString(),
+              'restUrl': url + '?' + (new URLSearchParams(queryParams)).toString(),
               'legendTitle': layer.get('label')});
       }
     }
