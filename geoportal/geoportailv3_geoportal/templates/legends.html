@@ -1,4 +1,7 @@
 ## -*- coding: utf-8 -*-
+% if legend_title is not None:
+  <h1>${_c(legend_title)}</h1>
+% endif
 % for l in data['layers']:
   % if str(l['layerId']) in active_layers:
     <h4>${_l(wms_layer + " : " + l['layerName'])}</h4>

@@ -54,13 +54,12 @@ import urllib.parse
 import urllib.request
 from io import BytesIO
 from datetime import datetime
-from json import dumps, loads
+from json import dumps
 
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -328,6 +327,21 @@ class LuxPrintProxy(PrintProxy):
         return legend_buffer
 
     @cache_region.cache_on_arguments()
+    def _create_legend_from_url(self, url):
+        css = weasyprint.CSS(
+            string="img {max-height: 800px}"
+        )
+
+        log.info("Get legend from URL:\n%s." % url)
+
+        legend_buffer = BytesIO()
+        weasyprint.HTML(url).write_pdf(
+            legend_buffer,
+            stylesheets=[css]
+        )
+        return legend_buffer
+
+    @cache_region.cache_on_arguments()
     def _get_legend(self, name, lang):
         css = weasyprint.CSS(
             string="img {max-height: 800px}"
@@ -398,7 +412,9 @@ class LuxPrintProxy(PrintProxy):
                 lang = attributes.get("lang")
 
                 for item in attributes["legend"]:
-                    if "legendUrl" in item and item["legendUrl"] is not None:
+                    if "restUrl" in item and item["restUrl"] is not None:
+                        merger.append(self._create_legend_from_url(item["restUrl"]))
+                    elif "legendUrl" in item and item["legendUrl"] is not None:
                         legend_title = ""
                         if "legendTitle" in item and\
                            item["legendTitle"] is not None:
