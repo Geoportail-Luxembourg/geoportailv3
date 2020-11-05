@@ -387,6 +387,7 @@ const MainController = function(
     appMvtStylingService.saveStyle(this.configObject, isPublished)
     .then(() => {
       //const config = JSON.stringify(this.mediumStylingData);
+      //this.config.serial = undefined;
       const config = JSON.stringify(this.configObject.medium);
       this.ngeoLocation_.updateParams({
         'serial': config
@@ -1128,7 +1129,7 @@ const MainController = function(
 
       // Remove unused medium styling
       //this.appMvtStylingService.removeMediumStyle(this.configObject.label);
-      this.configObject.medium = undefined;
+      this.configObject.medium = undefined; // for the save function
 
       this.appMvtStylingService.saveStyle(this.configObject, isPublished).then(result => {
         const id = result[0];
@@ -1138,6 +1139,9 @@ const MainController = function(
         this.configObject.serial = id;
         this.ngeoLocation_.refresh();
       });
+
+      // If undefined, medium style UI is empty (was undefined for saving purpose)
+      this.configObject.medium = getDefaultMediumStyling();
     });
 
     // Reset form value

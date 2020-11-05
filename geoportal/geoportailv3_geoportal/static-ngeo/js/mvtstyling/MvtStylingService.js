@@ -138,12 +138,12 @@ publishIfSerial(map) {
         // check if simple/medium styling
         if (serial.match(isValidUUIDv4Regex) === null) {
             const bgLayer = this.backgroundLayerMgr_.get(map);
-            const mbMap =  bgLayer.getMapBoxMap();
+            //const mbMap =  bgLayer.getMapBoxMap();
             const interval = setInterval(() => {
                 try {
-                    const data = JSON.stringify(mbMap.getStyle());
+                    //const data = JSON.stringify(mbMap.getStyle());
                     clearInterval(interval);
-                    this.publishStyle(bgLayer, data).then(() => {
+                    this.publishStyle(bgLayer).then(() => {
                       // for OL-Cesium to refresh the background layer counterpart
                       // and thus request tiles with custom style
                       this.backgroundLayerMgr_.set(map, bgLayer);
@@ -172,8 +172,9 @@ unpublishIfSerial(map) {
     }
 }
 
-publishStyle(layer, data) {
+publishStyle(layer) {
   const label = layer.get('label');
+  const data = JSON.stringify(layer.getMapBoxMap().getStyle());
 
   return this.unpublishStyle(layer).then(() => {
     const formData = new FormData();
@@ -232,15 +233,15 @@ saveStyle(configObject, isPublished) {
             body: JSON.stringify(body)
         }
         promises.push(fetch(url_save, options));
-        console.log('Saving expert style in database');
+        console.log('Data saved in database');
     }
 
     this.isCustomStyle = true;
     window.localStorage.setItem(key, data);
-    console.log('Expert style saved in local storage');
+    console.log('Data saved in local storage');
 
     if (isPublished) {
-        promises.push(this.publishStyle(configObject.background, data));
+        promises.push(this.publishStyle(configObject.background));
     } else  {
         // Remove unused remoteIdForStyle{layer} key stored in ls
         promises.push(this.unpublishStyle(configObject.background));
@@ -261,30 +262,21 @@ getStyle(key) {
         return fetch(url_get + "?key=" + key, options).then(resultFromDB => {
             const styleFromDB = resultFromDB.data;
             if (styleFromDB.length > 0) {
-                console.log('Load mvt medium config from database and save it to local storage');
+                console.log('Load data from database and save it to local storage');
                 this.isCustomStyle = true;
                 //window.localStorage.setItem(LS_KEY_MEDIUM, styleFromDB[0].value);
                 window.localStorage.setItem(key, styleFromDB[0].value);
                 return styleFromDB[0].value;
             }
         });
-
-/*         return this.getDB_(LS_KEY_MEDIUM).then(resultFromDB => {
-            const styleFromDB = resultFromDB.data;
-            if (styleFromDB.length > 0) {
-                console.log('Load mvt medium config from database and save it to local storage');
-                this.isCustomStyle = true;
-                window.localStorage.setItem(LS_KEY_MEDIUM, styleFromDB[0].value);
-                return styleFromDB[0].value;
-            }
-        }); */
     } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
-        console.log('Load mvt medium config from local storage');
+        console.log('Load data from local storage');
         return Promise.resolve(window.localStorage.getItem(key));
     }
 }
 
-/* removeMediumStyle(key) {
+ /*
+ removeMediumStyle(key) {
     if (this.appUserManager_.isAuthenticated()) {
         console.log('Removed mvt medium config from database');
         //return this.deleteDB_(key);
@@ -295,8 +287,10 @@ getStyle(key) {
         return fetch(url_delete + "?key=" + key, options);
     }
     console.log('Removed mvt medium config from local storage');
-    return window.localStorage.removeItem(key);
-} */
+    let ls = window.localStorage.getItem(key);
+    ls.medium = undefined;
+    return window.localStorage.setItem(key, ls);
+}*/
 
 getUrlVtStyle(layer) {
   const label = layer.get('label');
