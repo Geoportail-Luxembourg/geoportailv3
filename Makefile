@@ -120,7 +120,7 @@ attach:
 .PHONY: fix-db
 fix-db:
 	echo 'Removing internal layers and fixing old db'
-	psql -p 5433 -U www-data -h 127.0.0.1 lux -c 'delete from geov3.lux_layer_internal_wms'
+	psql -p 5432 -U www-data -h 127.0.0.1 lux -c 'delete from geov3.lux_layer_internal_wms'
 	docker-compose exec geoportal finalize23DataAdaptations
 
 .PHONY: reload
