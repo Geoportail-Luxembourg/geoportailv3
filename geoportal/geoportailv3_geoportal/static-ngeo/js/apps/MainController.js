@@ -322,16 +322,7 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
-  //this.mediumStylingData = getDefaultMediumStyling();
-
-  this.configObject = {
-    medium: undefined, // javascript config
-    background: undefined, // background layer object
-    label: undefined, // background label
-    serial: undefined // id
-  };
-
-  this.configObject.medium = getDefaultMediumStyling();
+  this.mediumStylingData = getDefaultMediumStyling();
 
   function applyStyleFromItem(mbMap, item) {
     appMvtStylingService.isCustomStyle = true;
@@ -364,35 +355,20 @@ const MainController = function(
     });
   }
 
-
-  this.initConfigObject = () => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    this.configObject.label = bgLayer.get('label');
-    this.configObject.background = bgLayer;
-    this.configObject.serial = undefined;
-    return this.configObject;
-  }
-
-  //this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
-    // save({'medium': {}})
-    //appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
-    //appMvtStylingService.saveMediumStyle(this.configObject);
-  //}, 2000, false);
   this.debouncedSaveStyle_ = ngeoDebounce(() => {
-    //const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    this.configObject.background = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const isPublished = false;
-    // save({'background': {}})
-    //appMvtStylingService.saveBgStyle(bgLayer, isPublished)
-    appMvtStylingService.saveStyle(this.configObject, isPublished)
+    const dataObject = {
+      medium: this.mediumStylingData,
+      background: bgLayer
+    }
+
+    appMvtStylingService.saveStyle(dataObject, isPublished)
     .then(() => {
-      //const config = JSON.stringify(this.mediumStylingData);
-      //this.config.serial = undefined;
-      const config = JSON.stringify(this.configObject.medium);
+      const config = JSON.stringify(this.mediumStylingData);
       this.ngeoLocation_.updateParams({
         'serial': config
       });
-    // apply({'medium': {}})
       this.appMvtStylingService.apply_mvt_config(config);
       this.ngeoLocation_.refresh();
       this.resetLayerFor3d_();
@@ -415,17 +391,13 @@ const MainController = function(
   this.checkSelectedSimpleData = () => {
     this.simpleStylingData.forEach(simpleStyle => {
         simpleStyle['selected'] = false;
-        // configObject
-        //const mediumColors = this.mediumStylingData.filter(m => 'color' in m);
-        const mediumColors = this.configObject.medium.filter(m => 'color' in m);
+        const mediumColors = this.mediumStylingData.filter(m => 'color' in m);
         for (let i = 0; i < simpleStyle['colors'].length; ++i) {
           if (!mediumColors[i].visible || mediumColors[i].color !== simpleStyle['colors'][i]) {
             return;
           }
         }
-        // configObject
-        //const hillshadeMediumItem = this.mediumStylingData.find(m => 'hillshades' in m);
-        const hillshadeMediumItem = this.configObject.medium.find(m => 'hillshades' in m);
+        const hillshadeMediumItem = this.mediumStylingData.find(m => 'hillshades' in m);
         if (simpleStyle['hillshade'] === hillshadeMediumItem.visible) {
           simpleStyle['selected'] = true;
         }
@@ -441,12 +413,8 @@ const MainController = function(
     selectedItem['selected'] = true;
   
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    // configObject
-    //this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
-    this.configObject.medium = getDefaultMediumStyling(); // start again from a fresh style
-    // configObject
-    //const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
-    const mediumStyles = this.configObject.medium.filter(m => 'color' in m);
+    this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
+    const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
     const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
       const item = mediumStyles[i];
@@ -455,33 +423,26 @@ const MainController = function(
       applyStyleFromItem(mbMap, item);
     }
 
-    // configObject
-    //const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
-    const hillshadeItem = this.configObject.medium.find(m => 'hillshades' in m);
+    const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
     hillshadeItem.visible = false;
     applyStyleFromItem(mbMap, hillshadeItem)
 
     this.debouncedSaveStyle_();
-    //this.debouncedSaveMediumStyle_();
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
-  // get({'medium': {}})
-  const mediumStyle = appMvtStylingService.getStyle(this.configObject.label);
+  const mediumStyle = appMvtStylingService.getStyle();
   if (mediumStyle !== undefined) {
     mediumStyle.then((style) => {
-    // configObject
-        //Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-        Object.assign(this.configObject.medium, JSON.parse(style || '{}'));
+        Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
         this.checkSelectedSimpleData();
       });
   }
 
   this.onMediumStylingChanged = item => {
-    this.configObject.background = this.backgroundLayerMgr_.get(this.map);
-    const mbMap =  this.configObject.background.getMapBoxMap();
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
     applyStyleFromItem(mbMap, item);
-    //this.debouncedSaveMediumStyle_();
     this.debouncedSaveStyle_();
     this.checkSelectedSimpleData();
   };
@@ -956,9 +917,6 @@ const MainController = function(
           bgLayers => {
             this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
 
-            this.configObject = this.initConfigObject();
-            console.log(this.configObject);
-
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1085,18 +1043,14 @@ const MainController = function(
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     if (bgLayer && bgLayer.getMapBoxMap()) {
-    // get({'background': {}})
       this.appMvtStylingService.getBgStyle().then(config => {
         bgLayer.getMapBoxMap().setStyle(config.style);
       });
     }
-    // get({'medium': {}})
     let mediumStyle = appMvtStylingService.getStyle();
     if (mediumStyle !== undefined) {
       mediumStyle.then((style) => {
-          // configObject
-          //Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-          Object.assign(this.configObject.medium, JSON.parse(style || '{}'));
+          Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
           this.checkSelectedSimpleData();
         });
     }
@@ -1119,29 +1073,25 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      //const bgLayer = this.backgroundLayerMgr_.get(this.map);
-      this.configObject.background = this.backgroundLayerMgr_.get(this.map);
-      //bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.configObject.background.getMapBoxMap().setStyle(JSON.parse(result));
+      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
       const isPublished = true;
-      // save('bg':{})
-      //this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
 
-      // Remove unused medium styling
-      //this.appMvtStylingService.removeMediumStyle(this.configObject.label);
-      this.configObject.medium = undefined; // for the save function
+      const dataObject = {
+        medium: undefined, // empty for the save function
+        background: bgLayer
+      }
 
-      this.appMvtStylingService.saveStyle(this.configObject, isPublished).then(result => {
+      this.appMvtStylingService.saveStyle(dataObject, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
           'serial': id
         });
-        this.configObject.serial = id;
         this.ngeoLocation_.refresh();
       });
 
       // If undefined, medium style UI is empty (was undefined for saving purpose)
-      this.configObject.medium = getDefaultMediumStyling();
+      this.mediumStylingData = getDefaultMediumStyling();
     });
 
     // Reset form value
@@ -1149,12 +1099,10 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    const bgLayer = this.configObject.background;
-    // remove({'background': {}})
-    this.appMvtStylingService.removeStyles(this.configObject);
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    //this.mediumStylingData = getDefaultMediumStyling();
-    this.configObject.medium = getDefaultMediumStyling();
+    this.mediumStylingData = getDefaultMediumStyling();
     this.resetLayerFor3d_();
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();

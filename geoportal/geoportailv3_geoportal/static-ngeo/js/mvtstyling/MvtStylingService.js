@@ -214,9 +214,9 @@ unpublishStyle(layer) {
 }
 
 saveStyle(configObject, isPublished) {
-    const mbMap =  configObject.background.getMapBoxMap();
-    const key = configObject.label;
-    const data = JSON.stringify({
+    const mbMap =  configObject.background.getMapBoxMap(); 
+    const key = configObject.background.get('label');
+    const value = JSON.stringify({
         medium: configObject.medium,
         background: mbMap.getStyle(),
         serial: configObject.serial 
@@ -225,7 +225,7 @@ saveStyle(configObject, isPublished) {
     if (this.appUserManager_.isAuthenticated()) {
         const body = {
             key,
-            value: data
+            value
         }
         const options = {
             method: 'post',
@@ -237,20 +237,20 @@ saveStyle(configObject, isPublished) {
     }
 
     this.isCustomStyle = true;
-    window.localStorage.setItem(key, data);
+    window.localStorage.setItem(key, value);
     console.log('Data saved in local storage');
 
     if (isPublished) {
         promises.push(this.publishStyle(configObject.background));
     } else  {
-        // Remove unused remoteIdForStyle{layer} key stored in ls
+        // Remove unused serial in ls
         promises.push(this.unpublishStyle(configObject.background));
     }
 
     return Promise.all(promises);
 }
 
-getStyle(key) {
+getStyle(key = undefined) {
     if (key === undefined) {
         key = DEFAULT_KEY;
     }
@@ -264,7 +264,6 @@ getStyle(key) {
             if (styleFromDB.length > 0) {
                 console.log('Load data from database and save it to local storage');
                 this.isCustomStyle = true;
-                //window.localStorage.setItem(LS_KEY_MEDIUM, styleFromDB[0].value);
                 window.localStorage.setItem(key, styleFromDB[0].value);
                 return styleFromDB[0].value;
             }
@@ -275,23 +274,6 @@ getStyle(key) {
     }
 }
 
- /*
- removeMediumStyle(key) {
-    if (this.appUserManager_.isAuthenticated()) {
-        console.log('Removed mvt medium config from database');
-        //return this.deleteDB_(key);
-        const options = {
-            method: 'delete',
-            headers: {'Content-Type': 'application/json'}
-        }
-        return fetch(url_delete + "?key=" + key, options);
-    }
-    console.log('Removed mvt medium config from local storage');
-    let ls = window.localStorage.getItem(key);
-    ls.medium = undefined;
-    return window.localStorage.setItem(key, ls);
-}*/
-
 getUrlVtStyle(layer) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
@@ -301,41 +283,17 @@ getUrlVtStyle(layer) {
   return this.getvtstyleUrl_ + '?id=' + id;
 }
 
-/*
-saveMediumStyle(configObject) {
+removeStyles(bgLayer) {
     const promises = [];
-    this.isCustomStyle = true;
-    if (this.appUserManager_.isAuthenticated()) {
-        const body = {
-            key: LS_KEY_MEDIUM,
-            value: JSON.stringify(configObject.medium)
-        }
-        const options = {
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(body)
-        }
-        promises.push(fetch(url_save, options));
-        console.log('Medium config saved in database');
-    }
-    window.localStorage.setItem(LS_KEY_MEDIUM, JSON.stringify(configObject.medium));
-    console.log('Medium config saved in local storage');
-
-    return Promise.all(promises);
-}*/
-
-removeStyles(configObject) {
-    const promises = [];
-    promises.push(this.unpublishStyle(configObject.background));
-    promises.push(window.localStorage.removeItem(configObject.label));
+    promises.push(this.unpublishStyle(bgLayer));
+    promises.push(window.localStorage.removeItem(bgLayer.get('label')));
     console.log('Removed mvt styles from local storage');
     if (this.appUserManager_.isAuthenticated()) {
-        //promises.push(this.deleteDB_(configObject.label));
         const options = {
             method: 'delete',
             headers: {'Content-Type': 'application/json'}
         }
-        promises.push(fetch(url_delete + "?key=" + key, options));
+        promises.push(fetch(url_delete + "?key=" + bgLayer.get('label'), options));
         console.log('Removed mvt styles from database');
     }
     this.isCustomStyle = false;
