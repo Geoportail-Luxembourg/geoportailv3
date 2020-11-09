@@ -131,7 +131,7 @@ const exports = class extends ngeoOlcsManager {
   init3dTiles(visible) {
     const scene = this.ol3d.getCesiumScene();
     this.tiles3dLayers_.forEach((layer) => {
-      const url = this.tiles3dUrl_ + layer;
+      const url = this.tiles3dUrl_ + layer + "/tileset.json";
       const tileset = new Cesium.Cesium3DTileset({
         url: url,
         maximumNumberOfLoadedTiles: 3,
