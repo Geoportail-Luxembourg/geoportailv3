@@ -1,3 +1,4 @@
+import { _ } from 'core-js';
 import appModule from '../module.js';
 
 function hasLocalStorage() {
@@ -47,7 +48,12 @@ class MvtStylingService {
   getBgStyle() {
     const key = DEFAULT_KEY;
     let lsData = JSON.parse(window.localStorage.getItem(key));
-    const xyz_custom = lsData.serial ? this.createXYZCustom_(lsData.serial) : undefined;
+    let xyz_custom = undefined;
+    if (!!lsData) {
+        if (lsData.serial) {
+            xyz_custom = this.createXYZCustom_(lsData.serial);
+        }
+    }
 
 
     const serial = new URLSearchParams(window.location.search).get('serial');
@@ -94,22 +100,24 @@ class MvtStylingService {
             }
         });
     } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
-        if (lsData.medium){
+        if (lsData.serial){
             // If there is a mvt expert style in the local storage, force parameter in the url
             this.ngeoLocation_.updateParams({
-                'serial': JSON.stringify(lsData.medium)
+                'serial': JSON.stringify(lsData.serial)
             });
             console.log('Load mvt expert style from local storage');
             this.isCustomStyle = true;
             config.customStyle = this.isCustomStyle;
+
+            // Should work offline as well
             config.style = lsData.background;
             return Promise.resolve(config);
         }
 
-        if (lsData.serial) {
+        if (lsData.medium) {
             // If there is a mvt medium config in the local storage, force parameter in the url
             this.ngeoLocation_.updateParams({
-                'serial': JSON.stringify(lsData.serial)
+                'serial': JSON.stringify(lsData.medium)
             });
             console.log('Load mvt medium style from local storage');
             this.isCustomStyle = true;
