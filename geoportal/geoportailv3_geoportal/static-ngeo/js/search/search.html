@@ -38,25 +38,11 @@
         </label>
       </div>
       <h5 translate>Limiter la recherche à</h5>
-      <div class="checkbox">
+      <div class="checkbox" ng-repeat="(facet, label) in ctrl.esLabels">
         <label>
-          <i class="fa" ng-class="ctrl.facets.address ? 'fa-check-square' : 'fa-square'"></i>
-          <input type="checkbox" ng-model="ctrl.facets.address">
-          <span translate>Adresses</span>
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-          <i class="fa" ng-class="ctrl.facets.parcels ? 'fa-check-square' : 'fa-square'"></i>
-          <input type="checkbox" ng-model="ctrl.facets.parcels">
-          <span translate>Numéros parcelles</span>
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-          <i class="fa" ng-class="ctrl.facets.flik ? 'fa-check-square' : 'fa-square'"></i>
-          <input type="checkbox" ng-model="ctrl.facets.flik">
-          <span translate>Adresses FLIK</span>
+          <i class="fa" ng-class="ctrl.facets[facet] ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets[facet]">
+          <span>{{label|translate}}</span>
         </label>
       </div>
       <hr>
