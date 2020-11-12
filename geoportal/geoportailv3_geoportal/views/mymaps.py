@@ -76,6 +76,15 @@ class Mymaps(object):
         for coord in coordinates:
             gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(coord[1], coord[0]))
 
+    def add_way_point(self, gpx, name, description, coordinates):
+        for coord in coordinates:
+            gpx_wps = gpxpy.gpx.GPXWaypoint()
+            gpx_wps.latitude = coord[1]
+            gpx_wps.longitude = coord[0]
+            gpx_wps.name = name
+            gpx_wps.description = description
+            gpx.waypoints.append(gpx_wps)
+
     @view_config(route_name="get_gpx")
     def get_gpx(self):
         map_id = id = self.request.matchdict.get("map_id")
@@ -91,6 +100,9 @@ class Mymaps(object):
                 self.add_track(gpx, feature.name, feature.description, list(geometry.coords))
             elif geometry.geom_type == 'Polygon':
                 self.add_track(gpx, feature.name, feature.description, list(geometry.exterior.coords))
+            elif geometry.geom_type == 'Point':
+                self.add_way_point(gpx, feature.name, feature.description, list(geometry.coords))
+
         charset = "utf-8"
         response = self.request.response
         response.body = gpx.to_xml().encode(charset)
