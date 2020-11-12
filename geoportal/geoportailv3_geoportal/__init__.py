@@ -211,6 +211,11 @@ def main(global_config, **settings):
         request_method="PUT"
     )
     config.add_route(
+        "get_gpx",
+        "/mymaps/get_gpx/{map_id}",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_map",
         "/mymaps/map/{map_id}",
         request_method="GET"
