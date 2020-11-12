@@ -7,6 +7,9 @@ import ldap3 as ldap
 
 import geojson
 import transaction
+import gpxpy
+import gpxpy.gpx
+import pyproj
 
 from sqlalchemy.sql import text
 
@@ -34,6 +37,11 @@ from shapely.geometry import Point, LineString
 from c2cgeoportal_geoportal.lib.caching import set_common_headers, NO_CACHE
 from c2cgeoportal_commons.models import DBSessions
 from geoportailv3_geoportal import mailer
+from shapely import wkb
+from shapely.geometry import asShape, shape
+from shapely.ops import transform
+from functools import partial
+
 
 import logging
 import urllib.request
@@ -57,6 +65,42 @@ class Mymaps(object):
         self.db_mymaps = DBSessions['mymaps']
         self.db_pgroute = DBSessions['pgroute']
 
+    def add_track(self, gpx, name, description, coordinates):
+        gpx_track = gpxpy.gpx.GPXTrack()
+        gpx_track.name = name
+        gpx_track.description = description
+        gpx.tracks.append(gpx_track)
+        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+        gpx_track.segments.append(gpx_segment)
+        # Create points:
+        for coord in coordinates:
+            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(coord[1], coord[0]))
+
+    @view_config(route_name="get_gpx")
+    def get_gpx(self):
+        map_id = id = self.request.matchdict.get("map_id")
+        if map_id is None:
+            return HTTPBadRequest("map_id is required")
+        features = self._features(self.db_mymaps, map_id)
+        if features is None:
+            return HTTPNotFound()
+        gpx = gpxpy.gpx.GPX()
+        for feature in features:
+            geometry = self._transform(wkb.loads(str(feature.geometry), True), "epsg:2169", "epsg:4326")
+            if geometry.geom_type == 'LineString':
+                self.add_track(gpx, feature.name, feature.description, list(geometry.coords))
+            elif geometry.geom_type == 'Polygon':
+                self.add_track(gpx, feature.name, feature.description, list(geometry.exterior.coords))
+        charset = "utf-8"
+        response = self.request.response
+        response.body = gpx.to_xml().encode(charset)
+        response.charset = charset
+        response.content_disposition = ("attachment; filename=%s.%s"
+                                        % (map_id.replace(" ", "_"), "gpx"))
+        return set_common_headers(
+            self.request, "get_gpx", NO_CACHE,
+            content_type= "application/gpx"
+        )
     @view_config(route_name="get_arrow_color")
     def get_arrow_color(self):
         color = self.request.params.get("color")
@@ -1680,3 +1724,11 @@ class Mymaps(object):
 
         full_mymaps['maps_elements'] = maps_elements
         return full_mymaps
+
+    def _transform(self, geometry, source, dest):
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=source), # source coordinate system
+            pyproj.Proj(init=dest)) # destination coordinate system
+
+        return transform(project, shape(geometry))  # apply projection
