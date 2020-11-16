@@ -924,7 +924,10 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
                         settings.url = url.toString();
                         return settings;
                     },
-                    transform: function(parsedResponse) {
+                    transform: parsedResponse => {
+                        if (!this.facets.activeLayers) {
+                            return [];
+                        }
                         /** @type {GeoJSONFeatureCollection} */
                         var featureCollection = /** @type {GeoJSONFeatureCollection} */
                             (parsedResponse);
