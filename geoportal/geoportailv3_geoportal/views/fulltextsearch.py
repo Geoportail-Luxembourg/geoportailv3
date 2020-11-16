@@ -373,13 +373,10 @@ class FullTextSearchView(object):
         if limit > maxlimit:
             limit = maxlimit
 
-        from c2cgeoportal_commons.models import DBSession
-        from c2cgeoportal_commons.models.main import TreeItem, LayerWMTS
-        from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS, LuxLayerExternalWMS
+        from c2cgeoportal_commons.models import DBSession, DBSessions
+        from c2cgeoportal_commons.models.main import TreeItem
+        from geoportailv3_geoportal.models import LuxGetfeatureDefinition
         request_layers = DBSession.query(LuxGetfeatureDefinition).filter(LuxGetfeatureDefinition.layer.in_(layers))
-
-        log.info(f'Layer count: {request_layers.count()}')
-        # return request_layers.count()
 
         features = []
         for layer in request_layers:
@@ -394,7 +391,50 @@ class FullTextSearchView(object):
             if (layer.engine_gfi is not None and
                 layer.query is not None and
                     len(layer.query) > 0):
-                log.error('ERROR, only ESRI rest layers are currently supported')
+                query_1 = layer.query
+                if "WHERE" in query_1.upper():
+                    query_1 = query_1 + " AND "
+                else:
+                    query_1 = query_1 + " WHERE "
+
+                if "SELECT" in query_1.upper():
+                    query_1 = query_1.replace(
+                        "SELECT",
+                        "SELECT ST_AsGeoJSON (%(geom)s), "
+                        % {'geom': layer.geometry_column}, 1)
+                else:
+                    query_1 = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
+                        % {'geom': layer.geometry_column} +\
+                        query_1
+
+                gfi_query = query_1 + f"{search_column} like '%{query}%'"
+                query_limit = 20
+                if layer.query_limit is not None:
+                    query_limit = layer.query_limit
+                if query_limit > 0:
+                    gfi_query = gfi_query + " LIMIT " + str(query_limit)
+
+                session = DBSessions[layer.engine_gfi]
+                res = session.execute(gfi_query)
+                rows = res.fetchall()
+
+                features = []
+                for row in rows:
+                    geom = geojson.loads(row['st_asgeojson'])
+                    bbox = geom.bounds
+                    attributes = dict(row)
+                    if layer.id_column in row:
+                        featureid = row[layer.id_column]
+                    else:
+                        if 'id' in row:
+                            featureid = row['id']
+                    properties = {'label': attributes[search_column],
+                                  'layer_name': layer_name}
+                    features.append(Feature(id=featureid,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
             elif (layer.rest_url is not None and
                   len(layer.rest_url) > 0):
 
@@ -453,13 +493,20 @@ class FullTextSearchView(object):
                         pass
                     attr = rawfeature['attributes']
 
-                    id = attr['OBJECTID']
-                    properties = {'label': attr['ROUTEID'],
+                    if layer.id_column in attr:
+                        id = attr[layer.id_column]
+                    else:
+                        if 'id' in attr:
+                            id = attr['id']
+                    properties = {'label': attr[search_column],
                                   'layer_name': layer_name}
 
                     features.append(Feature(id=id,
                                             geometry=geom,
                                             properties=properties,
                                             bbox=bbox))
+
+            else:
+                log.info(f"WMS layers cannot be searched - skipping {layer_name}")
 
         return FeatureCollection(features)
