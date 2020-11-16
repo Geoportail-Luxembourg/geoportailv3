@@ -374,7 +374,8 @@ class FullTextSearchView(object):
             limit = maxlimit
 
         from c2cgeoportal_commons.models import DBSession
-        from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS
+        from c2cgeoportal_commons.models.main import TreeItem, LayerWMTS
+        from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS, LuxLayerExternalWMS
         request_layers = DBSession.query(LuxGetfeatureDefinition).filter(LuxGetfeatureDefinition.layer.in_(layers))
 
         log.info(f'Layer count: {request_layers.count()}')
@@ -382,6 +383,14 @@ class FullTextSearchView(object):
 
         features = []
         for layer in request_layers:
+            layer_name = (DBSession.query(TreeItem)
+                          .filter(TreeItem.id == layer.layer)).first().name
+            search_column = layer.search_column
+            if search_column is None or search_column == "":
+                log.warning(f'Layer {layer.layer} ({layer_name}) has no search column definition - '
+                            'skipping search results for this layer.')
+                continue
+
             if (layer.engine_gfi is not None and
                 layer.query is not None and
                     len(layer.query) > 0):
@@ -400,7 +409,7 @@ class FullTextSearchView(object):
                 body = {
                     'f': 'json',
                     'returnGeometry': 'true',
-                    'where': f"ROUTEID like '%{query}%'",
+                    'where': f"{search_column} like '%{query}%'",
                     'outSR': '4326',
                     'outFields': '*'
                 }
@@ -445,8 +454,6 @@ class FullTextSearchView(object):
                     attr = rawfeature['attributes']
 
                     id = attr['OBJECTID']
-                    layer_name = (DBSession.query(LuxLayerInternalWMS)
-                                  .filter(LuxLayerInternalWMS.id == layer.layer)).first().name
                     properties = {'label': attr['ROUTEID'],
                                   'layer_name': layer_name}
 
