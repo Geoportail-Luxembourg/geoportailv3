@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
@@ -7,6 +7,13 @@ from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
 import os
 import json
 import geojson
+import urllib
+
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
+import logging
+log = logging.getLogger(__name__)
 
 
 class FullTextSearchView(object):
@@ -344,3 +351,108 @@ class FullTextSearchView(object):
             }
             features.append(feature)
         return features[:limit]
+
+    @view_config(route_name='featuresearch', renderer='json')
+    def featuresearch(self, layers=None):
+        if 'query' not in self.request.params:
+            return HTTPBadRequest(detail='no query')
+        query = self.request.params.get('query')
+        if layers is None:
+            layers = self.request.params.get('layers', '')
+        layers = layers.split(',')
+        query_language = self.request.params.get('language', 'fr')
+
+        maxlimit = self.settings.get('maxlimit', 200)
+
+        try:
+            limit = int(self.request.params.get(
+                'limit',
+                self.settings.get('defaultlimit', 30)))
+        except ValueError:
+            return HTTPBadRequest(detail='limit value is incorrect')
+        if limit > maxlimit:
+            limit = maxlimit
+
+        from c2cgeoportal_commons.models import DBSession
+        from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS
+        request_layers = DBSession.query(LuxGetfeatureDefinition).filter(LuxGetfeatureDefinition.layer.in_(layers))
+
+        log.info(f'Layer count: {request_layers.count()}')
+        # return request_layers.count()
+
+        features = []
+        for layer in request_layers:
+            if (layer.engine_gfi is not None and
+                layer.query is not None and
+                    len(layer.query) > 0):
+                log.error('ERROR, only ESRI rest layers are currently supported')
+            elif (layer.rest_url is not None and
+                  len(layer.rest_url) > 0):
+
+                url = layer.rest_url
+                if url.find("@") > -1:
+                    url = self._get_url_with_token(url)
+
+                # construct url for get request
+                separator = '?'
+                if url.find(separator) > 0:
+                    separator = '&'
+                body = {
+                    'f': 'json',
+                    'returnGeometry': 'true',
+                    'where': f"ROUTEID like '%{query}%'",
+                    'outSR': '4326',
+                    'outFields': '*'
+                }
+                if layer.use_auth:
+                    auth_token = get_arcgis_token(self.request, log)
+                    if 'token' in auth_token:
+                        body["token"] = auth_token['token']
+
+                query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
+                log.info(query)
+                try:
+                    url_request = urllib.request.Request(query)
+                    result = read_request_with_token(url_request, self.request, log)
+                    content = result.data
+                except ESRITokenException as e:
+                    raise HTTPBadGateway(e)
+                except Exception as e:
+                    log.exception(e)
+                    log.error(url)
+                    return []
+
+                try:
+                    esricoll = geojson.loads(content)
+                except:
+                    raise
+
+                geom_type = esricoll.get('geometryType', '')
+                if geom_type != 'esriGeometryPolyline':
+                    raise Exception(f' Geomotry type {geom_type} is not implemented')
+
+                for rawfeature in esricoll.get('features', []):
+                    geom = {
+                        'type': 'MultiLineString',
+                        'coordinates': rawfeature['geometry']['paths']
+                    }
+                    bbox = {}
+                    try:
+                        geom = shape(geom)
+                        bbox = geom.bounds
+                    except:
+                        pass
+                    attr = rawfeature['attributes']
+
+                    id = attr['OBJECTID']
+                    layer_name = (DBSession.query(LuxLayerInternalWMS)
+                                  .filter(LuxLayerInternalWMS.id == layer.layer)).first().name
+                    properties = {'label': attr['ROUTEID'],
+                                  'layer_name': layer_name}
+
+                    features.append(Feature(id=id,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
+        return FeatureCollection(features)
