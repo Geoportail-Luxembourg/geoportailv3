@@ -11,17 +11,33 @@ const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
 const DEFAULT_KEY = 'basemap_2015_global';
 
-function getDefaultMapBoxStyleUrl() {
+function getDefaultMapBoxStyleUrl(label) {
   const searchParams = new URLSearchParams(document.location.search);
   const server = searchParams.get('embeddedserver');
   const proto = searchParams.get('embeddedserverprotocol') || 'http';
-  const url = (server ? `${proto}://${server}` : 'https://vectortiles.geoportail.lu') + '/styles/roadmap/style.json';
+  const url = (server ? `${proto}://${server}` : 'https://vectortiles.geoportail.lu') + `/styles/${label}/style.json`;
   return url;
 }
-export const defaultMapBoxStyle = getDefaultMapBoxStyleUrl();
-export const defaultMapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
 
+function getDefaultMapBoxStyleXYZ (label) {
+    return `https://vectortiles.geoportail.lu/styles/${label}/{z}/{x}/{y}.png`;
+}
 
+function getKeywordForLayer(label) {
+    let keyword = undefined;
+    switch (label){
+        case 'basemap_2015_global':
+            keyword = 'roadmap';
+            break;
+        case 'topogr_global':
+            keyword = 'topomap';
+            break;
+        case  'topo_bw_jpeg':
+            keyword = 'topomap_gray';
+            break;
+    }
+    return keyword;
+}
 
 class MvtStylingService {
   /**
@@ -46,93 +62,102 @@ class MvtStylingService {
   }
 
   getBgStyle() {
-    const key = DEFAULT_KEY;
-    let lsData = JSON.parse(window.localStorage.getItem(key));
-    let xyz_custom = undefined;
-    if (!!lsData) {
-        if (lsData.serial) {
-            xyz_custom = this.createXYZCustom_(lsData.serial);
-        }
-    }
-
-
-    const serial = new URLSearchParams(window.location.search).get('serial');
-    const config = {
-      label: key,
-      defaultMapBoxStyle,
-      defaultMapBoxStyleXYZ,
-      xyz: xyz_custom || defaultMapBoxStyleXYZ,
-      xyz_custom,
-      style: defaultMapBoxStyle
-    };
-    if (serial) {
-        // if serial is number id, retrieve style form it
-        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-        if (serial.match(isValidUUIDv4Regex) !== null) {
-            console.log('Load mvt style from serial uuid');
-            this.isCustomStyle = true;
-            const style_url = `${this.getvtstyleUrl_}?id=${serial}`
-            config.style = style_url;
-            return Promise.resolve(config);
-        } else {
-            console.log('Load mvt style from serialized config');
-            this.isCustomStyle = true;
-            config.style = this.apply_mvt_config(serial);
-            return Promise.resolve(config);
-        }
-    } else if (this.appUserManager_.isAuthenticated()) {
-        const options = {
-            method: 'get',
-            headers: {'Content-Type': 'application/json'}
-        }
-        return fetch(url_get + "?key=" + key, options).then(resultFromDB => {
-            if (resultFromDB.data.length > 0) {
-                console.log('Load mvt expert style from database and save it to local storage');
-                this.isCustomStyle = true;
-                window.localStorage.setItem(key, resultFromDB.data[0].value);
-                config.style = JSON.parse(resultFromDB.data[0].value)
-                return config;
-            } else {
-                // Default style if no existing in LS or DB
-                console.log('Default mvt style loaded');
-                this.isCustomStyle = false;
-                return config;
+    const layerLabelList = ['basemap_2015_global', 'topogr_global', 'topo_bw_jpeg'];
+    const configs = [];
+    layerLabelList.forEach(label => {
+        let lsData = JSON.parse(window.localStorage.getItem(label));
+        let xyz_custom = undefined;
+        if (!!lsData) {
+            if (lsData.serial) {
+                xyz_custom = this.createXYZCustom_(lsData.serial);
             }
-        });
-    } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
-        if (lsData.serial){
-            // If there is a mvt expert style in the local storage, force parameter in the url
-            this.ngeoLocation_.updateParams({
-                'serial': JSON.stringify(lsData.serial)
-            });
-            console.log('Load mvt expert style from local storage');
-            this.isCustomStyle = true;
-            config.customStyle = this.isCustomStyle;
-
-            // Should work offline as well
-            config.style = lsData.background;
-            return Promise.resolve(config);
         }
 
-        if (lsData.medium) {
-            // If there is a mvt medium config in the local storage, force parameter in the url
-            this.ngeoLocation_.updateParams({
-                'serial': JSON.stringify(lsData.medium)
-            });
-            console.log('Load mvt medium style from local storage');
-            this.isCustomStyle = true;
-            config.customStyle = this.isCustomStyle;
+        const keyword = getKeywordForLayer(label);
+        const defaultMapBoxStyle = getDefaultMapBoxStyleUrl(keyword);
+        const defaultMapBoxStyleXYZ = getDefaultMapBoxStyleXYZ(keyword);
+
+        const config = {
+          label,
+          defaultMapBoxStyle,
+          defaultMapBoxStyleXYZ,
+          xyz: xyz_custom || defaultMapBoxStyleXYZ,
+          xyz_custom,
+          style: defaultMapBoxStyle
+        };
+
+        const serial = new URLSearchParams(window.location.search).get('serial');
+        if (serial) {
+            // if serial is number id, retrieve style form it
+            const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
+            if (serial.match(isValidUUIDv4Regex) !== null) {
+                console.log('Load mvt style from serial uuid');
+                this.isCustomStyle = true;
+                const style_url = `${this.getvtstyleUrl_}?id=${serial}`
+                config.style = style_url;
+                return configs.push(config);
+            } else {
+                console.log('Load mvt style from serialized config');
+                this.isCustomStyle = true;
+                config.style = this.apply_mvt_config(serial, label);
+                return configs.push(config);
+            }
+        } else if (this.appUserManager_.isAuthenticated()) {
+            const options = {
+                method: 'get',
+                headers: {'Content-Type': 'application/json'}
+            }
+            return configs.push(fetch(url_get + "?key=" + label, options).then(resultFromDB => {
+                if (resultFromDB.data.length > 0) {
+                    console.log('Load mvt expert style from database and save it to local storage');
+                    this.isCustomStyle = true;
+                    window.localStorage.setItem(label, resultFromDB.data[0].value);
+                    config.style = JSON.parse(resultFromDB.data[0].value)
+                    return config;
+                } else {
+                    // Default style if no existing in LS or DB
+                    console.log('Default mvt style loaded');
+                    this.isCustomStyle = false;
+                    return config;
+                }
+            }));
+        } else if (hasLocalStorage() && !!window.localStorage.getItem(label)) {
+            if (lsData.serial){
+                // If there is a mvt expert style in the local storage, force parameter in the url
+                this.ngeoLocation_.updateParams({
+                    'serial': JSON.stringify(lsData.serial)
+                });
+                console.log('Load mvt expert style from local storage');
+                this.isCustomStyle = true;
+                config.customStyle = this.isCustomStyle;
     
-            // Should work offline as well
-            config.style = lsData.background;
-            return Promise.resolve(config);
+                // Should work offline as well
+                config.style = lsData.background;
+                return configs.push(config);
+            }
+    
+            if (lsData.medium) {
+                // If there is a mvt medium config in the local storage, force parameter in the url
+                this.ngeoLocation_.updateParams({
+                    'serial': JSON.stringify(lsData.medium)
+                });
+                console.log('Load mvt medium style from local storage');
+                this.isCustomStyle = true;
+                config.customStyle = this.isCustomStyle;
+        
+                // Should work offline as well
+                config.style = lsData.background;
+                return configs.push(config);
+            }
+        } else {
+            // Default style if no existing in LS or DB
+            console.log('Default mvt style loaded');
+            this.isCustomStyle = false;
+            return configs.push(config);
         }
-    } else {
-        // Default style if no existing in LS or DB
-        console.log('Default mvt style loaded');
-        this.isCustomStyle = false;
-        return Promise.resolve(config);
-    }
+
+    });
+    return Promise.resolve(configs);
 }
 
 createXYZCustom_(id) {
@@ -287,10 +312,11 @@ getStyle(key = undefined) {
 }
 
 getUrlVtStyle(layer) {
-  const key = layer.get('label');
-  let id = window.localStorage.getItem(key);
+  const label = layer.get('label');
+  const keyword = getKeywordForLayer(label);
+  let id = window.localStorage.getItem(label);
 
-  if (id == null) return defaultMapBoxStyle;
+  if (id == null) return getDefaultMapBoxStyleUrl(keyword);
   return this.getvtstyleUrl_ + '?id=' + id;
 }
 
@@ -311,11 +337,12 @@ removeStyles(bgLayer) {
     return Promise.all(promises);
 }
 
-apply_mvt_config(mvt_config) {
+apply_mvt_config(mvt_config, label) {
+    const keyword = getKeywordForLayer(label);
     const url = new URL(window.location);
     let params = new URLSearchParams();
     params.set('config', JSON.stringify(mvt_config));
-    params.set('style_url', defaultMapBoxStyle);
+    params.set('style_url', getDefaultMapBoxStyleUrl(keyword));
     return `${url.origin}${url_config_mvt}?${params.toString()}`;
 }
 

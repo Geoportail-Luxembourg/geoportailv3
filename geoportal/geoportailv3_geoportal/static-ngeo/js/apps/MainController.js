@@ -369,7 +369,7 @@ const MainController = function(
       this.ngeoLocation_.updateParams({
         'serial': config
       });
-      this.appMvtStylingService.apply_mvt_config(config);
+      this.appMvtStylingService.apply_mvt_config(config, bgLayer.get('label'));
       this.ngeoLocation_.refresh();
       this.resetLayerFor3d_();
     });
