@@ -64,7 +64,7 @@ const exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl,
+    poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl, featureSearchServiceUrl,
     appExcludeThemeLayerSearch, appRouting) {
 
   /**
@@ -245,6 +245,10 @@ const exports = function($scope, $window, $compile,
   var CMSBloodhoundEngine = this.createAndInitCMSBloodhoundEngine_(
       cmsSearchServiceUrl);
 
+  /** @type {Bloodhound} */
+  var FeatureBloodhoundEngine = this.createAndInitFeatureBloodhoundEngine_(
+      featureSearchServiceUrl);
+
   /** @type {Fuse} */
   var backgroundLayerEngine =
       new Fuse([], {
@@ -376,7 +380,7 @@ const exports = function($scope, $window, $compile,
             this.gettextCatalog.getString('Addresses') +
             '</div>';
       }.bind(this),
-      suggestion: function(suggestion) {
+        suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
         var scope = $scope.$new(true);
         scope['feature'] = feature;
@@ -488,6 +492,26 @@ const exports = function($scope, $window, $compile,
         return $compile(html)(scope);
       }.bind(this)
     })
+  }, {
+      name: 'features',
+      source: FeatureBloodhoundEngine.ttAdapter(),
+      display: function(suggestion) {
+          var feature = /** @type {ol.Feature} */ (suggestion);
+          feature.set('dataset', this.name);
+          return feature.get('label');
+      },
+      templates: /** @type {TypeaheadTemplates} */({
+          header: function() {
+              return '<div class="header">' +
+                  this.gettextCatalog.getString('Features') +
+                  '</div>';
+          }.bind(this),
+          suggestion: function(suggestion) {
+              var feature = /** @type {ol.Feature} */ (suggestion);
+              return '<p><span class="search-result-container"><span class="search-result-label">'
+                  + feature.get('label') + '</span></span>';
+          }.bind(this)
+      })
   }
   ];
 
@@ -875,6 +899,48 @@ exports.prototype.createAndInitCMSBloodhoundEngine_ =
     return bloodhound;
   };
 
+/**
+ * @param {string} featureSearchServiceUrl The search url.
+ * @return {Bloodhound} The bloodhound engine.
+ * @private
+ */
+exports.prototype.createAndInitFeatureBloodhoundEngine_ =
+    function(searchServiceUrl) {
+        var geojsonFormat = new olFormatGeoJSON();
+        var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+            '', undefined, undefined, undefined,
+            /** @type {BloodhoundOptions} */ ({
+                remote: {
+                    url: searchServiceUrl,
+                    prepare: (query, settings) => {
+                        const url = new URL(settings.url);
+                        const params = url.searchParams;
+                        params.set('query', encodeURIComponent(query));
+                        params.set('limit', this.limitResults)
+                        params.set('language', encodeURIComponent(this.gettextCatalog.currentLanguage));
+                        let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
+                            .filter(el => el !== undefined);
+                        params.set('layers', encodeURIComponent(selected_layers.join(',')));
+                        settings.url = url.toString();
+                        return settings;
+                    },
+                    transform: function(parsedResponse) {
+                        /** @type {GeoJSONFeatureCollection} */
+                        var featureCollection = /** @type {GeoJSONFeatureCollection} */
+                            (parsedResponse);
+
+                        return geojsonFormat.readFeatures(featureCollection, {
+                            featureProjection: get('EPSG:3857'),
+                            dataProjection: undefined
+                        });
+                    }
+                }
+            }));
+
+        bloodhound.initialize();
+        return bloodhound;
+    };
+
 
 /**
  * @param {app.Themes} appThemes Themes Service
@@ -975,7 +1041,7 @@ exports.selected_ =
       } else if (suggestion.get('dataset')) {
         dataset = suggestion.get('dataset');
       }
-      if (dataset === 'pois' || dataset === 'coordinates') { //POIs
+      if (dataset === 'pois' || dataset === 'coordinates' || dataset === 'features') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
         this.lastSelectedSuggestion = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
@@ -986,6 +1052,8 @@ exports.selected_ =
         this.featureOverlay.clear();
         var features = [];
         if (dataset === 'coordinates') {
+          features.push(feature);
+        } else if (dataset === 'features') {
           features.push(feature);
         } else if (dataset === 'pois') {
           if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
