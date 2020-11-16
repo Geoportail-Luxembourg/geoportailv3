@@ -225,6 +225,13 @@ class LuxGetfeatureDefinition(Base):
     geometry_column = Column(Unicode, default='geom', info={
         'colanderalchemy': {'title': _('Geometry column name')}
     })
+    search_column = Column(Unicode, info={
+        'colanderalchemy': {
+            'title': _('Search column name'),
+            'description': 'Choice of column which shall be used by the search function to identify features '
+                           'to be included in search results if search in layers function is activated.'
+        }
+    })
     columns_order = Column(Unicode, info={
         'colanderalchemy': {'title': _('Order of columns')}
     })
