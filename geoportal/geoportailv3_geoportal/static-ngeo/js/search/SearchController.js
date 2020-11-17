@@ -903,6 +903,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
                 remote: {
                     url: searchServiceUrl,
                     prepare: (query, settings) => {
+                        if (!this.facets.activeLayers) { return false }
                         const url = new URL(settings.url);
                         const params = url.searchParams;
                         params.set('query', encodeURIComponent(query));
@@ -915,9 +916,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
                         return settings;
                     },
                     transform: parsedResponse => {
-                        if (!this.facets.activeLayers) {
-                            return [];
-                        }
+                        if (!this.facets.activeLayers) { return [] }
                         /** @type {GeoJSONFeatureCollection} */
                         var featureCollection = /** @type {GeoJSONFeatureCollection} */
                             (parsedResponse);
