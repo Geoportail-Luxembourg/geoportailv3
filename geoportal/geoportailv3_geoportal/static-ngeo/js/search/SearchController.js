@@ -895,43 +895,43 @@ exports.prototype.createAndInitCMSBloodhoundEngine_ =
  * @private
  */
 exports.prototype.createAndInitFeatureBloodhoundEngine_ =
-    function(searchServiceUrl) {
-        var geojsonFormat = new olFormatGeoJSON();
-        var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
-            '', undefined, undefined, undefined,
-            /** @type {BloodhoundOptions} */ ({
-                remote: {
-                    url: searchServiceUrl,
-                    prepare: (query, settings) => {
-                        if (!this.facets.activeLayers) { return false }
-                        const url = new URL(settings.url);
-                        const params = url.searchParams;
-                        params.set('query', encodeURIComponent(query));
-                        params.set('limit', this.limitResults)
-                        params.set('language', encodeURIComponent(this.gettextCatalog.currentLanguage));
-                        let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
-                            .filter(el => el !== undefined);
-                        params.set('layers', encodeURIComponent(selected_layers.join(',')));
-                        settings.url = url.toString();
-                        return settings;
-                    },
-                    transform: parsedResponse => {
-                        if (!this.facets.activeLayers) { return [] }
-                        /** @type {GeoJSONFeatureCollection} */
-                        var featureCollection = /** @type {GeoJSONFeatureCollection} */
-                            (parsedResponse);
+  function(searchServiceUrl) {
+  var geojsonFormat = new olFormatGeoJSON();
+  var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+    '', undefined, undefined, undefined,
+    /** @type {BloodhoundOptions} */ ({
+      remote: {
+        url: searchServiceUrl,
+        prepare: (query, settings) => {
+          if (!this.facets.activeLayers) { return false }
+          const url = new URL(settings.url);
+          const params = url.searchParams;
+          params.set('query', encodeURIComponent(query));
+          params.set('limit', this.limitResults)
+          params.set('language', encodeURIComponent(this.gettextCatalog.currentLanguage));
+          let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
+            .filter(el => el !== undefined);
+          params.set('layers', encodeURIComponent(selected_layers.join(',')));
+          settings.url = url.toString();
+          return settings;
+        },
+        transform: parsedResponse => {
+          if (!this.facets.activeLayers) { return [] }
+          /** @type {GeoJSONFeatureCollection} */
+          var featureCollection = /** @type {GeoJSONFeatureCollection} */
+          (parsedResponse);
 
-                        return geojsonFormat.readFeatures(featureCollection, {
-                            featureProjection: get('EPSG:3857'),
-                            dataProjection: undefined
-                        });
-                    }
-                }
-            }));
+          return geojsonFormat.readFeatures(featureCollection, {
+            featureProjection: get('EPSG:3857'),
+            dataProjection: undefined
+          });
+        }
+      }
+    }));
 
-        bloodhound.initialize();
-        return bloodhound;
-    };
+    bloodhound.initialize();
+    return bloodhound;
+};
 
 
 /**
