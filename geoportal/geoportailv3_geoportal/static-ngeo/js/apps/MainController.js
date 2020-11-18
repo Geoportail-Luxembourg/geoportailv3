@@ -39,6 +39,7 @@ import appOlcsZoomToExtent from '../olcs/ZoomToExtent.js';
 import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
+import {listen} from 'ol/events.js';
 
 import '../../less/geoportailv3.less';
 
@@ -189,7 +190,13 @@ import {platformModifierKeyOnly} from 'ol/events/condition';
 import Rotate from 'ol/control/Rotate';
 
 // See intermediate_editor_spec.md
-function getDefaultMediumStyling() {
+function getDefaultMediumStyling(label) {
+  if (label === 'basemap_2015_global') return getDefaultMediumRoadmapStyling();
+  if (label === 'topogr_global' || label === 'topo_bw_jpeg') return getDefaultMediumTopoStyling();
+  return getDefaultMediumRoadmapStyling(); // Default value at init app loading
+}
+
+function getDefaultMediumRoadmapStyling() {
   const gettext = t => t;
   return [{
     label: gettext('Roads primary'),
@@ -229,6 +236,38 @@ function getDefaultMediumStyling() {
   }, {
     label: gettext('Hillshade'),
     hillshades: ['hillshade'],
+    visible: true
+  }
+];
+}
+
+function getDefaultMediumTopoStyling() {
+  const gettext = t => t;
+  return [{
+    label: gettext('Roads primary'),
+    lines: ['lu_road_trunk_primary','lu_road_major_motorway'],
+    visible: true
+  },{
+    label: gettext('Roads secondary'),
+    lines: ['lu_road_minor', 'lu_road_secondary_tertiary','lu_bridge_minor','lu_road_path','lu_bridge_path'],
+    visible: true
+  },{
+    label: gettext('Vegetation'),
+    fills: ['lu_landuse_stadium','lu_landuse_cemetery'],
+    visible: true
+  },{
+    label: gettext('Buildings'),
+    fills: ['lu_building','lu_building_public'],
+    lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
+    visible: true
+  },{
+    label: gettext('Water'),
+    lines: ['lu_waterway','lu_waterway-tunnel','lu_waterway_intermittent'],
+    fills: ['lu_water'],
+    visible: true
+  },{
+    label: gettext('Background'),
+    backgrounds: ['background'],
     visible: true
   }
 ];
@@ -392,18 +431,21 @@ const MainController = function(
     this.simpleStylingData.forEach(simpleStyle => {
         simpleStyle['selected'] = false;
         const mediumColors = this.mediumStylingData.filter(m => 'color' in m);
-        for (let i = 0; i < simpleStyle['colors'].length; ++i) {
-          if (!mediumColors[i].visible || mediumColors[i].color !== simpleStyle['colors'][i]) {
-            return;
+        if (mediumColors.length > 0) {
+          for (let i = 0; i < simpleStyle['colors'].length; ++i) {
+            if (!mediumColors[i].visible || mediumColors[i].color !== simpleStyle['colors'][i]) {
+              return;
+            }
           }
         }
         const hillshadeMediumItem = this.mediumStylingData.find(m => 'hillshades' in m);
-        if (simpleStyle['hillshade'] === hillshadeMediumItem.visible) {
-          simpleStyle['selected'] = true;
+        if (!!hillshadeMediumItem) {
+          if (simpleStyle['hillshade'] === hillshadeMediumItem.visible) {
+            simpleStyle['selected'] = true;
+          }
         }
     });
   };
-
 
 
   this.onSimpleStylingSelected = selectedItem => {
@@ -413,7 +455,7 @@ const MainController = function(
     selectedItem['selected'] = true;
   
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
+    this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label')); // start again from a fresh style
     const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
     const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
@@ -907,6 +949,32 @@ const MainController = function(
     }
   }.bind(this));
 
+  listen(this.backgroundLayerMgr_, 'change', evt => {
+    const previous = evt.detail.previous;
+    const current = evt.detail.current;
+
+    if (current !== previous) {
+      if (current.getMapBoxMap()) {
+        this.mediumStylingData = getDefaultMediumStyling(current.get('label'));
+        let mediumStyle = appMvtStylingService.getStyle(current.get('label'));
+        if (mediumStyle !== undefined) {
+          mediumStyle.then((style) => {
+            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+            this.checkSelectedSimpleData();
+
+            const config = JSON.stringify(this.mediumStylingData);
+            this.ngeoLocation_.updateParams({
+              'serial': config
+            });
+            this.appMvtStylingService.apply_mvt_config(config, current.get('label'));
+            this.ngeoLocation_.refresh();
+            this.resetLayerFor3d_();
+          });
+        }
+      }
+    }
+  });
+
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
@@ -1091,7 +1159,7 @@ const MainController = function(
       });
 
       // If undefined, medium style UI is empty (was undefined for saving purpose)
-      this.mediumStylingData = getDefaultMediumStyling();
+      this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
     });
 
     // Reset form value
@@ -1102,7 +1170,7 @@ const MainController = function(
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    this.mediumStylingData = getDefaultMediumStyling();
+    this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
     this.resetLayerFor3d_();
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();

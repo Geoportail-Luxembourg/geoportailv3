@@ -210,11 +210,9 @@ class MvtStylingService {
     }
 
     publishStyle(layer) {
-        const label = layer.get('label');
-        const data = JSON.stringify(layer.getMapBoxMap().getStyle());
-
         return this.unpublishStyle(layer).then(() => {
             const formData = new FormData();
+            const data = JSON.stringify(layer.getMapBoxMap().getStyle());
             const blob = new Blob([data], { type: "application/json" });
             formData.append('style', blob, 'style.json');
             const options = {
@@ -225,6 +223,7 @@ class MvtStylingService {
                 .then(response => response.json())
                 .then(result => {
                     // modify existing key item
+                    const label = layer.get('label');
                     let lsData = JSON.parse(window.localStorage.getItem(label));
                     lsData.serial = result.id;
                     window.localStorage.setItem(label, JSON.stringify(lsData));
@@ -238,7 +237,7 @@ class MvtStylingService {
         const label = layer.get('label');
         let lsData = JSON.parse(window.localStorage.getItem(label));
 
-        if (lsData.serial) {
+        if (lsData.serial && !!lsData) {
             let id = lsData.serial;
             // modify existing key item
             lsData.serial = undefined;
