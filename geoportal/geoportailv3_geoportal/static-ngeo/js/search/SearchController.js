@@ -291,6 +291,7 @@ const exports = function($scope, $window, $compile,
     this.maxExtent_
   ));
 
+  const bgLabel = this.gettextCatalog.getString('Background Layers')
   /** @type {Array.<TypeaheadDataset>} */
   this['datasets'] = [{
     name: 'coordinates',
@@ -332,38 +333,23 @@ const exports = function($scope, $window, $compile,
       return syncResults(this.matchLayers_(backgroundLayerEngine, query));
     }.bind(this),
     /**
-     * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
+     * @param {app.search.BackgroundLayerSuggestion} feature The suggestion.
      * @return {string} The result.
      * @this {TypeaheadDataset}
      */
-    display(suggestion) {
-      if (suggestion) {
-        suggestion['dataset'] = this.name;
-        return suggestion['translatedName'];
+    display: function(feature) {
+      if (feature) {
+        feature['dataset'] = 'backgroundLayers'
+        return this.gettextCatalog.getString(feature.get('label'))
       }
-    },
+    }.bind(this),
     templates: /** @type {TypeaheadTemplates} */({
-      header() {
-        return '<div class="header">' +
-            this.gettextCatalog.getString('Background Layers') +
-            '</div>';
-      },
-      suggestion:
-          /**
-           * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
-           * @return {*} The result.
-           */
-          (suggestion => {
-            if (suggestion) {
-              var scope = $scope.$new(true);
-              scope['object'] = suggestion;
-              var html = '<p>' + suggestion['translatedName'];
-              html += ' (' + this.gettextCatalog.getString('Background') + ') ';
-              html += '</p>';
-              return $compile(html)(scope);
-            }
-
-          })
+      header: () => `<div class="header">${bgLabel}</div>`,
+      suggestion: s => s
+        ? `<p>${this.gettextCatalog.getString(s.get('label'))}
+          (${this.gettextCatalog.getString('Background')})
+          </p>`
+        : undefined
     })
   }, {
     name: 'pois',
@@ -552,22 +538,11 @@ const exports = function($scope, $window, $compile,
 /**
  * @param {Fuse} fuseEngine The fuse engine.
  * @param {string} searchString The search string.
- * @return {Array.<string>} The result.
+ * @return {Array} The result.
  * @private
  */
-exports.prototype.matchLayers_ =
-    function(fuseEngine, searchString) {
-      var fuseResults = /** @type {Array.<FuseResult>} */
-      (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
-      return fuseResults.map(
-      /**
-       * @param {FuseResult} r The result.
-       * @return {*} The item.
-       */
-      (function(r) {
-        return r.item;
-      }));
-    };
+exports.prototype.matchLayers_ = (fuseEngine, searchString) =>
+  fuseEngine.search(searchString).slice(0, 5).map(r => r.bgLayer)
 
 
 /**
@@ -792,7 +767,7 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this['map'], input['bgLayer']);
+  this.backgroundLayerMgr_.set(this['map'], input);
 };
 
 
