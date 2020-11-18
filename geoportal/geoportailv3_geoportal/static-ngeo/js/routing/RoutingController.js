@@ -32,6 +32,7 @@ import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
 import Overlay from 'ol/Overlay.js';
 import {click, pointerMove} from 'ol/events/condition.js';
+import { matchCoordinate } from '../CoordinateMatch'
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -187,15 +188,17 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       poiSearchServiceUrl);
 
-  var sourceFunc =
   /**
    * @param {Object} query
    * @param {function(Array<string>)} syncResults
    * @return {Object}
    */
-  function(query, syncResults) {
-    return syncResults(this.matchCoordinate_(query));
-  };
+  var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
+    query,
+    this['map'].getView().getProjection().getCode(),
+    this.maxExtent_
+  ));
+
   /** @type {Array.<TypeaheadDataset>}*/
   this['datasets'] = [{
     name: 'coordinates',
@@ -909,176 +912,6 @@ exports.prototype.exportGpx = function() {
   this.appExport_.exportGpx(features, 'Route', true);
 };
 
-
-/**
- * @param {string} searchString The search string.
- * @return {Array<ol.Feature>} The result.
- * @private
- */
-exports.prototype.matchCoordinate_ =
-    function(searchString) {
-      searchString = searchString.replace(/,/gi, '.');
-      var results = [];
-      var re = {
-        'EPSG:2169': {
-          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
-          label: 'LUREF',
-          epsgCode: 'EPSG:2169'
-        },
-        'EPSG:4326': {
-          regex:
-          /(\d{1,2}[\,\.]\d{1,6})\d*\s?(latitude|lat|N|longitude|long|lon|E|east|est)?\W*(\d{1,2}[\,\.]\d{1,6})\d*\s?(longitude|long|lon|E|latitude|lat|N|north|nord)?/i,
-          label: 'long/lat WGS84',
-          epsgCode: 'EPSG:4326'
-        },
-        'EPSG:4326:DMS': {
-          regex:
-          /([NSEW])?(-)?(\d+(?:\.\d+)?)[°º:d\s]?\s?(?:(\d+(?:\.\d+)?)['’‘′:]\s?(?:(\d{1,2}(?:\.\d+)?)(?:"|″|’’|'')?)?)?\s?([NSEW])?/i,
-          label: 'long/lat WGS84 DMS',
-          epsgCode: 'EPSG:4326'
-        }
-      };
-      var northArray = ['LATITUDE', 'LAT', 'N', 'NORTH', 'NORD'];
-      var eastArray = ['LONGITUDE', 'LONG', 'LON', 'E', 'EAST', 'EST'];
-      for (var epsgKey in re) {
-        /**
-         * @type {Array.<string | undefined>}
-         */
-        var m = re[epsgKey].regex.exec(searchString);
-
-        if (m !== undefined && m !== null) {
-          var epsgCode = re[epsgKey].epsgCode;
-          var isDms = false;
-          /**
-           * @type {number | undefined}
-           */
-          var easting = undefined;
-          /**
-           * @type {number | undefined}
-           */
-          var northing = undefined;
-          if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
-            if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
-              arrayIncludes(eastArray, m[4].toUpperCase())) {
-                easting = parseFloat(m[3].replace(',', '.'));
-                northing = parseFloat(m[1].replace(',', '.'));
-              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
-              arrayIncludes(eastArray, m[2].toUpperCase())) {
-                easting = parseFloat(m[1].replace(',', '.'));
-                northing = parseFloat(m[3].replace(',', '.'));
-              }
-            } else if (m[2] === undefined && m[4] === undefined) {
-              easting = parseFloat(m[1].replace(',', '.'));
-              northing = parseFloat(m[3].replace(',', '.'));
-            }
-          } else if (epsgKey === 'EPSG:4326:DMS') {
-            // Inspired by https://github.com/gmaclennan/parse-dms/blob/master/index.js
-            var m1, m2, decDeg1, decDeg2, dmsString2;
-            m1 = m;
-            if (m1[1]) {
-              m1[6] = undefined;
-              dmsString2 = searchString.substr(m1[0].length - 1).trim();
-            } else {
-              dmsString2 = searchString.substr(m1[0].length).trim();
-            }
-            decDeg1 = this.decDegFromMatch_(m1);
-            if (decDeg1 !== undefined) {
-              m2 = re[epsgKey].regex.exec(dmsString2);
-              decDeg2 = m2 ? this.decDegFromMatch_(m2) : undefined;
-              if (decDeg2 !== undefined) {
-                if (typeof decDeg1.latLon === 'undefined') {
-                  if (!isNaN(decDeg1.decDeg) && !isNaN(decDeg2.decDeg)) {
-                    // If no hemisphere letter but we have two coordinates,
-                    // infer that the first is lat, the second lon
-                    decDeg1.latLon = 'lat';
-                  }
-                }
-                if (decDeg1.latLon === 'lat') {
-                  northing = decDeg1.decDeg;
-                  easting = decDeg2.decDeg;
-                } else {
-                  easting = decDeg1.decDeg;
-                  northing = decDeg2.decDeg;
-                }
-                isDms = true;
-              }
-            }
-          }
-          if (easting !== undefined && northing !== undefined) {
-            var mapEpsgCode =
-            this['map'].getView().getProjection().getCode();
-            var point = /** @type {ol.geom.Point} */
-            (new olGeomPoint([easting, northing])
-           .transform(epsgCode, mapEpsgCode));
-            var flippedPoint =  /** @type {ol.geom.Point} */
-            (new olGeomPoint([northing, easting])
-           .transform(epsgCode, mapEpsgCode));
-            var feature = /** @type {ol.Feature} */ (null);
-            if (containsCoordinate(
-            this.maxExtent_, point.getCoordinates())) {
-              feature = new Feature(point);
-            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
-            this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new Feature(flippedPoint);
-            }
-            if (feature !== null) {
-              var resultPoint =
-                /** @type {ol.geom.Point} */ (feature.getGeometry());
-              var resultString = this.coordinateString_(
-              resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
-              feature.set('label', resultString);
-              feature.set('epsgLabel', re[epsgKey].label);
-              results.push(feature);
-            }
-          }
-        }
-      }
-      return results; //return empty array if no match
-    };
-
-/**
- * @param {Array.<string | undefined>} m The matched result.
- * @return {Object | undefined} Returns the coordinate.
- * @private
- */
-exports.prototype.decDegFromMatch_ = function(m) {
-  var signIndex = {
-    '-': -1,
-    'N': 1,
-    'S': -1,
-    'E': 1,
-    'W': -1
-  };
-
-  var latLonIndex = {
-    'N': 'lat',
-    'S': 'lat',
-    'E': 'lon',
-    'W': 'lon'
-  };
-
-  var sign;
-  sign = signIndex[m[2]] || signIndex[m[1]] || signIndex[m[6]] || 1;
-  if (m[3] === undefined) {
-    return undefined;
-  }
-
-  var degrees, minutes = 0, seconds = 0, latLon;
-  degrees = Number(m[3]);
-  if (m[4] !== undefined) {
-    minutes = Number(m[4]);
-  }
-  if (m[5] !== undefined) {
-    seconds = Number(m[5]);
-  }
-  latLon = latLonIndex[m[1]] || latLonIndex[m[6]];
-
-  return {
-    decDeg: sign * (degrees + minutes / 60 + seconds / 3600),
-    latLon: latLon
-  };
-};
 
 /**
  * Create a map from an route.
