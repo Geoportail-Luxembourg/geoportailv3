@@ -406,7 +406,8 @@ const MainController = function(
     .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
       this.ngeoLocation_.updateParams({
-        'serial': config
+        'serial': config,
+        'serialLayer': bgLayer.get('label')
       });
       this.appMvtStylingService.apply_mvt_config(config, bgLayer.get('label'));
       this.ngeoLocation_.refresh();
@@ -964,7 +965,8 @@ const MainController = function(
 
             const config = JSON.stringify(this.mediumStylingData);
             this.ngeoLocation_.updateParams({
-              'serial': config
+              'serial': config,
+              'serialLayer': current.get('label')
             });
             this.appMvtStylingService.apply_mvt_config(config, current.get('label'));
             this.ngeoLocation_.refresh();
@@ -1153,7 +1155,8 @@ const MainController = function(
       this.appMvtStylingService.saveStyle(dataObject, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
-          'serial': id
+          'serial': id,
+          'serialLayer': bgLayer.get('label')
         });
         this.ngeoLocation_.refresh();
       });
@@ -1175,6 +1178,7 @@ const MainController = function(
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();
     this.ngeoLocation_.deleteParam('serial');
+    this.ngeoLocation_.deleteParam('serialLayer');
   };
 
   /**

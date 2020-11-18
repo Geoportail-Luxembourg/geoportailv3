@@ -87,19 +87,30 @@ class MvtStylingService {
             };
 
             const serial = new URLSearchParams(window.location.search).get('serial');
+            const serialLayer = new URLSearchParams(window.location.search).get('serialLayer');
             if (serial) {
                 // if serial is number id, retrieve style form it
                 const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
                 if (serial.match(isValidUUIDv4Regex) !== null) {
-                    console.log('Load mvt style from serial uuid');
-                    this.isCustomStyle = true;
-                    const style_url = `${this.getvtstyleUrl_}?id=${serial}`
-                    config.style = style_url;
+                    // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
+                    if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
+                        console.log('Load mvt style from serial uuid');
+                        this.isCustomStyle = true;
+                        const style_url = `${this.getvtstyleUrl_}?id=${serial}`
+                        config.style = style_url;
+                    } else {
+                        console.log('default style');
+                    }
                     return configs.push(config);
                 } else {
-                    console.log('Load mvt style from serialized config');
-                    this.isCustomStyle = true;
-                    config.style = this.apply_mvt_config(serial, label);
+                    // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
+                    if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
+                        console.log('Load mvt style from serialized config');
+                        this.isCustomStyle = true;
+                        config.style = this.apply_mvt_config(serial, label);
+                    } else {
+                        console.log('default style');
+                    }
                     return configs.push(config);
                 }
             } else if (this.appUserManager_.isAuthenticated()) {
@@ -125,7 +136,8 @@ class MvtStylingService {
                 if (lsData.serial) {
                     // If there is a mvt expert style in the local storage, force parameter in the url
                     this.ngeoLocation_.updateParams({
-                        'serial': JSON.stringify(lsData.serial)
+                        'serial': JSON.stringify(lsData.serial),
+                        'serialLayer': JSON.stringify(label)
                     });
                     console.log('Load mvt expert style from local storage');
                     this.isCustomStyle = true;
@@ -139,7 +151,8 @@ class MvtStylingService {
                 if (lsData.medium) {
                     // If there is a mvt medium config in the local storage, force parameter in the url
                     this.ngeoLocation_.updateParams({
-                        'serial': JSON.stringify(lsData.medium)
+                        'serial': JSON.stringify(lsData.medium),
+                        'serialLayer': JSON.stringify(label)
                     });
                     console.log('Load mvt medium style from local storage');
                     this.isCustomStyle = true;
@@ -237,7 +250,7 @@ class MvtStylingService {
         const label = layer.get('label');
         let lsData = JSON.parse(window.localStorage.getItem(label));
 
-        if (lsData.serial && !!lsData) {
+        if (!!lsData && lsData.serial) {
             let id = lsData.serial;
             // modify existing key item
             lsData.serial = undefined;
