@@ -9,7 +9,6 @@ const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
-const DEFAULT_KEY = 'basemap_2015_global';
 
 function getDefaultMapBoxStyleUrl(label) {
     const searchParams = new URLSearchParams(document.location.search);
@@ -67,10 +66,8 @@ class MvtStylingService {
         layerLabelList.forEach(label => {
             let lsData = JSON.parse(window.localStorage.getItem(label));
             let xyz_custom = undefined;
-            if (!!lsData) {
-                if (lsData.serial) {
-                    xyz_custom = this.createXYZCustom_(lsData.serial);
-                }
+            if (!!lsData && lsData.serial) {
+                xyz_custom = this.createXYZCustom_(lsData.serial);
             }
 
             const keyword = getKeywordForLayer(label);
@@ -94,22 +91,22 @@ class MvtStylingService {
                 if (serial.match(isValidUUIDv4Regex) !== null) {
                     // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
                     if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
-                        console.log('Load mvt style from serial uuid');
+                        console.log(`Load mvt style for ${label} from serial uuid`);
                         this.isCustomStyle = true;
                         const style_url = `${this.getvtstyleUrl_}?id=${serial}`
                         config.style = style_url;
                     } else {
-                        console.log('default style');
+                        console.log(`Default mvt style for ${label}`);
                     }
                     return configs.push(config);
                 } else {
                     // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
                     if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
-                        console.log('Load mvt style from serialized config');
+                        console.log(`Load mvt style for ${label} from serialized config`);
                         this.isCustomStyle = true;
                         config.style = this.apply_mvt_config(serial, label);
                     } else {
-                        console.log('default style');
+                        console.log(`Default mvt style for ${label}`);
                     }
                     return configs.push(config);
                 }
@@ -120,14 +117,14 @@ class MvtStylingService {
                 }
                 return configs.push(fetch(url_get + "?key=" + label, options).then(resultFromDB => {
                     if (resultFromDB.data.length > 0) {
-                        console.log('Load mvt expert style from database and save it to local storage');
+                        console.log(`Load mvt style for ${label} from database and save it to local storage`);
                         this.isCustomStyle = true;
                         window.localStorage.setItem(label, resultFromDB.data[0].value);
                         config.style = JSON.parse(resultFromDB.data[0].value)
                         return config;
                     } else {
                         // Default style if no existing in LS or DB
-                        console.log('Default mvt style loaded');
+                        console.log(`Default mvt style for ${label}`);
                         this.isCustomStyle = false;
                         return config;
                     }
@@ -139,7 +136,7 @@ class MvtStylingService {
                         'serial': JSON.stringify(lsData.serial),
                         'serialLayer': JSON.stringify(label)
                     });
-                    console.log('Load mvt expert style from local storage');
+                    console.log(`Load mvt style for ${label} from local storage`);
                     this.isCustomStyle = true;
                     config.customStyle = this.isCustomStyle;
 
@@ -154,7 +151,7 @@ class MvtStylingService {
                         'serial': JSON.stringify(lsData.medium),
                         'serialLayer': JSON.stringify(label)
                     });
-                    console.log('Load mvt medium style from local storage');
+                    console.log(`Load mvt style for ${label} from local storage`);
                     this.isCustomStyle = true;
                     config.customStyle = this.isCustomStyle;
 
@@ -164,7 +161,7 @@ class MvtStylingService {
                 }
             } else {
                 // Default style if no existing in LS or DB
-                console.log('Default mvt style loaded');
+                console.log(`Default mvt style for ${label}`);
                 this.isCustomStyle = false;
                 return configs.push(config);
             }
@@ -287,7 +284,7 @@ class MvtStylingService {
 
         this.isCustomStyle = true;
         window.localStorage.setItem(key, value);
-        console.log('Data saved in local storage');
+        console.log(`Data saved for ${key} in local storage`);
 
         if (isPublished) {
             promises.push(this.publishStyle(configObject.background));
@@ -299,10 +296,8 @@ class MvtStylingService {
         return Promise.all(promises);
     }
 
-    getStyle(key = undefined) {
-        if (key === undefined) {
-            key = DEFAULT_KEY;
-        }
+    // Default value is the first mvt layer if key is undefined
+    getStyle(key = 'basemap_2015_global') {
         if (this.appUserManager_.isAuthenticated()) {
             const options = {
                 method: 'get',
@@ -311,14 +306,14 @@ class MvtStylingService {
             return fetch(url_get + "?key=" + key, options).then(resultFromDB => {
                 const styleFromDB = resultFromDB.data;
                 if (styleFromDB.length > 0) {
-                    console.log('Load data from database and save it to local storage');
+                    console.log(`Load data for ${key} from database and save it to local storage`);
                     this.isCustomStyle = true;
                     window.localStorage.setItem(key, styleFromDB[0].value);
                     return styleFromDB[0].value;
                 }
             });
         } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
-            console.log('Load data from local storage');
+            console.log(`Load data for ${key} from local storage`);
             return Promise.resolve(window.localStorage.getItem(key));
         }
     }
@@ -334,16 +329,17 @@ class MvtStylingService {
 
     removeStyles(bgLayer) {
         const promises = [];
+        const key = bgLayer.get('label');
         promises.push(this.unpublishStyle(bgLayer));
-        promises.push(window.localStorage.removeItem(bgLayer.get('label')));
-        console.log('Removed mvt styles from local storage');
+        promises.push(window.localStorage.removeItem(key));
+        console.log(`Removed mvt styles for ${key} from local storage`);
         if (this.appUserManager_.isAuthenticated()) {
             const options = {
                 method: 'delete',
                 headers: { 'Content-Type': 'application/json' }
             }
-            promises.push(fetch(url_delete + "?key=" + bgLayer.get('label'), options));
-            console.log('Removed mvt styles from database');
+            promises.push(fetch(url_delete + "?key=" + key, options));
+            console.log(`Removed mvt styles for ${key} from database`);
         }
         this.isCustomStyle = false;
         return Promise.all(promises);
