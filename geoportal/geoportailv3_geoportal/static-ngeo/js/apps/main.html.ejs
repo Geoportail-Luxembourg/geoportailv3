@@ -125,19 +125,28 @@
             <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
             <span translate>Afficher les modèles 3D</span>
           </div>
-          <ul class="nav nav-tabs">
+          <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="my-layers-tab">
-              <a href="#mylayers" data-toggle="tab">
+              <a href="" data-toggle="tab" role="tab"
+                ng-class="{active: mainCtrl.layersActiveTab=='mylayers'}"
+                ng-click="mainCtrl.layersActiveTab='mylayers'">
                 <span translate>my_layers</span>
                 <span ng-if="mainCtrl.selectedLayersLength() > 0">({{mainCtrl.selectedLayersLength()}})</span>
               </a>
             </li>
             <li role="presentation" class="catalog-tab">
-              <a href="#catalog" data-toggle="tab" translate>Catalog</a>
+              <a href="" data-toggle="tab" role="tab"
+                ng-class="{active: mainCtrl.layersActiveTab=='catalog'}"
+                ng-click="mainCtrl.layersActiveTab='catalog'"
+                translate>
+                Catalog
+              </a>
             </li>
           </ul>
           <div class="tab-content d-flex">
-            <div id="mylayers" class="tab-pane col-12">
+            <div id="mylayers" class="tab-pane col-12" role="tabpanel"
+              ng-class="{show: mainCtrl.layersActiveTab=='mylayers'}"
+              ng-show="mainCtrl.layersActiveTab=='mylayers'">
               <app-layermanager app-layermanager-map="::mainCtrl.map"
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
@@ -147,7 +156,9 @@
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
             </div>
-            <div id="catalog" class="tab-pane active">
+            <div id="catalog" class="tab-pane" role="tabpanel"
+              ng-class="{show: mainCtrl.layersActiveTab=='catalog'}"
+              ng-show="mainCtrl.layersActiveTab=='catalog'">
               <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
                                  app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
