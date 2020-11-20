@@ -363,8 +363,8 @@ const MainController = function(
 
   this.mediumStylingData = getDefaultMediumStyling();
 
-  function applyStyleFromItem(mbMap, item) {
-    appMvtStylingService.isCustomStyle = true;
+  function applyStyleFromItem(mbMap, item, label) {
+    appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleSetter(label, true);
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
       mbMap.setPaintProperty(path, 'fill-opacity', 1);
@@ -456,19 +456,20 @@ const MainController = function(
     selectedItem['selected'] = true;
   
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label')); // start again from a fresh style
+    const label = bgLayer.get('label');
+    this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
     const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
     const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
       const item = mediumStyles[i];
       item.color = selectedItem['colors'][i];
       item.visible = true;
-      applyStyleFromItem(mbMap, item);
+      applyStyleFromItem(mbMap, item, label);
     }
 
     const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
     hillshadeItem.visible = false;
-    applyStyleFromItem(mbMap, hillshadeItem)
+    applyStyleFromItem(mbMap, hillshadeItem, label)
 
     this.debouncedSaveStyle_();
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
@@ -485,7 +486,7 @@ const MainController = function(
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
-    applyStyleFromItem(mbMap, item);
+    applyStyleFromItem(mbMap, item, bgLayer.get('label'));
     this.debouncedSaveStyle_();
     this.checkSelectedSimpleData();
   };
@@ -954,8 +955,10 @@ const MainController = function(
     const previous = evt.detail.previous;
     const current = evt.detail.current;
 
-    if (current !== previous) {
+    // avoid if the layer is the same or first initialization
+    if (current !== previous && previous !== null) {
       if (current.getMapBoxMap()) {
+        appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(current.get('label'));
         this.mediumStylingData = getDefaultMediumStyling(current.get('label'));
         let mediumStyle = appMvtStylingService.getStyle(current.get('label'));
         if (mediumStyle !== undefined) {
