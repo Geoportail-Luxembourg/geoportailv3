@@ -9,7 +9,6 @@ export default class LuxRasterSynchronizer extends RasterSynchronizer {
    * @override
    */
   convertLayerToCesiumImageries(olLayer, viewProj) {
-
     if (olLayer instanceof MapBoxLayer) {
       const url = olLayer.get('xyz_custom') || olLayer.getXYZ();
       olLayer = new TileLayer({
