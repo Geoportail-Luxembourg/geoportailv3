@@ -121,6 +121,11 @@ const exports = class extends ngeoOlcsManager {
       scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
     }
 
+    //hide cesium ion logo
+    document.querySelector('.cesium-credit-logoContainer').style.display = none;
+    document.querySelector('.cesium-credit-textContainer').style.display = none;
+    document.querySelector('.cesium-credit-expand-link').style.display = none;
+
     return ol3d;
   }
 
