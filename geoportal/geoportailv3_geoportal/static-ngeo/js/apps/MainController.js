@@ -785,6 +785,11 @@ const MainController = function(
   this['selectedLayers'] = [];
 
   /**
+   * @type {string}
+   */
+  this.layersActiveTab = 'catalog'
+
+  /**
    * @type {function}
    */
   this.selectedLayersLength = function() {
