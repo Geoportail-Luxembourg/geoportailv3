@@ -923,6 +923,11 @@ const MainController = function(
   this.saveAs_ = ngeoDownload;
 
   /**
+   * @type {boolean}
+   */
+  this.isColorVisible = true;
+
+  /**
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
@@ -956,8 +961,11 @@ const MainController = function(
     const current = evt.detail.current;
 
     // avoid if the layer is the same or first initialization
-    if (current !== previous && previous !== null) {
-      if (current.getMapBoxMap()) {
+    if (current !== previous) {
+      this.isColorVisible = current.get('label') === 'basemap_2015_global' ? true : false;
+
+      // Only if not first loading and current is a vector tiles layer
+      if (previous !== null && current.getMapBoxMap()) {
         appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(current.get('label'));
         this.mediumStylingData = getDefaultMediumStyling(current.get('label'));
         let mediumStyle = appMvtStylingService.getStyle(current.get('label'));
