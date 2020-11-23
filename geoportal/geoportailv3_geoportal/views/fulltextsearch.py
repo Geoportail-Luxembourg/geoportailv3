@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
@@ -7,6 +7,13 @@ from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
 import os
 import json
 import geojson
+import urllib
+
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
+import logging
+log = logging.getLogger(__name__)
 
 
 class FullTextSearchView(object):
@@ -344,3 +351,162 @@ class FullTextSearchView(object):
             }
             features.append(feature)
         return features[:limit]
+
+    @view_config(route_name='featuresearch', renderer='json')
+    def featuresearch(self, layers=None):
+        if 'query' not in self.request.params:
+            return HTTPBadRequest(detail='no query')
+        query = self.request.params.get('query')
+        if layers is None:
+            layers = self.request.params.get('layers', '')
+        layers = layers.split(',')
+        query_language = self.request.params.get('language', 'fr')
+
+        maxlimit = self.settings.get('maxlimit', 200)
+
+        try:
+            limit = int(self.request.params.get(
+                'limit',
+                self.settings.get('defaultlimit', 30)))
+        except ValueError:
+            return HTTPBadRequest(detail='limit value is incorrect')
+        if limit > maxlimit:
+            limit = maxlimit
+
+        from c2cgeoportal_commons.models import DBSession, DBSessions
+        from c2cgeoportal_commons.models.main import TreeItem
+        from geoportailv3_geoportal.models import LuxGetfeatureDefinition
+        request_layers = DBSession.query(LuxGetfeatureDefinition).filter(LuxGetfeatureDefinition.layer.in_(layers))
+
+        features = []
+        for layer in request_layers:
+            layer_name = (DBSession.query(TreeItem)
+                          .filter(TreeItem.id == layer.layer)).first().name
+            search_column = layer.search_column
+            if search_column is None or search_column == "":
+                log.warning(f'Layer {layer.layer} ({layer_name}) has no search column definition - '
+                            'skipping search results for this layer.')
+                continue
+
+            if (layer.engine_gfi is not None and
+                layer.query is not None and
+                    len(layer.query) > 0):
+                query_1 = layer.query
+                if "WHERE" in query_1.upper():
+                    query_1 = query_1 + " AND "
+                else:
+                    query_1 = query_1 + " WHERE "
+
+                if "SELECT" in query_1.upper():
+                    query_1 = query_1.replace(
+                        "SELECT",
+                        "SELECT ST_AsGeoJSON (%(geom)s), "
+                        % {'geom': layer.geometry_column}, 1)
+                else:
+                    query_1 = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
+                        % {'geom': layer.geometry_column} +\
+                        query_1
+
+                gfi_query = query_1 + f"{search_column} like '%{query}%'"
+                query_limit = 20
+                if layer.query_limit is not None:
+                    query_limit = layer.query_limit
+                if query_limit > 0:
+                    gfi_query = gfi_query + " LIMIT " + str(query_limit)
+
+                session = DBSessions[layer.engine_gfi]
+                res = session.execute(gfi_query)
+                rows = res.fetchall()
+
+                features = []
+                for row in rows:
+                    geom = geojson.loads(row['st_asgeojson'])
+                    bbox = geom.bounds
+                    attributes = dict(row)
+                    if layer.id_column in row:
+                        featureid = row[layer.id_column]
+                    else:
+                        if 'id' in row:
+                            featureid = row['id']
+                    properties = {'label': attributes[search_column],
+                                  'layer_name': layer_name}
+                    features.append(Feature(id=featureid,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
+            elif (layer.rest_url is not None and
+                  len(layer.rest_url) > 0):
+
+                url = layer.rest_url
+                if url.find("@") > -1:
+                    url = self._get_url_with_token(url)
+
+                # construct url for get request
+                separator = '?'
+                if url.find(separator) > 0:
+                    separator = '&'
+                body = {
+                    'f': 'json',
+                    'returnGeometry': 'true',
+                    'where': f"{search_column} like '%{query}%'",
+                    'outSR': '4326',
+                    'outFields': '*'
+                }
+                if layer.use_auth:
+                    auth_token = get_arcgis_token(self.request, log)
+                    if 'token' in auth_token:
+                        body["token"] = auth_token['token']
+
+                query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
+                log.info(query)
+                try:
+                    url_request = urllib.request.Request(query)
+                    result = read_request_with_token(url_request, self.request, log)
+                    content = result.data
+                except ESRITokenException as e:
+                    raise HTTPBadGateway(e)
+                except Exception as e:
+                    log.exception(e)
+                    log.error(url)
+                    return []
+
+                try:
+                    esricoll = geojson.loads(content)
+                except:
+                    raise
+
+                geom_type = esricoll.get('geometryType', '')
+                if geom_type != 'esriGeometryPolyline':
+                    raise Exception(f' Geomotry type {geom_type} is not implemented')
+
+                for rawfeature in esricoll.get('features', []):
+                    geom = {
+                        'type': 'MultiLineString',
+                        'coordinates': rawfeature['geometry']['paths']
+                    }
+                    bbox = {}
+                    try:
+                        geom = shape(geom)
+                        bbox = geom.bounds
+                    except:
+                        pass
+                    attr = rawfeature['attributes']
+
+                    if layer.id_column in attr:
+                        id = attr[layer.id_column]
+                    else:
+                        if 'id' in attr:
+                            id = attr['id']
+                    properties = {'label': attr[search_column],
+                                  'layer_name': layer_name}
+
+                    features.append(Feature(id=id,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
+            else:
+                log.info(f"WMS layers cannot be searched - skipping {layer_name}")
+
+        return FeatureCollection(features)
