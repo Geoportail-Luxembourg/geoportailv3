@@ -1,3 +1,5 @@
+import olGeomPoint from 'ol/geom/Point.js';
+import {containsCoordinate} from 'ol/extent.js';
 
 /**
  * @param {string} searchString The search string.
