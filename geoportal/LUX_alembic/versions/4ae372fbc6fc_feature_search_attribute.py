@@ -30,4 +30,4 @@ def upgrade():
 
 def downgrade():
     schema = context.get_context().config.get_main_option('schema')
-    op.drop_column('lux_layer_internal_wms', 'search_column', schema=schema)
+    op.drop_column('lux_getfeature_definition', 'search_column', schema=schema)
