@@ -64,75 +64,7 @@ class FullTextSearchView(object):
                         }
                     },
                     "minimum_should_match": 2,
-                    "should": [
-                        {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label^2",
-                                    "label.ngram^2",
-                                    "label.simplified^2"
-                                ],
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label.ngram",
-                                    "label.simplified"
-                                ],
-                                "fuzziness": fuzziness,
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "Commune", "boost": 2
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "Localité", "boost": 1.7
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "lieu_dit", "boost": 1.5
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "Parcelle", "boost": 1
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "FLIK", "boost": 1
-                                }
-                            }
-                        },
-                        {
-                            "wildcard": {
-                                "layer_name": {
-                                    "value": "editus_poi*",
-                                    "boost": -1.5
-                                }
-                            }
-                        }
-                    ]
+                    "should": []
                 }
             }
         }
@@ -143,6 +75,46 @@ class FullTextSearchView(object):
         if layer:
             for cur_layer in layer.split(","):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
+
+        boosts = [
+                { "name": "Adresse", "boost": 1 },
+                { "name": "nom_de_rue", "boost": 1 },
+                { "name": "Commune", "boost": 2 },
+                { "name": "Localité", "boost": 1.7 },
+                { "name": "lieu_dit", "boost": 1.5 },
+                { "name": "Parcelle", "boost": 1 },
+                { "name": "FLIK", "boost": 1 },
+                { "name": "asta esp", "boost": 1 },
+                { "name": "hydro", "boost": 1 },
+                { "name": "hydro_km", "boost": 1 },
+                { "name": "biotope", "boost": 1 },
+                { "name": "editus_poi*", "boost": -1.5 },
+                ]
+        for l in boosts:
+            query_body['query']['bool']['should'].append({
+                "wildcard": {
+                    "layer_name": { "value": l["name"], "boost": l["boost"] }
+                }
+            })
+
+
+        matches = [{
+            "fields": [ "label^2", "label.ngram^2", "label.simplified^2" ],
+        }, {
+            "fields": [ "label.ngram", "label.simplified" ],
+            "fuzziness": fuzziness,
+        }]
+        for term in query.split('%20'):
+            for match in matches:
+               part = {
+                    "multi_match": {
+                        "type": "best_fields",
+                        "operator": "and",
+                        "query": term
+                    }
+               }
+               part['multi_match'].update(match)
+               query_body['query']['bool']['should'].append(part)
 
         extent = self.request.params.get('extent', False)
         if extent:
