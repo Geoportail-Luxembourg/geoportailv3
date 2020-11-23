@@ -962,7 +962,15 @@ const MainController = function(
 
     // avoid if the layer is the same or first initialization
     if (current !== previous) {
-      this.isColorVisible = current.get('label') === 'basemap_2015_global' ? true : false;
+
+      // Set accordingly the editor UI
+      if (current.get('label') === 'basemap_2015_global') {
+        this.isColorVisible = true;
+        $('#editor-medium').collapse('hide');
+      } else {
+        this.isColorVisible = false;
+        $('#editor-medium').collapse('show')
+      }
 
       // Only if not first loading and current is a vector tiles layer
       if (previous !== null && current.getMapBoxMap()) {
