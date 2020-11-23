@@ -133,9 +133,7 @@ const exports = class extends ngeoOlcsManager {
     this.tiles3dLayers_.forEach((layer) => {
       const url = this.tiles3dUrl_ + layer + "/tileset.json";
       const tileset = new Cesium.Cesium3DTileset({
-        url: url,
-        maximumNumberOfLoadedTiles: 3,
-        show: visible
+        url: url
       });
       this.tilesets3d.push(tileset);
       scene.primitives.add(tileset);
@@ -154,7 +152,7 @@ const exports = class extends ngeoOlcsManager {
    * @override
    */
   configureForUsability(scene) {
-    super.configureForUsability(scene);
+    //super.configureForUsability(scene);
     const camera = scene.camera;
     camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
   }
