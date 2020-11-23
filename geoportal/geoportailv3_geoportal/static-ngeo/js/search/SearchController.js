@@ -524,7 +524,13 @@ const exports = function($scope, $window, $compile,
     cms: true,
     address: false,
     parcels: false,
+    localite: false,
+    lieudit: false,
+    commune: false,
     flik: false,
+    hydro: false,
+    biotopes: false,
+    editus: false,
     extent: false,
     activeLayers: false
   };
@@ -532,6 +538,49 @@ const exports = function($scope, $window, $compile,
     ? JSON.parse(localStorage.getItem('searchFacets'))
     :this.initialFacets
   );
+  this.esLabels = {
+    address: 'Adresses',
+    parcels: 'Parcelles cadastrales',
+    localite: 'Localités',
+    lieudit: 'Lieux-dits',
+    commune: 'Communes',
+    flik: 'Éléments agricoles',
+    hydro: 'Hydrographie',
+    biotopes: 'Biotopes',
+    editus: 'POI Editus'
+  }
+
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.esMatch_ = {
+    address: ['Adresse', 'nom_de_rue'],
+    parcels: ['Parcelle'],
+    localite: ['Localité'],
+    lieudit: ['lieu_dit'],
+    commune: ['Commune'],
+    flik: ['FLIK','asta esp'],
+    hydro: ['hydro', 'hydro_km'],
+    biotopes: ['biotope'],
+    editus: [
+      'editus_poi_285',
+      'editus_poi_286',
+      'editus_poi_287',
+      'editus_poi_289',
+      'editus_poi_290',
+      'editus_poi_291',
+      'editus_poi_292',
+      'editus_poi_293',
+      'editus_poi_294',
+      'editus_poi_295',
+      'editus_poi_296',
+      'editus_poi_297',
+      'editus_poi_298',
+      'editus_poi_299'
+    ]
+  }
 };
 
 
@@ -564,13 +613,10 @@ exports.prototype.createAndInitPOIBloodhound_ =
             params.set('query', encodeURIComponent(query))
             params.set('limit', this.limitResults)
             // Facets
-            let layers = [ 'address', 'parcels', 'flik' ]
+            let layers = Object.keys(this.esMatch_)
               .filter(k => this.facets[k])
-              .map(k => ({
-                address: 'Adresse',
-                parcels: 'Parcelle',
-                flik: 'FLIK',
-              }[k]))
+              .map(k => this.esMatch_[k])
+              .flat()
             if (layers.length > 0) params.set('layer', layers.join(','))
             // Restrict to area
             if (this.facets.extent) {
