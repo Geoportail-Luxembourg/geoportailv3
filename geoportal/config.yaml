@@ -394,7 +394,7 @@ vars:
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
         postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,postFeedbackCruesUrl: feedbackcrues,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
-        printServiceUrl: printproxy, profileServiceUrl: profile.json,
+        printServiceUrl: printproxy, profileServiceUrl: profile.json, featureSearchServiceUrl: featuresearch,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
         shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style,
         getvtstyleUrl: get_vt_style
