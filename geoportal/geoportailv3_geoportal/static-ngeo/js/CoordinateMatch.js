@@ -1,5 +1,9 @@
 import olGeomPoint from 'ol/geom/Point.js';
 import {containsCoordinate} from 'ol/extent.js';
+import {transform} from 'ol/proj.js';
+import {includes as arrayIncludes} from 'ol/array.js';
+import olFeature from 'ol/Feature.js';
+
 
 /**
  * @param {string} searchString The search string.
