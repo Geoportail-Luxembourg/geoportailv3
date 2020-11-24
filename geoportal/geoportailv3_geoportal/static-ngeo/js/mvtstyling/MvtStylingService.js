@@ -139,7 +139,6 @@ class MvtStylingService {
                     });
                     console.log(`Load mvt style for ${label} from local storage`);
                     this.isCustomStyle = this.isCustomStyleSetter(label, true);
-                    //config.customStyle = this.isCustomStyle;
 
                     // Should work offline as well
                     config.style = lsData.background;
@@ -153,7 +152,6 @@ class MvtStylingService {
                     });
                     console.log(`Load mvt style for ${label} from local storage`);
                     this.isCustomStyle = this.isCustomStyleSetter(label, true);
-                    //config.customStyle = this.isCustomStyle;
 
                     // Should work offline as well
                     config.style = lsData.background;
@@ -282,7 +280,7 @@ class MvtStylingService {
 
         this.isCustomStyle = this.isCustomStyleSetter(key, true);
         window.localStorage.setItem(key, value);
-        console.log(`Data saved for ${key} in local storage`);
+        console.log(`Save data for ${key} in local storage`);
 
         if (isPublished) {
             promises.push(this.publishStyle(configObject.background));

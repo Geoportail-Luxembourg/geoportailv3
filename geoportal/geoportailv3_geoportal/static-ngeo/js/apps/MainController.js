@@ -475,13 +475,13 @@ const MainController = function(
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
-  const mediumStyle = appMvtStylingService.getStyle();
+  /* const mediumStyle = appMvtStylingService.getStyle();
   if (mediumStyle !== undefined) {
     mediumStyle.then((style) => {
         Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
         this.checkSelectedSimpleData();
       });
-  }
+  } */
 
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
@@ -969,17 +969,17 @@ const MainController = function(
         $('#editor-medium').collapse('hide');
       } else {
         this.isColorVisible = false;
-        $('#editor-medium').collapse('show')
+        $('#editor-medium').collapse('show');
       }
 
-      // Only if not first loading and current is a vector tiles layer
-      if (previous !== null && current.getMapBoxMap()) {
+      // Only if current is a vector tiles layer
+      if (current.getMapBoxMap()) {
         appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(current.get('label'));
         this.mediumStylingData = getDefaultMediumStyling(current.get('label'));
         let mediumStyle = appMvtStylingService.getStyle(current.get('label'));
         if (mediumStyle !== undefined) {
           mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+            Object.assign(this.mediumStylingData, JSON.parse(style)['medium'] || '{}');
             this.checkSelectedSimpleData();
 
             const config = JSON.stringify(this.mediumStylingData);
@@ -1135,13 +1135,14 @@ const MainController = function(
       this.appMvtStylingService.getBgStyle().then(config => {
         bgLayer.getMapBoxMap().setStyle(config.style);
       });
-    }
-    let mediumStyle = appMvtStylingService.getStyle();
-    if (mediumStyle !== undefined) {
-      mediumStyle.then((style) => {
-          Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-          this.checkSelectedSimpleData();
-        });
+
+      let mediumStyle = appMvtStylingService.getStyle(bgLayer.get('label'));
+      if (mediumStyle !== undefined) {
+        mediumStyle.then((style) => {
+            Object.assign(this.mediumStylingData, JSON.parse(style)['medium'] || '{}');
+            this.checkSelectedSimpleData();
+          });
+      }
     }
   });
 
@@ -1212,7 +1213,7 @@ const MainController = function(
 
   this.downloadCustomStyleFile = () => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());;
+    const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());
     const fileName = 'styles.json';
     if (!content) {
       console.log('No custom mvt to load');
