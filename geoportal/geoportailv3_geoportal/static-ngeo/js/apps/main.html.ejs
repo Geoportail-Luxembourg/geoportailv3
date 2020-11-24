@@ -127,17 +127,17 @@
           </div>
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="my-layers-tab">
-              <a href="" data-toggle="tab" role="tab"
+              <a href="#mylayers" data-toggle="tab" role="tab"
                 ng-class="{active: mainCtrl.layersActiveTab=='mylayers'}"
-                ng-click="mainCtrl.layersActiveTab='mylayers'">
+                ng-click="mainCtrl.showTab('mylayers', $event)">
                 <span translate>my_layers</span>
                 <span ng-if="mainCtrl.selectedLayersLength() > 0">({{mainCtrl.selectedLayersLength()}})</span>
               </a>
             </li>
             <li role="presentation" class="catalog-tab">
-              <a href="" data-toggle="tab" role="tab"
+              <a href="#catalog" data-toggle="tab" role="tab"
                 ng-class="{active: mainCtrl.layersActiveTab=='catalog'}"
-                ng-click="mainCtrl.layersActiveTab='catalog'"
+                ng-click="mainCtrl.showTab('catalog', $event)"
                 translate>
                 Catalog
               </a>
@@ -152,7 +152,7 @@
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
               </app-layermanager>
               <div class="text-center add-layers">
-                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
+                <button class="btn btn-default" ng-click="mainCtrl.showTab('catalog');" translate>+ Add layers</button>
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
             </div>

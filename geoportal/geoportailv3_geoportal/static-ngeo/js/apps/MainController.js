@@ -1031,7 +1031,7 @@ const MainController = function(
         this.closeSidebar();
         this['layersOpen'] = true;
       }
-      this.showTab('a[href=\'#mylayers\']');
+      this.showTab('mylayers');
     }
   });
 
@@ -1646,8 +1646,12 @@ MainController.prototype.compareLayers_ = function() {
  * @param {string} selector JQuery selector for the tab link.
  * @export
  */
-MainController.prototype.showTab = function(selector) {
-  $(selector).tab('show');
+MainController.prototype.showTab = function(selector, e) {
+  this.layersActiveTab = selector
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 };
 
 
@@ -1662,13 +1666,13 @@ MainController.prototype.toggleThemeSelector = function() {
     if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
       this['layersOpen'] = false;
     } else {
-      this.showTab('a[href=\'#catalog\']');
+      this.showTab('catalog');
       themesSwitcher.collapse('show');
       layerTree.collapse('hide');
     }
   } else {
     this['layersOpen'] = true;
-    this.showTab('a[href=\'#catalog\']');
+    this.showTab('catalog');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
   }
