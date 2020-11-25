@@ -11,6 +11,7 @@ import urllib
 
 from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportal.geoportailv3_geoportal.lib.esri_geom import feature_to_geom, geom_type_is_implemented
 
 import logging
 log = logging.getLogger(__name__)
@@ -449,14 +450,11 @@ class FullTextSearchView(object):
                     raise
 
                 geom_type = esricoll.get('geometryType', '')
-                if geom_type != 'esriGeometryPolyline':
-                    raise Exception(f' Geomotry type {geom_type} is not implemented')
+                if not geom_type_is_implemented(geom_type):
+                    raise Exception(f' Geometry type {geom_type} is not implemented')
 
                 for rawfeature in esricoll.get('features', []):
-                    geom = {
-                        'type': 'MultiLineString',
-                        'coordinates': rawfeature['geometry']['paths']
-                    }
+                    geom = feature_to_geom(rawfeature, geom_type)
                     bbox = {}
                     try:
                         geom = shape(geom)
