@@ -755,7 +755,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      'https://openlayers.org/en/master/examples/data/icon.png';
+      'https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png';
   element.appendChild(image);
 
   var position;
