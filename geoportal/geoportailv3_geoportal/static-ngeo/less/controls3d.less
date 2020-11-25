@@ -12,6 +12,15 @@
 @controls3d-border: 20px;
 @controls3d-button-padding: 0px;
 
+/*these 3 rules hide cesium ion logo.
+!important is needed because the display in these container are set directly in the HTML.
+*/
+.cesium-credit-logoContainer,
+.cesium-credit-textContainer,
+.cesium-credit-expand-link {
+  display: none !important;
+}
+
 ngeo-olcs-controls3d {
   position: absolute;
   bottom: 20px - @controls3d-border;
