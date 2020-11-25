@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.view import view_config
+import fiona
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
 from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
@@ -11,7 +12,6 @@ import urllib
 
 from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
-from geoportal.geoportailv3_geoportal.lib.esri_geom import feature_to_geom, geom_type_is_implemented
 
 import logging
 log = logging.getLogger(__name__)
@@ -445,23 +445,23 @@ class FullTextSearchView(object):
                     return []
 
                 try:
-                    esricoll = geojson.loads(content)
+                    log.info(fiona.__version__)
+                    log.info(fiona.get_gdal_release_name())
+                    log.info(fiona.supported_drivers)
+                    mf = fiona.MemoryFile(content)
+                    esricoll = mf.open(driver='ESRIJSON')
                 except:
                     raise
 
-                geom_type = esricoll.get('geometryType', '')
-                if not geom_type_is_implemented(geom_type):
-                    raise Exception(f' Geometry type {geom_type} is not implemented')
-
-                for rawfeature in esricoll.get('features', []):
-                    geom = feature_to_geom(rawfeature, geom_type)
+                for rawfeature in esricoll:
+                    geom = rawfeature['geometry']
                     bbox = {}
                     try:
                         geom = shape(geom)
                         bbox = geom.bounds
                     except:
                         pass
-                    attr = rawfeature['attributes']
+                    attr = rawfeature['properties']
 
                     if layer.id_column in attr:
                         id = attr[layer.id_column]
