@@ -445,9 +445,6 @@ class FullTextSearchView(object):
                     return []
 
                 try:
-                    log.info(fiona.__version__)
-                    log.info(fiona.get_gdal_release_name())
-                    log.info(fiona.supported_drivers)
                     mf = fiona.MemoryFile(content)
                     esricoll = mf.open(driver='ESRIJSON')
                 except:
@@ -475,6 +472,9 @@ class FullTextSearchView(object):
                                             geometry=geom,
                                             properties=properties,
                                             bbox=bbox))
+
+                esricoll.close()
+                mf.close()
 
             else:
                 log.info(f"WMS layers cannot be searched - skipping {layer_name}")
