@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.view import view_config
+import fiona
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
 from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
@@ -444,26 +445,20 @@ class FullTextSearchView(object):
                     return []
 
                 try:
-                    esricoll = geojson.loads(content)
+                    mf = fiona.MemoryFile(content)
+                    esricoll = mf.open(driver='ESRIJSON')
                 except:
                     raise
 
-                geom_type = esricoll.get('geometryType', '')
-                if geom_type != 'esriGeometryPolyline':
-                    raise Exception(f' Geomotry type {geom_type} is not implemented')
-
-                for rawfeature in esricoll.get('features', []):
-                    geom = {
-                        'type': 'MultiLineString',
-                        'coordinates': rawfeature['geometry']['paths']
-                    }
+                for rawfeature in esricoll:
+                    geom = rawfeature['geometry']
                     bbox = {}
                     try:
                         geom = shape(geom)
                         bbox = geom.bounds
                     except:
                         pass
-                    attr = rawfeature['attributes']
+                    attr = rawfeature['properties']
 
                     if layer.id_column in attr:
                         id = attr[layer.id_column]
@@ -477,6 +472,9 @@ class FullTextSearchView(object):
                                             geometry=geom,
                                             properties=properties,
                                             bbox=bbox))
+
+                esricoll.close()
+                mf.close()
 
             else:
                 log.info(f"WMS layers cannot be searched - skipping {layer_name}")

@@ -21,7 +21,7 @@ dogpile.cache==0.7.1  # geoportal
 flake8==3.7.7  # lint, TODO remove filter on pyflakes
 flake8-copyright==0.2.2  # lint
 flake8-mypy==17.8.0  # lint
-Fiona==1.8.5  # geoportal raster
+Fiona==1.8.6  # geoportal raster 1.8.6 is needed for reading ESRIJSON
 GeoAlchemy2==0.6.1  # commons, geoportal
 geojson==2.4.1  # geoportal
 glob2==0.6  # ngeo
