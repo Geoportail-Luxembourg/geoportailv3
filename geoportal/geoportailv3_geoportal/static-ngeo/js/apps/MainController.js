@@ -962,9 +962,10 @@ const MainController = function(
 
     // avoid if the layer is the same or first initialization
     if (current !== previous) {
+      const label = current.get('label');
 
       // Set accordingly the editor UI
-      if (current.get('label') === 'basemap_2015_global') {
+      if (label === 'basemap_2015_global') {
         this.isColorVisible = true;
         $('#editor-medium').collapse('hide');
       } else {
@@ -974,22 +975,23 @@ const MainController = function(
 
       // Only if current is a vector tiles layer
       if (current.getMapBoxMap()) {
-        appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(current.get('label'));
-        this.mediumStylingData = getDefaultMediumStyling(current.get('label'));
-        let mediumStyle = appMvtStylingService.getStyle(current.get('label'));
+        appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(label);
+        this.mediumStylingData = getDefaultMediumStyling(label);
+        let mediumStyle = appMvtStylingService.getStyle(label);
         if (mediumStyle !== undefined) {
           mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style)['medium'] || '{}');
-            this.checkSelectedSimpleData();
-
-            const config = JSON.stringify(this.mediumStylingData);
-            this.ngeoLocation_.updateParams({
-              'serial': config,
-              'serialLayer': current.get('label')
-            });
-            this.appMvtStylingService.apply_mvt_config(config, current.get('label'));
-            this.ngeoLocation_.refresh();
-            this.resetLayerFor3d_();
+            if (style) {
+              Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
+              this.checkSelectedSimpleData();
+              const config = JSON.stringify(this.mediumStylingData);
+              this.ngeoLocation_.updateParams({
+                'serial': config,
+                'serialLayer': label
+              });
+              this.appMvtStylingService.apply_mvt_config(config, label);
+              this.ngeoLocation_.refresh();
+              this.resetLayerFor3d_();
+            }
           });
         }
       }
@@ -1139,9 +1141,11 @@ const MainController = function(
       let mediumStyle = appMvtStylingService.getStyle(bgLayer.get('label'));
       if (mediumStyle !== undefined) {
         mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style)['medium'] || '{}');
+          if (style) {
+            Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
             this.checkSelectedSimpleData();
-          });
+          }
+        });
       }
     }
   });

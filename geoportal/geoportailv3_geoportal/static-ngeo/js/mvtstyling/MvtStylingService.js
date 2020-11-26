@@ -181,10 +181,8 @@ class MvtStylingService {
             // check if simple/medium styling
             if (serial.match(isValidUUIDv4Regex) === null) {
                 const bgLayer = this.backgroundLayerMgr_.get(map);
-                //const mbMap =  bgLayer.getMapBoxMap();
                 const interval = setInterval(() => {
                     try {
-                        //const data = JSON.stringify(mbMap.getStyle());
                         clearInterval(interval);
                         this.publishStyle(bgLayer).then(() => {
                             // for OL-Cesium to refresh the background layer counterpart
@@ -292,8 +290,10 @@ class MvtStylingService {
         return Promise.all(promises);
     }
 
-    // Default value is the first mvt layer if key is undefined
-    getStyle(key = 'basemap_2015_global') {
+    getStyle(key) {
+        if (!key) {
+            return;
+        }
         if (this.appUserManager_.isAuthenticated()) {
             const options = {
                 method: 'get',
@@ -306,6 +306,12 @@ class MvtStylingService {
                     this.isCustomStyle = this.isCustomStyleSetter(key, true);
                     window.localStorage.setItem(key, styleFromDB[0].value);
                     return styleFromDB[0].value;
+                } else {
+                    // Reset local storage as it is in database if no data exists
+                    console.log(`No data for ${key} from database and reset local storage`);
+                    this.isCustomStyle = this.isCustomStyleSetter(key, false);
+                    window.localStorage.removeItem(key);
+                    throw new Error('no data as been found for this layer');
                 }
             });
         } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
