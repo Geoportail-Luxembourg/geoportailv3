@@ -380,7 +380,7 @@ class FullTextSearchView(object):
                         % {'geom': layer.geometry_column} +\
                         query_1
 
-                gfi_query = query_1 + f"{search_column} like '%{query}%'"
+                gfi_query = query_1 + f"lower({search_column}) like '%{query.lower()}%'"
                 query_limit = 20
                 if layer.query_limit is not None:
                     query_limit = layer.query_limit
@@ -393,8 +393,15 @@ class FullTextSearchView(object):
 
                 features = []
                 for row in rows:
-                    geom = geojson.loads(row['st_asgeojson'])
-                    bbox = geom.bounds
+                    try:
+                        geom = geojson.loads(row['st_asgeojson'])
+                    except:
+                        geom = None
+                    try:
+                        geom = shape(geom)
+                        bbox = geom.bounds
+                    except:
+                        bbox = {}
                     attributes = dict(row)
                     if layer.id_column in row:
                         featureid = row[layer.id_column]
@@ -422,7 +429,7 @@ class FullTextSearchView(object):
                 body = {
                     'f': 'json',
                     'returnGeometry': 'true',
-                    'where': f"{search_column} like '%{query}%'",
+                    'where': f"lower({search_column}) like '%{query.lower()}%'",
                     'outSR': '4326',
                     'outFields': '*'
                 }
@@ -465,6 +472,8 @@ class FullTextSearchView(object):
                     else:
                         if 'id' in attr:
                             id = attr['id']
+                        else:
+                            id = None
                     properties = {'label': attr[search_column],
                                   'layer_name': layer_name}
 
