@@ -333,6 +333,7 @@ class FullTextSearchView(object):
         if layers is None:
             layers = self.request.params.get('layers', '')
         layers = layers.split(',')
+        extent = self.request.params.get('extent', False)
         query_language = self.request.params.get('language', 'fr')
 
         maxlimit = self.settings.get('maxlimit', 200)
@@ -381,6 +382,16 @@ class FullTextSearchView(object):
                         query_1
 
                 gfi_query = query_1 + f"lower({search_column}) like '%{query.lower()}%'"
+                if extent:
+                    bbox = extent.split(',')
+                    gfi_query = gfi_query + " AND ST_Intersects( %(geom)s, "\
+                        "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
+                        "%(top)s, 4326) )"\
+                        % {'left': bbox[0],
+                           'bottom': bbox[1],
+                           'right': bbox[2],
+                           'top': bbox[3],
+                           'geom': layer.geometry_column}
                 query_limit = 20
                 if layer.query_limit is not None:
                     query_limit = layer.query_limit
@@ -408,6 +419,8 @@ class FullTextSearchView(object):
                     else:
                         if 'id' in row:
                             featureid = row['id']
+                        else:
+                            featureid = None
                     properties = {'label': attributes[search_column],
                                   'layer_name': layer_name}
                     features.append(Feature(id=featureid,
@@ -437,6 +450,11 @@ class FullTextSearchView(object):
                     auth_token = get_arcgis_token(self.request, log)
                     if 'token' in auth_token:
                         body["token"] = auth_token['token']
+                if extent:
+                    body['inSR'] = '4326'
+                    body['geometry'] = extent
+                    body['geometryType'] = 'esriGeometryEnvelope'
+                    body['spatialRel'] = 'esriSpatialRelIntersects'
 
                 query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
                 log.info(query)
