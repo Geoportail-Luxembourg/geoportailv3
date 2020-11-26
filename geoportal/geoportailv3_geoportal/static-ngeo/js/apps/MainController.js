@@ -977,23 +977,20 @@ const MainController = function(
       if (current.getMapBoxMap()) {
         appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(label);
         this.mediumStylingData = getDefaultMediumStyling(label);
-        let mediumStyle = appMvtStylingService.getStyle(label);
-        if (mediumStyle !== undefined) {
-          mediumStyle.then((style) => {
-            if (style) {
-              Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
-              this.checkSelectedSimpleData();
-              const config = JSON.stringify(this.mediumStylingData);
-              this.ngeoLocation_.updateParams({
-                'serial': config,
-                'serialLayer': label
-              });
-              this.appMvtStylingService.apply_mvt_config(config, label);
-              this.ngeoLocation_.refresh();
-              this.resetLayerFor3d_();
-            }
+        appMvtStylingService.getStyle(label).then((style) => {
+          Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
+          this.checkSelectedSimpleData();
+          const config = JSON.stringify(this.mediumStylingData);
+          this.ngeoLocation_.updateParams({
+            'serial': config,
+            'serialLayer': label
           });
-        }
+          this.appMvtStylingService.apply_mvt_config(config, label);
+          this.ngeoLocation_.refresh();
+          this.resetLayerFor3d_();
+        },(err) => {
+          console.log(err);
+        });
       }
     }
   });
@@ -1138,15 +1135,12 @@ const MainController = function(
         bgLayer.getMapBoxMap().setStyle(config.style);
       });
 
-      let mediumStyle = appMvtStylingService.getStyle(bgLayer.get('label'));
-      if (mediumStyle !== undefined) {
-        mediumStyle.then((style) => {
-          if (style) {
-            Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
-            this.checkSelectedSimpleData();
-          }
-        });
-      }
+      appMvtStylingService.getStyle(bgLayer.get('label')).then((style) => {
+          Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
+          this.checkSelectedSimpleData();
+      }, (err) => {
+        console.log(err);
+      });
     }
   });
 

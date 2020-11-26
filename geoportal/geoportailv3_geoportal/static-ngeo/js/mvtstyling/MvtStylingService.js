@@ -305,18 +305,24 @@ class MvtStylingService {
                     console.log(`Load data for ${key} from database and save it to local storage`);
                     this.isCustomStyle = this.isCustomStyleSetter(key, true);
                     window.localStorage.setItem(key, styleFromDB[0].value);
-                    return styleFromDB[0].value;
+                    return Promise.resolve(styleFromDB[0].value);
                 } else {
                     // Reset local storage as it is in database if no data exists
-                    console.log(`No data for ${key} from database and reset local storage`);
+                    //console.log(`No data for ${key} from database and reset local storage`);
                     this.isCustomStyle = this.isCustomStyleSetter(key, false);
                     window.localStorage.removeItem(key);
-                    throw new Error('no data as been found for this layer');
+                    return Promise.reject(`No data for ${key} from database`);
                 }
             });
-        } else if (hasLocalStorage() && !!window.localStorage.getItem(key)) {
-            console.log(`Load data for ${key} from local storage`);
-            return Promise.resolve(window.localStorage.getItem(key));
+        } else if (hasLocalStorage()) {
+            const lsData = window.localStorage.getItem(key);
+            if (lsData) {
+                console.log(`Load data for ${key} from local storage`);
+                return Promise.resolve(window.localStorage.getItem(key));
+            } else {
+                this.isCustomStyle = this.isCustomStyleSetter(key, false);
+                return Promise.reject(`No data for ${key} from local storage`);
+            }
         }
     }
 
