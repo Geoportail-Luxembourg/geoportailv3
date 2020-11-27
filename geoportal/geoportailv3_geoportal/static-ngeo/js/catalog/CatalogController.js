@@ -46,6 +46,8 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.appStateManager_ = appStateManager;
 
+  this.map_ = this['map']
+
   /**
    * @type {ol.Extent}
    * @private
@@ -248,6 +250,10 @@ exports.prototype.toggle = function(node) {
     }
   }
 };
+
+exports.prototype.getSetActive = function() {
+  console.log("setGetActive")
+}
 
 
 appModule.controller('AppCatalogController', exports);
