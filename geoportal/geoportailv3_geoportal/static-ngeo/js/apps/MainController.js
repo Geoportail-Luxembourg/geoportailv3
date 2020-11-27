@@ -249,7 +249,7 @@ function getDefaultMediumTopoStyling() {
     visible: true
   },{
     label: gettext('Secondary Names'),
-    symbols: ['lu_place-label_isolated','lu_place-label_locality_forest','lu_place-label_locality_lieudit],
+    symbols: ['lu_place-label_isolated','lu_place-label_locality_forest','lu_place-label_locality_lieudit'],
     visible: true
   },{
     label: gettext('Transport'),
