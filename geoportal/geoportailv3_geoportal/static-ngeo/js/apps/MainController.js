@@ -245,7 +245,7 @@ function getDefaultMediumTopoStyling() {
   const gettext = t => t;
   return [{
     label: gettext('Primary Names'),
-    symbols: ['lu_place-label_other','lu_place-label_city','lu_place-label_canton','lu_country-label-other','lu_country-label','place_label_other','place_label_city','country_label-other','country_label'],
+    symbols: ['lu_place-label_other','lu_place-label_city','lu_place-label_canton','lu_country-label_other','lu_country-label','place_label_other','place_label_city','country_label-other','country_label'],
     visible: true
   },{
     label: gettext('Secondary Names'),
@@ -287,11 +287,11 @@ function getDefaultMediumTopoStyling() {
   },{
     label: gettext('Contours and Height Points'),
     lines: ['lu_contour-100','lu_contour-50','lu_contour-20','lu_contour-10','lu_contour'],
-    symbols: ['lu_contour-label-100','lu_contour-label-20','lu_apex-label'],
+    symbols: ['lu_contour-label-100','lu_contour-label-20','lu_apex_label'],
     visible: true
   }, {
     label: gettext('Hillshade'),
-    hillshades: ['hillshade'],
+    hillshades: ['lu_hillshade'],
     visible: true
   }
 ];
@@ -390,27 +390,37 @@ const MainController = function(
   function applyStyleFromItem(mbMap, item, label) {
     appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleSetter(label, true);
     (item.fills || []).forEach(path => {
-      mbMap.setPaintProperty(path, 'fill-color', item.color);
-      mbMap.setPaintProperty(path, 'fill-opacity', 1);
+      if (item.color) {
+        mbMap.setPaintProperty(path, 'fill-color', item.color);
+        mbMap.setPaintProperty(path, 'fill-opacity', 1);
+      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.lines || []).forEach(path => {
-      mbMap.setPaintProperty(path, 'line-color', item.color);
-      mbMap.setPaintProperty(path, 'line-opacity', 1);
+      if (item.color) {
+        mbMap.setPaintProperty(path, 'line-color', item.color);
+        mbMap.setPaintProperty(path, 'line-opacity', 1);
+      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.symbols || []).forEach(path => {
-      mbMap.setPaintProperty(path, 'symbol-opacity', 1);
+      if(item.color) {
+        mbMap.setPaintProperty(path, 'symbol-opacity', 1);
+      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.fillExtrusions || []).forEach(path => {
-      mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
-      mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
+      if (item.color) {
+        mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
+        mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
+      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.backgrounds || []).forEach(path => {
-      mbMap.setPaintProperty(path, 'background-color', item.color);
-      mbMap.setPaintProperty(path, 'background-opacity', 1);
+      if (item.color) {
+        mbMap.setPaintProperty(path, 'background-color', item.color);
+        mbMap.setPaintProperty(path, 'background-opacity', 1);
+      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.hillshades || []).forEach(path => {
