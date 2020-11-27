@@ -46,6 +46,8 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.appStateManager_ = appStateManager;
 
+  this.map_ = this['map']
+
   /**
    * @type {ol.Extent}
    * @private
@@ -75,7 +77,7 @@ const exports = function($scope, appThemes, appTheme,
    * @type {app.GetLayerForCatalogNode}
    * @private
    */
-  this.getLayerFunc_ = appGetLayerForCatalogNode;
+  this.getLayerFunc_ = appGetLayerForCatalogNode
 
   /**
    * @type {ngeo.statemanager.Location}
@@ -98,8 +100,43 @@ const exports = function($scope, appThemes, appTheme,
       this.setTree_();
     }
   }.bind(this));
-
+  $scope.$watch(
+    function() {
+    if (this.map.get('ol3dm')) {
+      return this.map.get('ol3dm').is3dEnabled()
+    }
+    return undefined;
+  }.bind(this),
+    function(newVal) {
+      switch(newVal) {
+        case true: {
+          this.tree.children.push({
+          id: -1,
+          name: "3d Layers",
+          metadata: {},
+          children: this.map.get('ol3dm').getLayerName().map(function(layer) {
+            return {
+              id: 1,
+              name: layer
+            }
+          }),
+          type: "Cesium",
+          ogcServer: "None",
+          mixed: true,
+          theme: this.appTheme_.getCurrentTheme()
+        })
+        break;
+      }
+        case false: {
+        const idx = this.tree.children.findIndex((e) => e.id === -1)
+        this.tree.children.splice(idx, 1)
+        break;
+      }
+        case undefined: break;
+      }
+  }.bind(this))
 };
+
 
 
 /**
@@ -110,10 +147,17 @@ const exports = function($scope, appThemes, appTheme,
  * @export
  */
 exports.prototype.getLayer = function(node) {
-  var layer = this.getLayerFunc_(node);
-  return layer;
+  return this.getLayerFunc_(node);
 };
 
+exports.prototype.getActive = function(layertreeController) {
+  const layer3d = this.map.get('ol3dm').getLayerName()
+  if (layer3d.find(e => e === layertreeController.node.name)) {
+    const layer3dAvailable = this.map.get('ol3dm').tiles3dLayers_
+    return layer3dAvailable.find(e => e === layer3d)
+  }
+  return layertreeController.getSetActive()
+}
 
 /**
  * @private
@@ -175,17 +219,27 @@ exports.prototype.setThemeZooms = function(tree) {
  * @export
  */
 exports.prototype.toggle = function(node) {
-  var layer = this.getLayerFunc_(node);
-  var map = this['map'];
-  if (map.getLayers().getArray().indexOf(layer) >= 0) {
-    map.removeLayer(layer);
-  } else {
-    var layerMetadata = layer.get('metadata');
-    if (layerMetadata.hasOwnProperty('start_opacity') &&
-        layerMetadata.hasOwnProperty('original_start_opacity')) {
-      layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
+  // is it an openlayers layer of a cesium layer
+  const olcs = this.map.get('ol3dm');
+  if (olcs.getLayerName().indexOf(node.name) !== -1) {
+    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.name)) !== -1) {
+      olcs.remove3dLayer(node.name);
+    } else {
+      olcs.add3dTile(node.name)
     }
-    map.addLayer(layer);
+  } else {
+    var layer = this.getLayerFunc_(node);
+    var map = this['map'];
+    if (map.getLayers().getArray().indexOf(layer) >= 0) {
+      map.removeLayer(layer);
+    } else {
+      var layerMetadata = layer.get('metadata');
+      if (layerMetadata.hasOwnProperty('start_opacity') &&
+          layerMetadata.hasOwnProperty('original_start_opacity')) {
+        layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
+      }
+      map.addLayer(layer);
+    }
     if (layerMetadata.hasOwnProperty('linked_layers')) {
       var layers = layerMetadata['linked_layers'].split(',');
       layers.forEach(function(layerId) {
