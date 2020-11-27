@@ -81,6 +81,7 @@ environment:
 - {name: AUTHTKT_TIMEOUT}
 - {name: PROXYWMSURL, default: 'https://wmsproxy.geoportail.lu/ogcproxywms'}
 - {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork/srv'}
+- {name: WMTSURL, default: ''}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -368,6 +369,7 @@ vars:
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+        wmtsUrl: '{WMTSURL}'
       fulltextsearch_params: {
         assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
