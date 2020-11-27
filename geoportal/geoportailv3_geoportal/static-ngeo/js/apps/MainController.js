@@ -244,30 +244,54 @@ function getDefaultMediumRoadmapStyling() {
 function getDefaultMediumTopoStyling() {
   const gettext = t => t;
   return [{
-    label: gettext('Roads primary'),
-    lines: ['lu_road_trunk_primary','lu_road_major_motorway'],
+    label: gettext('Primary Names'),
+    symbols: ['lu_place-label_other','lu_place-label_city','lu_place-label_canton','lu_country-label-other','lu_country-label','place_label_other','place_label_city','country_label-other','country_label'],
     visible: true
   },{
-    label: gettext('Roads secondary'),
-    lines: ['lu_road_minor', 'lu_road_secondary_tertiary','lu_bridge_minor','lu_road_path','lu_bridge_path'],
+    label: gettext('Secondary Names'),
+    symbols: ['lu_place-label_isolated','lu_place-label_locality_forest','lu_place-label_locality_lieudit'],
+    visible: true
+  },{
+    label: gettext('Transport'),
+    lines: ['lu_tunnel_track-casing','lu_tunnel_major_motorway-casing','lu_tunnel_railway_transit','lu_tunnel_railway',
+            'lu_tunnel_railway-hatching','lu_tunnel_path','lu_tunnel_track','lu_tunnel_minor','lu_tunnel_major_motorway',
+            'lu_tunnel_secondary_tertiary','lu_tunnel_trunk_primary','lu_road_track-casing','lu_road_minor-casing',
+            'lu_road_major_motorway-casing','lu_road_secondary_tertiary-casing','lu_road_trunk_primary-casing',
+            'lu_road_pier','lu_road_path','lu_road_track','lu_road_minor','lu_road_major_motorway',
+            'lu_road_secondary_tertiary','lu_road_trunk_primary','lu_tram','lu_tram-hatching','lu_railway_transit',
+            'lu_railway','lu_railway-hatching','lu_bridge_railway-casing','lu_bridge_track-casing',
+            'lu_bridge_path-casing','lu_bridge_minor-casing','lu_bridge_major_motorway-casing','lu_bridge_secondary_tertiary-casing',
+            'lu_bridge_trunk_primary-casing','lu_bridge_railway','lu_bridge_path','lu_bridge_track','lu_bridge_minor',
+            'lu_bridge_major_motorway','lu_bridge_secondary_tertiary','lu_bridge_trunk_primary','tunnel_track-casing',
+            'tunnel_major_motorway-casing','tunnel_railway_transit','tunnel_railway_transit-hatching','tunnel_railway','tunnel_railway-hatching','tunnel_path',
+            'tunnel_track','tunnel_minor','tunnel_major_motorway','tunnel_secondary_tertiary','tunnel_trunk_primary',
+            'road_track-casing','road_minor-casing','road_major_motorway-casing','road_secondary_tertiary-casing',
+            'road_trunk_primary-casing','road_pier','road_path','road_track','road_minor',
+            'road_major_motorway','road_secondary_tertiary','road_trunk_primary','railway-transit',
+            'railway-transit-hatching','railway','railway-hatching','bridge_railway-casing','bridge_path-casing',
+            'bridge_track_casing','bridge_minor-casing','bridge_major_motorway-casing','bridge_secondary_tertiary-casing',
+            'bridge_trunk_primary-casing','bridge_railway','bridge_path','bridge_track','bridge_minor','bridge_major_motorway',
+            'bridge_secondary_tertiary','bridge_trunk_primary'],
+    symbols: ['lu_road_major-label','lu_motorway-shield','lu_road-shield'],
     visible: true
   },{
     label: gettext('Vegetation'),
-    fills: ['lu_landuse_stadium','lu_landuse_cemetery'],
+    fills: ['lu_landuse_stadium','lu_landuse_cemetery','lu_landuse_gras','lu_landuse_park','lu_landuse_park-outline','lu_landuse_vineyard','lu_landuse_orchard','lu_landuse_wood','landcover_grass','landcover_wood'],
     visible: true
   },{
-    label: gettext('Buildings'),
-    fills: ['lu_building','lu_building_public'],
-    lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
+    label: gettext('Electricity'),
+    fills: ['lu_power_station','lu_power_pylone'],
+    lines: ['lu_power_line','lu_power_station-outline'],
+    symbols: ['lu_power_station-label','lu_eolienne'],
     visible: true
   },{
-    label: gettext('Water'),
-    lines: ['lu_waterway','lu_waterway-tunnel','lu_waterway_intermittent'],
-    fills: ['lu_water'],
+    label: gettext('Contours and Height Points'),
+    lines: ['lu_contour-100','lu_contour-50','lu_contour-20','lu_contour-10','lu_contour'],
+    symbols: ['lu_contour-label-100','lu_contour-label-20','lu_apex-label'],
     visible: true
-  },{
-    label: gettext('Background'),
-    backgrounds: ['background'],
+  }, {
+    label: gettext('Hillshade'),
+    hillshades: ['hillshade'],
     visible: true
   }
 ];
