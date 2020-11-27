@@ -34,11 +34,12 @@ function getImageExtension_(imageType) {
 
 /**
  * @param {string} requestScheme The scheme.
+ * @param {string} wmtsUrl The wmts url from env var.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
  */
-function factory(requestScheme) {
+function factory(requestScheme, wmtsUrl) {
   return getWmtsLayer;
 
   /**
@@ -48,19 +49,24 @@ function factory(requestScheme) {
    * @return {ol.layer.Tile} The layer.
    */
   function getWmtsLayer(name, imageType, retina) {
-    const isIpv6 = location.search.includes('ipv6=true');
-    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
-
     var imageExt = getImageExtension_(imageType);
-    var retinaExtension = (retina ? '_hd' : '');
-    var url = '//wmts{1-2}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
-        retinaExtension +
-        '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+    var url = undefined;
+    if (wmtsUrl !== undefined && wmtsUrl.length > 0) {
+      url = wmtsUrl + "." + imageExt;
+    } else {
+      const isIpv6 = location.search.includes('ipv6=true');
+      const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
-    if (requestScheme === 'https') {
-      url = '//wmts{3-4}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
+      var retinaExtension = (retina ? '_hd' : '');
+      url = '//wmts{1-2}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
           retinaExtension +
           '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+
+      if (requestScheme === 'https') {
+        url = '//wmts{3-4}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
+            retinaExtension +
+            '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+      }
     }
     var projection = getProjection('EPSG:3857');
     var extent = projection.getExtent();
