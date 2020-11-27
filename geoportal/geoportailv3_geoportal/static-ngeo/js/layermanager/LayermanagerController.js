@@ -43,6 +43,22 @@ class Controller {
      * @type {angular.$rootScope}
      */
     this.$rootScope = $rootScope;
+    this.layers3d = this.map.get('ol3dm')
+    this.is3dEnabled = false;
+
+    $rootScope.$watch(function() {
+        if (this.map.get('ol3dm')) {
+          return this.map.get('ol3dm').is3dEnabled();
+        }
+        return undefined; // 3d is not ready yet.
+      }.bind(this), function(newVal) {
+        this.is3dEnabled = newVal;
+        if (newVal === true) {
+          this.enable3d();
+        }
+      }.bind(this)
+    )
+
   };
 
   get background() {
@@ -57,6 +73,12 @@ class Controller {
 
   removeLayer(layer) {
     this.map.removeLayer(layer);
+  }
+
+  remove3dLayer(layerName) {
+    this.map.get('ol3dm').remove3dLayer(layerName)
+    const idx = this.layers3d.findIndex(e => e.url.includes(layerName));
+    this.layers3dName.splice(idx, 1);
   }
 
   reorderCallback(element, layers){
@@ -88,11 +110,17 @@ class Controller {
     return this['activeLC'] === true;
   }
 
+
   toggleLayersComparator() {
     this['activeLC'] = !this['activeLC'];
     this.ngeoLocation_.updateParams({
       'lc': this['activeLC']
     });
+  }
+
+  enable3d() {
+    this.layers3d = this.map.get('ol3dm').tilesets3d;
+    this.layers3dName = this.map.get('ol3dm').tiles3dLayers_;
   }
 
   openMvtEditorPanel() {
