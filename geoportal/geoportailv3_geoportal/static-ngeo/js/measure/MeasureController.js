@@ -122,7 +122,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
     return text.startsWith('NaN') ? '' : text
   }
   const generateStyle = baseStyle => f => {
-    const geomType = f.getGeometry().getType()
+    const geomType = f.getGeometry()?.getType()
+    if (!geomType) return;
 
     if (['Point', 'Circle'].includes(geomType)) {
       return baseStyle;
