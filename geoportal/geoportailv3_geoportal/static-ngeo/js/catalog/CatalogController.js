@@ -83,14 +83,10 @@ const exports = function($scope, appThemes, appTheme,
         this.setTree_();
       }), this);
 
-  $scope.$watch(function() {
-    return this.appTheme_.getCurrentTheme();
-  }.bind(this), function(newVal, oldVal) {
-    if (newVal !== oldVal) {
-      this.setTree_();
-    }
-  }.bind(this));
-
+  $scope.$watch(
+    () => this.appTheme_.getCurrentTheme(),
+    (newVal, oldVal) => (newVal !== oldVal) && this.setTree_()
+  );
 };
 
 
@@ -112,22 +108,19 @@ exports.prototype.getLayer = function(node) {
  */
 exports.prototype.setTree_ = function() {
   this.appThemes_.getThemeObject(
-      this.appTheme_.getCurrentTheme()).then(
-      /**
-       * @param {Object} tree Tree object for the theme.
-       */
-      (function(tree) {
-        this['tree'] = tree;
-        this.setThemeZooms(this['tree']);
-      }).bind(this));
+    this.appTheme_.getCurrentTheme()
+  ).then(tree => {
+    this.tree = tree
+    this.setThemeZooms()
+  })
 };
 
 
 /**
- * @param {Object} tree Tree object for the theme.
  * Set the maximum scale regarding the loaded theme.
  */
-exports.prototype.setThemeZooms = function(tree) {
+exports.prototype.setThemeZooms = function() {
+  var tree = this.tree
   var maxZoom = 19;
   if (tree !== null) {
     console.assert('metadata' in tree);
