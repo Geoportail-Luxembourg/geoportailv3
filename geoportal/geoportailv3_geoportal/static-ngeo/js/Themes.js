@@ -243,12 +243,11 @@ exports.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(url.toString(), {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
-  }).then((resp) => {
+  }).then(resp => {
     const root = /** @type {app.ThemesResponse} */ (resp.data);
     const themes = root.themes;
     const flatCatalogue = [];
-    for (var i = 0; i < themes.length; i++) {
-      const theme = themes[i];
+    for (const theme of themes) {
       const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
       arrayExtend(flatCatalogue, children);
     }
