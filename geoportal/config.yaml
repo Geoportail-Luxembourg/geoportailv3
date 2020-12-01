@@ -92,6 +92,7 @@ vars:
     available_functionalities: [default_basemap, default_theme, print_template, mapserver_substitution,
       filterable_layers, preset_layer_filter, open_panel]
     available_metadata:
+    - {name: is_expanded, type: boolean}
     - {name: linked_layers}
     - {name: service_metadata_id}
     - {name: dataportaldatasetid}
