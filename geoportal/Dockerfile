@@ -43,6 +43,8 @@ FROM camptocamp/geomapfish:2.5 as runner
 
 COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
+  python3 -m pip install --upgrade pip && \
+  python3 -m pip install setuptools==50.3.2 && \
   python3 -m pip install --disable-pip-version-check --no-cache-dir --requirement=/tmp/requirements.txt && \
   rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
 
