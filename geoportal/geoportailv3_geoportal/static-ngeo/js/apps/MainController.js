@@ -1013,21 +1013,24 @@ const MainController = function(
         appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(label);
         this.mediumStylingData = getDefaultMediumStyling(label);
         let config = undefined;
+
         appMvtStylingService.getStyle(label).then((style) => {
-          if (JSON.parse(style)['medium']) {
-            Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
-            this.checkSelectedSimpleData();
-            config = JSON.stringify(this.mediumStylingData);
-          } else {
-            config = JSON.parse(style)['serial'];
+          if (style !== undefined) {
+            if (JSON.parse(style)['medium']) {
+              Object.assign(this.mediumStylingData, JSON.parse(style)['medium']);
+              this.checkSelectedSimpleData();
+              config = JSON.stringify(this.mediumStylingData);
+            } else {
+              config = JSON.parse(style)['serial'];
+            }
+            this.ngeoLocation_.updateParams({
+              'serial': config,
+              'serialLayer': label
+            });
+            this.appMvtStylingService.apply_mvt_config(config, label);
+            this.ngeoLocation_.refresh();
+            this.resetLayerFor3d_();
           }
-          this.ngeoLocation_.updateParams({
-            'serial': config,
-            'serialLayer': label
-          });
-          this.appMvtStylingService.apply_mvt_config(config, label);
-          this.ngeoLocation_.refresh();
-          this.resetLayerFor3d_();
         },(err) => {
           console.log(err);
         });
@@ -1171,8 +1174,11 @@ const MainController = function(
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     if (bgLayer && bgLayer.getMapBoxMap()) {
-      this.appMvtStylingService.getBgStyle().then(config => {
-        bgLayer.getMapBoxMap().setStyle(config.style);
+      this.appMvtStylingService.getBgStyle().then(configs => {
+        const config = configs.find(config => config.label === bgLayer.get('label'));
+        if (config) {
+          bgLayer.getMapBoxMap().setStyle(config.style);
+        }
       });
 
       appMvtStylingService.getStyle(bgLayer.get('label')).then((style) => {
@@ -1210,13 +1216,16 @@ const MainController = function(
         background: bgLayer
       }
 
-      this.appMvtStylingService.saveStyle(dataObject, isPublished).then(result => {
-        const id = result[0];
-        this.ngeoLocation_.updateParams({
-          'serial': id,
-          'serialLayer': bgLayer.get('label')
-        });
-        this.ngeoLocation_.refresh();
+      this.appMvtStylingService.saveStyle(dataObject, isPublished).then(id => {
+        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
+          // If result is a serialized UUID
+          if (id.match(isValidUUIDv4Regex) !== null) {
+            this.ngeoLocation_.updateParams({
+              'serial': id,
+              'serialLayer': bgLayer.get('label')
+            });
+            this.ngeoLocation_.refresh();
+          }
       });
 
       // If undefined, medium style UI is empty (was undefined for saving purpose)
