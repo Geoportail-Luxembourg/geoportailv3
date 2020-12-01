@@ -742,6 +742,14 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);
           params.set('layers', encodeURIComponent(selected_layers.join(',')));
+          if (this.facets.extent) {
+            let extent = transformExtent(
+              this.map.getView().calculateExtent(),
+              'EPSG:3857',
+              'EPSG:4326'
+            );
+            params.set('extent', extent.join(','))
+          }
           settings.url = url.toString();
           return settings;
         },
