@@ -4,6 +4,7 @@ import stat
 import uuid
 import imghdr
 import ldap3 as ldap
+import pytz
 
 import geojson
 import transaction
@@ -64,6 +65,7 @@ class Mymaps(object):
         self.config = self.request.registry.settings
         self.db_mymaps = DBSessions['mymaps']
         self.db_pgroute = DBSessions['pgroute']
+        self.lux_tz = pytz.timezone("Europe/Luxembourg")
 
     def add_track(self, gpx, name, description, coordinates):
         gpx_track = gpxpy.gpx.GPXTrack()
@@ -387,15 +389,15 @@ class Mymaps(object):
         return [{'title': map.title,
                  'uuid': map.uuid,
                  'public': map.public,
-                 'create_date': map.create_date,
-                 'update_date': map.update_date,
-                 'last_feature_update': self.db_mymaps.query(
+                 'create_date': self.to_lux_timezone(map.create_date),
+                 'update_date': self.to_lux_timezone(map.update_date),
+                 'last_feature_update': self.to_lux_timezone(self.db_mymaps.query(
                     func.max(Feature.update_date)).filter(
-                    Feature.map_id == map.uuid).one()[0]
+                    Feature.map_id == map.uuid).one()[0])
                  if self.db_mymaps.query(
                     func.max(Feature.update_date)).
                  filter(Feature.map_id == map.uuid).one()[0]
-                 is not None else map.update_date,
+                 is not None else self.to_lux_timezone(map.update_date),
                  'category': map.category.name
                  if map.category_id is not None else None} for map in maps]
 
@@ -585,23 +587,28 @@ class Mymaps(object):
                 Map.uuid.in_(shared_maps_uuid_query),
                 Map.uuid.in_(query)
             ))
-
             maps = maps_uuid_query.order_by(text("category_id asc,title asc")).all()
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
-                     'create_date': map.create_date,
-                     'update_date': map.update_date,
-                     'last_feature_update': session.query(
+                     'create_date': self.to_lux_timezone(map.create_date),
+                     'update_date': self.to_lux_timezone(map.update_date),
+                     'last_feature_update': self.to_lux_timezone(session.query(
                         func.max(Feature.update_date)).filter(
-                        Feature.map_id == map.uuid).one()[0]
+                        Feature.map_id == map.uuid).one()[0])
                      if session.query(func.max(Feature.update_date)).
                      filter(Feature.map_id == map.uuid).one()[0]
-                     is not None else map.update_date,
+                     is not None else self.to_lux_timezone(map.update_date),
                      'category': map.category.name
                      if map.category_id is not None else None,
                      'owner': map.user_login.lower()} for map in maps]
         return []
+
+    def to_lux_timezone(self, dt):
+        if dt is not None:
+            local_time = dt.replace(tzinfo=pytz.utc)
+            return self.lux_tz.normalize(local_time)
+        return None
 
     @view_config(route_name="mymaps_users_categories", renderer='json')
     def getuserscategories(self):
@@ -962,8 +969,8 @@ class Mymaps(object):
             'title': map.title,
             'uuid': map.uuid,
             'public': map.public,
-            'create_date': map.create_date,
-            'update_date': map.update_date,
+            'create_date': self.to_lux_timezone(map.create_date),
+            'update_date': self.to_lux_timezone(map.update_date),
             'category': map.category.name
             if map.category_id is not None else None,
             'is_editable': self.has_write_permission(user, map),
@@ -976,9 +983,9 @@ class Mymaps(object):
             'bg_layer': map.bg_layer,
             'bg_opacity': map.bg_opacity,
             'description': map.description,
-            'last_feature_update': self.db_mymaps.query(
+            'last_feature_update': self.to_lux_timezone(self.db_mymaps.query(
                 func.max(Feature.update_date)).filter(
-                Feature.map_id == map.uuid).one()[0],
+                Feature.map_id == map.uuid).one()[0]),
             'x': map.x,
             'y': map.y,
             'zoom': map.zoom
