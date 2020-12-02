@@ -443,7 +443,7 @@ class FullTextSearchView(object):
                     'f': 'json',
                     'returnGeometry': 'true',
                     'where': f"lower({search_column}) like '%{query.lower()}%'",
-                    'outSR': '4326',
+                    'outSR': '3857',
                     'outFields': '*'
                 }
                 if layer.use_auth:
