@@ -589,19 +589,19 @@ class Mymaps(object):
             ))
             maps = maps_uuid_query.order_by(text("category_id asc,title asc")).all()
             return [{'title': map.title,
-                 'uuid': map.uuid,
-                 'public': map.public,
-                 'create_date': self.to_lux_timezone(map.create_date),
-                 'update_date': self.to_lux_timezone(map.update_date),
-                 'last_feature_update': self.to_lux_timezone(session.query(
-                    func.max(Feature.update_date)).filter(
-                    Feature.map_id == map.uuid).one()[0])
-                 if session.query(func.max(Feature.update_date)).
-                 filter(Feature.map_id == map.uuid).one()[0]
-                 is not None else self.to_lux_timezone(map.update_date),
-                 'category': map.category.name
-                 if map.category_id is not None else None,
-                 'owner': map.user_login.lower()} for map in maps]
+                     'uuid': map.uuid,
+                     'public': map.public,
+                     'create_date': self.to_lux_timezone(map.create_date),
+                     'update_date': self.to_lux_timezone(map.update_date),
+                     'last_feature_update': self.to_lux_timezone(session.query(
+                        func.max(Feature.update_date)).filter(
+                        Feature.map_id == map.uuid).one()[0])
+                     if session.query(func.max(Feature.update_date)).
+                     filter(Feature.map_id == map.uuid).one()[0]
+                     is not None else self.to_lux_timezone(map.update_date),
+                     'category': map.category.name
+                     if map.category_id is not None else None,
+                     'owner': map.user_login.lower()} for map in maps]
         return []
 
     def to_lux_timezone(self, dt):
