@@ -741,7 +741,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           params.set('language', encodeURIComponent(this.gettextCatalog.currentLanguage));
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);
-          params.set('layers', encodeURIComponent(selected_layers.join(',')));
+          params.set('layers', selected_layers.join(','));
           if (this.facets.extent) {
             let extent = transformExtent(
               this.map.getView().calculateExtent(),
