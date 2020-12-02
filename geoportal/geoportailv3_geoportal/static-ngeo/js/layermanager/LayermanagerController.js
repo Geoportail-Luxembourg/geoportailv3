@@ -114,6 +114,11 @@ class Controller {
     });
   }
 
+  enable3d() {
+    this.layers3d = this.map.get('ol3dm').tilesets3d;
+    this.layers3dName = this.map.get('ol3dm').tiles3dLayers_;
+  }
+
   openMvtEditorPanel() {
     this.$rootScope.$broadcast('mvtPanelOpen');
   }

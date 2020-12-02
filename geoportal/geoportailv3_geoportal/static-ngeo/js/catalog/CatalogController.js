@@ -121,9 +121,14 @@ const exports = function($scope, appThemes, appTheme,
           mixed: true,
           theme: this.appTheme_.getCurrentTheme()
         })
-      } else {
+        break;
+      }
+        case false: {
         const idx = this.tree.children.findIndex((e) => e.id === -1)
         this.tree.children.splice(idx, 1)
+        break;
+      }
+        case undefined: break;
       }
     }
   )
@@ -250,10 +255,6 @@ exports.prototype.toggle = function(node) {
     }
   }
 };
-
-exports.prototype.getSetActive = function() {
-  console.log("setGetActive")
-}
 
 
 appModule.controller('AppCatalogController', exports);
