@@ -386,7 +386,7 @@ class FullTextSearchView(object):
                     bbox = extent.split(',')
                     gfi_query = gfi_query + " AND ST_Intersects( %(geom)s, "\
                         "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
-                        "%(top)s, 4326) )"\
+                        "%(top)s, 3857) )"\
                         % {'left': bbox[0],
                            'bottom': bbox[1],
                            'right': bbox[2],
@@ -451,7 +451,7 @@ class FullTextSearchView(object):
                     if 'token' in auth_token:
                         body["token"] = auth_token['token']
                 if extent:
-                    body['inSR'] = '4326'
+                    body['inSR'] = '3857'
                     body['geometry'] = extent
                     body['geometryType'] = 'esriGeometryEnvelope'
                     body['spatialRel'] = 'esriSpatialRelIntersects'

@@ -744,11 +744,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
             .filter(el => el !== undefined);
           params.set('layers', selected_layers.join(','));
           if (this.facets.extent) {
-            let extent = transformExtent(
-              this.map.getView().calculateExtent(),
-              'EPSG:3857',
-              'EPSG:4326'
-            );
+            let extent = this.map.getView().calculateExtent();
             params.set('extent', extent.join(','))
           }
           settings.url = url.toString();
@@ -761,7 +757,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           (parsedResponse);
 
           return geojsonFormat.readFeatures(featureCollection, {
-            featureProjection: get('EPSG:3857'),
+            featureProjection: undefined,
             dataProjection: undefined
           });
         }
