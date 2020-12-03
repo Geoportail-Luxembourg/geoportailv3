@@ -19,6 +19,12 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts" !default;
 .btn-default {
   @extend .btn-secondary;
 }
+label {
+  font-weight: bold;
+}
+.radio label, .checkbox label {
+  font-weight: normal;
+}
 // end legacy bootstrap 3
 
 @import "controls3d.scss";
