@@ -374,10 +374,10 @@ class FullTextSearchView(object):
                 if "SELECT" in query_1.upper():
                     query_1 = query_1.replace(
                         "SELECT",
-                        "SELECT ST_AsGeoJSON (%(geom)s), "
+                        "SELECT ST_AsGeoJSON(ST_Transform(%(geom)s, 3857)), "
                         % {'geom': layer.geometry_column}, 1)
                 else:
-                    query_1 = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
+                    query_1 = "SELECT *,ST_AsGeoJSON(ST_Transform(%(geom)s, 3857)) FROM "\
                         % {'geom': layer.geometry_column} +\
                         query_1
 
