@@ -288,7 +288,8 @@ const exports = function($scope, $window, $compile,
   var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
     query,
     this['map'].getView().getProjection().getCode(),
-    this.maxExtent_
+    this.maxExtent_,
+    this.coordinateString_
   ));
 
   const bgLabel = this.gettextCatalog.getString('Background Layers')
