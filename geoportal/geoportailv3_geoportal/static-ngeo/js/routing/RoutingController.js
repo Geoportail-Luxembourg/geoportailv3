@@ -196,7 +196,8 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
     query,
     this['map'].getView().getProjection().getCode(),
-    this.maxExtent_
+    this.maxExtent_,
+    this.coordinateString_
   ));
 
   /** @type {Array.<TypeaheadDataset>}*/
