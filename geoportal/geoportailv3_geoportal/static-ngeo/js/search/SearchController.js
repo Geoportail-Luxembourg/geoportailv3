@@ -737,9 +737,9 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           if (!this.facets.activeLayers) { return false }
           const url = new URL(settings.url);
           const params = url.searchParams;
-          params.set('query', encodeURIComponent(query));
+          params.set('query', query);
           params.set('limit', this.limitResults)
-          params.set('language', encodeURIComponent(this.gettextCatalog.currentLanguage));
+          params.set('language', this.gettextCatalog.currentLanguage);
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);
           params.set('layers', selected_layers.join(','));
