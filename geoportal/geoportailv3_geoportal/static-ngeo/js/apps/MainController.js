@@ -1031,9 +1031,9 @@ const MainController = function(
             this.ngeoLocation_.refresh();
             this.resetLayerFor3d_();
           }
-        },(err) => {
+        },(rejected) => {
           this.checkSelectedSimpleData();
-          console.log(err);
+          console.log(rejected);
         });
       }
     }
@@ -1219,14 +1219,14 @@ const MainController = function(
 
       this.appMvtStylingService.saveStyle(dataObject, isPublished).then(id => {
         const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-          // If result is a serialized UUID
-          if (id.match(isValidUUIDv4Regex) !== null) {
-            this.ngeoLocation_.updateParams({
-              'serial': id,
-              'serialLayer': bgLayer.get('label')
-            });
-            this.ngeoLocation_.refresh();
-          }
+        // If result is a serialized UUID
+        if (id.match(isValidUUIDv4Regex) !== null) {
+          this.ngeoLocation_.updateParams({
+            'serial': id,
+            'serialLayer': bgLayer.get('label')
+          });
+          this.ngeoLocation_.refresh();
+        }
       });
 
       // If undefined, medium style UI is empty (was undefined for saving purpose)
