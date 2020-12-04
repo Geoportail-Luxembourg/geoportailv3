@@ -384,7 +384,7 @@ class FullTextSearchView(object):
                 gfi_query = query_1 + f"lower({search_column}) like '%{query.lower()}%'"
                 if extent:
                     bbox = extent.split(',')
-                    gfi_query = gfi_query + " AND ST_Intersects( %(geom)s, "\
+                    gfi_query = gfi_query + " AND ST_Intersects(ST_Transform( %(geom)s, 3857), "\
                         "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
                         "%(top)s, 3857) )"\
                         % {'left': bbox[0],
