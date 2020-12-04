@@ -316,7 +316,7 @@ class MvtStylingService {
 
     getStyle(key) {
         if (!key) {
-            return;
+            return Promise.reject();
         }
         if (this.appUserManager_.isAuthenticated()) {
             const options = {
