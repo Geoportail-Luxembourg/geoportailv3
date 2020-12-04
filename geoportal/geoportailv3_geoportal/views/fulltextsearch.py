@@ -455,10 +455,10 @@ class FullTextSearchView(object):
                     body['geometryType'] = 'esriGeometryEnvelope'
                     body['spatialRel'] = 'esriSpatialRelIntersects'
 
-                query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
-                log.info(query)
+                esri_query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
+                log.info(esri_query)
                 try:
-                    url_request = urllib.request.Request(query)
+                    url_request = urllib.request.Request(esri_query)
                     result = read_request_with_token(url_request, self.request, log)
                     content = result.data
                 except ESRITokenException as e:
