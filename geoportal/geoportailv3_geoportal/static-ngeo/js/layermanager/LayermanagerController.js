@@ -81,6 +81,11 @@ class Controller {
     this.layers3dName.splice(idx, 1);
   }
 
+  enable3d() {
+    this.layers3d = this.map.get('ol3dm').tilesets3d;
+    this.layers3dName = this.map.get('ol3dm').getActiveLayerName();
+  }
+
   reorderCallback(element, layers){
     for (var i = 0; i < layers.length; i++) {
       layers[i].setZIndex(layers.length - i);
@@ -116,11 +121,6 @@ class Controller {
     this.ngeoLocation_.updateParams({
       'lc': this['activeLC']
     });
-  }
-
-  enable3d() {
-    this.layers3d = this.map.get('ol3dm').tilesets3d;
-    this.layers3dName = this.map.get('ol3dm').tiles3dLayers_;
   }
 
   openMvtEditorPanel() {
