@@ -73,7 +73,13 @@ const exports = class extends ngeoOlcsManager {
      * @private
      * @type {Array<string>}
      */
-    this.tiles3dLayers_ = tiles3dLayers;
+    this.availableTiles3dLayers_ = tiles3dLayers;
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this.activeTiles3dLayers_ = [];
 
     /**
      * @private
@@ -129,7 +135,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
   init3dTiles(visible) {
-    this.tiles3dLayers_.forEach(this.add3dTile.bind(this))
+    this.availableTiles3dLayers_.forEach(this.add3dTile.bind(this))
   }
 
   /**
@@ -146,6 +152,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   add3dTile(layerName) {
+    this.activeTiles3dLayers_.push(layerName);
     const url = this.tiles3dUrl_ + layerName + "/tileset.json";
     const tileset = new Cesium.Cesium3DTileset({
       url: url
@@ -157,6 +164,7 @@ const exports = class extends ngeoOlcsManager {
     const layer = this.tilesets3d.find(e => e.url.includes(layerName));
     const idx = this.tilesets3d.findIndex(e => e.url.includes(layerName));
     this.tilesets3d.splice(idx, 1)
+    this.activeTiles3dLayers_.splice(idx, 1)
     this.ol3d.getCesiumScene().primitives.remove(layer)
   }
 
@@ -179,8 +187,12 @@ const exports = class extends ngeoOlcsManager {
   /**
    * @export
    */
-  getLayerName() {
-    return this.tiles3dLayers_
+  getAvailableLayerName() {
+    return this.availableTiles3dLayers_
+  }
+
+  getActiveLayerName() {
+    return this.activeTiles3dLayers_
   }
 };
 

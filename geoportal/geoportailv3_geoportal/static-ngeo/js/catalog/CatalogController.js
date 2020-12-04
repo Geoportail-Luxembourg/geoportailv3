@@ -114,9 +114,9 @@ const exports = function($scope, appThemes, appTheme,
           id: -1,
           name: "3d Layers",
           metadata: {},
-          children: this.map.get('ol3dm').getLayerName().map(function(layer) {
+          children: this.map.get('ol3dm').getAvailableLayerName().map(function(layer, i) {
             return {
-              id: 1,
+              id: i,
               name: layer
             }
           }),
@@ -151,10 +151,11 @@ exports.prototype.getLayer = function(node) {
 };
 
 exports.prototype.getActive = function(layertreeController) {
-  const layer3d = this.map.get('ol3dm').getLayerName()
-  if (layer3d.find(e => e === layertreeController.node.name)) {
-    const layer3dAvailable = this.map.get('ol3dm').tiles3dLayers_
-    return layer3dAvailable.find(e => e === layer3d)
+  const layer3dmanager = this.map.get('ol3dm')
+  if (layer3dmanager) {
+    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.name)) {
+      return true
+    }
   }
   return layertreeController.getSetActive()
 }
@@ -221,7 +222,7 @@ exports.prototype.setThemeZooms = function(tree) {
 exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
-  if (olcs.getLayerName().indexOf(node.name) !== -1) {
+  if (olcs.getAvailableLayerName().indexOf(node.name) !== -1) {
     if (olcs.tilesets3d.findIndex(e => e.url.includes(node.name)) !== -1) {
       olcs.remove3dLayer(node.name);
     } else {
