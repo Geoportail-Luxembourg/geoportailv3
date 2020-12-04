@@ -1032,6 +1032,7 @@ const MainController = function(
             this.resetLayerFor3d_();
           }
         },(err) => {
+          this.checkSelectedSimpleData();
           console.log(err);
         });
       }
