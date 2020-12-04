@@ -402,7 +402,6 @@ class FullTextSearchView(object):
                 res = session.execute(gfi_query)
                 rows = res.fetchall()
 
-                features = []
                 for row in rows:
                     try:
                         geom = geojson.loads(row['st_asgeojson'])
