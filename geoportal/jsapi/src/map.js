@@ -2019,7 +2019,7 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 /**
  * Set the center of the current view in EPSG:2169.
  * @param {ol.Coordinate} coordinate The coordinate of the center.
- . @param {number|undefined} zoom The zoom numer.
+ * @param {number|undefined} zoom The zoom numer.
  * @export
  * @api
  */
