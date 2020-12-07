@@ -40,6 +40,7 @@ import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
+import {isValidSerial} from '../utils.js';
 
 import '../../less/geoportailv3.less';
 
@@ -404,9 +405,6 @@ const MainController = function(
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.symbols || []).forEach(path => {
-      if(item.color) {
-        mbMap.setPaintProperty(path, 'symbol-opacity', 1);
-      }
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.fillExtrusions || []).forEach(path => {
@@ -508,14 +506,6 @@ const MainController = function(
     this.debouncedSaveStyle_();
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
-
-  /* const mediumStyle = appMvtStylingService.getStyle();
-  if (mediumStyle !== undefined) {
-    mediumStyle.then((style) => {
-        Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-        this.checkSelectedSimpleData();
-      });
-  } */
 
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
@@ -1009,7 +999,7 @@ const MainController = function(
 
       // Only if current is a vector tiles layer
       // Check if it is a function, otherwise it sould be "is not a function" error
-      if (typeof current.getMapBoxMap === 'function') {
+      if (current.getMapBoxMap) {
         appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleGetter(label);
         this.mediumStylingData = getDefaultMediumStyling(label);
         let config = undefined;
@@ -1218,9 +1208,8 @@ const MainController = function(
       }
 
       this.appMvtStylingService.saveStyle(dataObject, isPublished).then(id => {
-        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
         // If result is a serialized UUID
-        if (id.match(isValidUUIDv4Regex) !== null) {
+        if (isValidSerial(id)) {
           this.ngeoLocation_.updateParams({
             'serial': id,
             'serialLayer': bgLayer.get('label')
