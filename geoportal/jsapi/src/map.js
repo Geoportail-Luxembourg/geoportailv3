@@ -2015,3 +2015,20 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   }.bind(this));
 
 };
+
+/**
+ * Set the center of the current view in EPSG:2169.
+ * @param {ol.Coordinate} coordinate The coordinate of the center.
+ . @param {number|undefined} zoom The zoom numer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setCenter = function(coordinate, zoom) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate,
+            'EPSG:2169', 'EPSG:3857'));
+  this.getView().setCenter(lonlat);
+  if (zoom !== undefined) {
+    this.getView().setZoom(zoom);
+  }
+};
