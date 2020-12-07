@@ -1,5 +1,6 @@
 import { _ } from 'core-js';
 import appModule from '../module.js';
+import {isValidSerial} from '../utils.js';
 
 function hasLocalStorage() {
     return 'localStorage' in window && localStorage;
@@ -23,19 +24,11 @@ function getDefaultMapBoxStyleXYZ(label) {
 }
 
 function getKeywordForLayer(label) {
-    let keyword = undefined;
-    switch (label) {
-        case 'basemap_2015_global':
-            keyword = 'roadmap';
-            break;
-        case 'topogr_global':
-            keyword = 'topomap';
-            break;
-        case 'topo_bw_jpeg':
-            keyword = 'topomap_gray';
-            break;
-    }
-    return keyword;
+    return {
+    'basemap_2015_global': 'roadmap',
+    'topogr_global': 'topomap',
+    'topo_bw_jpeg': 'topomap_gray'
+    }[label];
 }
 
 class MvtStylingService {
@@ -68,10 +61,7 @@ class MvtStylingService {
     getBgStyle() {
         const layerLabelList = ['basemap_2015_global', 'topogr_global', 'topo_bw_jpeg'];
         const promises = [];
-        layerLabelList.forEach(label => {
-            const promise = this.setConfigForLayer_(label);
-            promises.push(promise);
-        });
+        layerLabelList.forEach(label => promises.push( this.setConfigForLayer_(label)));
         return Promise.all(promises);
     }
 
@@ -99,8 +89,7 @@ class MvtStylingService {
         const serialLayer = new URLSearchParams(window.location.search).get('serialLayer');
         if (serial) {
             // if serial is number id, retrieve style form it
-            const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-            if (serial.match(isValidUUIDv4Regex) !== null) {
+            if (isValidSerial(serial)) {
                 // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
                 if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
                     console.log(`Load mvt style for ${label} from serial uuid`);
@@ -183,45 +172,39 @@ class MvtStylingService {
 
     publishIfSerial(map) {
         const serial = new URLSearchParams(window.location.search).get('serial');
-        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-        if (serial) {
-            // check if simple/medium styling
-            if (serial.match(isValidUUIDv4Regex) === null) {
-                const bgLayer = this.backgroundLayerMgr_.get(map);
-                const interval = setInterval(() => {
-                    try {
-                        clearInterval(interval);
-                        this.publishStyle(bgLayer).then((result) => {
-                            // for OL-Cesium to refresh the background layer counterpart
-                            // and thus request tiles with custom style
-                            this.backgroundLayerMgr_.set(map, bgLayer);
+        // check if simple/medium styling
+        if (serial && !isValidSerial(serial)) {
+            const bgLayer = this.backgroundLayerMgr_.get(map);
+            const interval = setInterval(() => {
+                try {
+                    clearInterval(interval);
+                    this.publishStyle(bgLayer).then((result) => {
+                        // for OL-Cesium to refresh the background layer counterpart
+                        // and thus request tiles with custom style
+                        this.backgroundLayerMgr_.set(map, bgLayer);
 
-                            // For deprovisionning, keep the id stored
-                            let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
-                            lsData.serial = result;
-                            window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
-                        });
-                    } catch (error) {
-                        console.log(error);
-                        return;
-                    }
-                }, 50);
-            }
+                        // For deprovisionning, keep the id stored
+                        let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
+                        lsData.serial = result;
+                        window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
+                    });
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+            }, 50);
         }
     }
 
     unpublishIfSerial(map) {
         const serial = new URLSearchParams(window.location.search).get('serial');
-        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-        if (serial) {
-            // check if simple/medium styling
-            if (serial.match(isValidUUIDv4Regex) === null) {
-                const bgLayer = this.backgroundLayerMgr_.get(map);
-                if (!bgLayer) { // 3D enable watch is run before bgLayer is initialized...
-                    return;
-                }
-                return this.unpublishStyle(bgLayer);
+        // check if simple/medium styling
+        if (serial && !isValidSerial(serial)) {
+            const bgLayer = this.backgroundLayerMgr_.get(map);
+            if (!bgLayer) { // 3D enable watch is run before bgLayer is initialized...
+                return;
             }
+            return this.unpublishStyle(bgLayer);
         }
     }
 
