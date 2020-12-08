@@ -304,8 +304,8 @@
           <div class="container-fluid tab-content">
           <div class="accordion" id="accordion">
             <div class="panel">
-              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" translate>Simple</div>
-              <div class="collapse" id="editor-simple" data-parent="#accordion">
+              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" ng-if="mainCtrl.isColorVisible" translate>Simple</div>
+              <div class="collapse" id="editor-simple" ng-if="mainCtrl.isColorVisible" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
                     <p translate>Sélectionner un set de couleurs</p>
