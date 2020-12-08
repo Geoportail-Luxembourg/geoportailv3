@@ -135,7 +135,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
   init3dTiles(visible) {
-    this.availableTiles3dLayers_.forEach(this.add3dTile.bind(this))
+    this.availableTiles3dLayers_.filter(e => e.show).map(e => e.name).forEach(this.add3dTile.bind(this))
   }
 
   /**
@@ -154,8 +154,16 @@ const exports = class extends ngeoOlcsManager {
   add3dTile(layerName) {
     this.activeTiles3dLayers_.push(layerName);
     const url = this.tiles3dUrl_ + layerName + "/tileset.json";
+    // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const tileset = new Cesium.Cesium3DTileset({
-      url: url
+      url: url,
+      skipLevelOfDetail: true,
+      baseScreenSpaceError : 1024,
+      skipScreenSpaceErrorFactor : 16,
+      skipLevels : 4,
+      immediatelyLoadDesiredLevelOfDetail : false,
+      loadSiblings : false,
+      cullWithChildrenBounds : true
     });
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
@@ -188,7 +196,7 @@ const exports = class extends ngeoOlcsManager {
    * @export
    */
   getAvailableLayerName() {
-    return this.availableTiles3dLayers_
+    return this.availableTiles3dLayers_.map(e => e.name)
   }
 
   getActiveLayerName() {
