@@ -308,9 +308,10 @@ lux.Map = function(options) {
       options.view.getZoom() === null) {
     options.view.setZoom(9);
   }
-
+  var mouseWheelZoom = (options.mouseWheelZoom !== undefined) ? options.mouseWheelZoom : true;
   var interactions = ol.interaction
     .defaults({
+      mouseWheelZoom: mouseWheelZoom,
       altShiftDragRotate: false,
       pinchRotate: true,
       constrainResolution: true
