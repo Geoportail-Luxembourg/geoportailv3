@@ -33,6 +33,7 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import gmfLayertreeTimeSliderComponent from 'gmf/layertree/timeSliderComponent.js';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
 
@@ -62,6 +63,7 @@ const exports = angular.module('Appmain', [
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
   ngeoStatemanagerWfsPermalink.module.name,
+  gmfLayertreeTimeSliderComponent.name,
   'gettext']).run(function() {
     if (!TOUCH) {
       document.body.classList.add('no-touch');

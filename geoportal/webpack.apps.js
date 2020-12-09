@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const INTERFACE_THEME = {"desktop":"desktop","desktop_alt":"desktop","mobile":"mobile","mobile_alt":"mobile","oeview":"desktop","oeedit":"desktop"};
+const INTERFACE_THEME = {"main":"main","desktop":"desktop","desktop_alt":"desktop","mobile":"mobile","mobile_alt":"mobile","oeview":"desktop","oeedit":"desktop"};
 
 const plugins = [];
 const entry = {};
@@ -14,8 +14,9 @@ const nodeEnv = process.env['NODE_ENV'] || 'development';
 const dev = nodeEnv == 'development'
 process.traceDeprecation = true;
 
-const name = 'main';
+let name = 'desktop';
 process.env.THEME = INTERFACE_THEME[name];
+name = 'main';
 
 entry[name] = 'geoportailv3/apps/MainController.js';
 plugins.push(

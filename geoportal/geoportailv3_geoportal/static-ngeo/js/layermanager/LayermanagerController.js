@@ -16,6 +16,7 @@
 
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
 
 class Controller {
   /**
@@ -57,6 +58,28 @@ class Controller {
 
   removeLayer(layer) {
     this.map.removeLayer(layer);
+  }
+
+  setTime(layer, time) {
+    if (layer.type == 'IMAGE') {
+      let dd = new Date(time.start)
+      let pp = layer.getSource().getParams();
+      pp['TIME'] = dd.toISOString();
+      layer.getSource().updateParams(pp);
+    }
+    else if (layer.type == 'TILE') {
+      let WMTS_source = layer.getSource();
+      let isWmts = WMTS_source instanceof olSourceWMTS;
+      if (isWmts) {
+        let dd = new Date(time.start);
+        let oldLayer = WMTS_source.getLayer();
+        let newLayer = layer.get('metadata')['time_layers'][dd.toISOString().split('.')[0]+"Z"];
+        let oldUrls = WMTS_source.getUrls();
+        let newUrls = oldUrls.map((url) => url.replace(/\/[^\/]*\/{TileMatrixSet}/, '/' + newLayer + '/{TileMatrixSet}'))
+        WMTS_source.setUrls(newUrls);
+        layer.set('label', newLayer);
+      }
+    }
   }
 
   reorderCallback(element, layers){

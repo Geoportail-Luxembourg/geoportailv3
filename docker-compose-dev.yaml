@@ -25,3 +25,4 @@ services:
       - DEVSERVER_HOST
       - C2C_REDIS_URL
       - INTERFACE=main
+      - THEME=desktop

@@ -14,6 +14,7 @@ import urllib.parse
 import socket
 import base64
 import os
+import dateutil
 import json
 
 from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
@@ -88,6 +89,8 @@ class Wms:
                     crs = value
                 query_params["imageSR"] = crs
                 query_params["bboxSR"] = crs
+            elif lparam == 'time':
+                query_params["time"] = int(dateutil.parser.parse(value).timestamp()*1000)
             elif lparam == 'layers':
                 query_params["layers"] = 'show:' + internal_wms.layers
             elif lparam == 'format':
@@ -193,7 +196,8 @@ class Wms:
                     continue
 
                 if param.lower() == 'layers':
-                    query_params[param] = internal_wms.layers
+                    if 'LAYERS=' not in internal_wms.url:
+                        query_params[param] = internal_wms.layers
                 else:
                     query_params[param] = value
 
@@ -230,7 +234,8 @@ class Wms:
             separator = "&"
 
         url = remote_host + separator + urllib.parse.urlencode(query_params)
-        timeout = 15
+        log.info(url)
+        timeout = 150
         url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)

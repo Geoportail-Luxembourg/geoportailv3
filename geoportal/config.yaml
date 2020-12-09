@@ -131,6 +131,7 @@ vars:
     - {name: start_x, type: float}
     - {name: start_y, type: float}
     - {name: start_zoom, type: float}
+    - {name: time_config}
     layer_tree_max_nodes: 1000
     map_x: 740000
     map_y: 5860000

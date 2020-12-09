@@ -63,6 +63,9 @@ function factory(appGetWmtsLayer, appGetWmsLayer, appGetDevice) {
     console.assert(layer !== undefined && layer !== null);
     layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
+    if ('time' in node) {
+      layer.set('time', node['time']);
+    }
     layer.set('queryable_id', node['id']);
     if ('attribution' in node['metadata']) {
       var source = layer.getSource();
