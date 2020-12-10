@@ -11,7 +11,6 @@ RUN npm set progress=false && \
 
 COPY webpack.*.js Makefile CONST_Makefile /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
-# RUN make apps
 
 COPY . /app
 
@@ -29,9 +28,16 @@ COPY . /app
 # ADD ./jsapi /etc/apiv3/jsapi
 # RUN /etc/apiv3/jsapi/rebuild_api.sh
 
+# sad fix, to allow webpack's file-loader to find files with query string & hash added
+RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot?#iefix && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.svg#fontawesome && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot?#iefix && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg#fontawesome
 
 # RUN make checks
 RUN make build
+
+RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]

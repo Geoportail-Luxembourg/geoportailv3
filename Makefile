@@ -4,7 +4,6 @@ DOCKER_TAG ?= latest
 GIT_HASH ?= $(shell git rev-parse HEAD)
 PACKAGE ?= geoportailv3
 
-
 UTILITY_HELP = -e "- update-translations	Synchronize the translations with Transifex (host)" \
         "\n- pull-translations	Pull the translation (host)" \
         "\n- recreate-search-poi	Recreate the ElasticSearch POI Index (docker)" \
