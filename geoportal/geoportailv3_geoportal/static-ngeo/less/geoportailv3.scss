@@ -1,5 +1,5 @@
 
-$fa-font-path: "~@fortawesome/fontawesome-free/webfonts" !default;
+$fa-font-path: "/usr/lib/node_modules/\@fortawesome/fontawesome-free/webfonts";
 
 @import "/usr/lib/node_modules/ngeo/contribs/gmf/src/sass/vars_only.scss";
 @import '/usr/lib/node_modules/ol/ol.css';
