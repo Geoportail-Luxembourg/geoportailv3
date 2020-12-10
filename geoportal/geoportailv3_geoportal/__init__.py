@@ -446,6 +446,7 @@ def main(global_config, **settings):
     config.add_route('preview_measurement', '/previewmeasurement')
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')
+    config.add_route('getbuswidget', '/getbuswidget')
     config.add_route('getpoitemplate', '/getpoitemplate')
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
