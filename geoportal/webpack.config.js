@@ -11,6 +11,7 @@ switch (nodeEnv) {
     break;
   case 'production':
     config = webpackMerge(config, require('ngeo/buildtools/webpack.prod')());
+    config.mode = 'development';
     break;
   default:
     console.log(`The 'NODE_ENV' environment variable is set to an invalid value: ${process.env.NODE_ENV}.`);
