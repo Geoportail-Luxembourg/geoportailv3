@@ -22,6 +22,7 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
 
 /**
  * @constructor
@@ -185,6 +186,21 @@ exports.prototype.toggle = function(node) {
       layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
     }
     map.addLayer(layer);
+    if (layerMetadata.hasOwnProperty('linked_layers')) {
+      var layers = layerMetadata['linked_layers'].split(',');
+      layers.forEach(function(layerId) {
+        this.appThemes_.getFlatCatalog().then(
+          function(flatCatalog) {
+            var node2 = flatCatalog.find(function(catItem) {
+              return catItem.id === Number(layerId);
+            });
+            if (node2 !== undefined) {
+              var linked_layer = this.getLayerFunc_(node2);
+              map.addLayer(linked_layer);
+            }
+          }.bind(this));
+      }, this);
+    }
   }
 };
 

@@ -308,9 +308,10 @@ lux.Map = function(options) {
       options.view.getZoom() === null) {
     options.view.setZoom(9);
   }
-
+  var mouseWheelZoom = (options.mouseWheelZoom !== undefined) ? options.mouseWheelZoom : true;
   var interactions = ol.interaction
     .defaults({
+      mouseWheelZoom: mouseWheelZoom,
       altShiftDragRotate: false,
       pinchRotate: true,
       constrainResolution: true
@@ -755,7 +756,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      'https://openlayers.org/en/master/examples/data/icon.png';
+      'https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png';
   element.appendChild(image);
 
   var position;
@@ -2014,4 +2015,21 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     }
   }.bind(this));
 
+};
+
+/**
+ * Set the center of the current view in EPSG:2169.
+ * @param {ol.Coordinate} coordinate The coordinate of the center.
+ * @param {number|undefined} zoom The zoom numer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setCenter = function(coordinate, zoom) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate,
+            'EPSG:2169', 'EPSG:3857'));
+  this.getView().setCenter(lonlat);
+  if (zoom !== undefined) {
+    this.getView().setZoom(zoom);
+  }
 };
