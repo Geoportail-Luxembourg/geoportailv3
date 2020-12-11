@@ -33,6 +33,7 @@ services:
 #      - SQL_LOG_LEVEL=DEBUG
 
   geoportal:
+    command: ./bin/lux_c2cwsgiutils_run.sh
     image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
 #    user: www-data
     volumes:
@@ -50,6 +51,7 @@ services:
       - ./geoportal/jsapi:/app/apiv3/jsapi:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - PGAPPNAME
       - AUTHTKT_TIMEOUT
       - AGE_CRUES_EMAIL
       - AGE_CRUES_MAP_ID
@@ -99,7 +101,7 @@ services:
       - PGSCHEMA_STATIC
       - PGOPTIONS
       - PRINT_URL
-      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=* --limit-request-line=0
       - LOG_LEVEL=INFO
       - C2CGEOPORTAL_LOG_LEVEL=INFO
       - C2CWSGIUTILS_CONFIG=/app/development.ini
