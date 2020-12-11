@@ -226,7 +226,7 @@ function getDefaultMediumRoadmapStyling() {
   },{
     label: gettext('Water'),
     color: '#94c1e1',
-    lines: ['lu_waterway','lu_waterway-tunnel','lu_waterway_intermittent'],
+    lines: ['lu_waterway','lu_waterway_tunnel','lu_waterway_intermittent'],
     fills: ['lu_water'],
     visible: true
   },{
@@ -246,7 +246,7 @@ function getDefaultMediumTopoStyling() {
   const gettext = t => t;
   return [{
     label: gettext('Primary Names'),
-    symbols: ['lu_place-label_other','lu_place-label_city','lu_place-label_canton','lu_country-label_other','lu_country-label','place_label_other','place_label_city','country_label-other','country_label'],
+    symbols: ['lu_place-label_other','lu_place-label_city','lu_place-label_canton','lu_country-label-other','lu_country-label','place_label_other','place_label_city','country_label-other','country_label'],
     visible: true
   },{
     label: gettext('Secondary Names'),
@@ -288,7 +288,7 @@ function getDefaultMediumTopoStyling() {
   },{
     label: gettext('Contours and Height Points'),
     lines: ['lu_contour-100','lu_contour-50','lu_contour-20','lu_contour-10','lu_contour'],
-    symbols: ['lu_contour-label-100','lu_contour-label-20','lu_apex_label'],
+    symbols: ['lu_contour-label-100','lu_contour-label-20','lu_apex-label'],
     visible: true
   }, {
     label: gettext('Hillshade'),
