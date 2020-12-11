@@ -43,11 +43,11 @@ const exports = function(appSearchTemplateUrl) {
     templateUrl: appSearchTemplateUrl,
     link:
         /**
-         * @param {angular.Scope} scope Scope
+         * @param {angular.Scope} $scope Scope
          * @param {angular.JQLite} element Element
          * @param {angular.Attributes} attrs Atttributes
          */
-        function(scope, element, attrs) {
+        function($scope, element, attrs) {
           element.find('input').on('keypress', function(e) {
             if (e.keyCode == 13) {
               e.preventDefault();

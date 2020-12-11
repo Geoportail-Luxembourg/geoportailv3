@@ -730,7 +730,7 @@ class Getfeatureinfo(object):
         for feature in features:
             for key in feature['attributes']:
                 value = feature['attributes'][key]
-                if key == field_to_use:
+                if value is not None and key == field_to_use:
                     feature["attributes"]["percentage"] = "%s" \
                         % str(value * 100) + "%"
                     del feature["attributes"][field_to_use]
@@ -1227,3 +1227,30 @@ class Getfeatureinfo(object):
 
         return geojson_loads(geojson.dumps(mapping(g2)))
 
+    @view_config(route_name='getbuswidget')
+    def getbuswidget(self):
+        lang = self.request.params.get('lang', 'fr')
+        id = self.request.params.get('id', None)
+        if id is None:
+            return HTTPBadRequest("id not found")
+        template = """<!DOCTYPE html>
+<html>
+<head>
+  <!-- Das hafas-widget-core JavaScript lädt alle benötigten Ressourcen für die Anzeige der Widgets -->
+  <script type="text/javascript" src="https://cdt.hafas.de/staticfiles/hafas-widget-core.1.0.0.js?language={lang}"></script>
+</head>
+<body>
+<div id="myWidget_result" style="width:350px; transform-origin: left top; transform: scale(0.75);"
+         data-hfs-widget="true"
+         data-hfs-widget-sq="true"
+         data-hfs-widget-sq-autorefresh="true"
+         data-hfs-widget-sq-location="L={id}"
+         data-hfs-widget-sq-maxjny="5"
+></div>
+</body>
+</html>
+        """.format(id=id, lang=lang)
+        remote_template = Template(template)
+        headers = {'Content-Type': 'text/html'}
+
+        return Response(remote_template.render(), headers=headers)

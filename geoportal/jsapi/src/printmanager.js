@@ -466,7 +466,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
   });
 
   for (var i = 0, ii = features.length; i < ii; ++i) {
-    var originalFeature = features[i];
+    var originalFeature = features[i].clone();
 
     var styleData = null;
     var styleFunction = originalFeature.getStyleFunction();
@@ -477,6 +477,9 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
       if (styleFunction !== undefined) {
         styleData = styleFunction.call(layer, originalFeature, resolution);
       }
+    }
+    if (originalFeature.getGeometry().getType() === 'Circle') {
+      originalFeature.setGeometry(ol.geom.Polygon.fromCircle(originalFeature.getGeometry(), 64));
     }
     var origGeojsonFeature = geojsonFormat.writeFeatureObject(originalFeature);
     /**
