@@ -533,7 +533,7 @@ const exports = function($scope, $window, $compile,
     biotopes: false,
     editus: false,
     extent: false,
-    activeLayers: false
+    activeLayers: true
   };
   this.facets = Object.assign({}, localStorage.getItem('searchFacets')
     ? JSON.parse(localStorage.getItem('searchFacets'))
