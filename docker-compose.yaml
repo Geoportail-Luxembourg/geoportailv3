@@ -33,6 +33,7 @@ services:
 #      - SQL_LOG_LEVEL=DEBUG
 
   geoportal:
+    command: ./bin/lux_c2cwsgiutils_run.sh
     image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
 #    user: www-data
     volumes:
@@ -50,6 +51,7 @@ services:
       - ./geoportal/jsapi:/app/apiv3/jsapi:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - PGAPPNAME
       - AUTHTKT_TIMEOUT
       - AGE_CRUES_EMAIL
       - AGE_CRUES_MAP_ID
