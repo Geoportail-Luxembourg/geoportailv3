@@ -4,6 +4,14 @@
 var luxx;
 
 /**
+ * Allows the user to zoom the map by scrolling the mouse wheel.
+ * Default is true.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.mouseWheelZoom;
+
+/**
  * Function called to transform the result of the information popup.
  * @type {function()|undefined}
  * @api
