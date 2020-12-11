@@ -1,5 +1,6 @@
 <a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parentUid}}"
    href="#catalog-{{::layertreeCtrl.uid}}"
+   aria-expanded="{{(layertreeCtrl.node.metadata && layertreeCtrl.node.metadata.is_expanded) ? 'true': 'false'}}"
    ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth < 10">
   {{layertreeCtrl.node.name | translate}}
 </a>
@@ -14,7 +15,8 @@
   </a>
 </div>
 <ul id="catalog-{{::layertreeCtrl.uid}}" ng-if="::layertreeCtrl.node.children"
-  ng-class="{collapse: !layertreeCtrl.isRoot && layertreeCtrl.depth < 10, catalog: layertreeCtrl.isRoot}">
+  ng-class="{'collapse': !layertreeCtrl.isRoot && layertreeCtrl.depth < 10, 'in': layertreeCtrl.node.metadata && layertreeCtrl.node.metadata.is_expanded ,catalog: layertreeCtrl.isRoot}"
+  >
   <li ng-repeat="node in layertreeCtrl.node.children"
       ngeo-layertree="node"
       ngeo-layertree-notroot

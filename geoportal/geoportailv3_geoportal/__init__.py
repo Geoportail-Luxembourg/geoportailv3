@@ -211,6 +211,11 @@ def main(global_config, **settings):
         request_method="PUT"
     )
     config.add_route(
+        "get_gpx",
+        "/mymaps/get_gpx/{map_id}",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_map",
         "/mymaps/map/{map_id}",
         request_method="GET"
@@ -444,6 +449,7 @@ def main(global_config, **settings):
     config.add_route('preview_measurement', '/previewmeasurement')
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')
+    config.add_route('getbuswidget', '/getbuswidget')
     config.add_route('getpoitemplate', '/getpoitemplate')
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
