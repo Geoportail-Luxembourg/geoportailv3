@@ -685,15 +685,18 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
-    def format_esridate(self, features, attribute="date_time", format="%Y-%m-%d %H:%M:%S"):
+    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
         for feature in features:
             try:
-                if attribute in feature['attributes']:
-                    value = feature['attributes'][attribute]
-                    if value is not None:
-                            feature['attributes'][attribute] =\
-                                datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                                feature['attributes'][attribute] =\
+                                    datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
