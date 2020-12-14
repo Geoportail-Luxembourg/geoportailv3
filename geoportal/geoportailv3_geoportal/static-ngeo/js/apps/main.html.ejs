@@ -320,7 +320,8 @@
               <div class="collapse" id="editor-medium" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
-                    <p translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="mainCtrl.isColorVisible" translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="!mainCtrl.isColorVisible" translate>Afficher une catégorie par couche</p>
                     <app-medium-style
                       on-styling-changed="mainCtrl.onMediumStylingChanged"
                       stylings="mainCtrl.mediumStylingData">
