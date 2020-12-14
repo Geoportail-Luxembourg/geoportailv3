@@ -125,24 +125,7 @@
             <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
             <span translate>Afficher les modèles 3D</span>
           </div>
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="my-layers-tab">
-              <a href="#mylayers" data-toggle="tab" role="tab"
-                ng-class="{active: mainCtrl.layersActiveTab=='mylayers'}"
-                ng-click="mainCtrl.showTab('mylayers', $event)">
-                <span translate>my_layers</span>
-                <span ng-if="mainCtrl.selectedLayersLength() > 0">({{mainCtrl.selectedLayersLength()}})</span>
-              </a>
-            </li>
-            <li role="presentation" class="catalog-tab">
-              <a href="#catalog" data-toggle="tab" role="tab"
-                ng-class="{active: mainCtrl.layersActiveTab=='catalog'}"
-                ng-click="mainCtrl.showTab('catalog', $event)"
-                translate>
-                Catalog
-              </a>
-            </li>
-          </ul>
+          <div app-layerstab main-ctrl="mainCtrl"></div>
           <div class="tab-content d-flex">
             <div id="mylayers" class="tab-pane col-12" role="tabpanel"
               ng-class="{show: mainCtrl.layersActiveTab=='mylayers'}"

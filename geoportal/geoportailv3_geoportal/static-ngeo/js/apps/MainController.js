@@ -128,6 +128,7 @@ import '../../less/geoportailv3.scss';
 
  import appQueryQueryController from '../query/QueryController.js';
  import appResizemapDirective from '../resizemapDirective.js';
+ import appLayerstabDirective from '../layerstabDirective.js';
  import appRoutingRoutingController from '../routing/RoutingController.js';
  import appRoutingRoutingDirective from '../routing/routingDirective.js';
  import appSearchSearchDirective from '../search/searchDirective.js';
