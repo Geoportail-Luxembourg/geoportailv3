@@ -43,6 +43,13 @@ class Controller {
      * @type {angular.$rootScope}
      */
     this.$rootScope = $rootScope;
+    this.layers3d = this.map.get('ol3dm')
+
+    $rootScope.$watch(
+      () => this.map.get('ol3dm') && this.map.get('ol3dm').is3dEnabled(),
+      isEnabled => isEnabled && this.enable3d()
+    )
+
   };
 
   get background() {
@@ -57,6 +64,17 @@ class Controller {
 
   removeLayer(layer) {
     this.map.removeLayer(layer);
+  }
+
+  remove3dLayer(layerName) {
+    this.map.get('ol3dm').remove3dLayer(layerName)
+    const idx = this.layers3d.findIndex(e => e.url.includes(layerName));
+    this.layers3dName.splice(idx, 1);
+  }
+
+  enable3d() {
+    this.layers3d = this.map.get('ol3dm').tilesets3d;
+    this.layers3dName = this.map.get('ol3dm').getActiveLayerName();
   }
 
   reorderCallback(element, layers){
@@ -87,6 +105,7 @@ class Controller {
   isLayersComparatorDisplayed() {
     return this['activeLC'] === true;
   }
+
 
   toggleLayersComparator() {
     this['activeLC'] = !this['activeLC'];

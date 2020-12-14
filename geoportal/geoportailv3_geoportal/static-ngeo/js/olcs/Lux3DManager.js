@@ -73,7 +73,13 @@ const exports = class extends ngeoOlcsManager {
      * @private
      * @type {Array<string>}
      */
-    this.tiles3dLayers_ = tiles3dLayers;
+    this.availableTiles3dLayers_ = tiles3dLayers;
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this.activeTiles3dLayers_ = [];
 
     /**
      * @private
@@ -129,23 +135,45 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
   init3dTiles(visible) {
-    const scene = this.ol3d.getCesiumScene();
-    this.tiles3dLayers_.forEach((layer) => {
-      const url = this.tiles3dUrl_ + layer + "/tileset.json";
-      const tileset = new Cesium.Cesium3DTileset({
-        url: url
-      });
-      this.tilesets3d.push(tileset);
-      scene.primitives.add(tileset);
-    });
+    this.availableTiles3dLayers_.filter(e => e.show).map(e => e.name).forEach(this.add3dTile.bind(this))
   }
 
   /**
    * Change 3D tiles layers visibility
    * @param {boolean} visible Visibility.
    */
-  set3dTilesetVisible(visible) {
+  set3dTilesetsVisible(visible) {
     this.tilesets3d.forEach(tileset => tileset.show = visible);
+  }
+
+  set3dTilesetVisible(visible, layerName) {
+    const tileset = this.tilesets3d.find((e) => e.url.includes(layerName));
+    tileset.show = visible;
+  }
+
+  add3dTile(layerName) {
+    this.activeTiles3dLayers_.push(layerName);
+    const url = this.tiles3dUrl_ + layerName + "/tileset.json";
+    // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
+    const tileset = new Cesium.Cesium3DTileset({
+      url: url,
+      skipLevelOfDetail: true,
+      baseScreenSpaceError : 1024,
+      skipScreenSpaceErrorFactor : 16,
+      skipLevels : 4,
+      immediatelyLoadDesiredLevelOfDetail : false,
+      loadSiblings : false,
+      cullWithChildrenBounds : true
+    });
+    this.tilesets3d.push(tileset);
+    this.ol3d.getCesiumScene().primitives.add(tileset);
+  }
+  remove3dLayer(layerName) {
+    const layer = this.tilesets3d.find(e => e.url.includes(layerName));
+    const idx = this.tilesets3d.findIndex(e => e.url.includes(layerName));
+    this.tilesets3d.splice(idx, 1)
+    this.activeTiles3dLayers_.splice(idx, 1)
+    this.ol3d.getCesiumScene().primitives.remove(layer)
   }
 
   /**
@@ -162,6 +190,17 @@ const exports = class extends ngeoOlcsManager {
    */
   resetNorth() {
     super.setHeading(super.getHeading());
+  }
+
+  /**
+   * @export
+   */
+  getAvailableLayerName() {
+    return this.availableTiles3dLayers_.map(e => e.name)
+  }
+
+  getActiveLayerName() {
+    return this.activeTiles3dLayers_
   }
 };
 

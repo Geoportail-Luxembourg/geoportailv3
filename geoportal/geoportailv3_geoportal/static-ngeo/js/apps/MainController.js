@@ -1802,7 +1802,7 @@ MainController.prototype.toggleThemeSelector = function() {
  */
 MainController.prototype.toggleTiles3dVisibility = function() {
   this.tiles3dVisible = !this.tiles3dVisible;
-  this.ol3dm_.set3dTilesetVisible(this.tiles3dVisible);
+  this.ol3dm_.set3dTilesetsVisible(this.tiles3dVisible);
   this.stateManager_.updateState({
     '3dtiles_visible': this.tiles3dVisible
   });

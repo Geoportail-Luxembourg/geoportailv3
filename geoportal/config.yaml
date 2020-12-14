@@ -372,7 +372,15 @@ vars:
         requestScheme: https
         sentryUrl: ''
         tags: {interface: main, service: js}
-        tiles3dLayers: [wintermesh, buildings25d, buildings3d, bridges3d]
+        tiles3dLayers:
+          - name: wintermesh
+            show: true
+          - name: buildings25d
+            show: false
+          - name: buildings3d
+            show: false
+          - name: bridges3d
+            show: false
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
