@@ -771,6 +771,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     position = this.getView().getCenter();
   }
   var markerOverlay = new ol.Overlay({
+    id: options.id,
     element: element,
     position: position,
     positioning: options.positioning || 'center-center'
@@ -781,6 +782,9 @@ lux.Map.prototype.showMarker = function(opt_options) {
     this.getView().setCenter(position);
   }
   var canvasContext = document.createElement('canvas').getContext('2d');
+  if (options.onClick) {
+    ol.events.listen(element, ol.events.EventType.CLICK, options.onClick);
+  }
   if (options.html) {
     var popup;
     var showPopupEvent = options.click ?
