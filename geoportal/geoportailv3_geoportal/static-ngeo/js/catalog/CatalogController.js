@@ -46,8 +46,6 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.appStateManager_ = appStateManager;
 
-  this.map_ = this['map']
-
   /**
    * @type {ol.Extent}
    * @private
@@ -100,41 +98,33 @@ const exports = function($scope, appThemes, appTheme,
       this.setTree_();
     }
   }.bind(this));
+
   $scope.$watch(
-    function() {
-    if (this.map.get('ol3dm')) {
+    () => {
+      if (!this.map.get('ol3dm')) return;
       return this.map.get('ol3dm').is3dEnabled()
-    }
-    return undefined;
-  }.bind(this),
-    function(newVal) {
-      switch(newVal) {
-        case true: {
-          this.tree.children.push({
+    },
+    enabled => {
+      if (enabled === undefined) return;
+      if (enabled) {
+        this.tree.children.push({
           id: -1,
           name: "3d Layers",
           metadata: {},
-          children: this.map.get('ol3dm').getAvailableLayerName().map(function(layer, i) {
-            return {
-              id: i,
-              name: layer
-            }
-          }),
+          children: this.map.get('ol3dm').getAvailableLayerName().map(
+            (layer, i) => ({ id: i, name: layer })
+          ),
           type: "Cesium",
           ogcServer: "None",
           mixed: true,
           theme: this.appTheme_.getCurrentTheme()
         })
-        break;
-      }
-        case false: {
+      } else {
         const idx = this.tree.children.findIndex((e) => e.id === -1)
         this.tree.children.splice(idx, 1)
-        break;
       }
-        case undefined: break;
-      }
-  }.bind(this))
+    }
+  )
 };
 
 
