@@ -44,19 +44,10 @@ class Controller {
      */
     this.$rootScope = $rootScope;
     this.layers3d = this.map.get('ol3dm')
-    this.is3dEnabled = false;
 
-    $rootScope.$watch(function() {
-        if (this.map.get('ol3dm')) {
-          return this.map.get('ol3dm').is3dEnabled();
-        }
-        return undefined; // 3d is not ready yet.
-      }.bind(this), function(newVal) {
-        this.is3dEnabled = newVal;
-        if (newVal === true) {
-          this.enable3d();
-        }
-      }.bind(this)
+    $rootScope.$watch(
+      () => this.map.get('ol3dm') && this.map.get('ol3dm').is3dEnabled(),
+      isEnabled => isEnabled && this.enable3d()
     )
 
   };
