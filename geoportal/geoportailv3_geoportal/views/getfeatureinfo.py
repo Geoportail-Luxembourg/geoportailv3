@@ -709,15 +709,19 @@ class Getfeatureinfo(object):
             for key in feature['attributes']:
                 value = feature['attributes'][key]
                 if value is not None:
-                    if 'hyperlin' in key.lower():
+                    if 'hyperlinks_graph' in key.lower():
+                        feature['attributes'][key] =\
+                            "<iframe width='260 px' src='%s'></iframe>"\
+                            % (value)
+                    elif 'hyperlin' in key.lower():
                         feature['attributes'][key] =\
                             "<a href='%s' target='_blank'>%s</a>"\
                             % (value, value.rsplit("/", 1)[1])
-                    if 'Fiche station' in key:
+                    elif 'Fiche station' in key:
                         feature['attributes'][key] =\
                             "<a href='%s' target='_blank'>%s</a>"\
                             % (value, value.rsplit("/", 1)[1])
-                    if 'Photo station' in key:
+                    elif 'Photo station' in key:
                         feature['attributes'][key] =\
                             "<img src='%s' width='300px'/>" % (value)
 
