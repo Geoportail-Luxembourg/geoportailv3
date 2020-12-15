@@ -34,12 +34,14 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
     ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot?#iefix && \
     ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg#fontawesome
 
+
 # RUN make checks
 RUN make build
 
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
-
+# put Cesium build in static-ngeo
+RUN mkdir /etc/static-ngeo/Cesium && cp -r /usr/lib/node_modules/cesium/Build/Cesium/* /etc/static-ngeo/Cesium/
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
 
@@ -58,7 +60,7 @@ WORKDIR /app
 COPY . /app
 COPY --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
 COPY --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
-COPY --from=builder /etc/static-ngeo/* /etc/static-ngeo/
+COPY --from=builder /etc/static-ngeo/ /etc/static-ngeo/
 # COPY --from=builder /etc/apiv3/* /etc/apiv3/
 COPY --from=builder /app/alembic.ini /app/alembic.yaml ./
 RUN chmod go+w /etc/static-ngeo/ \

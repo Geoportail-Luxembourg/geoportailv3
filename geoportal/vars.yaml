@@ -221,7 +221,7 @@ vars:
         appQueryTemplatesPath: {name: 'geoportailv3_geoportal:static-ngeo/js/query/'}
         arrowModelUrl: {name: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb'}
         assetsBaseUrl: {name: 'geoportailv3_geoportal:static-ngeo/'}
-        cesiumURL: {name: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
+        cesiumURL: {name: 'geoportailv3_geoportal:static-ngeo/Cesium/Cesium.js'}
 
   admin_interface:
     exclude_pages:

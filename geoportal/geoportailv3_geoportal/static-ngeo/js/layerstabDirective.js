@@ -44,10 +44,7 @@ const exports = function($window) {
                 Catalog
               </a>
             </li>
-          </ul>`,
-    link: function(scope) {
-      console.log('TRUETE',scope)
-    }
+          </ul>`
   };
 };
 
