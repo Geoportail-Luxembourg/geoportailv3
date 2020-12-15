@@ -12,7 +12,7 @@
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
   "devDependencies": {
-    "@camptocamp/cesium": "1.45.0",
+    "cesium": "1.75.0",
     "@geoblocks/mapboxlayer": "0.0.6",
     "@sentry/integrations": "5.5.0",
     "angular-jsdoc": "1.5.0",
@@ -36,7 +36,7 @@
     "karma-coverage-istanbul-reporter": "2.0.1",
     "mapbox-gl": "1.7.0",
     "ngeo": "2.5.0-lux.2",
-    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/c5edfe1194063832c72d872aef91b967b96b7fd7",
+    "ol-cesium": "2.11",
     "raven-js": "3.24.2",
     "source-map-loader": "0.2.4",
     "url-loader": "1.0.1"

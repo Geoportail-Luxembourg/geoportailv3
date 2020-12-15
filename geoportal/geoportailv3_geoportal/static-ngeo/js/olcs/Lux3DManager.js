@@ -6,6 +6,7 @@ import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 import OLCesium from 'olcs/OLCesium.js'
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
+//import VectorSynchronizer from 'olcs/Mvt';
 
 const exports = class extends ngeoOlcsManager {
   /**
