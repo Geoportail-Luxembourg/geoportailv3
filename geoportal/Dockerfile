@@ -54,6 +54,11 @@ CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progr
 
 FROM camptocamp/geomapfish:2.5 as runner
 
+ARG HTTP_PROXY_URL
+ENV http_proxy $HTTP_PROXY_URL
+ARG HTTPS_PROXY_URL
+ENV https_proxy $HTTPS_PROXY_URL
+
 COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
   python3 -m pip install --upgrade pip && \
