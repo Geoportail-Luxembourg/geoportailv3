@@ -68,14 +68,14 @@ RUN \
 
 WORKDIR /app
 COPY . /app
-COPY --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
-COPY --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
-COPY --from=builder /etc/static-ngeo/ /etc/static-ngeo/
+COPY --chown=www-data:www-data --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
+COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
+COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/ /etc/static-ngeo/
 # COPY --from=builder /etc/apiv3/* /etc/apiv3/
-COPY --from=builder /app/alembic.ini /app/alembic.yaml ./
-RUN chmod go+w /etc/static-ngeo/ \
-    /app/geoportailv3_geoportal/locale/ \
-    /app/geoportailv3_geoportal/locale/*/LC_MESSAGES/geoportailv3_geoportal-client.po
+COPY --chown=www-data:www-data --from=builder /app/alembic.ini /app/alembic.yaml ./
+#RUN chmod go+w /etc/static-ngeo/ \
+#    /app/geoportailv3_geoportal/locale/ \
+#    /app/geoportailv3_geoportal/locale/*/LC_MESSAGES/geoportailv3_geoportal-client.po
 
 RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python3 -m compileall -q /usr/local/lib/python3.7 \
