@@ -500,7 +500,7 @@ const exports = function($scope, $window, $compile,
           suggestion: function(suggestion) {
               var feature = /** @type {ol.Feature} */ (suggestion);
               return '<p><span class="search-result-container"><span class="search-result-label">'
-                  + feature.get('label') + ' (' + feature.get('layer_name') + ')</span></span>';
+                  + feature.get('label') + ' (' + this.gettextCatalog.getString(feature.get('layer_name')) + ')</span></span>';
           }.bind(this)
       })
   }
