@@ -46,6 +46,8 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.appStateManager_ = appStateManager;
 
+  this.map_ = this['map']
+
   /**
    * @type {ol.Extent}
    * @private
@@ -119,9 +121,14 @@ const exports = function($scope, appThemes, appTheme,
           mixed: true,
           theme: this.appTheme_.getCurrentTheme()
         })
-      } else {
+        break;
+      }
+        case false: {
         const idx = this.tree.children.findIndex((e) => e.id === -1)
         this.tree.children.splice(idx, 1)
+        break;
+      }
+        case undefined: break;
       }
     }
   )
