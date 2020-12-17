@@ -126,6 +126,9 @@ const exports = class extends ngeoOlcsManager {
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
     }
+    // limit the scene minimum zoom to 
+    scene.screenSpaceCameraController.minimumZoomDistance=150
+
 
     return ol3d;
   }
@@ -160,9 +163,8 @@ const exports = class extends ngeoOlcsManager {
       skipLevelOfDetail: true,
       baseScreenSpaceError : 1024,
       skipScreenSpaceErrorFactor : 16,
-      skipLevels : 4,
+      skipLevels : 1,
       immediatelyLoadDesiredLevelOfDetail : false,
-      loadSiblings : false,
       cullWithChildrenBounds : true
     });
     this.tilesets3d.push(tileset);
