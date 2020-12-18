@@ -90,10 +90,9 @@ class Getfeatureinfo(object):
     @view_config(route_name='download_pdf')
     def download_pdf_arcgis(self):
         fid = self.request.params.get('fid', None)
-        attribute = self.request.params.get('attribute', None)
-        if fid is None or attribute is None:
+        if fid is None:
             return HTTPBadRequest("Request paramaters are missing")
-        layers, fid = fid.split('_', 1)
+        layers, id = fid.split('_', 1)
         if layers is None:
             return HTTPBadRequest("Request paramaters are missing")
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
@@ -107,12 +106,13 @@ class Getfeatureinfo(object):
                 len(luxgetfeaturedefinition.rest_url) > 0):
                 timeout = 15
                 url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
-                url = url.replace('/query?', '')
-                url = url.replace('/query', '')
+                url = url.replace('/query?', '/')
+                url = url.replace('/query', '/')
                 url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
                 pdf_id = None
                 pdf_name = None
                 try:
+                    log.error(url1)
                     f = urllib.request.urlopen(url1, None, timeout)
                     data = f.read()
                     attachmentInfos = json.loads(data)["attachmentInfos"]
@@ -121,10 +121,9 @@ class Getfeatureinfo(object):
                             pdf_id = info["id"]
                             pdf_name = info["name"]
                 except:
-                    print (url1)
                     return HTTPBadRequest()
                 if pdf_name is None or pdf_id is None:
-                    print (url1)
+                    log.error(url1)
                     return HTTPBadRequest()
                 url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
@@ -132,7 +131,7 @@ class Getfeatureinfo(object):
                     f = urllib.request.urlopen(url2, None, timeout)
                     data = f.read()
                 except:
-                    print (url2)
+                    log.error(url2)
                     return HTTPBadRequest()
 
                 headers = {"Content-Type": "application/pdf",
@@ -834,6 +833,10 @@ class Getfeatureinfo(object):
     def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
+        url = url.replace('/MapServer/', '/FeatureServer/')
+        url = url.replace('/query?', '/')
+        url = url.replace('/query', '/')
+
         for feature in features:
             feature['attributes']['has_sketch'] = False
             id = feature['attributes'][id_attr]
