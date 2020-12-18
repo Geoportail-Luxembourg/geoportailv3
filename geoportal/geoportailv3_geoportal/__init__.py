@@ -442,6 +442,7 @@ def main(global_config, **settings):
     config.add_route('https_proxy', '/httpsproxy')
     config.add_route('download_sketch', '/downloadsketch')
     config.add_route('download', '/download')
+    config.add_route('download_pdf', '/downloadpdf')
     config.add_route('download_measurement', '/downloadmeasurement')
     config.add_route('preview_measurement', '/previewmeasurement')
     config.add_route('qr', '/qr')
