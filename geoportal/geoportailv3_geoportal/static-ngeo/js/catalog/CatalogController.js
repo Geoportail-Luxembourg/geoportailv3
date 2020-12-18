@@ -121,14 +121,9 @@ const exports = function($scope, appThemes, appTheme,
           mixed: true,
           theme: this.appTheme_.getCurrentTheme()
         })
-        break;
-      }
-        case false: {
+      } else {
         const idx = this.tree.children.findIndex((e) => e.id === -1)
         this.tree.children.splice(idx, 1)
-        break;
-      }
-        case undefined: break;
       }
     }
   )
