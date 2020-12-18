@@ -427,13 +427,9 @@
         font-size: 1.2em;
       }
     }
-
-    .launch-editor-button:after {
-      content: url(../images/palette.svg);
-      width: 1.2em;
-      top: 10px;
-      left: 20px;
-      color: white;
+    .launch-editor-button img {
+      width: 4.2em;
+      margin-top: 10px;
     }
     .upload-style-button:after {
       content: "\f382";
