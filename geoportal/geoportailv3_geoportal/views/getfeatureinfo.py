@@ -87,6 +87,60 @@ class Getfeatureinfo(object):
 
         return Response(data, headers=headers)
 
+    @view_config(route_name='download_pdf')
+    def download_pdf_arcgis(self):
+        fid = self.request.params.get('fid', None)
+        attribute = self.request.params.get('attribute', None)
+        if fid is None or attribute is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        layers, fid = fid.split('_', 1)
+        if layers is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
+        if len(luxgetfeaturedefinitions) == 0:
+            return HTTPBadRequest("Configuration is missing")
+        url = None
+        luxgetfeaturedefinition = luxgetfeaturedefinitions[0]
+        # TODO : Manage Database definition. Not only remote services.
+        if (luxgetfeaturedefinition is not None and
+            luxgetfeaturedefinition.rest_url is not None and
+                len(luxgetfeaturedefinition.rest_url) > 0):
+                timeout = 15
+                url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
+                url = url.replace('/query?', '')
+                url = url.replace('/query', '')
+                url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+                pdf_id = None
+                pdf_name = None
+                try:
+                    f = urllib.request.urlopen(url1, None, timeout)
+                    data = f.read()
+                    attachmentInfos = json.loads(data)["attachmentInfos"]
+                    for info in attachmentInfos:
+                        if info["contentType"] == "application/pdf":
+                            pdf_id = info["id"]
+                            pdf_name = info["name"]
+                except:
+                    print (url1)
+                    return HTTPBadRequest()
+                if pdf_name is None or pdf_id is None:
+                    print (url1)
+                    return HTTPBadRequest()
+                url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
+
+                try:
+                    f = urllib.request.urlopen(url2, None, timeout)
+                    data = f.read()
+                except:
+                    print (url2)
+                    return HTTPBadRequest()
+
+                headers = {"Content-Type": "application/pdf",
+                           "Content-Disposition": "attachment; filename=\"%(pdf_name)s.pdf\"" %{'pdf_name': pdf_name}}
+
+                return Response(data, headers=headers)
+        return HTTPBadGateway("Unable to access the remote url")
+
     # Get the remote template
     @view_config(route_name='getremotetemplate')
     def get_remote_template(self):
@@ -787,10 +841,12 @@ class Getfeatureinfo(object):
             try:
                 f = urllib.request.urlopen(url1, None, timeout)
                 data = f.read()
-                attachmentInfos = json.loads(data)["attachmentInfos"]
-                for info in attachmentInfos:
-                    if info["contentType"] == "application/pdf":
-                        feature['attributes']['has_sketch'] = True
+                data_json = json.loads(data)
+                if "attachmentInfos" in data_json:
+                    attachmentInfos = data_json["attachmentInfos"]
+                    for info in attachmentInfos:
+                        if info["contentType"] == "application/pdf":
+                            feature['attributes']['has_sketch'] = True
             except Exception as e:
                 log.exception(e)
                 feature['attributes']['has_sketch'] = False
