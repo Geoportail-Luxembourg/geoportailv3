@@ -777,14 +777,13 @@ class Getfeatureinfo(object):
                 output_features.append(feature)
         return output_features
 
-    def get_additional_info_for_new_ng95(self, features):
-        ng_url = os.environ["NG_URL"]
+    def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
         for feature in features:
             feature['attributes']['has_sketch'] = False
-            id = feature['attributes']['OBJECTID']
-            url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+            id = feature['attributes'][id_attr]
+            url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
             try:
                 f = urllib.request.urlopen(url1, None, timeout)
                 data = f.read()
