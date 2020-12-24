@@ -44,6 +44,7 @@ class LuxLayerInternalWMSViews(DimensionLayerViews):
         _list_field('url'),
         _list_field('layers'),
         _list_field('is_poi'),
+        _list_field('use_auth'),
         _list_field('collection_id'),
         _list_field('rest_url'),
         _list_field('layer'),

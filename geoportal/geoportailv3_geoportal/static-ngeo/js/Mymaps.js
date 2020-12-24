@@ -1542,7 +1542,11 @@ exports.prototype.createStyleFunction = function(curMap) {
   };
 
   return function(feature, resolution) {
-
+    //Bypass the bug : https://github.com/openlayers/ol-cesium/pull/644
+    if (resolution === undefined) {
+      resolution = feature;
+      feature = this;
+    }
     // clear the styles
     styles.length = 0;
 

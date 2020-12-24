@@ -145,7 +145,7 @@ exports.V2_BGLAYER_TO_V3_ = {
  * Remove the listeners for property change.
  * @private
  */
-exports.prototype.unListenProtertyChange_ = function() {
+exports.prototype.unListenPropertyChange_ = function() {
   this.layersListenerKeys_.forEach(function(key) {
     unlistenByKey(key);
   });
@@ -158,7 +158,7 @@ exports.prototype.unListenProtertyChange_ = function() {
  * @param {Array.<ol.layer.Layer>} layers The layers.
  * @private
  */
-exports.prototype.listenProtertyChange = function(layers) {
+exports.prototype.listenPropertyChange = function(layers) {
   layers.forEach(function(layer) {
     this.layersListenerKeys_.push(listen(
         layer, 'propertychange',
@@ -171,15 +171,16 @@ exports.prototype.listenProtertyChange = function(layers) {
 
 
 /**
- * @param {Array.<ol.layer.Layer>} layers The layers.
+ * @param {Array.<ol.layer.Layer>} layers_ The layers.
  * @private
  */
-exports.prototype.onLayerUpdate_ = function(layers) {
+exports.prototype.onLayerUpdate_ = function(layers_) {
+  let layers = layers_.filter(l => !l.get('metadata').hidden);
 
   // Check if a layer is added or removed;
   if (layers.length !== this.layersListenerKeys_.length) {
-    this.unListenProtertyChange_();
-    this.listenProtertyChange(layers);
+    this.unListenPropertyChange_();
+    this.listenPropertyChange(layers);
   }
 
   var layerIds = layers.map(function(layer) {
@@ -434,7 +435,7 @@ exports.prototype.removeWatchers_ = function() {
   if (typeof this.scopeWatcher_ == 'function') {
     this.scopeWatcher_(); // destroy previous watcher
   }
-  //this.unListenProtertyChange_();
+  //this.unListenPropertyChange_();
 };
 
 

@@ -57,6 +57,7 @@ label {
 
 body {
   font-family: 'DINNextLTPro-Condensed', Arial, sans-serif;
+  --primary: black;
 }
 
 body.embedded {
@@ -211,13 +212,17 @@ body.embedded {
   }
 }
 
-body.full footer,
-body.full header {
-  display: flex;
-}
-body.full .routing-goto-route,
-body.full .routing-rounded-button {
+body.full header,
+body.full footer {
   display: block;
+}
+@media (max-width: @screen-xs-max) {
+  body.full .routing-goto-route {
+    display: block;
+  }
+  body.full .routing-rounded-button {
+    display: inline-block;
+  }
 }
 
 

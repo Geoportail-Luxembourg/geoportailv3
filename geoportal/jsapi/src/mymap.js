@@ -41,13 +41,37 @@ goog.require('ol.geom.MultiLineString');
  * @api stable
  */
 lux.MyMap = function(options) {
-
   /**
-   * @type {string}
+   * @type {boolean}
    * @private
    */
-  this.id_ = options.mapId;
-  console.assert(this.id_ != undefined, 'mapId must be defined');
+  this.fitToExtent_ = true;
+  if (options.fitToExtent !== undefined) {
+    this.fitToExtent_ = options.fitToExtent;
+  }
+
+  /**
+   * @type {string | undefined}
+   * @private
+   */
+  this.layerName_;
+  if (options && options.name) {
+    this.layerName_ = options.name;
+  }
+
+  /**
+   * @type {Array<string>}
+   * @private
+   */
+  this.ids_ = [];
+  if (options.mapIds !== undefined) {
+    this.ids_ = options.mapIds;
+  }
+  if (options.mapId !== undefined) {
+    this.ids_.push(options.mapId);
+  }
+
+  console.assert(this.ids_ != undefined && this.ids_.length > 0, 'mapId or mapids must be defined');
 
 
   /**
@@ -175,42 +199,52 @@ lux.MyMap.prototype.setMap = function(map) {
  * @private
  */
 lux.MyMap.prototype.loadFeatures_ = function() {
-
-  var url = [lux.mymapsUrl, 'features', this.id_].join('/');
-  fetch(url).then(function(resp) {
-    return resp.json();
-  }).then(function(json) {
-    var format = new ol.format.GeoJSON();
-    this.sourceFeatures_ = new ol.source.Vector();
-    var vector = new ol.layer.Vector({
-      source: this.sourceFeatures_
-    });
-    this.map_.addLayer(vector);
-    var features = format.readFeatures(json, {
-      dataProjection: 'EPSG:2169',
-      featureProjection: 'EPSG:3857'
-    });
-    if (this.onload_) {
-      this.onload_.call(this, features);
-    }
-    var featureStyleFunction = this.createStyleFunction_(this.map_);
-    features.forEach(function(feature) {
-      feature.setStyle(featureStyleFunction);
-    });
-    this.sourceFeatures_.addFeatures(features);
-
-    var size = /** @type {Array<number>} */ (this.map_.getSize());
-    this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
-
-    this.selectInteraction_ = new ol.interaction.Select({
-      layers: [vector]
-    });
-    this.map_.addInteraction(this.selectInteraction_);
-    ol.events.listen(
-      this.selectInteraction_,
-      'select',
-      this.onFeatureSelected_, this);
-  }.bind(this));
+  this.sourceFeatures_ = new ol.source.Vector();
+  var vector = new ol.layer.Vector({
+    source: this.sourceFeatures_,
+    name: this.layerName_
+  });
+  this.map_.addLayer(vector);
+  this.selectInteraction_ = new ol.interaction.Select({
+    layers: [vector]
+  });
+  // Hack to bypass this : https://github.com/openlayers/openlayers/issues/1988
+  // Will be probably solved with OL6
+  var originalHandleEvent = this.selectInteraction_.handleEvent;
+  this.selectInteraction_.handleEvent = function(mapBrowserEvent) {
+      originalHandleEvent.apply(this, arguments);
+      // true, not to stop event propagation.
+      return true;
+  };
+  this.map_.addInteraction(this.selectInteraction_);
+  ol.events.listen(
+    this.selectInteraction_,
+    'select',
+    this.onFeatureSelected_, this);
+  this.ids_.forEach(function(curId) {
+    var url = [lux.mymapsUrl, 'features', curId].join('/');
+    fetch(url).then(function(resp) {
+      return resp.json();
+    }).then(function(json) {
+      var format = new ol.format.GeoJSON();
+      var features = format.readFeatures(json, {
+        dataProjection: 'EPSG:2169',
+        featureProjection: 'EPSG:3857'
+      });
+      if (this.onload_) {
+        this.onload_.call(this, features);
+      }
+      var featureStyleFunction = this.createStyleFunction_(this.map_);
+      features.forEach(function(feature) {
+        feature.setStyle(featureStyleFunction);
+      });
+      this.sourceFeatures_.addFeatures(features);
+      if (this.fitToExtent_) {
+        var size = /** @type {Array<number>} */ (this.map_.getSize());
+        this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
+      }
+    }.bind(this));
+  }, this);
 };
 
 /**

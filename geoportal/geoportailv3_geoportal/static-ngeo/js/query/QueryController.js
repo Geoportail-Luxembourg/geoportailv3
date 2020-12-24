@@ -486,7 +486,7 @@ const exports = function($sce, $timeout, $scope, $http,
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
 
-  if (appStateManager.getInitialParamKeys().length == 1 && this.isFIDValid_(fid)) {
+  if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
     this.ngeoLocation_.deleteParam('fid');
   }
@@ -1069,6 +1069,9 @@ exports.prototype.getTrustedUrlByLang = function(urlFr,
  */
 exports.prototype.highlightFeatures_ = function(features, fit) {
   if (features !== undefined && features !== null) {
+   if (this.map_.getLayers().getArray().indexOf(this.featureLayer_) === -1) {
+        this.map_.addLayer(this.featureLayer_);
+      }
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
       featureProjection: this.map_.getView().getProjection()

@@ -21,7 +21,7 @@ import {includes as arrayIncludes, extend as arrayExtend} from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent.js';
-import {transformExtent, get} from 'ol/proj.js';
+import {transformExtent, get, transform} from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -30,6 +30,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import Fuse from 'fuse.js';
+import { matchCoordinate } from '../CoordinateMatch'
 
 /**
  * @ngInject
@@ -62,7 +63,7 @@ const exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl,
+    poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl, featureSearchServiceUrl,
     appExcludeThemeLayerSearch, appRouting) {
 
   /**
@@ -243,6 +244,10 @@ const exports = function($scope, $window, $compile,
   var CMSBloodhoundEngine = this.createAndInitCMSBloodhoundEngine_(
       cmsSearchServiceUrl);
 
+  /** @type {Bloodhound} */
+  var FeatureBloodhoundEngine = this.createAndInitFeatureBloodhoundEngine_(
+      featureSearchServiceUrl);
+
   /** @type {Fuse} */
   var backgroundLayerEngine =
       new Fuse([], {
@@ -272,15 +277,20 @@ const exports = function($scope, $window, $compile,
   this['options'] = {
     highlight: true
   };
-  var sourceFunc =
-    /**
-     * @param {Object} query
-     * @param {function(Array<string>)} syncResults
-     * @return {Object}
-     */
-    function(query, syncResults) {
-      return syncResults(this.matchCoordinate_(query));
-    };
+
+  /**
+   * @param {Object} query
+   * @param {function(Array<string>)} syncResults
+   * @return {Object}
+   */
+  var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
+    query,
+    this['map'].getView().getProjection().getCode(),
+    this.maxExtent_,
+    this.coordinateString_
+  ));
+
+  const bgLabel = this.gettextCatalog.getString('Background Layers')
   /** @type {Array.<TypeaheadDataset>} */
   this['datasets'] = [{
     name: 'coordinates',
@@ -302,8 +312,12 @@ const exports = function($scope, $window, $compile,
         scope['click'] = function(event) {
           event.stopPropagation();
         };
-        var html = '<p>' + feature.get('label') +
-            ' (' + feature.get('epsgLabel') + ')</p>';
+        var html = '<p>' + feature.get('label');
+        var epsgLabel = feature.get('epsgLabel');
+        if (!(epsgLabel === 'UTM32N' || epsgLabel === 'UTM31N')) {
+          html = html + ' (' + epsgLabel + ')';
+        }
+        html = html + '</p>';
         return $compile(html)(scope);
       }.bind(this)
     })
@@ -318,38 +332,23 @@ const exports = function($scope, $window, $compile,
       return syncResults(this.matchLayers_(backgroundLayerEngine, query));
     }.bind(this),
     /**
-     * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
+     * @param {app.search.BackgroundLayerSuggestion} feature The suggestion.
      * @return {string} The result.
      * @this {TypeaheadDataset}
      */
-    display(suggestion) {
-      if (suggestion) {
-        suggestion['dataset'] = this.name;
-        return suggestion['translatedName'];
+    display: function(feature) {
+      if (feature) {
+        feature['dataset'] = 'backgroundLayers'
+        return this.gettextCatalog.getString(feature.get('label'))
       }
-    },
+    }.bind(this),
     templates: /** @type {TypeaheadTemplates} */({
-      header() {
-        return '<div class="header">' +
-            this.gettextCatalog.getString('Background Layers') +
-            '</div>';
-      },
-      suggestion:
-          /**
-           * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
-           * @return {*} The result.
-           */
-          (suggestion => {
-            if (suggestion) {
-              var scope = $scope.$new(true);
-              scope['object'] = suggestion;
-              var html = '<p>' + suggestion['translatedName'];
-              html += ' (' + this.gettextCatalog.getString('Background') + ') ';
-              html += '</p>';
-              return $compile(html)(scope);
-            }
-
-          })
+      header: () => `<div class="header">${bgLabel}</div>`,
+      suggestion: s => s
+        ? `<p>${this.gettextCatalog.getString(s.get('label'))}
+          (${this.gettextCatalog.getString('Background')})
+          </p>`
+        : undefined
     })
   }, {
     name: 'pois',
@@ -370,7 +369,7 @@ const exports = function($scope, $window, $compile,
             this.gettextCatalog.getString('Addresses') +
             '</div>';
       }.bind(this),
-      suggestion: function(suggestion) {
+        suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
         var scope = $scope.$new(true);
         scope['feature'] = feature;
@@ -482,6 +481,26 @@ const exports = function($scope, $window, $compile,
         return $compile(html)(scope);
       }.bind(this)
     })
+  }, {
+      name: 'features',
+      source: FeatureBloodhoundEngine.ttAdapter(),
+      display: function(suggestion) {
+          var feature = /** @type {ol.Feature} */ (suggestion);
+          feature.set('dataset', this.name);
+          return feature.get('label');
+      },
+      templates: /** @type {TypeaheadTemplates} */({
+          header: function() {
+              return '<div class="header">' +
+                  this.gettextCatalog.getString('Features') +
+                  '</div>';
+          }.bind(this),
+          suggestion: function(suggestion) {
+              var feature = /** @type {ol.Feature} */ (suggestion);
+              return '<p><span class="search-result-container"><span class="search-result-label">'
+                  + feature.get('label') + ' (' + this.gettextCatalog.getString(feature.get('layer_name')) + ')</span></span>';
+          }.bind(this)
+      })
   }
   ];
 
@@ -497,199 +516,82 @@ const exports = function($scope, $window, $compile,
       (function(e) {
         this.featureOverlay.clear();
       }), this);
+
+  this.facetsPanelOpen = false;
+  this.initialFacets = {
+    layers: true,
+    cms: true,
+    address: false,
+    parcels: false,
+    localite: false,
+    lieudit: false,
+    commune: false,
+    flik: false,
+    hydro: false,
+    biotopes: false,
+    editus: false,
+    extent: false,
+    activeLayers: true
+  };
+  this.facets = Object.assign({}, localStorage.getItem('searchFacets')
+    ? JSON.parse(localStorage.getItem('searchFacets'))
+    :this.initialFacets
+  );
+  this.esLabels = {
+    address: 'Adresses',
+    parcels: 'Parcelles cadastrales',
+    localite: 'Localités',
+    lieudit: 'Lieux-dits',
+    commune: 'Communes',
+    flik: 'Éléments agricoles',
+    hydro: 'Hydrographie',
+    biotopes: 'Biotopes',
+    editus: 'POI Editus'
+  }
+
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.esMatch_ = {
+    address: ['Adresse', 'nom_de_rue'],
+    parcels: ['Parcelle'],
+    localite: ['Localité'],
+    lieudit: ['lieu_dit'],
+    commune: ['Commune'],
+    flik: ['FLIK','asta esp'],
+    hydro: ['hydro', 'hydro_km'],
+    biotopes: ['biotope'],
+    editus: [
+      'editus_poi_285',
+      'editus_poi_286',
+      'editus_poi_287',
+      'editus_poi_289',
+      'editus_poi_290',
+      'editus_poi_291',
+      'editus_poi_292',
+      'editus_poi_293',
+      'editus_poi_294',
+      'editus_poi_295',
+      'editus_poi_296',
+      'editus_poi_297',
+      'editus_poi_298',
+      'editus_poi_299'
+    ]
+  }
 };
 
 
 /**
  * @param {Fuse} fuseEngine The fuse engine.
  * @param {string} searchString The search string.
- * @return {Array.<string>} The result.
+ * @return {Array} The result.
  * @private
  */
-exports.prototype.matchLayers_ =
-    function(fuseEngine, searchString) {
-      var fuseResults = /** @type {Array.<FuseResult>} */
-      (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
-      return fuseResults.map(
-      /**
-       * @param {FuseResult} r The result.
-       * @return {*} The item.
-       */
-      (function(r) {
-        return r.item;
-      }));
-    };
+exports.prototype.matchLayers_ = (fuseEngine, searchString) =>
+  fuseEngine.search(searchString).slice(0, 5).map(r => r.bgLayer)
 
-
-/**
- * @param {string} searchString The search string.
- * @return {Array<ol.Feature>} The result.
- * @private
- */
-exports.prototype.matchCoordinate_ =
-    function(searchString) {
-      searchString = searchString.replace(/,/gi, '.');
-      var results = [];
-      var re = {
-        'EPSG:2169': {
-          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
-          label: 'LUREF',
-          epsgCode: 'EPSG:2169'
-        },
-        'EPSG:4326': {
-          regex:
-          /(\d{1,2}[\,\.]\d{1,6})\d*\s?(latitude|lat|N|longitude|long|lon|E|east|est)?\W*(\d{1,2}[\,\.]\d{1,6})\d*\s?(longitude|long|lon|E|latitude|lat|N|north|nord)?/i,
-          label: 'long/lat WGS84',
-          epsgCode: 'EPSG:4326'
-        },
-        'EPSG:4326:DMS': {
-          regex:
-          /([NSEW])?(-)?(\d+(?:\.\d+)?)[°º:d\s]?\s?(?:(\d+(?:\.\d+)?)['’‘′:]\s?(?:(\d{1,2}(?:\.\d+)?)(?:"|″|’’|'')?)?)?\s?([NSEW])?/i,
-          label: 'long/lat WGS84 DMS',
-          epsgCode: 'EPSG:4326'
-        }
-      };
-      var northArray = ['LATITUDE', 'LAT', 'N', 'NORTH', 'NORD'];
-      var eastArray = ['LONGITUDE', 'LONG', 'LON', 'E', 'EAST', 'EST'];
-      for (var epsgKey in re) {
-        /**
-         * @type {Array.<string | undefined>}
-         */
-        var m = re[epsgKey].regex.exec(searchString);
-
-        if (m !== undefined && m !== null) {
-          var epsgCode = re[epsgKey].epsgCode;
-          var isDms = false;
-          /**
-           * @type {number | undefined}
-           */
-          var easting = undefined;
-          /**
-           * @type {number | undefined}
-           */
-          var northing = undefined;
-          if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
-            if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
-              arrayIncludes(eastArray, m[4].toUpperCase())) {
-                easting = parseFloat(m[3].replace(',', '.'));
-                northing = parseFloat(m[1].replace(',', '.'));
-              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
-              arrayIncludes(eastArray, m[2].toUpperCase())) {
-                easting = parseFloat(m[1].replace(',', '.'));
-                northing = parseFloat(m[3].replace(',', '.'));
-              }
-            } else if (m[2] === undefined && m[4] === undefined) {
-              easting = parseFloat(m[1].replace(',', '.'));
-              northing = parseFloat(m[3].replace(',', '.'));
-            }
-          } else if (epsgKey === 'EPSG:4326:DMS') {
-            // Inspired by https://github.com/gmaclennan/parse-dms/blob/master/index.js
-            var m1, m2, decDeg1, decDeg2, dmsString2;
-            m1 = m;
-            if (m1[1]) {
-              m1[6] = undefined;
-              dmsString2 = searchString.substr(m1[0].length - 1).trim();
-            } else {
-              dmsString2 = searchString.substr(m1[0].length).trim();
-            }
-            decDeg1 = this.decDegFromMatch_(m1);
-            if (decDeg1 !== undefined) {
-              m2 = re[epsgKey].regex.exec(dmsString2);
-              decDeg2 = m2 ? this.decDegFromMatch_(m2) : undefined;
-              if (decDeg2 !== undefined) {
-                if (typeof decDeg1.latLon === 'undefined') {
-                  if (!isNaN(decDeg1.decDeg) && !isNaN(decDeg2.decDeg)) {
-                    // If no hemisphere letter but we have two coordinates,
-                    // infer that the first is lat, the second lon
-                    decDeg1.latLon = 'lat';
-                  }
-                }
-                if (decDeg1.latLon === 'lat') {
-                  northing = decDeg1.decDeg;
-                  easting = decDeg2.decDeg;
-                } else {
-                  easting = decDeg1.decDeg;
-                  northing = decDeg2.decDeg;
-                }
-                isDms = true;
-              }
-            }
-          }
-          if (easting !== undefined && northing !== undefined) {
-            var mapEpsgCode =
-            this['map'].getView().getProjection().getCode();
-            var point = /** @type {ol.geom.Point} */
-            (new olGeomPoint([easting, northing])
-           .transform(epsgCode, mapEpsgCode));
-            var flippedPoint =  /** @type {ol.geom.Point} */
-            (new olGeomPoint([northing, easting])
-           .transform(epsgCode, mapEpsgCode));
-            var feature = /** @type {ol.Feature} */ (null);
-            if (containsCoordinate(
-            this.maxExtent_, point.getCoordinates())) {
-              feature = new olFeature(point);
-            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
-            this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new olFeature(flippedPoint);
-            }
-            if (feature !== null) {
-              var resultPoint =
-                /** @type {ol.geom.Point} */ (feature.getGeometry());
-              var resultString = this.coordinateString_(
-              resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
-              feature.set('label', resultString);
-              feature.set('epsgLabel', re[epsgKey].label);
-              results.push(feature);
-            }
-          }
-        }
-      }
-      return results; //return empty array if no match
-    };
-
-/**
- * @param {Array.<string | undefined>} m The matched result.
- * @return {Object | undefined} Returns the coordinate.
- * @private
- */
-exports.prototype.decDegFromMatch_ = function(m) {
-  var signIndex = {
-    '-': -1,
-    'N': 1,
-    'S': -1,
-    'E': 1,
-    'W': -1
-  };
-
-  var latLonIndex = {
-    'N': 'lat',
-    'S': 'lat',
-    'E': 'lon',
-    'W': 'lon'
-  };
-
-  var sign;
-  sign = signIndex[m[2]] || signIndex[m[1]] || signIndex[m[6]] || 1;
-  if (m[3] === undefined) {
-    return undefined;
-  }
-
-  var degrees, minutes = 0, seconds = 0, latLon;
-  degrees = Number(m[3]);
-  if (m[4] !== undefined) {
-    minutes = Number(m[4]);
-  }
-  if (m[5] !== undefined) {
-    seconds = Number(m[5]);
-  }
-  latLon = latLonIndex[m[1]] || latLonIndex[m[6]];
-
-  return {
-    decDeg: sign * (degrees + minutes / 60 + seconds / 3600),
-    latLon: latLon
-  };
-};
 
 /**
  * @param {string} searchServiceUrl The search url.
@@ -704,12 +606,29 @@ exports.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: function(query, settings) {
-            settings.url = settings.url +
-                '?query=' + encodeURIComponent(query) +
-                '&limit=' + this.limitResults;
-            return settings;
-          }.bind(this),
+          prepare: (query, settings) => {
+            const url = new URL(settings.url)
+            const params = url.searchParams
+            params.set('query', encodeURIComponent(query))
+            params.set('limit', this.limitResults)
+            // Facets
+            let layers = Object.keys(this.esMatch_)
+              .filter(k => this.facets[k])
+              .map(k => this.esMatch_[k])
+              .flat()
+            if (layers.length > 0) params.set('layer', layers.join(','))
+            // Restrict to area
+            if (this.facets.extent) {
+              let extent = transformExtent(
+                this.map.getView().calculateExtent(),
+                'EPSG:3857',
+                'EPSG:4326'
+              );
+              params.set('extent', extent.join(','))
+            }
+            settings.url = url.toString()
+            return settings
+          },
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
@@ -740,6 +659,7 @@ exports.prototype.createAndInitLayerBloodhoundEngine_ =
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       datumTokenizer: function() {},
       remote: {
+        cache: false,
         url: layerSearchServiceUrl,
         rateLimitWait: 50,
         replace: function(url, query) {
@@ -798,6 +718,54 @@ exports.prototype.createAndInitCMSBloodhoundEngine_ =
     return bloodhound;
   };
 
+/**
+ * @param {string} featureSearchServiceUrl The search url.
+ * @return {Bloodhound} The bloodhound engine.
+ * @private
+ */
+exports.prototype.createAndInitFeatureBloodhoundEngine_ =
+  function(searchServiceUrl) {
+  var geojsonFormat = new olFormatGeoJSON();
+  var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+    '', undefined, undefined, undefined,
+    /** @type {BloodhoundOptions} */ ({
+      remote: {
+        url: searchServiceUrl,
+        prepare: (query, settings) => {
+          if (!this.facets.activeLayers) { return false }
+          const url = new URL(settings.url);
+          const params = url.searchParams;
+          params.set('query', query);
+          params.set('limit', this.limitResults)
+          params.set('language', this.gettextCatalog.currentLanguage);
+          let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
+            .filter(el => el !== undefined);
+          params.set('layers', selected_layers.join(','));
+          if (this.facets.extent) {
+            let extent = this.map.getView().calculateExtent();
+            params.set('extent', extent.join(','))
+          }
+          settings.url = url.toString();
+          return settings;
+        },
+        transform: parsedResponse => {
+          if (!this.facets.activeLayers) { return [] }
+          /** @type {GeoJSONFeatureCollection} */
+          var featureCollection = /** @type {GeoJSONFeatureCollection} */
+          (parsedResponse);
+
+          return geojsonFormat.readFeatures(featureCollection, {
+            featureProjection: undefined,
+            dataProjection: undefined
+          });
+        }
+      }
+    }));
+
+    bloodhound.initialize();
+    return bloodhound;
+};
+
 
 /**
  * @param {app.Themes} appThemes Themes Service
@@ -848,7 +816,7 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this['map'], input['bgLayer']);
+  this.backgroundLayerMgr_.set(this['map'], input);
 };
 
 
@@ -879,6 +847,22 @@ exports.prototype.addLayerToMap_ = function(input) {
   if (map.getLayers().getArray().indexOf(layer) <= 0) {
     map.addLayer(layer);
   }
+  var layerMetadata = layer.get('metadata');
+  if (layerMetadata.hasOwnProperty('linked_layers')) {
+    var layers = layerMetadata['linked_layers'].split(',');
+    layers.forEach(function(layerId) {
+      this.appThemes_.getFlatCatalog().then(
+        function(flatCatalog) {
+          var node2 = flatCatalog.find(function(catItem) {
+            return catItem.id === Number(layerId);
+          });
+          if (node2 !== undefined) {
+            var linked_layer = this.getLayerFunc_(node2);
+            map.addLayer(linked_layer);
+          }
+        }.bind(this));
+    }, this);
+  }
 };
 
 
@@ -898,7 +882,7 @@ exports.selected_ =
       } else if (suggestion.get('dataset')) {
         dataset = suggestion.get('dataset');
       }
-      if (dataset === 'pois' || dataset === 'coordinates') { //POIs
+      if (dataset === 'pois' || dataset === 'coordinates' || dataset === 'features') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
         this.lastSelectedSuggestion = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
@@ -909,6 +893,8 @@ exports.selected_ =
         this.featureOverlay.clear();
         var features = [];
         if (dataset === 'coordinates') {
+          features.push(feature);
+        } else if (dataset === 'features') {
           features.push(feature);
         } else if (dataset === 'pois') {
           if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
@@ -971,6 +957,22 @@ exports.prototype.isSearchFeature = function() {
  */
 exports.prototype.addLastSuggestedFeature = function() {
   this.addRoutePoint(this.lastSelectedSuggestion);
+};
+
+/**
+ * Reset facets search to initial state
+ * @export
+ */
+exports.prototype.resetFacets = function() {
+  this.facets = Object.assign({}, this.initialFacets);
+};
+
+/**
+ * Save facets state
+ * @export
+ */
+exports.prototype.saveSearch = function() {
+  localStorage.setItem('searchFacets', JSON.stringify(this.facets))
 };
 
 appModule.controller('AppSearchController',

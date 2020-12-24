@@ -974,7 +974,6 @@ exports.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = document.createElement('DIV');
   this.measureTooltipElement_.classList.add('tooltip');
-  this.measureTooltipElement_.classList.add('ngeo-tooltip-measure');
 
   this.measureTooltipOverlay_ = new olOverlay({
     element: this.measureTooltipElement_,

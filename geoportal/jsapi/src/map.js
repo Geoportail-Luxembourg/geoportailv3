@@ -308,14 +308,21 @@ lux.Map = function(options) {
       options.view.getZoom() === null) {
     options.view.setZoom(9);
   }
-
-  var interactions = ol.interaction.defaults().extend([
-    new ol.interaction.DragRotate({
-      condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
-        ? ol.events.condition.shiftKeyOnly
-        : ol.events.condition.altShiftKeyOnly
+  var mouseWheelZoom = (options.mouseWheelZoom !== undefined) ? options.mouseWheelZoom : true;
+  var interactions = ol.interaction
+    .defaults({
+      mouseWheelZoom: mouseWheelZoom,
+      altShiftDragRotate: false,
+      pinchRotate: true,
+      constrainResolution: true
     })
-  ]);
+    .extend([
+      new ol.interaction.DragRotate({
+        condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
+          ? ol.events.condition.shiftKeyOnly
+          : ol.events.condition.altShiftKeyOnly
+      })
+    ]);
   options.interactions = interactions;
 
   var controls;
@@ -397,6 +404,25 @@ lux.Map = function(options) {
    */
   this.popupClass_ = undefined;
 
+  /**
+   * @private
+   * @type {function()=|undefined}
+   */
+  this.popupContentTransformer_ = undefined;
+  if (options.popupContentTransformer !== undefined) {
+    this.popupContentTransformer_ = options.popupContentTransformer;
+    delete options.popupContentTransformer;
+  }
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.popupAutoPan_ = false;
+  if (options.popupAutoPan !== undefined) {
+    this.popupAutoPan_ = options.popupAutoPan;
+    delete options.popupAutoPan;
+  }
   this.setPopupTarget(options.popupTarget, options.popupClassPrefix);
 
   ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
@@ -730,7 +756,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      'https://openlayers.org/en/master/examples/data/icon.png';
+      'https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png';
   element.appendChild(image);
 
   var position;
@@ -1773,13 +1799,26 @@ lux.Map.prototype.showPopup = function(position, title, content) {
  * @api
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
-  this.stateManager_.setMyMap(options.mapId);
+  if (options.mapId !== undefined) {
+    this.stateManager_.setMyMap(options.mapId);
+  }
   return Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     var mymap = new lux.MyMap(options);
     mymap.setMap(this);
     return mymap;
   }.bind(this));
 };
+
+
+/**
+ * Get the popup overlay.
+ * @return {ol.Overlay} The popup overlay.
+ * @export
+ */
+lux.Map.prototype.getPopupOverlay = function() {
+  return this.queryPopup_;
+};
+
 
 /**
  * Removes the popup or the information content.
@@ -1934,18 +1973,25 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     // each item in the result corresponds to a layer
     var htmls = [];
     json.forEach(function(resultLayer) {
+      var curHtml = undefined;
       if ('tooltip' in resultLayer) {
         if (this.popupTarget_ !== undefined && this.popupClass_ !== undefined) {
-          htmls.push('<div class="' + this.popupClass_ +
+          curHtml = '<div class="' + this.popupClass_ +
             '_' + resultLayer['layer'] + '">' +
-            resultLayer['tooltip'] + '</div>');
+            resultLayer['tooltip'] + '</div>';
         } else{
-          htmls.push(resultLayer['tooltip']);
+          curHtml = resultLayer['tooltip'];
         }
       }
       var features = this.readJsonFeatures_(resultLayer);
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
+        if (this.popupContentTransformer_ !== undefined) {
+          curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
+        }
+      }
+      if (curHtml !== undefined) {
+        htmls.push(curHtml);
       }
     }.bind(this));
 
@@ -1960,12 +2006,30 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
         positioning: 'bottom-center',
         offset: [0, -20],
-        insertFirst: false
+        insertFirst: false,
+        autoPan: this.popupAutoPan_
       });
-
       this.addOverlay(this.queryPopup_);
       this.renderSync();
+      this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
     }
   }.bind(this));
 
+};
+
+/**
+ * Set the center of the current view in EPSG:2169.
+ * @param {ol.Coordinate} coordinate The coordinate of the center.
+ * @param {number|undefined} zoom The zoom numer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setCenter = function(coordinate, zoom) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate,
+            'EPSG:2169', 'EPSG:3857'));
+  this.getView().setCenter(lonlat);
+  if (zoom !== undefined) {
+    this.getView().setZoom(zoom);
+  }
 };

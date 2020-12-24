@@ -60,10 +60,7 @@ class GraphhopperRouter:
         request_url = request_url + "&vehicle=%s"\
             % (self.__lu_transport_mode(self.transport_mode))
 
-        log.error(request_url)
-
         res = json_loads(urllib.request.urlopen(request_url).read())
-        log.error(res)
         return res
 
     def __get_route(self):

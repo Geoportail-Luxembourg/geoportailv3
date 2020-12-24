@@ -84,25 +84,37 @@ class Config(object):
         config = json.loads(self.request.params['config'])
         paint_conf_dict = {}
         layout_conf_dict = {}
-        color_keys = ['background', 'line', 'fill', 'fillExtrusion']
+        keys = ['background', 'line', 'fill', 'fill-extrusion', 'symbol']
         for conf in json.loads(config):
+            # Roadmap layer
             if 'color' in conf:
                 color = conf['color']
                 if 'opacity' in conf:
                     opacity = conf['opacity']
-                for color_key in color_keys:
-                    if 'fillExtrusion' in color_key:
-                        prop = 'fill-extrusion'
+                for key in keys:
+                    if 'fill-extrusion' in key:
+                        prop = 'fillExtrusions'
                     else:
-                        prop = color_key + 's'
+                        prop = key + 's'
 
                     if prop in conf:
                         for layer in conf[prop]:
-                            paint_conf_dict.setdefault(layer, {})[color_key + '-color'] = color
+                            paint_conf_dict.setdefault(layer, {})[key + '-color'] = color
                             if 'opacity' in conf:
-                                paint_conf_dict.setdefault(layer, {})[color_key + '-opacity'] = int(opacity)
+                                paint_conf_dict.setdefault(layer, {})[key + '-opacity'] = int(opacity)
                             if 'visible' in conf:
                                 layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
+            # Topo layers
+            else:
+                for key in keys:
+                    if 'fill-extrusion' in key:
+                        prop = 'fillExtrusions'
+                    else:
+                        prop = key + 's'
+
+                    if prop in conf:
+                        for layer in conf[prop]:
+                            layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
 
             for layer in conf.get('hillshades', []):
                 layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
