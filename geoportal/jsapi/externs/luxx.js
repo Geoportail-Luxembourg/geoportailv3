@@ -4,6 +4,29 @@
 var luxx;
 
 /**
+ * Allows the user to zoom the map by scrolling the mouse wheel.
+ * Default is true.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.mouseWheelZoom;
+
+/**
+ * Function called to transform the result of the information popup.
+ * @type {function()|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.popupContentTransformer;
+
+/**
+ * If the popup should automatically pan or not.
+ * Default is false.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.popupAutoPan;
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object}
  */
@@ -384,11 +407,32 @@ luxx.LayerMetadataOptions.prototype.exclusion;
 luxx.MyMapOptions;
 
 /**
+ * Fit to the mymaps extent. Default value is true.
+ * @type {boolean}
+ * @api
+ */
+luxx.MyMapOptions.prototype.fitToExtent;
+
+/**
  * The map identifier.
- * @type {string}
+ * @type {string | undefined}
  * @api
  */
 luxx.MyMapOptions.prototype.mapId;
+
+/**
+ *An array of map identifiers.
+ * @type {Array<string> | undefined}
+ * @api
+ */
+luxx.MyMapOptions.prototype.mapIds;
+
+/**
+ * The name of the mymaps layer.
+ * @type {string}
+ * @api
+ */
+luxx.MyMapOptions.prototype.name;
 
 /**
  * The id of the element in which to put the profile (without #). Optional. It

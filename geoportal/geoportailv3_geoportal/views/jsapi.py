@@ -1,5 +1,6 @@
 from pyramid.view import view_config
 import csv
+import json
 import logging
 from c2cgeoportal_geoportal.views.entry import Entry
 from pyramid.i18n import make_localizer, TranslationStringFactory
@@ -104,6 +105,12 @@ class JsapiEntry(Entry):
     @view_config(route_name='jsapilayers',
                  renderer='json')
     def apilayers(self):
+        try:
+            with open('/tmp/jsapilayers.json') as json_file:
+                data = json.load(json_file)
+                return data
+        except Exception as e:
+            print("File not found")
         '''
         View to return a list of layers.
         Same as the theme service but in a flat representation.
@@ -134,7 +141,11 @@ class JsapiEntry(Entry):
                                 ogc_server.url, self.request, errors=all_errors
                             )
                     layers[id]['url'] = url
-
+        try:
+            with open('/tmp/jsapilayers.json', 'w') as json_file:
+                json.dump(layers, json_file)
+        except Exception as e:
+            print(e)
         return layers
 
     @view_config(route_name='jsapiloader')

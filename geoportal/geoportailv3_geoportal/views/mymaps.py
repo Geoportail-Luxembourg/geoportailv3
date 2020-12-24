@@ -4,9 +4,13 @@ import stat
 import uuid
 import imghdr
 import ldap3 as ldap
+import pytz
 
 import geojson
 import transaction
+import gpxpy
+import gpxpy.gpx
+import pyproj
 
 from sqlalchemy.sql import text
 
@@ -34,6 +38,11 @@ from shapely.geometry import Point, LineString
 from c2cgeoportal_geoportal.lib.caching import set_common_headers, NO_CACHE
 from c2cgeoportal_commons.models import DBSessions
 from geoportailv3_geoportal import mailer
+from shapely import wkb
+from shapely.geometry import asShape, shape
+from shapely.ops import transform
+from functools import partial
+
 
 import logging
 import urllib.request
@@ -56,7 +65,56 @@ class Mymaps(object):
         self.config = self.request.registry.settings
         self.db_mymaps = DBSessions['mymaps']
         self.db_pgroute = DBSessions['pgroute']
+        self.lux_tz = pytz.timezone("Europe/Luxembourg")
 
+    def add_track(self, gpx, name, description, coordinates):
+        gpx_track = gpxpy.gpx.GPXTrack()
+        gpx_track.name = name
+        gpx_track.description = description
+        gpx.tracks.append(gpx_track)
+        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+        gpx_track.segments.append(gpx_segment)
+        # Create points:
+        for coord in coordinates:
+            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(coord[1], coord[0]))
+
+    def add_way_point(self, gpx, name, description, coordinates):
+        for coord in coordinates:
+            gpx_wps = gpxpy.gpx.GPXWaypoint()
+            gpx_wps.latitude = coord[1]
+            gpx_wps.longitude = coord[0]
+            gpx_wps.name = name
+            gpx_wps.description = description
+            gpx.waypoints.append(gpx_wps)
+
+    @view_config(route_name="get_gpx")
+    def get_gpx(self):
+        map_id = id = self.request.matchdict.get("map_id")
+        if map_id is None:
+            return HTTPBadRequest("map_id is required")
+        features = self._features(self.db_mymaps, map_id)
+        if features is None:
+            return HTTPNotFound()
+        gpx = gpxpy.gpx.GPX()
+        for feature in features:
+            geometry = self._transform(wkb.loads(str(feature.geometry), True), "epsg:2169", "epsg:4326")
+            if geometry.geom_type == 'LineString':
+                self.add_track(gpx, feature.name, feature.description, list(geometry.coords))
+            elif geometry.geom_type == 'Polygon':
+                self.add_track(gpx, feature.name, feature.description, list(geometry.exterior.coords))
+            elif geometry.geom_type == 'Point':
+                self.add_way_point(gpx, feature.name, feature.description, list(geometry.coords))
+
+        charset = "utf-8"
+        response = self.request.response
+        response.body = gpx.to_xml().encode(charset)
+        response.charset = charset
+        response.content_disposition = ("attachment; filename=%s.%s"
+                                        % (map_id.replace(" ", "_"), "gpx"))
+        return set_common_headers(
+            self.request, "get_gpx", NO_CACHE,
+            content_type= "application/gpx"
+        )
     @view_config(route_name="get_arrow_color")
     def get_arrow_color(self):
         color = self.request.params.get("color")
@@ -331,15 +389,15 @@ class Mymaps(object):
         return [{'title': map.title,
                  'uuid': map.uuid,
                  'public': map.public,
-                 'create_date': map.create_date,
-                 'update_date': map.update_date,
-                 'last_feature_update': self.db_mymaps.query(
+                 'create_date': self.to_lux_timezone(map.create_date),
+                 'update_date': self.to_lux_timezone(map.update_date),
+                 'last_feature_update': self.to_lux_timezone(self.db_mymaps.query(
                     func.max(Feature.update_date)).filter(
-                    Feature.map_id == map.uuid).one()[0]
+                    Feature.map_id == map.uuid).one()[0])
                  if self.db_mymaps.query(
                     func.max(Feature.update_date)).
                  filter(Feature.map_id == map.uuid).one()[0]
-                 is not None else map.update_date,
+                 is not None else self.to_lux_timezone(map.update_date),
                  'category': map.category.name
                  if map.category_id is not None else None} for map in maps]
 
@@ -529,23 +587,28 @@ class Mymaps(object):
                 Map.uuid.in_(shared_maps_uuid_query),
                 Map.uuid.in_(query)
             ))
-
             maps = maps_uuid_query.order_by(text("category_id asc,title asc")).all()
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
-                     'create_date': map.create_date,
-                     'update_date': map.update_date,
-                     'last_feature_update': session.query(
+                     'create_date': self.to_lux_timezone(map.create_date),
+                     'update_date': self.to_lux_timezone(map.update_date),
+                     'last_feature_update': self.to_lux_timezone(session.query(
                         func.max(Feature.update_date)).filter(
-                        Feature.map_id == map.uuid).one()[0]
+                        Feature.map_id == map.uuid).one()[0])
                      if session.query(func.max(Feature.update_date)).
                      filter(Feature.map_id == map.uuid).one()[0]
-                     is not None else map.update_date,
+                     is not None else self.to_lux_timezone(map.update_date),
                      'category': map.category.name
                      if map.category_id is not None else None,
                      'owner': map.user_login.lower()} for map in maps]
         return []
+
+    def to_lux_timezone(self, dt):
+        if dt is not None:
+            local_time = dt.replace(tzinfo=pytz.utc)
+            return self.lux_tz.normalize(local_time)
+        return None
 
     @view_config(route_name="mymaps_users_categories", renderer='json')
     def getuserscategories(self):
@@ -610,7 +673,9 @@ class Mymaps(object):
             else:
                 user_categories[cur_user.user_login].append(
                     cur_user.category_id)
-
+        user_categories[user.username] = []
+        for categ in self._categories_for_non_admin(session, user):
+            user_categories[user.username].append(categ['id'])
         return [{'username': cur_user,
                  'categories': user_categories[cur_user]}
                 for cur_user in user_categories]
@@ -620,7 +685,6 @@ class Mymaps(object):
             func.coalesce(Map.category_id, 999).label("category_id")).\
             filter(func.lower(Map.user_login) == func.lower(user.username)).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
-
         return [{'username': user.username, 'categories':
                 [c.category_id for c in categies_id]}]
 
@@ -905,8 +969,8 @@ class Mymaps(object):
             'title': map.title,
             'uuid': map.uuid,
             'public': map.public,
-            'create_date': map.create_date,
-            'update_date': map.update_date,
+            'create_date': self.to_lux_timezone(map.create_date),
+            'update_date': self.to_lux_timezone(map.update_date),
             'category': map.category.name
             if map.category_id is not None else None,
             'is_editable': self.has_write_permission(user, map),
@@ -919,9 +983,9 @@ class Mymaps(object):
             'bg_layer': map.bg_layer,
             'bg_opacity': map.bg_opacity,
             'description': map.description,
-            'last_feature_update': self.db_mymaps.query(
+            'last_feature_update': self.to_lux_timezone(self.db_mymaps.query(
                 func.max(Feature.update_date)).filter(
-                Feature.map_id == map.uuid).one()[0],
+                Feature.map_id == map.uuid).one()[0]),
             'x': map.x,
             'y': map.y,
             'zoom': map.zoom
@@ -1679,3 +1743,11 @@ class Mymaps(object):
 
         full_mymaps['maps_elements'] = maps_elements
         return full_mymaps
+
+    def _transform(self, geometry, source, dest):
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=source), # source coordinate system
+            pyproj.Proj(init=dest)) # destination coordinate system
+
+        return transform(project, shape(geometry))  # apply projection

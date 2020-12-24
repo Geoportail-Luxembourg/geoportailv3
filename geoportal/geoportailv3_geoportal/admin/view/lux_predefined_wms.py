@@ -7,9 +7,17 @@ from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
 from c2cgeoform.views.abstract_views import ListField
 
-_list_field = partial(ListField, LuxPredefinedWms)
-
 base_schema = GeoFormSchemaNode(LuxPredefinedWms)
+
+
+# override standard class chosen by geoform to avoid clash with css style .label
+# class="label" becomes class="_lux_label"
+class ListFieldLux(ListField):
+    def id(self):
+        return '_lux_' + self._key
+
+
+_list_field = partial(ListFieldLux, LuxPredefinedWms)
 
 
 @view_defaults(match_param='table=lux_predefined_wms')

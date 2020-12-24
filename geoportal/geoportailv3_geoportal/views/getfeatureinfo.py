@@ -3,8 +3,10 @@ import logging
 import re
 
 import urllib.request
-import geojson
+import datetime
 import pyproj
+import shapely
+import geojson
 import os
 import json
 from urllib.parse import urlencode
@@ -27,8 +29,8 @@ from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from functools import partial
 
-
-
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 log = logging.getLogger(__name__)
 
 
@@ -61,7 +63,8 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.id_column,
                 None, fid, None,
                 luxgetfeaturedefinition.attributes_to_remove,
-                luxgetfeaturedefinition.columns_order)
+                luxgetfeaturedefinition.columns_order,
+                use_auth=luxgetfeaturedefinition.use_auth)
             if attribute not in features[0]['attributes']:
                 return HTTPBadRequest("Bad attribute")
             url = features[0]['attributes'][attribute]
@@ -197,13 +200,21 @@ class Getfeatureinfo(object):
         layers = self.request.params.get('layers', None)
         if layers is None:
             return HTTPBadRequest()
+        if not all(x.isdigit() for x in layers.split(',')):
+            return HTTPBadRequest()
+
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
         if big_box is None or small_box is None:
             return HTTPBadRequest()
 
         coordinates_big_box = big_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_big_box):
+            return HTTPBadRequest()
         coordinates_small_box = small_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
+            return HTTPBadRequest()
+
         return self.get_info(
             fid, coordinates_big_box,
             coordinates_small_box, results, layers, big_box)
@@ -381,7 +392,8 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.id_column,
                         big_box, None, None,
                         luxgetfeaturedefinition.attributes_to_remove,
-                        luxgetfeaturedefinition.columns_order)
+                        luxgetfeaturedefinition.columns_order,
+                        use_auth=luxgetfeaturedefinition.use_auth)
 
                 else:
                     features = self._get_external_data(
@@ -390,7 +402,8 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.id_column,
                         None, fid, None,
                         luxgetfeaturedefinition.attributes_to_remove,
-                        luxgetfeaturedefinition.columns_order)
+                        luxgetfeaturedefinition.columns_order,
+                        use_auth=luxgetfeaturedefinition.use_auth)
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
@@ -463,6 +476,26 @@ class Getfeatureinfo(object):
 
         return results
 
+    def transform_(self, geometry, source, dest):
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=source), # source coordinate system
+            pyproj.Proj(init=dest)) # destination coordinate system
+
+        return transform(project, shape(geometry))  # apply projection
+
+    def pixel2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
+        box3857 = bbox.split(',')
+        the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
+        print (self.transform_(the_box, epsg_source, epsg_dest))
+        box2169 = shape(self.transform_(the_box, epsg_source, epsg_dest)).bounds
+        if (box2169[2] - box2169[0]) > 0:
+            scale_x = (box2169[2] - box2169[0]) / width
+        else :
+            scale_x = (box2169[0] - box2169[2]) / width
+
+        return scale_x * pixels
+
     def remove_features_outside_tolerance(self, features, coords):
         features_to_keep = []
 
@@ -475,7 +508,15 @@ class Getfeatureinfo(object):
                 if the_box.intersects(s):
                     features_to_keep.append(feature)
             else:
-                features_to_keep.append(feature)
+                width = self.request.params.get('WIDTH', None)
+                height = self.request.params.get('HEIGHT', None)
+                bbox = self.request.params.get('BBOX', None)
+                if width is None or height is None or bbox is None:
+                    features_to_keep.append(feature)
+                else:
+                    buffer = self.pixel2meter(float(width), float(height), bbox, "epsg:3857", "epsg:2169", 10)
+                    if the_box.intersects(s.buffer(buffer, 1)):
+                        features_to_keep.append(feature)
         return features_to_keep
 
     def to_feature(self, layer_id, fid, geometry, attributes,
@@ -648,6 +689,20 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
+    def format_esridate(self, features, attribute="date_time", format="%Y-%m-%d %H:%M:%S"):
+        modified_features = []
+        for feature in features:
+            try:
+                if attribute in feature['attributes']:
+                    value = feature['attributes'][attribute]
+                    if value is not None:
+                            feature['attributes'][attribute] =\
+                                datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
+            except Exception as e:
+                log.exception(e)
+            modified_features.append(feature)
+        return modified_features
+
     def replace_resource_by_html_link(self, features, attributes_to_remove):
         modified_features = []
 
@@ -675,7 +730,7 @@ class Getfeatureinfo(object):
         for feature in features:
             for key in feature['attributes']:
                 value = feature['attributes'][key]
-                if key == field_to_use:
+                if value is not None and key == field_to_use:
                     feature["attributes"]["percentage"] = "%s" \
                         % str(value * 100) + "%"
                     del feature["attributes"][field_to_use]
@@ -872,6 +927,16 @@ class Getfeatureinfo(object):
             'BBOX': bbox
         }
         metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_layers").first()
+        if metadata is not None:
+            body['LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_query_layers").first()
+        if metadata is not None:
+            body['QUERY_LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
             filter(Metadata.name == "ogc_info_format").first()
         if metadata is not None:
             body['INFO_FORMAT'] = metadata.value
@@ -880,6 +945,10 @@ class Getfeatureinfo(object):
             filter(Metadata.name == "ogc_info_srs").first()
         if metadata is not None:
             ogc_info_srs = metadata.value
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_info_url").first()
+        if metadata is not None:
+            url = metadata.value
 
         separator = "?"
         if url.find(separator) > 0:
@@ -898,8 +967,15 @@ class Getfeatureinfo(object):
 
             for feature in ogc_features['features']:
                 geometry = feature['geometry']
-                if ogc_info_srs.lower() != "epsg:2169":
+
+                if geometry is not None and ogc_info_srs.lower() != "epsg:2169":
                     geometry = self.transform_(geometry, ogc_info_srs, "epsg:2169")
+                if geometry is None:
+                    box2 = self.request.params.get('box2', None)
+                    coords = box2.split(',')
+                    the_box = box(float(coords[0]), float(coords[1]),
+                        float(coords[2]), float(coords[3]))
+                    geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
                 f = self.to_feature(layer_id, None,
                                     geometry,
                                     feature['properties'],
@@ -914,7 +990,7 @@ class Getfeatureinfo(object):
 
     def get_additional_external_data(
             self, features, geometry_name, layer_id, url, id_column,
-            attributes_to_remove, columns_order, where_key):
+            attributes_to_remove, columns_order, where_key, use_auth=False):
         groups = []
         modified_features = []
         for feature in features:
@@ -931,7 +1007,7 @@ class Getfeatureinfo(object):
                     groups.append(group)
                     new_features = self._get_external_data(
                         layer_id, url, id_column, None, None, None,
-                        attributes_to_remove, columns_order, where_clause)
+                        attributes_to_remove, columns_order, where_clause, use_auth)
                     lines = []
                     for new_feature in new_features:
                         for line in shape(new_feature[geometry_name]):
@@ -946,7 +1022,7 @@ class Getfeatureinfo(object):
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None,
-                           where_clause=None):
+                           where_clause=None, use_auth=False):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -992,6 +1068,11 @@ class Getfeatureinfo(object):
         if id_column is None:
             id_column = 'objectid'
 
+        if use_auth:
+            auth_token = get_arcgis_token(self.request, log)
+            if 'token' in auth_token:
+                body["token"] = auth_token['token']
+
         if featureid is not None:
             if id_column == 'objectid':
                 body['objectIds'] = featureid
@@ -1022,8 +1103,11 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
-            result = urllib.request.urlopen(query, None, 15)
-            content = result.read()
+            url_request = urllib.request.Request(query)
+            result = read_request_with_token(url_request, self.request, log)
+            content = result.data
+        except ESRITokenException as e:
+            raise HTTPBadGateway(e)
         except Exception as e:
             log.exception(e)
             log.error(url)
@@ -1041,7 +1125,17 @@ class Getfeatureinfo(object):
         if 'features' in esricoll:
             for rawfeature in esricoll['features']:
                 geometry = ''
-                if (rawfeature['geometry'] and
+                if 'geometry' not in rawfeature:
+                    box = bbox.split(',')
+                    x1 = float(box[0])
+                    y1 = float(box[1])
+                    x2 = float(box[2])
+                    y2 = float(box[3])
+                    geometry = {'type': 'Polygon',
+                                'coordinates': [[
+                                    [x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]
+                                ]]}
+                elif (rawfeature['geometry'] and
                     'x' in rawfeature['geometry'] and
                         'y' in rawfeature['geometry']):
                     geometry = {'type': 'Point',
@@ -1133,3 +1227,30 @@ class Getfeatureinfo(object):
 
         return geojson_loads(geojson.dumps(mapping(g2)))
 
+    @view_config(route_name='getbuswidget')
+    def getbuswidget(self):
+        lang = self.request.params.get('lang', 'fr')
+        id = self.request.params.get('id', None)
+        if id is None:
+            return HTTPBadRequest("id not found")
+        template = """<!DOCTYPE html>
+<html>
+<head>
+  <!-- Das hafas-widget-core JavaScript lädt alle benötigten Ressourcen für die Anzeige der Widgets -->
+  <script type="text/javascript" src="https://cdt.hafas.de/staticfiles/hafas-widget-core.1.0.0.js?language={lang}"></script>
+</head>
+<body>
+<div id="myWidget_result" style="width:350px; transform-origin: left top; transform: scale(0.75);"
+         data-hfs-widget="true"
+         data-hfs-widget-sq="true"
+         data-hfs-widget-sq-autorefresh="true"
+         data-hfs-widget-sq-location="L={id}"
+         data-hfs-widget-sq-maxjny="5"
+></div>
+</body>
+</html>
+        """.format(id=id, lang=lang)
+        remote_template = Template(template)
+        headers = {'Content-Type': 'text/html'}
+
+        return Response(remote_template.render(), headers=headers)
