@@ -22,6 +22,7 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
 
 /**
  * @constructor
@@ -33,16 +34,19 @@ import olView from 'ol/View.js';
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {app.StateManager} appStateManager The state service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
 const exports = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager, ngeoLocation) {
   /**
    * @type {app.StateManager}
    * @private
    */
   this.appStateManager_ = appStateManager;
+
+  this.map_ = this['map']
 
   /**
    * @type {ol.Extent}
@@ -73,7 +77,13 @@ const exports = function($scope, appThemes, appTheme,
    * @type {app.GetLayerForCatalogNode}
    * @private
    */
-  this.getLayerFunc_ = appGetLayerForCatalogNode;
+  this.getLayerFunc_ = appGetLayerForCatalogNode
+
+  /**
+   * @type {ngeo.statemanager.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 
   listen(appThemes, appEventsThemesEventType.LOAD,
       /**
@@ -87,7 +97,35 @@ const exports = function($scope, appThemes, appTheme,
     () => this.appTheme_.getCurrentTheme(),
     (newVal, oldVal) => (newVal !== oldVal) && this.setTree_()
   );
+
+  $scope.$watch(
+    () => {
+      if (!this.map.get('ol3dm')) return;
+      return this.map.get('ol3dm').is3dEnabled()
+    },
+    enabled => {
+      if (enabled === undefined) return;
+      if (enabled) {
+        this.tree.children.push({
+          id: -1,
+          name: "3d Layers",
+          metadata: {},
+          children: this.map.get('ol3dm').getAvailableLayerName().map(
+            (layer, i) => ({ id: i, name: layer })
+          ),
+          type: "Cesium",
+          ogcServer: "None",
+          mixed: true,
+          theme: this.appTheme_.getCurrentTheme()
+        })
+      } else {
+        const idx = this.tree.children.findIndex((e) => e.id === -1)
+        this.tree.children.splice(idx, 1)
+      }
+    }
+  )
 };
+
 
 
 /**
@@ -98,10 +136,18 @@ const exports = function($scope, appThemes, appTheme,
  * @export
  */
 exports.prototype.getLayer = function(node) {
-  var layer = this.getLayerFunc_(node);
-  return layer;
+  return this.getLayerFunc_(node);
 };
 
+exports.prototype.getActive = function(layertreeController) {
+  const layer3dmanager = this.map.get('ol3dm')
+  if (layer3dmanager) {
+    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.name)) {
+      return true
+    }
+  }
+  return layertreeController.getSetActive()
+}
 
 /**
  * @private
@@ -128,8 +174,15 @@ exports.prototype.setThemeZooms = function() {
       var resolutions = tree['metadata']['resolutions'];
       maxZoom = resolutions.length + 7;
     }
+  
     var map = this['map'];
     var currentView = map.getView();
+
+    let rotation = 0;
+    if (this.ngeoLocation_.getParam('rotation') !== undefined) {
+      rotation = Number(this.ngeoLocation_.getParam('rotation'));
+    }
+
     map.setView(new olView({
       maxZoom: maxZoom,
       minZoom: 8,
@@ -137,7 +190,8 @@ exports.prototype.setThemeZooms = function() {
       center: currentView.getCenter(),
       enableRotation: true,
       constrainResolution: true,
-      zoom: currentView.getZoom()
+      zoom: currentView.getZoom(),
+      rotation
     }));
   }
   this.scales_.setMaxZoomLevel(maxZoom);
@@ -153,17 +207,42 @@ exports.prototype.setThemeZooms = function() {
  * @export
  */
 exports.prototype.toggle = function(node) {
-  var layer = this.getLayerFunc_(node);
-  var map = this['map'];
-  if (map.getLayers().getArray().indexOf(layer) >= 0) {
-    map.removeLayer(layer);
-  } else {
-    var layerMetadata = layer.get('metadata');
-    if (layerMetadata.hasOwnProperty('start_opacity') &&
-        layerMetadata.hasOwnProperty('original_start_opacity')) {
-      layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
+  // is it an openlayers layer of a cesium layer
+  const olcs = this.map.get('ol3dm');
+  if (olcs.getAvailableLayerName().indexOf(node.name) !== -1) {
+    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.name)) !== -1) {
+      olcs.remove3dLayer(node.name);
+    } else {
+      olcs.add3dTile(node.name)
     }
-    map.addLayer(layer);
+  } else {
+    var layer = this.getLayerFunc_(node);
+    var map = this['map'];
+    if (map.getLayers().getArray().indexOf(layer) >= 0) {
+      map.removeLayer(layer);
+    } else {
+      var layerMetadata = layer.get('metadata');
+      if (layerMetadata.hasOwnProperty('start_opacity') &&
+          layerMetadata.hasOwnProperty('original_start_opacity')) {
+        layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
+      }
+      map.addLayer(layer);
+    }
+    if (layerMetadata.hasOwnProperty('linked_layers')) {
+      var layers = layerMetadata['linked_layers'].split(',');
+      layers.forEach(function(layerId) {
+        this.appThemes_.getFlatCatalog().then(
+          function(flatCatalog) {
+            var node2 = flatCatalog.find(function(catItem) {
+              return catItem.id === Number(layerId);
+            });
+            if (node2 !== undefined) {
+              var linked_layer = this.getLayerFunc_(node2);
+              map.addLayer(linked_layer);
+            }
+          }.bind(this));
+      }, this);
+    }
   }
 };
 
