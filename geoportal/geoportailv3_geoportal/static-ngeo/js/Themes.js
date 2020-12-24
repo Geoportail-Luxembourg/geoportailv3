@@ -35,21 +35,27 @@ function onFirstTargetChange(map) {
 /**
  * @param {import('ol/layer/Layer.js').default[]} bgLayers
  */
-function replaceWithMVTLayer(bgLayers, target, styleConfig) {
-  // add MapBox layer
-  const label = styleConfig.label;
+function replaceWithMVTLayer(bgLayers, target, styleConfigs) {
+  styleConfigs.forEach(styleConfig => {
+    // add MapBox layer
+    const label = styleConfig.label;
 
-  bgLayers.forEach((l, i) => {
-    if (l.get('label') === label) {
-      const options = Object.assign({
-        container: target,
-      }, styleConfig)
-      const mvtLayer = new MapBoxLayer(options);
-
-      console.log('Replacing layer with harcoded MVT one', label);
-      mvtLayer.set('metadata', l.get('metadata'));
-      bgLayers[i] = mvtLayer;
-    }
+    bgLayers.forEach((l, i) => {
+      if (l.get('label') === label) {
+        const options = Object.assign({
+          container: target,
+        }, styleConfig)
+        const mvtLayer = new MapBoxLayer(options);
+        mvtLayer.set('metadata', l.get('metadata'));
+        if ('attribution' in l.get('metadata')) {
+          const source = new olSourceVector({
+              attributions: l.get('metadata')['attribution']
+          });
+          mvtLayer.setSource(source);
+        }
+        bgLayers[i] = mvtLayer;
+      }
+    });
   });
 }
 
@@ -194,8 +200,8 @@ exports.prototype.getBgLayers = function(map) {
           onFirstTargetChange(map),
           this.appMvtStylingService_.getBgStyle()
         ]);
-        return bothPromises.then(([target, styleConfig]) => {
-          replaceWithMVTLayer(bgLayers, target, styleConfig);
+        return bothPromises.then(([target, styleConfigs]) => {
+          replaceWithMVTLayer(bgLayers, target, styleConfigs);
           return bgLayers;
         });
       });

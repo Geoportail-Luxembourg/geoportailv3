@@ -307,8 +307,8 @@
           <div class="container-fluid tab-content">
           <div class="accordion" id="accordion">
             <div class="panel">
-              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" translate>Simple</div>
-              <div class="collapse" id="editor-simple" data-parent="#accordion">
+              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" ng-if="mainCtrl.isColorVisible" translate>Simple</div>
+              <div class="collapse" id="editor-simple" ng-if="mainCtrl.isColorVisible" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
                     <p translate>Sélectionner un set de couleurs</p>
@@ -323,7 +323,8 @@
               <div class="collapse" id="editor-medium" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
-                    <p translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="mainCtrl.isColorVisible" translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="!mainCtrl.isColorVisible" translate>Afficher une catégorie par couche</p>
                     <app-medium-style
                       on-styling-changed="mainCtrl.onMediumStylingChanged"
                       stylings="mainCtrl.mediumStylingData">
@@ -412,7 +413,23 @@
           <a href translate>Vector Editor</a>
         </li>
       </ul>
+<<<<<<< HEAD
 
+=======
+      <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a ng-href="https://geoportail.lu/{{mainCtrl.lang}}/questions/whats-new/" target="_blank" translate>What's new</a></li>
+        <li><a ng-href="{{mainCtrl.geonetworkBaseUrl}}" target="_blank" translate>Geocatalogue</a></li>
+        <li ng-if="mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
+        <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
+        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" target="_blank" translate>A Propos</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" target="_blank" translate>Aide</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" target="_blank" translate>Contact</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" target="_blank" translate>Legalites</a></li>
+        <li><a ng-href="http://www.act.public.lu/" target="_blank">ACT</a></li>
+      </ul>
+>>>>>>> origin/c2cnextprod
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
         <li class="draw icon hidden-3d" ng-class="mainCtrl.drawOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
