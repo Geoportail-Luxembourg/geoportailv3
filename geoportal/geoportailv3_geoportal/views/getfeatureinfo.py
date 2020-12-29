@@ -9,6 +9,7 @@ import shapely
 import geojson
 import os
 import json
+import pytz
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -112,7 +113,6 @@ class Getfeatureinfo(object):
                 pdf_id = None
                 pdf_name = None
                 try:
-                    log.error(url1)
                     f = urllib.request.urlopen(url1, None, timeout)
                     data = f.read()
                     attachmentInfos = json.loads(data)["attachmentInfos"]
@@ -123,7 +123,6 @@ class Getfeatureinfo(object):
                 except:
                     return HTTPBadRequest()
                 if pdf_name is None or pdf_id is None:
-                    log.error(url1)
                     return HTTPBadRequest()
                 url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
@@ -748,8 +747,11 @@ class Getfeatureinfo(object):
                     if attribute in feature['attributes']:
                         value = feature['attributes'][attribute]
                         if value is not None:
+                                utc_dt = datetime.datetime.fromtimestamp(int(value)/1000.0, tz=pytz.utc)
+                                lux_tz = pytz.timezone("Europe/Luxembourg")
+                                local_time = lux_tz.normalize(utc_dt)
                                 feature['attributes'][attribute] =\
-                                    datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
+                                    local_time.strftime(format)
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
