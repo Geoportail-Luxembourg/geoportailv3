@@ -7,6 +7,7 @@
  */
 
 import olMap from 'ol/Map.js';
+import {MapBoxLayerRenderer} from '@geoblocks/mapboxlayer-legacy';
 
 class ExtendedMapBoxLayerRenderer extends MapBoxLayerRenderer {
 
