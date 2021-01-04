@@ -1,3 +1,4 @@
+pykwalify==1.7.0
 sentry-sdk==0.10.2
 urllib3[secure]==1.23
 httplib2shim==0.0.3
