@@ -16,8 +16,8 @@ import base64
 import os
 import json
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 log = logging.getLogger(__name__)
 
