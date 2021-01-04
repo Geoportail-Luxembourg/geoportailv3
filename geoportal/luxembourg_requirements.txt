@@ -19,3 +19,4 @@ webtest
 beautifulsoup4
 HTMLParser
 gevent
+gpxpy==1.4.2
