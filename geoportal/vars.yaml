@@ -166,6 +166,7 @@ vars:
         authenticationBaseUrl: {name: base}
         casipoUrl: {name: casipo_url}
         cmsSearchServiceUrl: {name: cmssearch}
+        featureSearchServiceUrl: {name: featuresearch}
         downloadmeasurementUrl: {name: download_measurement}
         downloadresourceUrl: {name: download_resource}
         downloadsketchUrl: {name: download_sketch}
@@ -472,6 +473,7 @@ runtime_environment:
   - {name: ROUTING_MAPQUEST_API_KEY, default: null}
   - {name: SHORTENER_ALLOWED_HOST}
   - {name: SHORTENER_BASE_URL}
+  - {name: WMTS_URL, default: ''}
 
 update_paths:
   - admin_interface.available_functionalities
