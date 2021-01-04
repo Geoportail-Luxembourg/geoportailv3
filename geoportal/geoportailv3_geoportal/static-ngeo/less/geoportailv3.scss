@@ -136,7 +136,7 @@ app-map {
     }
   }
 }
-@media (max-width: 768px) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .ol-viewport .ol-rotate {
     top: 96px;
   }
@@ -216,7 +216,7 @@ body.full header,
 body.full footer {
   display: block;
 }
-@media (max-width: @screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   body.full .routing-goto-route {
     display: block;
   }
