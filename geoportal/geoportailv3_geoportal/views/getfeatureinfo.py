@@ -29,8 +29,8 @@ from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from functools import partial
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 log = logging.getLogger(__name__)
 
 

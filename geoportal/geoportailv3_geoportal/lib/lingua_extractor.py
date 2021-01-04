@@ -12,8 +12,9 @@ from sqlalchemy.exc import NoSuchTableError, OperationalError, ProgrammingError
 from lingua.extractors import Extractor, Message
 
 from c2cgeoportal_geoportal import init_dbsessions
-from c2cgeoportal_commons.config import config
 from c2cgeoportal_geoportal.lib.bashcolor import RED, colorize
+import c2cgeoportal_commons
+config = c2cgeoportal_commons.configuration
 
 import logging
 log = logging.getLogger(__name__)
