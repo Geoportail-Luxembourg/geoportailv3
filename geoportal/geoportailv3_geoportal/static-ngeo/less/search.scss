@@ -140,7 +140,7 @@ span.twitter-typeahead {
     right: 0;
     z-index: 1;
     top: 1px;
-    height: ~"calc(100% - 2px)";
+    height: calc(100% - 2px);
     padding: 6px 12px 6px 6px;
     .fa {
       color: white;
@@ -244,7 +244,7 @@ span.twitter-typeahead {
   }
   }
   .search-container .facet-container {
-    width: ~"calc(100% + 2.3em)";
+    width: calc(100% + 2.3em);
   }
 }
 .search-result-container {
