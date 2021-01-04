@@ -109,7 +109,7 @@ const exports = function($scope, appThemes, appTheme,
     enabled => {
       if (enabled === undefined) return;
       if (enabled) {
-        this.tree.children.push({
+        this.tree.children.unshift({
           id: -1,
           name: "3d Layers",
           metadata: {},
