@@ -34,12 +34,11 @@ function getImageExtension_(imageType) {
 
 /**
  * @param {string} requestScheme The scheme.
- * @param {string} wmtsUrl The wmts url from env var.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
  */
-function factory(requestScheme, wmtsUrl) {
+function factory(requestScheme) {
   return getWmtsLayer;
 
   /**
