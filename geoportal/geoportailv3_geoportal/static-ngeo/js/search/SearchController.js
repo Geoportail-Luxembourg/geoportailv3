@@ -726,7 +726,7 @@ exports.prototype.createAndInitCMSBloodhoundEngine_ =
 exports.prototype.createAndInitFeatureBloodhoundEngine_ =
   function(searchServiceUrl) {
   var geojsonFormat = new olFormatGeoJSON();
-  var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+  var bloodhound = createGeoJSONBloodhound(
     '', undefined, undefined, undefined,
     /** @type {BloodhoundOptions} */ ({
       remote: {
