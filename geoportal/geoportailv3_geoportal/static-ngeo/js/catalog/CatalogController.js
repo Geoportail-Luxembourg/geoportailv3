@@ -222,13 +222,13 @@ exports.prototype.toggle = function(node) {
       map.removeLayer(layer);
     } else {
       var layerMetadata = layer.get('metadata');
-      if (layerMetadata.hasOwnProperty('start_opacity') &&
+      if (layerMetadata && layerMetadata.hasOwnProperty('start_opacity') &&
           layerMetadata.hasOwnProperty('original_start_opacity')) {
         layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
       }
       map.addLayer(layer);
     }
-    if (layerMetadata.hasOwnProperty('linked_layers')) {
+    if (layerMetadata && layerMetadata.hasOwnProperty('linked_layers')) {
       var layers = layerMetadata['linked_layers'].split(',');
       layers.forEach(function(layerId) {
         this.appThemes_.getFlatCatalog().then(
