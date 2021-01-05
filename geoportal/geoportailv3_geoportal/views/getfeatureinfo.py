@@ -441,7 +441,7 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
                         big_box, None, None,
-                        luxgetfeaturedefinition.attributes_to_remove,
+                        None,
                         luxgetfeaturedefinition.columns_order)
 
                 else:
@@ -450,7 +450,7 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
                         None, fid, None,
-                        luxgetfeaturedefinition.attributes_to_remove,
+                        None,
                         luxgetfeaturedefinition.columns_order)
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
@@ -462,6 +462,7 @@ class Getfeatureinfo(object):
                     is_ordered =\
                         luxgetfeaturedefinition.columns_order is not None\
                         and len(luxgetfeaturedefinition.columns_order) > 0
+                    features = self.remove_attributes_from_features(features, luxgetfeaturedefinition.attributes_to_remove)
                     if fid is None:
                         results.append(
                             self.to_featureinfo(
@@ -659,6 +660,11 @@ class Getfeatureinfo(object):
             log.exception(e)
             return HTTPBadRequest()
         return luxgetfeaturedefinitions
+
+    def remove_attributes_from_features(self, features, attributes_to_remove):
+        for feature in features:
+            feature['attributes'] = self.remove_attributes(feature['attributes'], attributes_to_remove)
+        return features
 
     def remove_attributes(self, attributes, attributes_to_remove,
                           geometry_column='geom'):
