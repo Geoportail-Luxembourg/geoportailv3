@@ -10,7 +10,7 @@
           <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
         </span>
       </div>
-      <span translate>Fichier à télécharger</span> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
+      <label translate>Fichier à télécharger</label> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
         <a class="no-print" target='_blank' download href='{{ctrl.getDownloadPdfUrl()}}?fid={{feature.fid}}' translate>Obtenir le fichier</a></span>
       <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Fichier indisponible</span><br>
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">

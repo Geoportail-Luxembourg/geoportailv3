@@ -1220,7 +1220,7 @@ exports.prototype.getQrCodeForMymapsUrl = function(mapId) {
  * @export
  */
 exports.prototype.isEmpty = function(value) {
-  if (!value) {
+  if (value === undefined || value === null) {
     return true;
   }
   return String(value).length === 0;
