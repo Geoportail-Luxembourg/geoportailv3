@@ -236,6 +236,8 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    */
   this.layers_ = this['layers'];
 
+  var postcomposeListenerKey = null;
+
     /**
    * Return the size in dots of the map to print. Depends on
    * the selected layout.
