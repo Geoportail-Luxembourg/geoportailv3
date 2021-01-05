@@ -39,6 +39,7 @@ function getImageExtension_(imageType) {
  * @ngInject
  */
 function factory(requestScheme) {
+  var wmtsUrl;
   return getWmtsLayer;
 
   /**
