@@ -126,7 +126,7 @@ const exports = class extends ngeoOlcsManager {
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
     }
-    // limit the scene minimum zoom to 
+    // limit the scene minimum zoom to
     scene.screenSpaceCameraController.minimumZoomDistance=150
 
 
@@ -160,13 +160,16 @@ const exports = class extends ngeoOlcsManager {
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const tileset = new Cesium.Cesium3DTileset({
       url: url,
-      skipLevelOfDetail: true,
+      immediatelyLoadDesiredLevelOfDetail : false,
+      cullWithChildrenBounds : true
+    });
+    /*  skipLevelOfDetail: true,
       baseScreenSpaceError : 1024,
       skipScreenSpaceErrorFactor : 16,
       skipLevels : 1,
       immediatelyLoadDesiredLevelOfDetail : false,
       cullWithChildrenBounds : true
-    });
+    });*/
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
   }
