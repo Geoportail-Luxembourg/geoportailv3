@@ -214,7 +214,7 @@ body.embedded {
 
 body.full header,
 body.full footer {
-  display: block;
+  display: flex;
 }
 @media (max-width: map-get($grid-breakpoints, "sm")) {
   body.full .routing-goto-route {
