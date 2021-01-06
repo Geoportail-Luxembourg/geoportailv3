@@ -14,7 +14,7 @@ pyramid_ldap3==0.3.2
 qrcode==5.1
 bleach==2.1.4
 html5lib==1.0.1
-CairoSVG==1.0.22
+CairoSVG==2.5.1
 weasyprint==v0.42.3
 PyPDF2==1.26
 marrow.mailer
