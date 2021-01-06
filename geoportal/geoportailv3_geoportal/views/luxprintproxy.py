@@ -60,6 +60,7 @@ from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -152,7 +153,8 @@ class LuxPrintProxy(PrintProxy):
             print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
-        resp, content = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        resp = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        content = resp.content
         resp["content-disposition"] = "filename=%s.png" % (str(layer_id))
 
         return self._build_response(
@@ -367,9 +369,10 @@ class LuxPrintProxy(PrintProxy):
         if job is None:
             return HTTPNotFound()
         try:
-            resp, content = self._proxy("%s/report/%s" % (
+            resp = self._proxy("%s/report/%s" % (
                 job.print_url, ref
             ))
+            content = resp.content
 
             attributes = json.loads(job.spec)["attributes"]
             is_pdf = json.loads(job.spec)["format"] == "pdf"
@@ -489,15 +492,15 @@ class LuxPrintProxy(PrintProxy):
                 content = content.getvalue()
 
             DBSession.delete(job)
-            if is_pdf:
-                resp["content-disposition"] =\
-                    "attachment; filename=%s.pdf" % (str(print_title))
-            else:
-                resp["content-disposition"] =\
-                    "attachment; filename=%s.png" % (str(print_title))
+            headers = resp.headers
+            headers.update({
+                "content-disposition": "attachment; filename=%s.%s" % (str(print_title), 'pdf' if is_pdf else 'png')
+            })
+
+            response = Response(content, status=resp.status_code, headers=headers)
 
             return self._build_response(
-                resp, content, NO_CACHE, "print"
+                response, content, NO_CACHE, "print"
             )
         except Exception as e:
             log.exception(e)
