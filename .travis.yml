@@ -7,6 +7,11 @@ addons:
     packages:
       - python3-netifaces
 
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 script:
   - ln -s env-localdev .env
   - make build
+before_script:
+  - docker logout
