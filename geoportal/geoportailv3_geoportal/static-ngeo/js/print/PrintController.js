@@ -278,16 +278,13 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = listen(this.map_,
-          olRenderEventType.POSTCOMPOSE, postcomposeListener);
+      this.map_.addLayer(this.maskLayer_);
       const bgLayer = this.backgroundLayerMgr_.get(this.map_);
       if (bgLayer.get('defaultMapBoxStyle')) {
         this.appMvtStylingService_.publishIfSerial(this.map_);
       }
-    } else if (postcomposeListenerKey !== null) {
-      unByKey(postcomposeListenerKey);
-      postcomposeListenerKey = null;
+    } else {
+      this.map_.removeLayer(this.maskLayer_);
       this.appMvtStylingService_.unpublishIfSerial(this.map_);
     }
     this.map_.render();
@@ -503,6 +500,7 @@ exports.prototype.print = function(format) {
   var url = this.getHtmlLegendUrl;
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
+    if (!curMetadata) return;
     var metaMaxDpi = curMetadata['max_dpi'];
     if (metaMaxDpi !== undefined) {
       var maxDpi = parseInt(metaMaxDpi, 10);
