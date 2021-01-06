@@ -13,5 +13,5 @@ before_script:
 script:
   - ln -s env-localdev .env
   - make build
-before_script:
+after_script:
   - docker logout
