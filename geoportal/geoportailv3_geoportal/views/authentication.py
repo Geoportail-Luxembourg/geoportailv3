@@ -142,11 +142,11 @@ class Authentication(object):
     def get_user_info(self):
         if self.request.user is not None:
             return {"login": self.request.user.username,
-                    "role": self.request.user.role.name,
-                    "role_id": self.request.user.role.id,
+                    "role": self.request.user.settings_role.name,
+                    "role_id": self.request.user.settings_role.id,
                     "mymaps_role": getattr(
                         self.request.user,
-                        'mymaps_role', self.request.user.role.id),
+                        'mymaps_role', self.request.user.settings_role.id),
                     "mail": getattr(
                         self.request.user, 'mail',
                         self.request.user.email),
