@@ -10,7 +10,17 @@ services:
   alembic:
     volumes:
       # For Python project development.
-      - ./geoportal/geoportailv3_geoportal:/app/geoportailv3_geoportal
+      # - ./geoportal/geoportailv3_geoportal:/app/geoportailv3_geoportal
+      - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
+      - ./geoportal/geoportailv3_geoportal/routing:/app/geoportailv3_geoportal/routing:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/scripts:/app/geoportailv3_geoportal/scripts:ro
+      - ./geoportal/geoportailv3_geoportal/lib:/app/geoportailv3_geoportal/lib:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
+      # - ./geoportal/jsapi:/app/apiv3/jsapi:ro
   geoportal:
     user: root
     volumes:
