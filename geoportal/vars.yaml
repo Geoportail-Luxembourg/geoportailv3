@@ -127,7 +127,7 @@ vars:
   interfaces_config:
     main:
       constants:
-        appAuthtktCookieName: auth_tkt_main
+        appAuthtktCookieName: auth_tkt_geoportailv3
         appExcludeThemeLayerSearch: []
         appOverviewMapBaseLayer: basemap_2015_global
         appOverviewMapShow: true
