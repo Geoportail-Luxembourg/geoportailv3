@@ -441,7 +441,7 @@ class Mymaps(object):
     def _maps(self, session, user, owner=None, category=None):
         query = None
         is_mymaps_admin = getattr(user, 'is_mymaps_admin', False)
-        user_role_id = getattr(user, 'mymaps_role', user.role.id)
+        user_role_id = getattr(user, 'mymaps_role', user.settings_role.id)
 
         if not is_mymaps_admin:
             owner = user.username
@@ -620,7 +620,7 @@ class Mymaps(object):
 
     def _getuserscategories(self, session, user):
         is_admin = getattr(user, 'is_mymaps_admin', False)
-        role_id = getattr(user, 'mymaps_role', user.role.id)
+        role_id = getattr(user, 'mymaps_role', user.settings_role.id)
         user_role = session.query(Role).get(role_id)
         if is_admin:
             if role_id == 1:
@@ -1127,7 +1127,7 @@ class Mymaps(object):
             if not getattr(user, 'is_mymaps_admin', False):
                 return False
             user_role = self.db_mymaps.query(Role).get(getattr(
-                user, 'mymaps_role', user.role.id))
+                user, 'mymaps_role', user.settings_role.id))
             if map.category is None and 999 in\
                     [cat.id for cat in user_role.categories]:
                 return True
