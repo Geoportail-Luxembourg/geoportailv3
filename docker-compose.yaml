@@ -35,6 +35,7 @@ services:
       - config:ro
     volumes:
       - /var/sig:/var/sig:ro
+      - ./data:/var/luxdata:ro
     environment:
       - CASIPO_STAGING_URL
       - PAG_OWNCLOUD_PASSWORD
