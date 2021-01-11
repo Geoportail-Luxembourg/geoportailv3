@@ -5,7 +5,6 @@ import re
 import urllib.request
 import datetime
 import pyproj
-import shapely
 import geojson
 import os
 import json
@@ -576,7 +575,7 @@ class Getfeatureinfo(object):
                         # Check if the layer has a resctriction area
                         restriction = DBSession.query(RestrictionArea).filter(
                             RestrictionArea.roles.any(
-                                Role.id == self.request.user.role.id)).filter(
+                                Role.id == self.request.user.settings_role.id)).filter(
                             RestrictionArea.layers.any(
                                 Layer.id == layer
                             )
@@ -591,11 +590,11 @@ class Getfeatureinfo(object):
                     if self.request.user is not None:
                         if query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                self.request.user.role.id
+                                self.request.user.settings_role.id
                                 ).count() > 0:
                             for res in query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                    self.request.user.role.id).all():
+                                    self.request.user.settings_role.id).all():
                                 luxgetfeaturedefinitions.append(res)
                         else:
                             for res in query.filter(
@@ -609,6 +608,7 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinitions.append(res)
         except Exception as e:
             log.exception(e)
+            return []
             return HTTPBadRequest()
         return luxgetfeaturedefinitions
 
@@ -1107,6 +1107,7 @@ class Getfeatureinfo(object):
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
         except ESRITokenException as e:
+            return []
             raise HTTPBadGateway(e)
         except Exception as e:
             log.exception(e)
