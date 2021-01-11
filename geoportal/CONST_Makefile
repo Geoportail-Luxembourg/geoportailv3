@@ -10,7 +10,7 @@ ifneq ($(NGEO_API), "")
 DEFAULT_WEB_RULE += $(NGEO_API_OUTPUT_FILES)
 endif
 
-MO_FILES = $(addprefix geoportailv3_geoportal/locale/,$(addsuffix /LC_MESSAGES/geoportailv3_geoportal-client.mo, $(LANGUAGES)))
+MO_FILES ?= $(addprefix geoportailv3_geoportal/locale/,$(addsuffix /LC_MESSAGES/geoportailv3_geoportal-client.mo, $(LANGUAGES)))
 
 WEB_RULE ?= $(DEFAULT_WEB_RULE)
 
