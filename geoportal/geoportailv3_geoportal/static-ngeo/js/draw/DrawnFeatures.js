@@ -86,7 +86,8 @@ const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
       features: this.features
     }),
     zIndex: 1000,
-    'altitudeMode': 'clampToGround'
+    altitudeMode: 'clampToGround',
+    metadata: {}
   });
 
   /**
