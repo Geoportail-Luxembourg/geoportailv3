@@ -104,7 +104,7 @@ const exports = function($scope, appThemes, appTheme,
       return this.map.get('ol3dm').is3dEnabled()
     },
     enabled => {
-      if (enabled === undefined) return;
+      if (enabled === undefined || !this.tree) return;
       if (enabled) {
         this.tree.children.push({
           id: -1,
