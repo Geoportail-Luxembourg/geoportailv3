@@ -294,6 +294,7 @@ exports.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
       }
     }
     console.assert(remoteFeatures !== null);
+    if (!remoteFeatures) return;
     remoteFeatures.forEach(function(feature) {
       var properties = feature.getProperties();
       for (var key in this.SHORT_PARAM_) {
