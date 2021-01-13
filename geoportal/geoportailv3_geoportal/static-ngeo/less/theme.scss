@@ -9,6 +9,7 @@
       font-size: 2.5em;
       position: absolute;
     }
+    --primary: $primary;
   }
 
   .theme-#{$theme} {
