@@ -118,6 +118,13 @@
     align-items: flex-start;
     align-content: flex-start;
   }
+
+  .dropdown-item {
+    padding: 0;
+  }
+  .dropup.show {
+    display: inline-block !important;
+  }
 }
 
 table.mymaps-list > tbody > tr {
