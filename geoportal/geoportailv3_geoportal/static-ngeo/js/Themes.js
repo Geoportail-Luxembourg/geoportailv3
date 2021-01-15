@@ -300,7 +300,11 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
       const ogcServer = element.ogcServer || lastOgcServer;
       if (ogcServer) {
         const def = ogcServers[ogcServer];
-        element.url = def.credential ? null : def.url;
+        if (def === undefined) {
+          element.url = null;
+        } else {
+          element.url = def.credential ? null : def.url;
+        }
       }
       element.theme = theme;
       array.push(element);
