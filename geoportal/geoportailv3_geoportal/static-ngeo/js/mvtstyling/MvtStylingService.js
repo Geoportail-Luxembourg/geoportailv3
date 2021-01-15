@@ -1,14 +1,19 @@
 import appModule from '../module.js';
 
 function hasLocalStorage() {
-    return 'localStorage' in window && localStorage;
+    try {
+      window.localStorage.setItem('test', '');
+      window.localStorage.removeItem('test');
+    } catch (error) {
+      return false;
+    }
+    return true;
 }
 
 const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
-const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
 
@@ -306,28 +311,31 @@ apply_mvt_config(mvt_config) {
  * @private
  */
 getLS_(key) {
-    return ls_.getItem(key);
+  if (hasLocalStorage()) {
+    return window.localStorage.getItem(key);
+  }
+  return undefined;
 }
 
 /**
  * @private
  */
 saveLS_(key, value) {
-    return ls_.setItem(key, value);
+    return window.localStorage.setItem(key, value);
 }
 
 /**
  * @private
  */
 deleteLS_(key) {
-    return ls_.removeItem(key);
+    return window.localStorage.removeItem(key);
 }
 
 /**
  * @private
  */
 hasLS_(key) {
-    return !!ls_.getItem(key);
+    return !!window.localStorage.getItem(key);
 }
 
 
