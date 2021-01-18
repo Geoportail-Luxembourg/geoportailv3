@@ -95,6 +95,8 @@ def main():
     base = env["DOCKER_BASE"] if "DOCKER_BASE" in env else "camptocamp/geoportailv3"
     tag = ":" + env["DOCKER_TAG"] if "DOCKER_TAG" in env else ""
     schema = env["PGSCHEMA"]
+    http_proxy = env["http_proxy"]
+    https_proxy = env["https_proxy"]
 
     default = not (args.config or args.geoportal)
 
