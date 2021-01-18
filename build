@@ -106,6 +106,8 @@ def main():
                 "build",
                 "--tag={}-config{}".format(base, tag),
                 "--build-arg=PGSCHEMA=" + schema,
+                "--build-arg=HTTP_PROXY_URL=" + http_proxy,
+                "--build-arg=HTTPS_PROXY_URL=" + https_proxy,
                 ".",
             ],
         )
@@ -119,6 +121,8 @@ def main():
                 "--tag={}-geoportal{}".format(base, tag),
                 "--build-arg=PGSCHEMA=" + schema,
                 "--build-arg=GIT_HASH=" + git_hash,
+                "--build-arg=HTTP_PROXY_URL=" + http_proxy,
+                "--build-arg=HTTPS_PROXY_URL=" + https_proxy,
                 "geoportal",
             ],
         )
@@ -129,6 +133,8 @@ def main():
                 "build",
                 "--target=builder",
                 "--tag={}-geoportal-dev{}".format(base, tag),
+                "--build-arg=HTTP_PROXY_URL=" + http_proxy,
+                "--build-arg=HTTPS_PROXY_URL=" + https_proxy,
                 "geoportal",
             ],
         )
