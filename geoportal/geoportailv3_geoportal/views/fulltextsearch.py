@@ -78,17 +78,17 @@ class FullTextSearchView(object):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
 
         boosts = [
-                { "name": "Adresse", "boost": 1 },
-                { "name": "nom_de_rue", "boost": 1 },
-                { "name": "Commune", "boost": 2 },
-                { "name": "Localité", "boost": 1.7 },
-                { "name": "lieu_dit", "boost": 1.5 },
+                { "name": "Adresse", "boost": 8 },
+                { "name": "nom_de_rue", "boost": 2 },
+                { "name": "Commune", "boost": 10 },
+                { "name": "Localité", "boost": 8 },
+                { "name": "lieu_dit", "boost": 7 },
                 { "name": "Parcelle", "boost": 1 },
                 { "name": "FLIK", "boost": 1 },
-                { "name": "asta esp", "boost": 1 },
-                { "name": "hydro", "boost": 1 },
-                { "name": "hydro_km", "boost": 1 },
-                { "name": "biotope", "boost": 1 },
+                { "name": "asta esp", "boost": 0 },
+                { "name": "hydro", "boost": 0 },
+                { "name": "hydro_km", "boost": 0 },
+                { "name": "biotope", "boost": 0 },
                 { "name": "editus_poi*", "boost": -1.5 },
                 ]
         for l in boosts:
