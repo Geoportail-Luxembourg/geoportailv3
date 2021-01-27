@@ -21,7 +21,7 @@ create_ui_jsons() {
   do
     prefix="`prefix $lang`"
     c2cprefix="$prefix/geoportailv3_geoportal"
-    files="$c2cprefix-client.po $c2cprefix-tooltips.po $prefix/ngeo.po" 
+    files="$c2cprefix-client-couches.po $c2cprefix-client.po $c2cprefix-tooltips.po $prefix/ngeo.po" 
     echo "-> $APP_OUTPUT_DIR/$lang.json"
     node node_modules/.bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
   done
@@ -32,7 +32,7 @@ create_mo_files() {
   for lang in $LANGS
   do
     c2cprefix="`prefix $lang`/geoportailv3_geoportal"
-    files="$c2cprefix-server $c2cprefix-tooltips $c2cprefix-client"
+    files="$c2cprefix-server $c2cprefix-tooltips $c2cprefix-client $c2cprefix-client-couches"
     for f in $files
     do
       echo "-> $f.mo"

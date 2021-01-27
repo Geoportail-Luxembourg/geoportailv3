@@ -26,5 +26,8 @@ setup(
           'layers2es = geoportailv3_geoportal.scripts.layers2es:main',
           'tooltips2pot = geoportailv3_geoportal.scripts.tooltips2pot:main',
         ],
+        'lingua.extractors': [
+            "geomapfish-theme = geoportailv3_geoportal.scripts.lingua_extractor:GeoportailV3ThemeExtractor",
+        ],
     },
 )
