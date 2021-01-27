@@ -104,7 +104,7 @@ const exports = function($scope, appThemes, appTheme,
   $scope.$watch(
     () => {
       if (!this.map.get('ol3dm')) return;
-      return this.map.get('ol3dm').is3dEnabled()
+      return this.map.get('ol3dm').is3dEnabled();
     },
     enabled => {
       if (enabled === undefined) return;
@@ -113,8 +113,8 @@ const exports = function($scope, appThemes, appTheme,
           id: -1,
           name: "3d Layers",
           metadata: {},
-          children: this.map.get('ol3dm').getAvailableLayerName().map(
-            (layer, i) => ({ id: i, name: layer })
+          children: this.map.get('ol3dm').getAvailableLayers().map(
+            (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
           ),
           type: "Cesium",
           ogcServer: "None",
@@ -122,13 +122,19 @@ const exports = function($scope, appThemes, appTheme,
           theme: this.appTheme_.getCurrentTheme()
         })
       } else {
-        const idx = this.tree.children.findIndex((e) => e.id === -1)
-        this.tree.children.splice(idx, 1)
+        if (this.tree !== undefined) {
+          const idx = this.tree.children.findIndex((e) => e.id === -1);
+          this.tree.children.splice(idx, 1);
+        }
       }
     }
   )
 };
 
+exports.prototype.is3dEnabled = function() {
+  if (!this.map.get('ol3dm')) return false;
+  return this.map.get('ol3dm').is3dEnabled();
+};
 
 
 /**
@@ -145,7 +151,7 @@ exports.prototype.getLayer = function(node) {
 exports.prototype.getActive = function(layertreeController) {
   const layer3dmanager = this.map.get('ol3dm')
   if (layer3dmanager) {
-    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.name)) {
+    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.layer)) {
       return true
     }
   }
@@ -214,11 +220,11 @@ exports.prototype.setThemeZooms = function(tree) {
 exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
-  if (olcs.getAvailableLayerName().indexOf(node.name) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.name)) !== -1) {
-      olcs.remove3dLayer(node.name);
+  if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
+    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.layer)) !== -1) {
+      olcs.remove3dLayer(node.layer);
     } else {
-      olcs.add3dTile(node.name)
+      olcs.add3dTile(node.layer)
     }
   } else {
     var layer = this.getLayerFunc_(node);
@@ -232,21 +238,21 @@ exports.prototype.toggle = function(node) {
         layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
       }
       map.addLayer(layer);
-    }
-    if (layerMetadata.hasOwnProperty('linked_layers')) {
-      var layers = layerMetadata['linked_layers'].split(',');
-      layers.forEach(function(layerId) {
-        this.appThemes_.getFlatCatalog().then(
-          function(flatCatalog) {
-            var node2 = flatCatalog.find(function(catItem) {
-              return catItem.id === Number(layerId);
-            });
-            if (node2 !== undefined) {
-              var linked_layer = this.getLayerFunc_(node2);
-              map.addLayer(linked_layer);
-            }
-          }.bind(this));
-      }, this);
+      if (layerMetadata.hasOwnProperty('linked_layers')) {
+        var layers = layerMetadata['linked_layers'].split(',');
+        layers.forEach(function(layerId) {
+          this.appThemes_.getFlatCatalog().then(
+            function(flatCatalog) {
+              var node2 = flatCatalog.find(function(catItem) {
+                return catItem.id === Number(layerId);
+              });
+              if (node2 !== undefined) {
+                var linked_layer = this.getLayerFunc_(node2);
+                map.addLayer(linked_layer);
+              }
+            }.bind(this));
+        }, this);
+      }
     }
   }
 };
