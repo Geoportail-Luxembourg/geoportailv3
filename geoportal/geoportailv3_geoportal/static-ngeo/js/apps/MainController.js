@@ -1052,7 +1052,12 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-
+    this.appThemes_.get3DLayers().then(
+      layers3D => {
+      layers3D.forEach(catItem => {
+        this.ol3dm_.addAvailableLayers(catItem);
+      });
+    });
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1794,22 +1799,6 @@ MainController.prototype.toggleThemeSelector = function() {
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
-  }
-};
-
-/**
- * @export
- */
-MainController.prototype.toggleTiles3dVisibility = function() {
-  this.tiles3dVisible = !this.tiles3dVisible;
-  this.ol3dm_.set3dTilesetsVisible(this.tiles3dVisible);
-  this.stateManager_.updateState({
-    '3dtiles_visible': this.tiles3dVisible
-  });
-  if (this.tiles3dVisible) {
-    var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-    piwik.push(['setDocumentTitle', '3dtiles_visible']);
-    piwik.push(['trackPageView']);
   }
 };
 

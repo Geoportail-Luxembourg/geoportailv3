@@ -73,7 +73,7 @@ const exports = class extends ngeoOlcsManager {
      * @private
      * @type {Array<string>}
      */
-    this.availableTiles3dLayers_ = tiles3dLayers;
+    this.availableTiles3dLayers_ = [];
 
     /**
      * @private
@@ -129,8 +129,13 @@ const exports = class extends ngeoOlcsManager {
     // limit the scene minimum zoom to
     scene.screenSpaceCameraController.minimumZoomDistance=150
 
-
     return ol3d;
+  }
+
+  addAvailableLayers(layer) {
+    if (this.availableTiles3dLayers_.map(x => x.id).indexOf(layer.id) < 0){
+      this.availableTiles3dLayers_.push(layer);
+    }
   }
 
   /***
@@ -138,7 +143,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
   init3dTiles(visible) {
-    this.availableTiles3dLayers_.filter(e => e.show).map(e => e.name).forEach(this.add3dTile.bind(this))
+    this.availableTiles3dLayers_.filter(e => e.layer === 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this))
   }
 
   /**
@@ -150,7 +155,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   set3dTilesetVisible(visible, layerName) {
-    const tileset = this.tilesets3d.find((e) => e.url.includes(layerName));
+    const tileset = this.tilesets3d.find((e) => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
     tileset.show = visible;
   }
 
@@ -173,12 +178,13 @@ const exports = class extends ngeoOlcsManager {
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
   }
+
   remove3dLayer(layerName) {
-    const layer = this.tilesets3d.find(e => e.url.includes(layerName));
-    const idx = this.tilesets3d.findIndex(e => e.url.includes(layerName));
-    this.tilesets3d.splice(idx, 1)
-    this.activeTiles3dLayers_.splice(idx, 1)
-    this.ol3d.getCesiumScene().primitives.remove(layer)
+    const layer = this.tilesets3d.find(e => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
+    const idx = this.tilesets3d.findIndex(e => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
+    this.tilesets3d.splice(idx, 1);
+    this.activeTiles3dLayers_.splice(idx, 1);
+    this.ol3d.getCesiumScene().primitives.remove(layer);
   }
 
   /**
@@ -200,12 +206,24 @@ const exports = class extends ngeoOlcsManager {
   /**
    * @export
    */
-  getAvailableLayerName() {
-    return this.availableTiles3dLayers_.map(e => e.name)
+  getAvailableLayers() {
+    return this.availableTiles3dLayers_;
   }
-
+  /**
+   * @export
+   */
+  getAvailableLayerName() {
+    return this.availableTiles3dLayers_.map(e => e.layer);
+  }
+  get3DLayers() {
+    var layers = [];
+    this.tilesets3d.forEach(function(layer) {
+      layers.push(layer.url.substring(url.indexOf('3dtiles/') + 8,url.indexOf('/tileset.json')));
+    });
+    return layers;
+  }
   getActiveLayerName() {
-    return this.activeTiles3dLayers_
+    return this.activeTiles3dLayers_;
   }
 };
 
