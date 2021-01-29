@@ -365,6 +365,7 @@ function getSimpleStylings() {
  * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
  * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {string} geonetworkBaseUrl catalog base server url.
+ * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
  * @constructor
  * @export
  * @ngInject
@@ -380,7 +381,12 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
+  /**
+   * @type {app.backgroundlayer.BlankLayer}
+   * @private
+   */
+  this.blankLayer_ = appBlankLayer;
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -1410,7 +1416,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
   console.assert(this.map_ !== null && this.map_ !== undefined);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
   return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
+    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
 };
 
 

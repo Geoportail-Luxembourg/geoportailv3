@@ -1,0 +1,14 @@
+<div class="ol-control ol-toggle3d-bar">
+  <div class="ol-unselectable ol-control" ng-class="{'ol-control-on' : (ctrl.isMeshEnabled() || ctrl.is3dEnabled())}">
+    <button type="button" ng-click="ctrl.toggleSelector()">3D</button>
+  </div>
+  <div ng-if="ctrl.isOpened == true" class="ol-unselectable ol-control ol-toggle3d"
+     ng-class="{'ol-control-on' : ctrl.is3dEnabled()}">
+  <button type="button" ng-click="ctrl.toggle3d()">V</button>
+  </div>
+  <div ng-if="ctrl.isOpened == true" class="ol-unselectable ol-control ol-toggleMesh"
+     ng-class="{'ol-control-on' : ctrl.isMeshEnabled()}">
+  <button type="button" ng-click="ctrl.toggleMesh()">M</button>
+  </div>
+</div>
+
