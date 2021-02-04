@@ -1097,7 +1097,7 @@ const MainController = function(
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
-        !infoOpen) ? true : false;
+        !infoOpen && !this.embedded) ? true : false;
     $scope.$watch(() => {
       return this['layersOpen'];
     }, newVal => {

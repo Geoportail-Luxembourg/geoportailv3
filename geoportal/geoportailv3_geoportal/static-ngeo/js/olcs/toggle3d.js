@@ -45,14 +45,14 @@ class Controller {
     }
   };
   is3dEnabled() {
-    if (this.manager && this.manager.getMode() === '3D') {
-     return this.manager.is3dEnabled();
+    if (this.manager) {
+     return this.manager.is3DEnabled();
     }
     return false;
   };
   isMeshEnabled() {
-    if (this.manager && this.manager.getMode() === 'MESH') {
-      return this.manager.is3dEnabled();
+    if (this.manager) {
+      return this.manager.isMeshEnabled();
     }
     return false;
   };
