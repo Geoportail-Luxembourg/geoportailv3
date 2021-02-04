@@ -9,6 +9,7 @@ html, body {
   position: relative;
   height: 100%;
   touch-action: none;
+  overflow: hidden;
 }
 $topbar-height: 50px;
 $bottombar-height: 50px;
@@ -52,7 +53,8 @@ app-search {
 
 .footer {
   position: absolute;
-  bottom: 2px; /* Empiric magic value to avoid page scroll */
+  bottom: 0;
+  clip-path: polygon(0 -50vh, 100% -50vh, 100% 100%, 0px 100%);
   width: 100%;
   /* Set the fixed height of the footer here */
   height: $bottombar-height;
