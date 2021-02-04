@@ -31,6 +31,7 @@ import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
+import olcsCore from 'olcs/core.js';
 
 /**
  * @ngInject
@@ -59,6 +60,7 @@ import { matchCoordinate } from '../CoordinateMatch'
  * @param {string} cmsSearchServiceUrl The url to the cms search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
  * @param {app.Routing} appRouting The routing service.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @export
  */
 const exports = function($scope, $window, $compile,
@@ -66,7 +68,11 @@ const exports = function($scope, $window, $compile,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl, featureSearchServiceUrl,
-    appExcludeThemeLayerSearch, appRouting) {
+    appExcludeThemeLayerSearch, appRouting, ngeoOlcsService) {
+    /**
+     * @private
+     */
+    this.olcsManager_ = ngeoOlcsService.getManager();
 
   /**
    * @type {app.Routing}
@@ -197,7 +203,7 @@ const exports = function($scope, $window, $compile,
           stroke: strokeStyle
         })
       }));
-
+  ngeoFeatureOverlayMgr.getLayer().set('altitudeMode', 'clampToGround');
   /**
    * @type {app.CoordinateString}
    * @private
@@ -888,37 +894,46 @@ exports.selected_ =
         var feature = /** @type {ol.Feature} */ (suggestion);
         this.lastSelectedSuggestion = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-        map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
-          size: /** @type {ol.Size} */ (map.getSize()),
-          maxZoom: 18
-        }));
-        this.featureOverlay.clear();
-        var features = [];
-        if (dataset === 'coordinates') {
-          features.push(feature);
-        } else if (dataset === 'features') {
-          features.push(feature);
-        } else if (dataset === 'pois') {
-          if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
-                 this.appTheme_.getCurrentTheme()) &&
-                 feature.get('layer_name') === 'Parcelle')) {
-            if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
+        if (this.olcsManager_.is3dEnabled()) {
+            olcsCore.resetToNorthZenith(map, map.get('ol3dm').getCesiumScene()).then(function(){
+                map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+                  size: /** @type {ol.Size} */ (map.getSize()),
+                  maxZoom: 18
+                }));
+            });
+        } else {
+          map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+            size: /** @type {ol.Size} */ (map.getSize()),
+            maxZoom: 18
+          }));
+          this.featureOverlay.clear();
+          var features = [];
+          if (dataset === 'coordinates') {
+            features.push(feature);
+          } else if (dataset === 'features') {
+            features.push(feature);
+          } else if (dataset === 'pois') {
+            if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
+                   this.appTheme_.getCurrentTheme()) &&
+                   feature.get('layer_name') === 'Parcelle')) {
+              if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
+                features.push(feature);
+              }
+              var layers = /** @type {Array<string>} */
+              (this.layerLookup_[suggestion.get('layer_name')] || []);
+              layers.forEach(function(layer) {
+                this.addLayerToMap_(/** @type {string} */ (layer));
+              }.bind(this));
+            } else {
+              feature.setGeometry(
+                new olGeomPoint(getCenter(
+                  featureGeometry.getExtent())));
               features.push(feature);
             }
-            var layers = /** @type {Array<string>} */
-            (this.layerLookup_[suggestion.get('layer_name')] || []);
-            layers.forEach(function(layer) {
-              this.addLayerToMap_(/** @type {string} */ (layer));
-            }.bind(this));
-          } else {
-            feature.setGeometry(
-              new olGeomPoint(getCenter(
-                featureGeometry.getExtent())));
-            features.push(feature);
           }
-        }
-        for (var i = 0; i < features.length; ++i) {
-          this.featureOverlay.addFeature(features[i]);
+          for (var i = 0; i < features.length; ++i) {
+            this.featureOverlay.addFeature(features[i]);
+          }
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));

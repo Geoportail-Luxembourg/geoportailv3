@@ -6,6 +6,7 @@ import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 import OLCesium from 'olcs/OLCesium.js'
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
+import olcsCore from 'olcs/core.js';
 
 
 const exports = class extends ngeoOlcsManager {
@@ -33,7 +34,6 @@ const exports = class extends ngeoOlcsManager {
      * @private
      */
     this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
-
     /**
      * @type {app.backgroundlayer.BlankLayer}
      * @private
@@ -107,6 +107,7 @@ const exports = class extends ngeoOlcsManager {
      * @type {string}
      */
     this.mode_ = 'MESH';
+    this.currentBgLayer;
   }
 
   /**
@@ -149,9 +150,6 @@ const exports = class extends ngeoOlcsManager {
       this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
       scene.terrainProvider = this.noTerrainProvider;
     }
-    // limit the scene minimum zoom to
-    scene.screenSpaceCameraController.minimumZoomDistance=150
-
     return ol3d;
   }
 
@@ -169,7 +167,7 @@ const exports = class extends ngeoOlcsManager {
     if (this.mode_ === 'MESH') {
       this.availableTiles3dLayers_.filter(e => e.layer === 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
     } else {
-      this.availableTiles3dLayers_.filter(e => e.layer === 'buildings25d').map(e => e.layer).forEach(this.add3dTile.bind(this));
+      this.availableTiles3dLayers_.filter(e => e.layer !== 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
     }
   }
 
@@ -199,16 +197,34 @@ const exports = class extends ngeoOlcsManager {
       loadSiblings : false,
       cullWithChildrenBounds : true
     });
-    /*  skipLevelOfDetail: true,
-      baseScreenSpaceError : 1024,
-      skipScreenSpaceErrorFactor : 16,
-      skipLevels : 1,
-      immediatelyLoadDesiredLevelOfDetail : false,
-      cullWithChildrenBounds : true
-    });*/
-    
+
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
+    // Adjust a tileset's height from the globe's surface.
+    const scene = this.ol3d.getCesiumScene();
+    if (layerName === 'wintermesh') {
+      scene.screenSpaceCameraController.minimumZoomDistance=150;
+      //scene.terrainProvider = this.noTerrainProvider;
+      scene.terrainProvider = this.terrainProvider;
+      tileset.readyPromise.then(function(tileset) {
+        //const heightOffset = -372;
+        //const heightOffset = -47.8;
+        const heightOffset = 0;
+        var boundingSphere = tileset.boundingSphere;
+        var cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+
+        var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0);
+        var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+        var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+      }).otherwise(function(error) {
+          console.log(error);
+      });
+    } else {
+      scene.terrainProvider = this.terrainProvider;
+      scene.screenSpaceCameraController.minimumZoomDistance=0;
+    }
+
   }
 
   remove3dLayer(layerName) {
@@ -258,7 +274,7 @@ const exports = class extends ngeoOlcsManager {
   get3DLayers() {
     var layers = [];
     this.tilesets3d.forEach(function(layer) {
-      layers.push(layer.url.substring(url.indexOf('3dtiles/') + 8,url.indexOf('/tileset.json')));
+      layers.push(layer.url.substring(url.indexOf('3dtiles/') + 8, url.indexOf('/tileset.json')));
     });
     return layers;
   }
@@ -267,25 +283,40 @@ const exports = class extends ngeoOlcsManager {
   };
   setMode(mode) {
     this.mode_ = mode;
-    try {
-      if (Cesium) {
-        var scene = this.ol3d.getCesiumScene();
-        if (mode === 'MESH') {
-          scene.terrainProvider = this.noTerrainProvider;
-          this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
-        } else {
-          scene.terrainProvider = this.terrainProvider;
-        }
-        this.availableTiles3dLayers_.map(e => e.layer).forEach(this.remove3dLayer.bind(this));
-        this.init3dTiles();
+    if (!this.is3dEnabled()){
+      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+      if (mode === 'MESH') {
+        this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
       }
-    } catch(e) {}
+    } else {
+      if (this.currentBgLayer !== undefined) {
+        this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+      }
+    }
+
+    this.availableTiles3dLayers_.map(e => e.layer).forEach(this.remove3dLayer.bind(this));
+    try {
+        this.init3dTiles();
+    } catch(e) {
+      console.log(e);
+    }
   };
   toggleMode(mode) {
     this.setMode(mode);
     this.toggle3d();
   };
- 
+  is3DEnabled() {
+    if (this.getMode() === '3D') {
+     return this.is3dEnabled();
+    }
+    return false;
+  };
+  isMeshEnabled() {
+    if (this.getMode() === 'MESH') {
+      return this.is3dEnabled();
+    }
+    return false;
+  };
 };
 
 
