@@ -28,6 +28,11 @@ const exports = class extends ngeoOlcsManager {
       map,
       cameraExtentInRadians
     });
+    /**
+     * @type {angular.Scope}
+     * @private
+     */
+    this.$rootScope_ = $rootScope;
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
@@ -108,6 +113,7 @@ const exports = class extends ngeoOlcsManager {
      */
     this.mode_ = 'MESH';
     this.currentBgLayer;
+
   }
 
   /**
@@ -133,7 +139,6 @@ const exports = class extends ngeoOlcsManager {
     if (this.ngeoLocation_.hasParam('tile_coordinates')) {
       scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
     }
-
     // for performance, limit terrain levels to be loaded
     const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
     const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
@@ -157,6 +162,21 @@ const exports = class extends ngeoOlcsManager {
     if (this.availableTiles3dLayers_.map(x => x.id).indexOf(layer.id) < 0){
       this.availableTiles3dLayers_.push(layer);
     }
+  }
+
+  init3dTilesFromLocation() {
+    var layers_3d = this.ngeoLocation_.getParam('3d_layers');
+    if (layers_3d) {
+      const layers = layers_3d.split(',');
+      this.availableTiles3dLayers_.filter(e => (layers.indexOf(e.layer)>=0)).map(e => e.layer).forEach(this.add3dTile.bind(this));
+    }
+    this.$rootScope_.$watch(function() {
+      return this.activeTiles3dLayers_.length;
+    }.bind(this), function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
+      }
+    }.bind(this));
   }
 
   /***
@@ -185,16 +205,19 @@ const exports = class extends ngeoOlcsManager {
   }
 
   add3dTile(layerName) {
+    if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
+      return;
+    }
     this.activeTiles3dLayers_.push(layerName);
     const url = this.tiles3dUrl_ + layerName + "/tileset.json";
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const tileset = new Cesium.Cesium3DTileset({
       url: url,
-      skipLevelOfDetail : true,
-      baseScreenSpaceError : 1024,
+      skipLevelOfDetail : false,
+      baseScreenSpaceError : 623,
       skipScreenSpaceErrorFactor : 8,
       skipLevels : 1,
-      loadSiblings : false,
+      loadSiblings : true,
       cullWithChildrenBounds : true
     });
 
@@ -283,27 +306,37 @@ const exports = class extends ngeoOlcsManager {
   };
   setMode(mode) {
     this.mode_ = mode;
-    if (!this.is3dEnabled()){
-      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
-      if (mode === 'MESH') {
+  };
+  remove3DLayers() {
+    this.availableTiles3dLayers_.map(e => e.layer).forEach(function(layer) {
+        this.remove3dLayer(layer);
+      }.bind(this));
+  }
+  onToggle() {
+    if (this.is3dEnabled()) {
+      if (this.mode_ === 'MESH') {
+        this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
         this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+      } else {
+        if (this.currentBgLayer !== undefined) {
+          this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+        }
       }
+      this.init3dTiles();
     } else {
       if (this.currentBgLayer !== undefined) {
         this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
       }
-    }
-
-    this.availableTiles3dLayers_.map(e => e.layer).forEach(this.remove3dLayer.bind(this));
-    try {
-        this.init3dTiles();
-    } catch(e) {
-      console.log(e);
+      this.remove3DLayers();
+      this.ngeoLocation_.deleteParam('3d_layers');
     }
   };
+
   toggleMode(mode) {
     this.setMode(mode);
-    this.toggle3d();
+    this.toggle3d().then(function () {
+      this.onToggle();
+    }.bind(this));
   };
   is3DEnabled() {
     if (this.getMode() === '3D') {
