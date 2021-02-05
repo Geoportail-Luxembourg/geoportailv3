@@ -3,13 +3,20 @@ import appModule from '../module.js';
 import {isValidSerial} from '../utils.js';
 
 function hasLocalStorage() {
-    return 'localStorage' in window && localStorage;
+    try {
+      window.localStorage.setItem('test', '');
+      window.localStorage.removeItem('test');
+    } catch (error) {
+      return false;
+    }
+    return true;
 }
 
 const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
+
 
 function getDefaultMapBoxStyleUrl(label) {
     const searchParams = new URLSearchParams(document.location.search);

@@ -240,6 +240,12 @@ luxx.SearchOption.prototype.onSelect;
 luxx.MarkerOptions;
 
 /**
+ * Set the overlay id. The overlay id can be used with the ol.Map#getOverlayById method.
+ * @type {number | string | undefined}
+ */
+luxx.MarkerOptions.prototype.id;
+
+/**
  * Allow to deactivate popup when clicking on a transparent part of the marker.
  * This property is experimental. The marker should come from the same source
  * as the page, or the image server has to set the following  header
@@ -306,6 +312,13 @@ luxx.MarkerOptions.prototype.click;
  * @type {Element|string}
  */
 luxx.MarkerOptions.prototype.target;
+
+/**
+ * If set, the function is called when clicking on the marker.
+ * @type {function | undefined}
+ */
+luxx.MarkerOptions.prototype.onClick;
+
 
 /**
  * Object literal with config options for the layer.
