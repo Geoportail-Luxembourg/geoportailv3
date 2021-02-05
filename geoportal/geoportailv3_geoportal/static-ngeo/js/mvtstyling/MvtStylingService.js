@@ -185,8 +185,10 @@ class MvtStylingService {
 
                         // For deprovisionning, keep the id stored
                         let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
-                        lsData.serial = result;
-                        window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
+                        if (lsData !== null) {
+                          lsData.serial = result;
+                          window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
+                        }
                     });
                 } catch (error) {
                     console.log(error);
