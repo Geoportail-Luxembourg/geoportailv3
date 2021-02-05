@@ -173,6 +173,16 @@ app-map > div {
   &, &:hover {
     background-color: transparent;
   }
+  &.bar3d {
+    z-index: 2;
+    bottom: 104px;
+    right: 9px;
+    padding: 0px;
+    button {
+      font-family: 'DINNextLTPro-Condensed', Arial, sans-serif !important;
+      line-height: 1.8em;
+    }
+  }
   button {
     width: 41px;
     height: 41px;
@@ -284,10 +294,31 @@ app-map > div {
   border: 1px solid #8394a0;
 }
 
-.ol-toogle3d {
-  right: 9px;
+.ol-toggleMesh {
+  right: 3px;
   padding: 0;
-  bottom: 104px;
+  bottom: -41px;
+  z-index: 2;
+  button {
+    font-family: 'DINNextLTPro-Condensed', Arial, sans-serif !important;
+    line-height: 1.8em;
+  }
+}
+
+.ol-toggle3d {
+  right: 48px;
+  padding: 0;
+  bottom: -41px;
+  z-index: 2;
+  button {
+    font-family: 'DINNextLTPro-Condensed', Arial, sans-serif !important;
+    line-height: 1.8em;
+  }
+}
+.ol-toggle3d-bar {
+  right: 50px;
+  padding: 0;
+  bottom: 145px;
   z-index: 2;
   button {
     font-family: 'DINNextLTPro-Condensed', Arial, sans-serif !important;

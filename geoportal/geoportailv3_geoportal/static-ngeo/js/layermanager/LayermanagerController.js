@@ -24,7 +24,7 @@ class Controller {
    * @param {angular.$rootScope} $rootScope Angular rootScope service.
    * @ngInject
    */
-  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope){
+  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope) {
 
     this.ngeoLocation_ = ngeoLocation;
 
@@ -43,15 +43,12 @@ class Controller {
      * @type {angular.$rootScope}
      */
     this.$rootScope = $rootScope;
-    this.layers3d = this.map.get('ol3dm')
-
-    $rootScope.$watch(
-      () => this.map.get('ol3dm') && this.map.get('ol3dm').is3dEnabled(),
-      isEnabled => isEnabled && this.enable3d()
-    )
+    this.layers3d = this.map.get('ol3dm');
 
   };
-
+  is3dEnabled() {
+    return this.map.get('ol3dm') && this.map.get('ol3dm').is3dEnabled();
+  }
   get background() {
     let background = this.ngeoBackgroundLayerMgr_.get(this.map);
     if (background) {
@@ -67,17 +64,17 @@ class Controller {
   }
 
   remove3dLayer(layerName) {
-    this.map.get('ol3dm').remove3dLayer(layerName)
-    const idx = this.layers3d.findIndex(e => e.url.includes(layerName));
-    this.layers3dName.splice(idx, 1);
+    this.map.get('ol3dm').remove3dLayer(layerName);
   }
 
-  enable3d() {
-    this.layers3d = this.map.get('ol3dm').tilesets3d;
-    this.layers3dName = this.map.get('ol3dm').getActiveLayerName();
+  get3DLayers() {
+    return this.map.get('ol3dm').getAvailableLayers().filter(e => this.map.get('ol3dm').getActiveLayerName().indexOf(e.layer) >= 0);
   }
 
-  reorderCallback(element, layers){
+  reorderCallback3D(element, layers) {
+    console.log('reorder');
+  }
+  reorderCallback(element, layers) {
     for (var i = 0; i < layers.length; i++) {
       layers[i].setZIndex(layers.length - i);
     }
@@ -112,11 +109,6 @@ class Controller {
     this.ngeoLocation_.updateParams({
       'lc': this['activeLC']
     });
-  }
-
-  enable3d() {
-    this.layers3d = this.map.get('ol3dm').tilesets3d;
-    this.layers3dName = this.map.get('ol3dm').tiles3dLayers_;
   }
 
   openMvtEditorPanel() {
