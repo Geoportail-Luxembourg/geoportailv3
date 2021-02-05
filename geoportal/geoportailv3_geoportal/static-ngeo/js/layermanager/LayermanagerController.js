@@ -69,11 +69,10 @@ class Controller {
 
   get3DLayers() {
     return this.map.get('ol3dm').getAvailableLayers().filter(e => this.map.get('ol3dm').getActiveLayerName().indexOf(e.layer) >= 0);
-    //layer.url.substring(url.indexOf('3dtiles/') + 8,url.indexOf('/tileset.json'));
   }
 
   reorderCallback3D(element, layers) {
-    alert('reorder');
+    console.log('reorder');
   }
   reorderCallback(element, layers) {
     for (var i = 0; i < layers.length; i++) {

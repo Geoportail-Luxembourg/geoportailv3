@@ -963,7 +963,8 @@ const MainController = function(
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
   this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTiles(this.tiles3dVisible);
+    this.ol3dm_.init3dTilesFromLocation();
+    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
   });
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
