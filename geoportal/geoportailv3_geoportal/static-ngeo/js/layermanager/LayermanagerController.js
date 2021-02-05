@@ -24,7 +24,7 @@ class Controller {
    * @param {angular.$rootScope} $rootScope Angular rootScope service.
    * @ngInject
    */
-  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope){
+  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope) {
 
     this.ngeoLocation_ = ngeoLocation;
 
