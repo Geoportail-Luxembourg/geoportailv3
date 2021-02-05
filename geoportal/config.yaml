@@ -411,7 +411,7 @@ vars:
         printServiceUrl: printproxy, profileServiceUrl: profile.json, featureSearchServiceUrl: featuresearch,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
         shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style,
-        getvtstyleUrl: get_vt_style
+        getvtstyleUrl: get_vt_style, downloadPdfUrl: download_pdf
       }
       static: {
         appImagesPath: 'geoportailv3_geoportal:static-ngeo/images/',
