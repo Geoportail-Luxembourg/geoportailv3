@@ -28,7 +28,7 @@ class Controller {
    */
   toggleSelector() {
     this.isOpened = !this.isOpened;
-  };
+  }
 
   toggleMesh() {
     if (this.manager.getMode() === '3D' && this.manager.is3dEnabled()) {
@@ -38,7 +38,7 @@ class Controller {
     } else {
       this.manager.toggleMode('MESH');
     }
-  };
+  }
   toggle3d() {
     if (this.manager.getMode() === 'MESH' && this.manager.is3dEnabled()) {
       this.manager.setMode('3D');
@@ -47,25 +47,26 @@ class Controller {
     } else {
       this.manager.toggleMode('3D');
     }
-  };
+  }
+
   is3dEnabled() {
     if (this.manager) {
-     return this.manager.is3DEnabled();
+      return this.manager.is3DEnabled();
     }
     return false;
-  };
+  }
   isMeshEnabled() {
     if (this.manager) {
       return this.manager.isMeshEnabled();
     }
     return false;
-  };
-};
+  }
+}
 
 
 /**
  * @ngInject
- * @param {string} appInfobarTemplateUrl The template url.
+ * @param {string} app3dbarTemplateUrl The template url.
  * @return {angular.Directive} The Directive Object Definition.
  */
 const exports = function(app3dbarTemplateUrl) {
