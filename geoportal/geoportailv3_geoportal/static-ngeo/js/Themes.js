@@ -35,25 +35,27 @@ function onFirstTargetChange(map) {
 /**
  * @param {import('ol/layer/Layer.js').default[]} bgLayers
  */
-function replaceWithMVTLayer(bgLayers, target, styleConfig) {
-  // add MapBox layer
-  const label = styleConfig.label;
+function replaceWithMVTLayer(bgLayers, target, styleConfigs) {
+  styleConfigs.forEach(styleConfig => {
+    // add MapBox layer
+    const label = styleConfig.label;
 
-  bgLayers.forEach((l, i) => {
-    if (l.get('label') === label) {
-      const options = Object.assign({
-        container: target,
-      }, styleConfig)
-      const mvtLayer = new MapBoxLayer(options);
-      mvtLayer.set('metadata', l.get('metadata'));
-      if ('attribution' in l.get('metadata')) {
-        const source = new olSourceVector({
-            attributions: l.get('metadata')['attribution']
-        });
-        mvtLayer.setSource(source);
+    bgLayers.forEach((l, i) => {
+      if (l.get('label') === label) {
+        const options = Object.assign({
+          container: target,
+        }, styleConfig)
+        const mvtLayer = new MapBoxLayer(options);
+        mvtLayer.set('metadata', l.get('metadata'));
+        if ('attribution' in l.get('metadata')) {
+          const source = new olSourceVector({
+              attributions: l.get('metadata')['attribution']
+          });
+          mvtLayer.setSource(source);
+        }
+        bgLayers[i] = mvtLayer;
       }
-      bgLayers[i] = mvtLayer;
-    }
+    });
   });
 }
 
@@ -116,6 +118,7 @@ const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
   this.promise_ = null;
 
   this.flatCatalog = null;
+  this.layers3D = [];
 
   /**
    * @type {app.Mvtstyling}
@@ -198,8 +201,8 @@ exports.prototype.getBgLayers = function(map) {
           onFirstTargetChange(map),
           this.appMvtStylingService_.getBgStyle()
         ]);
-        return bothPromises.then(([target, styleConfig]) => {
-          replaceWithMVTLayer(bgLayers, target, styleConfig);
+        return bothPromises.then(([target, styleConfigs]) => {
+          replaceWithMVTLayer(bgLayers, target, styleConfigs);
           return bgLayers;
         });
       });
@@ -290,15 +293,23 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
   for (var i = 0; i < elements.length; i++) {
     const element = elements[i];
     if (element.hasOwnProperty('children')) {
-      arrayExtend(array, this.getAllChildren_(
-          element.children, theme, ogcServers, element.ogcServer || lastOgcServer)
-      );
+      if (element.name !== '3d Layers') {
+        arrayExtend(array, this.getAllChildren_(
+            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+      } else {
+        arrayExtend(this.layers3D, this.getAllChildren_(
+            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+      }
     } else {
       // Rewrite url to match the behaviour of c2cgeoportal 1.6
       const ogcServer = element.ogcServer || lastOgcServer;
       if (ogcServer) {
         const def = ogcServers[ogcServer];
-        element.url = def.credential ? null : def.url;
+        if (def === undefined) {
+          element.url = null;
+        } else {
+          element.url = def.credential ? null : def.url;
+        }
       }
       element.theme = theme;
       array.push(element);
@@ -314,6 +325,14 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
  */
 exports.prototype.getFlatCatalog = function() {
   return this.promise_.then(() => this.flatCatalog);
+};
+
+/**
+ * get the flat catlog
+ * @return {angular.$q.Promise} Promise.
+ */
+exports.prototype.get3DLayers = function() {
+  return this.promise_.then(() => this.layers3D);
 };
 
 appModule.service('appThemes', exports);

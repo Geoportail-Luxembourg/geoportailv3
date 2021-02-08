@@ -24,7 +24,11 @@ setup(
           'create_db = geoportailv3_geoportal.scripts.create_db:main',
           'db2es = geoportailv3_geoportal.scripts.db2es:main',
           'layers2es = geoportailv3_geoportal.scripts.layers2es:main',
-          'tooltips2pot = geoportailv3_geoportal.scripts.tooltips2pot:main',
+          'lux_gunicorn = geoportailv3_geoportal.scripts.lux_gunicorn:main',
+        ],
+        "lingua.extractors": [
+            "luxembourg-tooltips = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgTooltipsExtractor",
+            "luxembourg-legends = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgESRILegendExtractor",
         ],
     },
 )

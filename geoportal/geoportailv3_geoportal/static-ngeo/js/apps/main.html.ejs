@@ -92,6 +92,7 @@
         </ul>
         <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
         <app-search app-search-map="::mainCtrl.map"
+                    app-search-selected-layers="::mainCtrl.selectedLayers"
                     app-search-language="mainCtrl.lang"
                     app-search-mobileactive="mainCtrl.mobileSearchActive"
                     app-search-routing-open="mainCtrl.routingOpen"></app-search>
@@ -111,10 +112,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
-            <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
-            <span translate>Afficher les modèles 3D</span>
-          </div>
           <ul class="nav nav-tabs">
             <li role="presentation" class="my-layers-tab">
               <a href="#mylayers" data-toggle="tab">
@@ -303,8 +300,8 @@
           <div class="container-fluid tab-content">
           <div class="accordion" id="accordion">
             <div class="panel">
-              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" translate>Simple</div>
-              <div class="collapse" id="editor-simple" data-parent="#accordion">
+              <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" ng-if="mainCtrl.isColorVisible" translate>Simple</div>
+              <div class="collapse" id="editor-simple" ng-if="mainCtrl.isColorVisible" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
                     <p translate>Sélectionner un set de couleurs</p>
@@ -319,7 +316,8 @@
               <div class="collapse" id="editor-medium" data-parent="#accordion">
                 <div class="content-wrapper">
                   <div class="editor-content">
-                    <p translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="mainCtrl.isColorVisible" translate>Sélectionner une couleur par couche</p>
+                    <p ng-if="!mainCtrl.isColorVisible" translate>Afficher une catégorie par couche</p>
                     <app-medium-style
                       on-styling-changed="mainCtrl.onMediumStylingChanged"
                       stylings="mainCtrl.mediumStylingData">

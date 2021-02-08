@@ -10,6 +10,11 @@ environment:
 - {default: '999', name: DEFAULT_MYMAPS_ROLE}
 - {name: AUTHTKT_SECURE}
 - {name: AUTHTKT_SECRET}
+- {name: ARCGIS_TOKEN_URL}
+- {name: ARCGIS_TOKEN_VALIDITY}
+- {name: ARCGIS_TOKEN_REFERER}
+- {name: ARCGIS_USER}
+- {name: ARCGIS_PASS}
 - {name: DB_MYMAPS}
 - {name: DB_PGROUTE}
 - {name: DB_ECADASTRE}
@@ -367,7 +372,15 @@ vars:
         requestScheme: https
         sentryUrl: ''
         tags: {interface: main, service: js}
-        tiles3dLayers: [buildings25d, buildings3d, bridges3d]
+        tiles3dLayers:
+          - name: wintermesh
+            show: true
+          - name: buildings25d
+            show: false
+          - name: buildings3d
+            show: false
+          - name: bridges3d
+            show: false
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
@@ -395,7 +408,7 @@ vars:
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
         postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,postFeedbackCruesUrl: feedbackcrues,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
-        printServiceUrl: printproxy, profileServiceUrl: profile.json,
+        printServiceUrl: printproxy, profileServiceUrl: profile.json, featureSearchServiceUrl: featuresearch,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
         shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style,
         getvtstyleUrl: get_vt_style, downloadPdfUrl: download_pdf
@@ -405,7 +418,7 @@ vars:
         appQueryTemplatesPath: 'geoportailv3_geoportal:static-ngeo/js/query/',
         arrowModelUrl: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb',
         assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
-        cesiumURL: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
+        cesiumURL: 'geoportailv3_geoportal:static-ngeo/node_modules/cesium/Build/Cesium/Cesium.js'
       }
       wfs_permalink:
         defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver

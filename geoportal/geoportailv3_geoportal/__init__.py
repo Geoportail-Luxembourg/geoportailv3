@@ -413,6 +413,9 @@ def main(global_config, **settings):
     # cms search routes
     config.add_route("cmssearch", "/cmssearch")
 
+    # cms search routes
+    config.add_route("featuresearch", "/featuresearch")
+
     # jsapi routes
     config.add_route(
         'jsapiloader',
@@ -519,6 +522,7 @@ def main(global_config, **settings):
     # Add custom table in admin interace, that means re-add all normal table
 
     from c2cgeoform.routes import register_models
+
     from c2cgeoportal_commons.models.main import (
         Role, LayerWMS, LayerWMTS, Theme, LayerGroup, LayerV1, Interface, OGCServer,
         Functionality, RestrictionArea)

@@ -8,9 +8,9 @@
   {{layertreeCtrl.node.name | translate}}
 </span>
 <div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children">
-  <app-layerinfo app-layerinfo-layer="::layertreeCtrl.layer"></app-layerinfo>
+  <app-layerinfo app-layerinfo-layer="::layertreeCtrl.layer" app-layerinfo-node="::layertreeCtrl.node"></app-layerinfo>
   <a href ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
-    <i class="fa" ng-class="(layertreeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
+    <i class="fa" ng-class="(catalogCtrl.getActive(layertreeCtrl)) ? 'fa-check-square' : 'fa-square'"></i>
     {{layertreeCtrl.node.name | translate}}
   </a>
 </div>

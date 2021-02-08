@@ -32,6 +32,7 @@ const exports = function(appSearchTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appSearchMap',
+      'selectedLayers': '=appSearchSelectedLayers',
       'language': '=appSearchLanguage',
       'mobileActive': '=appSearchMobileactive',
       'routingOpen': '=appSearchRoutingOpen'
@@ -72,7 +73,7 @@ const exports = function(appSearchTemplateUrl) {
           element.find('span.clear-button').on('click',
               function(scope) {
                 $(element).find('input').val('').trigger('input');
-                var ctrl = /** @type {app.search.SearchController} */ ($scope['ctrl']);
+                var ctrl = angular.element(scope.target).scope().ctrl;
                 ctrl.featureOverlay.clear();
                 ctrl.lastSelectedSuggestion = null;
                 $(element).find('input').focus();

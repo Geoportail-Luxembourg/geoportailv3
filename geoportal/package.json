@@ -13,10 +13,10 @@
   },
   "devDependencies": {
     "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
-    "@camptocamp/cesium": "1.45.0",
+    "cesium": "^1.75",
     "@geoblocks/mapboxlayer-legacy": "0.0.9",
-    "@sentry/browser": "5.5.0",
-    "@sentry/integrations": "5.5.0",
+    "@sentry/browser": "^5.27",
+    "@sentry/integrations": "^5.27",
     "angular": "1.6.10",
     "angular-animate": "1.6.10",
     "angular-dynamic-locale": "0.1.36",
