@@ -54,7 +54,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
     ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
-    arrowUrl, appMvtStylingService) {
+    arrowUrl, appMvtStylingService, getHtmlLegendUrl) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -164,6 +164,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    */
   this.gettextCatalog = gettextCatalog;
 
+  this.getHtmlLegendUrl = getHtmlLegendUrl;
 
   /**
    * Current report reference id.
@@ -494,12 +495,22 @@ exports.prototype.print = function(format) {
       legend.push({'name': bgName});
     }
   }
+  var curLang = this.gettextCatalog.currentLanguage;
+  var url = this.getHtmlLegendUrl;
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
+    var metaMaxDpi = curMetadata['max_dpi'];
+    if (metaMaxDpi !== undefined) {
+      var maxDpi = parseInt(metaMaxDpi, 10);
+      if (dpi > maxDpi) {
+        dpi = maxDpi;
+      }
+    }
     var name = curMetadata['legend_name'];
     if (name !== undefined) {
       legend.push({'name': name});
     } else {
+      var id = layer.get('queryable_id');
       var isExternalWms = curMetadata['isExternalWms'];
       if (isExternalWms) {
         var legendUrl = curMetadata['legendUrl'];
@@ -513,13 +524,17 @@ exports.prototype.print = function(format) {
             'accessConstraints': accessConstraints,
             'legendTitle': legendTitle});
         }
-      }
-    }
-    var metaMaxDpi = curMetadata['max_dpi'];
-    if (metaMaxDpi !== undefined) {
-      var maxDpi = parseInt(metaMaxDpi, 10);
-      if (dpi > maxDpi) {
-        dpi = maxDpi;
+      } else if (id !== undefined) {
+          var queryParams = {
+              'lang': curLang,
+              'id': id,
+              'dpi': dpi,
+              'legend_title': layer.get('label')
+          };
+          legend.push({
+              'name': layer.get('label'),
+              'restUrl': url + '?' + (new URLSearchParams(queryParams)).toString(),
+              'legendTitle': layer.get('label')});
       }
     }
   });

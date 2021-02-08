@@ -1,0 +1,48 @@
+#
+# Language C translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# root <moritz.kirmse@camptocamp.com>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2020-09-04 14:34+0000\n"
+"PO-Revision-Date: 2020-09-04 15:38+0000\n"
+"Last-Translator: root <moritz.kirmse@camptocamp.com>\n"
+"Language-Team: Language C\n"
+"Language: C\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.13\n"
+
+#: ogc_server_id:89
+#: URL:http://ws.geoportail.lu/wss/service/ags-relay/PISTES_CYCLABLES/guest/arcgis/rest/services/PCH/pcycl_wms/MapServer
+#: Layer:velo_by_pch
+msgid "f_Label"
+msgstr ""
+
+#: ogc_server_id:89 Layer: velo_by_pch Sublayer:Label
+msgid "f_"
+msgstr ""
+
+#: ogc_server_id:89
+#: URL:http://ws.geoportail.lu/wss/service/ags-relay/PISTES_CYCLABLES/guest/arcgis/rest/services/PCH/pcycl_wms/MapServer
+#: Layer:velo_by_pch
+msgid "f_Pistes cyclables nationales"
+msgstr ""
+
+#: ogc_server_id:89 Layer: velo_by_pch Sublayer:Pistes cyclables nationales
+msgid "f_Assise réservée (sécurisé)"
+msgstr ""
+
+#: ogc_server_id:89 Layer: velo_by_pch Sublayer:Pistes cyclables nationales
+msgid "f_Voirie secondaire (Sécurisé)"
+msgstr ""
+
+#: ogc_server_id:89 Layer: velo_by_pch Sublayer:Pistes cyclables nationales
+msgid "f_Apaisement du trafic (Sécurisé)"
+msgstr ""
+
+#: ogc_server_id:89 Layer: velo_by_pch Sublayer:Pistes cyclables nationales
+msgid "f_Trafic mixte sur voirie principale (Non-sécurisé)"
+msgstr ""

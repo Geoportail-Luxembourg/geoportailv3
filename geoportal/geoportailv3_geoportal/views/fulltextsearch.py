@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.view import view_config
+import fiona
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
 from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
 import os
 import json
 import geojson
+import urllib
+
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
+import logging
+log = logging.getLogger(__name__)
 
 
 class FullTextSearchView(object):
@@ -57,61 +65,7 @@ class FullTextSearchView(object):
                         }
                     },
                     "minimum_should_match": 2,
-                    "should": [
-                        {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label^2",
-                                    "label.ngram^2",
-                                    "label.simplified^2"
-                                ],
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "type": "best_fields",
-                                "fields": [
-                                    "label.ngram",
-                                    "label.simplified"
-                                ],
-                                "fuzziness": fuzziness,
-                                "operator": "and",
-                                "query": query
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "Commune", "boost": 2
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "Localité", "boost": 1.7
-                                }
-                            }
-                        },
-                        {
-                            "term": {
-                                "layer_name": {
-                                    "value": "lieu_dit", "boost": 1.5
-                                }
-                            }
-                        },
-                        {
-                            "wildcard": {
-                                "layer_name": {
-                                    "value": "editus_poi*",
-                                    "boost": -1.5
-                                }
-                            }
-                        }
-                    ]
+                    "should": []
                 }
             }
         }
@@ -122,6 +76,64 @@ class FullTextSearchView(object):
         if layer:
             for cur_layer in layer.split(","):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
+
+        boosts = [
+                { "name": "Adresse", "boost": 8 },
+                { "name": "nom_de_rue", "boost": 2 },
+                { "name": "Commune", "boost": 10 },
+                { "name": "Localité", "boost": 8 },
+                { "name": "lieu_dit", "boost": 7 },
+                { "name": "Parcelle", "boost": 1 },
+                { "name": "FLIK", "boost": 1 },
+                { "name": "asta esp", "boost": 0 },
+                { "name": "hydro", "boost": 0 },
+                { "name": "hydro_km", "boost": 0 },
+                { "name": "biotope", "boost": 0 },
+                { "name": "editus_poi*", "boost": -1.5 },
+                ]
+        for l in boosts:
+            query_body['query']['bool']['should'].append({
+                "wildcard": {
+                    "layer_name": { "value": l["name"], "boost": l["boost"] }
+                }
+            })
+
+
+        matches = [{
+            "fields": [ "label^2", "label.ngram^2", "label.simplified^2" ],
+        }, {
+            "fields": [ "label.ngram", "label.simplified" ],
+            "fuzziness": fuzziness,
+        }]
+        for term in query.split('%20'):
+            for match in matches:
+               part = {
+                    "multi_match": {
+                        "type": "best_fields",
+                        "operator": "and",
+                        "query": term
+                    }
+               }
+               part['multi_match'].update(match)
+               query_body['query']['bool']['should'].append(part)
+
+        extent = self.request.params.get('extent', False)
+        if extent:
+            extent = extent.split(',')
+            filters['must'].append({
+                "geo_shape": {
+                    "ts": {
+                        "shape": {
+                            "type": "envelope",
+                            "coordinates": [
+                                [ extent[0], extent[3] ],
+                                [ extent[2], extent[1] ]
+                                ]
+                            },
+                        "relation": "within"
+                        }
+                    }
+                })
 
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
@@ -312,3 +324,185 @@ class FullTextSearchView(object):
             }
             features.append(feature)
         return features[:limit]
+
+    @view_config(route_name='featuresearch', renderer='json')
+    def featuresearch(self, layers=None):
+        if 'query' not in self.request.params:
+            return HTTPBadRequest(detail='no query')
+        query = self.request.params.get('query')
+        if layers is None:
+            layers = self.request.params.get('layers', '')
+        layers = layers.split(',')
+        extent = self.request.params.get('extent', False)
+        query_language = self.request.params.get('language', 'fr')
+
+        maxlimit = self.settings.get('maxlimit', 200)
+
+        try:
+            limit = int(self.request.params.get(
+                'limit',
+                self.settings.get('defaultlimit', 30)))
+        except ValueError:
+            return HTTPBadRequest(detail='limit value is incorrect')
+        if limit > maxlimit:
+            limit = maxlimit
+
+        from c2cgeoportal_commons.models import DBSession, DBSessions
+        from c2cgeoportal_commons.models.main import TreeItem
+        from geoportailv3_geoportal.models import LuxGetfeatureDefinition
+        request_layers = DBSession.query(LuxGetfeatureDefinition).filter(LuxGetfeatureDefinition.layer.in_(layers))
+
+        features = []
+        for layer in request_layers:
+            layer_name = (DBSession.query(TreeItem)
+                          .filter(TreeItem.id == layer.layer)).first().name
+            search_column = layer.search_column
+            if search_column is None or search_column == "":
+                log.warning(f'Layer {layer.layer} ({layer_name}) has no search column definition - '
+                            'skipping search results for this layer.')
+                continue
+
+            if (layer.engine_gfi is not None and
+                layer.query is not None and
+                    len(layer.query) > 0):
+                query_1 = layer.query
+                if "WHERE" in query_1.upper():
+                    query_1 = query_1 + " AND "
+                else:
+                    query_1 = query_1 + " WHERE "
+
+                if "SELECT" in query_1.upper():
+                    query_1 = query_1.replace(
+                        "SELECT",
+                        "SELECT ST_AsGeoJSON(ST_Transform(%(geom)s, 3857)), "
+                        % {'geom': layer.geometry_column}, 1)
+                else:
+                    query_1 = "SELECT *,ST_AsGeoJSON(ST_Transform(%(geom)s, 3857)) FROM "\
+                        % {'geom': layer.geometry_column} +\
+                        query_1
+
+                gfi_query = query_1 + f"lower({search_column}) like '%{query.lower()}%'"
+                if extent:
+                    bbox = extent.split(',')
+                    gfi_query = gfi_query + " AND ST_Intersects(ST_Transform( %(geom)s, 3857), "\
+                        "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
+                        "%(top)s, 3857) )"\
+                        % {'left': bbox[0],
+                           'bottom': bbox[1],
+                           'right': bbox[2],
+                           'top': bbox[3],
+                           'geom': layer.geometry_column}
+                query_limit = 20
+                if layer.query_limit is not None:
+                    query_limit = layer.query_limit
+                if query_limit > 0:
+                    gfi_query = gfi_query + " LIMIT " + str(query_limit)
+
+                session = DBSessions[layer.engine_gfi]
+                res = session.execute(gfi_query)
+                rows = res.fetchall()
+
+                for row in rows:
+                    try:
+                        geom = geojson.loads(row['st_asgeojson'])
+                    except:
+                        geom = None
+                    try:
+                        geom = shape(geom)
+                        bbox = geom.bounds
+                    except:
+                        bbox = {}
+                    attributes = dict(row)
+                    if layer.id_column in row:
+                        featureid = row[layer.id_column]
+                    else:
+                        if 'id' in row:
+                            featureid = row['id']
+                        else:
+                            featureid = None
+                    properties = {'label': attributes[search_column],
+                                  'layer_name': layer_name}
+                    features.append(Feature(id=featureid,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
+            elif (layer.rest_url is not None and
+                  len(layer.rest_url) > 0):
+
+                url = layer.rest_url
+                if url.find("@") > -1:
+                    url = self._get_url_with_token(url)
+
+                # construct url for get request
+                separator = '?'
+                if url.find(separator) > 0:
+                    separator = '&'
+                body = {
+                    'f': 'json',
+                    'returnGeometry': 'true',
+                    'where': f"lower({search_column}) like '%{query.lower()}%'",
+                    'outSR': '3857',
+                    'outFields': '*'
+                }
+                if layer.use_auth:
+                    auth_token = get_arcgis_token(self.request, log)
+                    if 'token' in auth_token:
+                        body["token"] = auth_token['token']
+                if extent:
+                    body['inSR'] = '3857'
+                    body['geometry'] = extent
+                    body['geometryType'] = 'esriGeometryEnvelope'
+                    body['spatialRel'] = 'esriSpatialRelIntersects'
+
+                esri_query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
+                log.info(esri_query)
+                try:
+                    url_request = urllib.request.Request(esri_query)
+                    result = read_request_with_token(url_request, self.request, log)
+                    content = result.data
+                except ESRITokenException as e:
+                    raise HTTPBadGateway(e)
+                except Exception as e:
+                    log.exception(e)
+                    log.error(url)
+                    return []
+
+                try:
+                    mf = fiona.MemoryFile(content)
+                    esricoll = mf.open(driver='ESRIJSON')
+                except:
+                    raise
+
+                for rawfeature in esricoll:
+                    geom = rawfeature['geometry']
+                    bbox = {}
+                    try:
+                        geom = shape(geom)
+                        bbox = geom.bounds
+                    except:
+                        pass
+                    attr = rawfeature['properties']
+
+                    if layer.id_column in attr:
+                        id = attr[layer.id_column]
+                    else:
+                        if 'id' in attr:
+                            id = attr['id']
+                        else:
+                            id = None
+                    properties = {'label': attr[search_column],
+                                  'layer_name': layer_name}
+
+                    features.append(Feature(id=id,
+                                            geometry=geom,
+                                            properties=properties,
+                                            bbox=bbox))
+
+                esricoll.close()
+                mf.close()
+
+            else:
+                log.info(f"WMS layers cannot be searched - skipping {layer_name}")
+
+        return FeatureCollection(features)

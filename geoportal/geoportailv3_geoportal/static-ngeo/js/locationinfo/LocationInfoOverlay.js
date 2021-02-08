@@ -19,7 +19,7 @@ import Fill from 'ol/style/Fill.js';
  * @ngInject
  */
 const exports = function(ngeoFeatureOverlayMgr) {
-
+  ngeoFeatureOverlayMgr.getLayer().set('altitudeMode', 'clampToGround');
   /**
    * @type {ngeo.map.FeatureOverlay}
    * @private

@@ -1,3 +1,14 @@
+<ul id="layermanager-3d" class="layermanager" ng-if="ctrl.is3dEnabled()" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback3D" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}">
+  <li ng-repeat="layer in ctrl.get3DLayers()" class="panel layermanager-panel">
+    <span class="sortable-handle fa fa-reorder"></span>
+    <app-layerinfo app-layerinfo-node="::layer"></app-layerinfo>
+    <div class="layer-label">
+    {{layer.name | translate}}
+    </div>
+    <a class="delete" ng-click="ctrl.remove3dLayer(layer.layer);"><span class="fa fa-trash-o"></span></a>
+  </li>
+</ul>
+
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
 <ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
   <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel" ng-if="!layer.get('metadata').hidden">

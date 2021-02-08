@@ -1,0 +1,112 @@
+#
+# Language C translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# root <moritz.kirmse@camptocamp.com>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2020-09-08 11:48+0000\n"
+"PO-Revision-Date: 2020-09-08 13:52+0200\n"
+"Last-Translator: root <moritz.kirmse@camptocamp.com>\n"
+"Language-Team: Language C\n"
+"Language: C\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.13\n"
+
+#: ogc_server_id:89
+#: URL:http://ws.geoportail.lu/wss/service/ags-relay/PISTES_CYCLABLES/guest/arcgis/rest/services/PCH/pcycl_wms/MapServer
+#: Layer:velo_by_pch
+msgid "velo_by_pch : Label"
+msgstr "Label"
+
+#: ogc_server_id:89 Layer:velo_by_pch Sublayer:Label
+msgid "velo_by_pch / Label : "
+msgstr "Numéro de piste cyclable"
+
+#: ogc_server_id:89
+#: URL:http://ws.geoportail.lu/wss/service/ags-relay/PISTES_CYCLABLES/guest/arcgis/rest/services/PCH/pcycl_wms/MapServer
+#: Layer:velo_by_pch
+msgid "velo_by_pch : Pistes cyclables nationales"
+msgstr "Pistes cyclables nationales"
+
+#: ogc_server_id:89 Layer:velo_by_pch Sublayer:Pistes cyclables nationales
+msgid "velo_by_pch / Pistes cyclables nationales : Assise réservée (sécurisé)"
+msgstr "Pistes cyclables nationales : Assise réservée (sécurisé)"
+
+#: ogc_server_id:89 Layer:velo_by_pch Sublayer:Pistes cyclables nationales
+msgid ""
+"velo_by_pch / Pistes cyclables nationales : Voirie secondaire (Sécurisé)"
+msgstr "Voirie secondaire (Sécurisé)"
+
+#: ogc_server_id:89 Layer:velo_by_pch Sublayer:Pistes cyclables nationales
+msgid ""
+"velo_by_pch / Pistes cyclables nationales : Apaisement du trafic (Sécurisé)"
+msgstr "Apaisement du trafic (Sécurisé)"
+
+#: ogc_server_id:89 Layer:velo_by_pch Sublayer:Pistes cyclables nationales
+msgid ""
+"velo_by_pch / Pistes cyclables nationales : Trafic mixte sur voirie "
+"principale (Non-sécurisé)"
+msgstr "Trafic mixte sur voirie principale (Non-sécurisé)"
+
+#: ogc_server_id:89
+#: URL:https://sampleserver6.arcgisonline.com/arcgis/rest/services/LocalGovernment/Recreation/MapServer
+#: Layer:recreation
+msgid "recreation : Facilities"
+msgstr "Infrastructures"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Camping"
+msgstr "Camping"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Dining"
+msgstr "Resto"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Drinking Water"
+msgstr ""
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Medical Facility"
+msgstr "Service Médical"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : RV Parking"
+msgstr ""
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Ranger Station"
+msgstr ""
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Rest Area"
+msgstr ""
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Restrooms"
+msgstr "Toilettes"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Showers"
+msgstr "Douches"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Trail Head"
+msgstr ""
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Facilities
+msgid "recreation / Facilities : Trash Can"
+msgstr ""
+
+#: ogc_server_id:89
+#: URL:https://sampleserver6.arcgisonline.com/arcgis/rest/services/LocalGovernment/Recreation/MapServer
+#: Layer:recreation
+msgid "recreation : Recreational Area"
+msgstr "Aire de loisirs"
+
+#: ogc_server_id:89 Layer:recreation Sublayer:Recreational Area
+msgid "recreation / Recreational Area : "
+msgstr "Périmètre de l'aire de loisirs"
