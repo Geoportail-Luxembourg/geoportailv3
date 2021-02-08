@@ -491,8 +491,10 @@ exports.prototype.createWmsLayers = function(map, layer) {
   newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
+  if (layer['time'] !== undefined) {
+    newLayer.set('time', layer['time']);
+  }
   ngeoMiscDecorate.layer(newLayer);
-
   this.getMetadata(layer['id']).then(function(metadata) {
     if (metadata['hasImageLegend']) {
       curMatadata['legendUrl'] = metadata['legendUrl'];
