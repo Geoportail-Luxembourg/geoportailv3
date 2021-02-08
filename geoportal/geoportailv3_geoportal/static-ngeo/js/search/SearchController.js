@@ -546,15 +546,15 @@ const exports = function($scope, $window, $compile,
     :this.initialFacets
   );
   this.esLabels = {
-    address: 'Adresses',
-    parcels: 'Parcelles cadastrales',
-    localite: 'Localités',
-    lieudit: 'Lieux-dits',
-    commune: 'Communes',
-    flik: 'Éléments agricoles',
-    hydro: 'Hydrographie',
-    biotopes: 'Biotopes',
-    editus: 'POI Editus'
+    address: this.gettextCatalog.getString('Adresses'),
+    parcels: this.gettextCatalog.getString('Parcelles cadastrales'),
+    localite: this.gettextCatalog.getString('Localités'),
+    lieudit: this.gettextCatalog.getString('Lieux-dits'),
+    commune: this.gettextCatalog.getString('Communes'),
+    flik: this.gettextCatalog.getString('Éléments agricoles'),
+    hydro: this.gettextCatalog.getString('Hydrographie'),
+    biotopes: this.gettextCatalog.getString('Biotopes'),
+    editus: this.gettextCatalog.getString('POI Editus')
   }
 
 
