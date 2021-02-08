@@ -357,7 +357,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 ogc_layers = internal_wms.layers
 
                 first_row = self._ogc_getfeatureinfo(
-                    session,
+                    DBSession,
                     url, x, y, width, height,
                     ogc_layers, bbox, srs, result.layer)
 
