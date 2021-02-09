@@ -228,9 +228,9 @@ class Wms:
         separator = ""
         if remote_host[-1] != "?" and remote_host[-1] != "&":
             separator = "&"
-
-        url = remote_host + separator + urllib.parse.urlencode(query_params)
+        url = remote_host + separator + urllib.parse.urlencode(query_params).replace('+', '%20')
         timeout = 15
+
         url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
