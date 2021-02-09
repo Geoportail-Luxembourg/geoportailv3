@@ -615,16 +615,16 @@ exports.prototype.createAndInitPOIBloodhound_ =
         remote: {
           url: searchServiceUrl,
           prepare: (query, settings) => {
-            const url = new URL(settings.url)
-            const params = url.searchParams
-            params.set('query', encodeURIComponent(query))
-            params.set('limit', this.limitResults)
+            const url = new URL(settings.url);
+            const params = url.searchParams;
+            params.set('query', query);
+            params.set('limit', this.limitResults);
             // Facets
             let layers = Object.keys(this.esMatch_)
               .filter(k => this.facets[k])
               .map(k => this.esMatch_[k])
-              .flat()
-            if (layers.length > 0) params.set('layer', layers.join(','))
+              .flat();
+            if (layers.length > 0) params.set('layer', layers.join(','));
             // Restrict to area
             if (this.facets.extent) {
               let extent = transformExtent(
@@ -632,9 +632,9 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 'EPSG:3857',
                 'EPSG:4326'
               );
-              params.set('extent', extent.join(','))
+              params.set('extent', extent.join(','));
             }
-            settings.url = url.toString()
+            settings.url = url.toString();
             return settings
           },
           rateLimitWait: 50,
