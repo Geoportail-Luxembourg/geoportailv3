@@ -505,7 +505,7 @@ update_paths:
   - content_security_policy.apihelp
   - fulltextsearch
   - functionalities.available_in_templates
-  - global_headers
+  # - global_headers
   - headers.index
   - headers.api
   - headers.profile
