@@ -491,6 +491,7 @@ const exports = function($scope, $window, $compile,
     })
   }, {
       name: 'features',
+      limit: 20,
       source: FeatureBloodhoundEngine.ttAdapter(),
       display: function(suggestion) {
           var feature = /** @type {ol.Feature} */ (suggestion);
@@ -744,7 +745,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           const url = new URL(settings.url);
           const params = url.searchParams;
           params.set('query', query);
-          params.set('limit', this.limitResults)
+          params.set('limit', 5)
           params.set('language', this.gettextCatalog.currentLanguage);
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);

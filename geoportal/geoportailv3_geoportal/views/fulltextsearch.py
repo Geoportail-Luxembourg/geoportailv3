@@ -402,7 +402,12 @@ class FullTextSearchView(object):
                 res = session.execute(gfi_query)
                 rows = res.fetchall()
 
+                cnt = 0
                 for row in rows:
+                    cnt = cnt + 1
+                    if cnt > limit:
+                        break
+
                     try:
                         geom = geojson.loads(row['st_asgeojson'])
                     except:
@@ -473,8 +478,11 @@ class FullTextSearchView(object):
                     esricoll = mf.open(driver='ESRIJSON')
                 except:
                     raise
-
+                cnt = 0
                 for rawfeature in esricoll:
+                    cnt = cnt + 1
+                    if cnt > limit:
+                        break
                     geom = rawfeature['geometry']
                     bbox = {}
                     try:
