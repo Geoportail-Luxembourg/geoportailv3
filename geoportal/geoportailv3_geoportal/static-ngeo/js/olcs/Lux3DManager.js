@@ -22,7 +22,7 @@ const exports = class extends ngeoOlcsManager {
    *     manager.
    */
   constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
-    tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr) {
+    tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr, $window) {
     super(cesiumUrl, $rootScope, {
       map,
       cameraExtentInRadians
@@ -318,17 +318,20 @@ const exports = class extends ngeoOlcsManager {
       this.remove3dLayer(layer);
     }.bind(this));
   }
-
   onToggle() {
     if (this.is3dEnabled()) {
+      var piwik = /** @type {Piwik} */ (window['_paq']);
       if (this.mode_ === 'MESH') {
         this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
         this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+        piwik.push(['setDocumentTitle', 'enableMesh']);
       } else {
         if (this.currentBgLayer !== undefined) {
           this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
         }
+        piwik.push(['setDocumentTitle', 'enable3d']);
       }
+      piwik.push(['trackPageView']);
       this.init3dTiles();
     } else {
       if (this.currentBgLayer !== undefined) {
