@@ -12,6 +12,15 @@ vars:
         Referrer-Policy: origin
         Strict-Transport-Security: max-age=31536000; includeSubDomains
 
+  headers:
+    index:
+      headers: &sec_headers
+        X-Frame-Options: SAMEORIGIN
+        X-Xss-Protection: 1; mode=block
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: origin
+        Strict-Transport-Security: max-age=31536000; includeSubDomains
+
   # Custom keys
   authorized_ips: null
   default_mymaps_role: '{DEFAULT_MYMAPS_ROLE}'
