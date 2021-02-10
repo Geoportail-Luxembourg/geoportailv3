@@ -1317,10 +1317,6 @@ MainController.prototype.enable3dCallback_ = function(active) {
   }
   this.appMvtStylingService.publishIfSerial(this.map_);
 
-  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setDocumentTitle', 'enable3d']);
-  piwik.push(['trackPageView']);
-
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
