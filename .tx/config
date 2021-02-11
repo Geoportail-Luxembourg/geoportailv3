@@ -24,9 +24,3 @@ file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoport
 source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 source_lang = frp
 type = PO
-
-[ngeo.ngeo-2_3]
-file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/ngeo.po
-source_file = geoportal/geoportailv3_geoportal/locale/ngeo.pot
-source_lang = frp
-type = PO
