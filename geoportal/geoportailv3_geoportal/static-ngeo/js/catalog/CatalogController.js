@@ -123,8 +123,10 @@ const exports = function($scope, appThemes, appTheme,
         })
       } else {
         if (this.tree !== undefined) {
-          const idx = this.tree.children.findIndex((e) => e.id === -1);
-          this.tree.children.splice(idx, 1);
+          const idx = this.tree.children.findIndex((e) => e.name === "3d Layers");
+          if (idx > -1) {
+            this.tree.children.splice(idx, 1);
+          }
         }
       }
     }
