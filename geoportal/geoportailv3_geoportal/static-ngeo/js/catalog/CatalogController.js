@@ -123,7 +123,7 @@ const exports = function($scope, appThemes, appTheme,
         })
       } else {
         if (this.tree !== undefined) {
-          const idx = this.tree.children.findIndex((e) => e.name === "3d Layers");
+          const idx = this.tree.children.findIndex((e) => e.id === -1);
           if (idx > -1) {
             this.tree.children.splice(idx, 1);
           }
@@ -171,6 +171,12 @@ exports.prototype.setTree_ = function() {
        */
       (function(tree) {
         this['tree'] = tree;
+        if (this['tree'] !== undefined) {
+          const idx = this.tree.children.findIndex((e) => ('display_in_switcher' in e.metadata && e.metadata['display_in_switcher'] === false));
+          if (idx > -1) {
+            this['tree'].children.splice(idx, 1);
+          }
+        }
         this.setThemeZooms(this['tree']);
       }).bind(this));
 };
