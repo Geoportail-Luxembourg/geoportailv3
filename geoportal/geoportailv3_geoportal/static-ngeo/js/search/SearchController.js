@@ -31,6 +31,7 @@ import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
+import olcsCore from 'olcs/core.js';
 
 /**
  * @ngInject
@@ -57,6 +58,7 @@ import { matchCoordinate } from '../CoordinateMatch'
  * @param {string} cmsSearchServiceUrl The url to the cms search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
  * @param {app.Routing} appRouting The routing service.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @export
  */
 const exports = function($scope, $window, $compile,
@@ -64,7 +66,11 @@ const exports = function($scope, $window, $compile,
     appCoordinateString, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl, featureSearchServiceUrl,
-    appExcludeThemeLayerSearch, appRouting) {
+    appExcludeThemeLayerSearch, appRouting, ngeoOlcsService) {
+    /**
+     * @private
+     */
+    this.olcsManager_ = ngeoOlcsService.getManager();
 
   /**
    * @type {app.Routing}
@@ -195,7 +201,7 @@ const exports = function($scope, $window, $compile,
           stroke: strokeStyle
         })
       }));
-
+  ngeoFeatureOverlayMgr.getLayer().set('altitudeMode', 'clampToGround');
   /**
    * @type {app.CoordinateString}
    * @private
@@ -483,6 +489,7 @@ const exports = function($scope, $window, $compile,
     })
   }, {
       name: 'features',
+      limit: 20,
       source: FeatureBloodhoundEngine.ttAdapter(),
       display: function(suggestion) {
           var feature = /** @type {ol.Feature} */ (suggestion);
@@ -538,15 +545,15 @@ const exports = function($scope, $window, $compile,
     :this.initialFacets
   );
   this.esLabels = {
-    address: 'Adresses',
-    parcels: 'Parcelles cadastrales',
-    localite: 'Localités',
-    lieudit: 'Lieux-dits',
-    commune: 'Communes',
-    flik: 'Éléments agricoles',
-    hydro: 'Hydrographie',
-    biotopes: 'Biotopes',
-    editus: 'POI Editus'
+    address: this.gettextCatalog.getString('Adresses'),
+    parcels: this.gettextCatalog.getString('Parcelles cadastrales'),
+    localite: this.gettextCatalog.getString('Localités'),
+    lieudit: this.gettextCatalog.getString('Lieux-dits'),
+    commune: this.gettextCatalog.getString('Communes'),
+    flik: this.gettextCatalog.getString('Éléments agricoles'),
+    hydro: this.gettextCatalog.getString('Hydrographie'),
+    biotopes: this.gettextCatalog.getString('Biotopes'),
+    editus: this.gettextCatalog.getString('POI Editus')
   }
 
 
@@ -607,16 +614,16 @@ exports.prototype.createAndInitPOIBloodhound_ =
         remote: {
           url: searchServiceUrl,
           prepare: (query, settings) => {
-            const url = new URL(settings.url)
-            const params = url.searchParams
-            params.set('query', encodeURIComponent(query))
-            params.set('limit', this.limitResults)
+            const url = new URL(settings.url);
+            const params = url.searchParams;
+            params.set('query', query);
+            params.set('limit', this.limitResults);
             // Facets
             let layers = Object.keys(this.esMatch_)
               .filter(k => this.facets[k])
               .map(k => this.esMatch_[k])
-              .flat()
-            if (layers.length > 0) params.set('layer', layers.join(','))
+              .flat();
+            if (layers.length > 0) params.set('layer', layers.join(','));
             // Restrict to area
             if (this.facets.extent) {
               let extent = transformExtent(
@@ -624,9 +631,9 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 'EPSG:3857',
                 'EPSG:4326'
               );
-              params.set('extent', extent.join(','))
+              params.set('extent', extent.join(','));
             }
-            settings.url = url.toString()
+            settings.url = url.toString();
             return settings
           },
           rateLimitWait: 50,
@@ -736,7 +743,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           const url = new URL(settings.url);
           const params = url.searchParams;
           params.set('query', query);
-          params.set('limit', this.limitResults)
+          params.set('limit', 5)
           params.set('language', this.gettextCatalog.currentLanguage);
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);
@@ -886,37 +893,46 @@ exports.selected_ =
         var feature = /** @type {ol.Feature} */ (suggestion);
         this.lastSelectedSuggestion = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-        map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
-          size: /** @type {ol.Size} */ (map.getSize()),
-          maxZoom: 18
-        }));
-        this.featureOverlay.clear();
-        var features = [];
-        if (dataset === 'coordinates') {
-          features.push(feature);
-        } else if (dataset === 'features') {
-          features.push(feature);
-        } else if (dataset === 'pois') {
-          if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
-                 this.appTheme_.getCurrentTheme()) &&
-                 feature.get('layer_name') === 'Parcelle')) {
-            if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
+        if (this.olcsManager_.is3dEnabled()) {
+            olcsCore.resetToNorthZenith(map, map.get('ol3dm').getCesiumScene()).then(function(){
+                map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+                  size: /** @type {ol.Size} */ (map.getSize()),
+                  maxZoom: 18
+                }));
+            });
+        } else {
+          map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+            size: /** @type {ol.Size} */ (map.getSize()),
+            maxZoom: 18
+          }));
+          this.featureOverlay.clear();
+          var features = [];
+          if (dataset === 'coordinates') {
+            features.push(feature);
+          } else if (dataset === 'features') {
+            features.push(feature);
+          } else if (dataset === 'pois') {
+            if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
+                   this.appTheme_.getCurrentTheme()) &&
+                   feature.get('layer_name') === 'Parcelle')) {
+              if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
+                features.push(feature);
+              }
+              var layers = /** @type {Array<string>} */
+              (this.layerLookup_[suggestion.get('layer_name')] || []);
+              layers.forEach(function(layer) {
+                this.addLayerToMap_(/** @type {string} */ (layer));
+              }.bind(this));
+            } else {
+              feature.setGeometry(
+                new olGeomPoint(getCenter(
+                  featureGeometry.getExtent())));
               features.push(feature);
             }
-            var layers = /** @type {Array<string>} */
-            (this.layerLookup_[suggestion.get('layer_name')] || []);
-            layers.forEach(function(layer) {
-              this.addLayerToMap_(/** @type {string} */ (layer));
-            }.bind(this));
-          } else {
-            feature.setGeometry(
-              new olGeomPoint(getCenter(
-                featureGeometry.getExtent())));
-            features.push(feature);
           }
-        }
-        for (var i = 0; i < features.length; ++i) {
-          this.featureOverlay.addFeature(features[i]);
+          for (var i = 0; i < features.length; ++i) {
+            this.featureOverlay.addFeature(features[i]);
+          }
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));

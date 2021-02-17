@@ -771,6 +771,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     position = this.getView().getCenter();
   }
   var markerOverlay = new ol.Overlay({
+    id: options.id,
     element: element,
     position: position,
     positioning: options.positioning || 'center-center'
@@ -781,6 +782,9 @@ lux.Map.prototype.showMarker = function(opt_options) {
     this.getView().setCenter(position);
   }
   var canvasContext = document.createElement('canvas').getContext('2d');
+  if (options.onClick) {
+    ol.events.listen(element, ol.events.EventType.CLICK, options.onClick);
+  }
   if (options.html) {
     var popup;
     var showPopupEvent = options.click ?
@@ -2021,13 +2025,15 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
  * Set the center of the current view in EPSG:2169.
  * @param {ol.Coordinate} coordinate The coordinate of the center.
  * @param {number|undefined} zoom The zoom numer.
+ * @param {string|number|undefined} positionSrs The projection of the position coordinates.
+ * Default is `2169`.
  * @export
  * @api
  */
-lux.Map.prototype.setCenter = function(coordinate, zoom) {
+lux.Map.prototype.setCenter = function(coordinate, zoom, positionSrs) {
   var lonlat = /** @type {ol.Coordinate} */
         (ol.proj.transform(coordinate,
-            'EPSG:2169', 'EPSG:3857'));
+            (positionSrs !== undefined) ? 'EPSG:' + positionSrs.toString() : 'EPSG:2169', 'EPSG:3857'));
   this.getView().setCenter(lonlat);
   if (zoom !== undefined) {
     this.getView().setZoom(zoom);
