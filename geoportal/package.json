@@ -36,7 +36,7 @@
     "karma-coverage": "1.1.2",
     "karma-coverage-istanbul-reporter": "2.0.1",
     "mapbox-gl": "1.7.0",
-    "ngeo": "2.5.0-lux.2",
+    "ngeo": "2.5.0-lux.4",
     "ol-cesium": "2.11",
     "raven-js": "3.24.2",
     "source-map-loader": "0.2.4",
