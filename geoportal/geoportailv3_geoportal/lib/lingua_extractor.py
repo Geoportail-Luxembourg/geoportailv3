@@ -139,8 +139,7 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
         from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
         results = (DBSession.query(LuxLayerInternalWMS)
-                   .filter(LuxLayerInternalWMS.rest_url.isnot(None))
-                   .filter(LuxLayerInternalWMS.id == 808))
+                   .filter(LuxLayerInternalWMS.rest_url.isnot(None)))
         print(f"{results.count} ESRI layers to parse")
 
         for result in results:

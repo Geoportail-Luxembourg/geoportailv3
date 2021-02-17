@@ -141,6 +141,7 @@ exports.constant('appSymbolSelectorTemplateUrl', 'templatecache/appSymbolSelecto
 exports.constant('appLayerinfoTemplateUrl', 'templatecache/appLayerinfoTemplateUrl');
 exports.constant('appAuthenticationTemplateUrl', 'templatecache/appAuthenticationTemplateUrl');
 exports.constant('appInfobarTemplateUrl', 'templatecache/appInfobarTemplateUrl');
+exports.constant('app3dbarTemplateUrl', 'templatecache/app3dbarTemplateUrl');
 exports.constant('appProjectionselectorTemplateUrl', 'templatecache/appProjectionselectorTemplateUrl');
 exports.constant('appMapTemplateUrl', 'templatecache/appMapTemplateUrl');
 exports.constant('appThemeswitcherTemplateUrl', 'templatecache/appThemeswitcherTemplateUrl');
@@ -188,6 +189,7 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appLayerinfoTemplateUrl', require('./layerinfo/layerinfo.html'));
   $templateCache.put('templatecache/appAuthenticationTemplateUrl', require('./authentication/authentication.html'));
   $templateCache.put('templatecache/appInfobarTemplateUrl', require('./infobar/infobar.html'));
+  $templateCache.put('templatecache/app3dbarTemplateUrl', require('./olcs/3dbar.html'));
   $templateCache.put('templatecache/appProjectionselectorTemplateUrl', require('./infobar/projectionselector.html'));
   $templateCache.put('templatecache/appMapTemplateUrl', require('./map/map.html'));
   $templateCache.put('templatecache/appThemeswitcherTemplateUrl', require('./themeswitcher/themes.html'));

@@ -43,13 +43,15 @@ span.twitter-typeahead {
     }
   }
   .tt-menu {
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
     position: absolute;
     top: 100%;
     left: 0;
     z-index: 1000;
     display: none;
     float: left;
-    min-width: 400px;
+    min-width: 370px;
     padding: 5px 5px;
     margin: 2px 0 0;
     list-style: none;
@@ -197,14 +199,14 @@ span.twitter-typeahead {
     white-space: nowrap;
     margin-left: auto;
     margin-right: auto;
-    width: 400px;
+    width: 370px;
   }
 
   header .navbar-form {
   padding-right: 15px;
   span.twitter-typeahead,
     .form-control {
-    width: 400px;
+    width: 370px;
     }
   }
 }
