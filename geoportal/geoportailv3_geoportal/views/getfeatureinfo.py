@@ -8,6 +8,7 @@ import pyproj
 import geojson
 import os
 import json
+import pytz
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -87,6 +88,57 @@ class Getfeatureinfo(object):
         headers = {"Content-Type": f.info()['Content-Type']}
 
         return Response(data, headers=headers)
+
+    @view_config(route_name='download_pdf')
+    def download_pdf_arcgis(self):
+        fid = self.request.params.get('fid', None)
+        if fid is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        layers, id = fid.split('_', 1)
+        if layers is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
+        if len(luxgetfeaturedefinitions) == 0:
+            return HTTPBadRequest("Configuration is missing")
+        url = None
+        luxgetfeaturedefinition = luxgetfeaturedefinitions[0]
+        # TODO : Manage Database definition. Not only remote services.
+        if (luxgetfeaturedefinition is not None and
+            luxgetfeaturedefinition.rest_url is not None and
+                len(luxgetfeaturedefinition.rest_url) > 0):
+                timeout = 15
+                url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
+                url = url.replace('/query?', '/')
+                url = url.replace('/query', '/')
+                url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+                pdf_id = None
+                pdf_name = None
+                try:
+                    f = urllib.request.urlopen(url1, None, timeout)
+                    data = f.read()
+                    attachmentInfos = json.loads(data)["attachmentInfos"]
+                    for info in attachmentInfos:
+                        if info["contentType"] == "application/pdf":
+                            pdf_id = info["id"]
+                            pdf_name = info["name"]
+                except:
+                    return HTTPBadRequest()
+                if pdf_name is None or pdf_id is None:
+                    return HTTPBadRequest()
+                url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
+
+                try:
+                    f = urllib.request.urlopen(url2, None, timeout)
+                    data = f.read()
+                except:
+                    log.error(url2)
+                    return HTTPBadRequest()
+
+                headers = {"Content-Type": "application/pdf",
+                           "Content-Disposition": "attachment; filename=\"%(pdf_name)s.pdf\"" %{'pdf_name': pdf_name}}
+
+                return Response(data, headers=headers)
+        return HTTPBadGateway("Unable to access the remote url")
 
     # Get the remote template
     @view_config(route_name='getremotetemplate')
@@ -389,20 +441,18 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.layer,
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
-                        big_box, None, None,
-                        luxgetfeaturedefinition.attributes_to_remove,
+                        big_box, None, None, None,
                         luxgetfeaturedefinition.columns_order,
                         use_auth=luxgetfeaturedefinition.use_auth)
-
                 else:
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
-                        None, fid, None,
-                        luxgetfeaturedefinition.attributes_to_remove,
+                        None, fid, None, None,
                         luxgetfeaturedefinition.columns_order,
                         use_auth=luxgetfeaturedefinition.use_auth)
+
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
@@ -413,6 +463,7 @@ class Getfeatureinfo(object):
                     is_ordered =\
                         luxgetfeaturedefinition.columns_order is not None\
                         and len(luxgetfeaturedefinition.columns_order) > 0
+                    features = self.remove_attributes_from_features(features, luxgetfeaturedefinition.attributes_to_remove)
                     if fid is None:
                         results.append(
                             self.to_featureinfo(
@@ -612,6 +663,11 @@ class Getfeatureinfo(object):
             return HTTPBadRequest()
         return luxgetfeaturedefinitions
 
+    def remove_attributes_from_features(self, features, attributes_to_remove):
+        for feature in features:
+            feature['attributes'] = self.remove_attributes(feature['attributes'], attributes_to_remove)
+        return features
+
     def remove_attributes(self, attributes, attributes_to_remove,
                           geometry_column='geom'):
         elements = []
@@ -689,15 +745,21 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
-    def format_esridate(self, features, attribute="date_time", format="%Y-%m-%d %H:%M:%S"):
+    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
         for feature in features:
             try:
-                if attribute in feature['attributes']:
-                    value = feature['attributes'][attribute]
-                    if value is not None:
-                            feature['attributes'][attribute] =\
-                                datetime.datetime.fromtimestamp(int(value)/1000.0).strftime(format)
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                                utc_dt = datetime.datetime.fromtimestamp(int(value)/1000.0, tz=pytz.utc)
+                                lux_tz = pytz.timezone("Europe/Luxembourg")
+                                local_time = lux_tz.normalize(utc_dt)
+                                feature['attributes'][attribute] =\
+                                    local_time.strftime(format)
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
@@ -710,15 +772,19 @@ class Getfeatureinfo(object):
             for key in feature['attributes']:
                 value = feature['attributes'][key]
                 if value is not None:
-                    if 'hyperlin' in key.lower():
+                    if 'hyperlinks_graph' in key.lower():
+                        feature['attributes'][key] =\
+                            "<iframe width='260 px' src='%s'></iframe>"\
+                            % (value)
+                    elif 'hyperlin' in key.lower():
                         feature['attributes'][key] =\
                             "<a href='%s' target='_blank'>%s</a>"\
                             % (value, value.rsplit("/", 1)[1])
-                    if 'Fiche station' in key:
+                    elif 'Fiche station' in key:
                         feature['attributes'][key] =\
                             "<a href='%s' target='_blank'>%s</a>"\
                             % (value, value.rsplit("/", 1)[1])
-                    if 'Photo station' in key:
+                    elif 'Photo station' in key:
                         feature['attributes'][key] =\
                             "<img src='%s' width='300px'/>" % (value)
 
@@ -774,21 +840,26 @@ class Getfeatureinfo(object):
                 output_features.append(feature)
         return output_features
 
-    def get_additional_info_for_new_ng95(self, features):
-        ng_url = os.environ["NG_URL"]
+    def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
+        url = url.replace('/MapServer/', '/FeatureServer/')
+        url = url.replace('/query?', '/')
+        url = url.replace('/query', '/')
+
         for feature in features:
             feature['attributes']['has_sketch'] = False
-            id = feature['attributes']['OBJECTID']
-            url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+            id = feature['attributes'][id_attr]
+            url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
             try:
                 f = urllib.request.urlopen(url1, None, timeout)
                 data = f.read()
-                attachmentInfos = json.loads(data)["attachmentInfos"]
-                for info in attachmentInfos:
-                    if info["contentType"] == "application/pdf":
-                        feature['attributes']['has_sketch'] = True
+                data_json = json.loads(data)
+                if "attachmentInfos" in data_json:
+                    attachmentInfos = data_json["attachmentInfos"]
+                    for info in attachmentInfos:
+                        if info["contentType"] == "application/pdf":
+                            feature['attributes']['has_sketch'] = True
             except Exception as e:
                 log.exception(e)
                 feature['attributes']['has_sketch'] = False
