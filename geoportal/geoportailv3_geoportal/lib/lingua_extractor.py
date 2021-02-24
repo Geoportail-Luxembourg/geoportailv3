@@ -145,10 +145,15 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
             self._load_result(result)
 
     def _load_result(self, result):
+        data = None
         if result.rest_url is not None and len(result.rest_url) > 0:
             full_url = result.rest_url + '/legend?f=pjson'
-            f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
-            data = json.load(f)
+            try:
+                f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
+                data = json.load(f)
+            except Exception as e:
+                log.error(full_url)
+                log.exception(e)
         if data is not None:
             for l in data['layers']:
                 if str(l['layerId']) in result.layers.split(','):
