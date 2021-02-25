@@ -1,0 +1,13 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h2>{{feature.attributes['title_'+ ctrl['language']]}}</h2>
+  <div><a href="{{feature.attributes.media_filename_2}}" target="_blank">
+    <img ng-if="feature.attributes.media_filename_2" ng-src="{{feature.attributes.media_filename_2}}" width="400">
+  </a></div>
+  <div><span>{{feature.attributes.contactname}}</span></div>
+  <div><span>{{feature.attributes.address_street}}</span></div>
+  <div><span>{{feature.attributes.address_zipcode}} {{feature.attributes.address_city}}</span></div>
+  <div><span>tel : {{feature.attributes.address_phone1}}</span></div>
+  <div><a href="mailto: {{feature.attributes.address_email}}">{{feature.attributes.address_email}}</a></div>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>
