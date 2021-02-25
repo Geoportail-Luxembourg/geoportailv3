@@ -197,7 +197,6 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
                                                ("ogc_server_id:%s Layer:%s Sublayer"
                                                 % (result.ogc_server_id, result.layer),
                                                 l['layerName']),)
-        print(self._get_missing_keys("geoportailv3_geoportal-legends.pot"))
 
 class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
     """
