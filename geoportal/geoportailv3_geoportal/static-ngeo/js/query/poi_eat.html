@@ -5,9 +5,10 @@
     <img ng-if="feature.attributes.media_filename_0" ng-src="{{feature.attributes.media_filename_0}}" width="250">
   </a></div>
   <div><span>{{feature.attributes.contactname}}</span></div>
-  <div><span>{{feature.attributes.address_street}}</span></div>
+  <div><span>{{feature.attributes.address_streetno}} {{feature.attributes.address_street}}</span></div>
   <div><span>{{feature.attributes.address_zipcode}} {{feature.attributes.address_city}}</span></div>
-  <div><span>tel : {{feature.attributes.address_phone1}}</span></div>
+  <div ng-if="!ctrl.isEmpty(feature.attributes.address_phone1)"><span>tel : {{feature.attributes.address_phone1}}</span></div>
   <div><a href="mailto: {{feature.attributes.address_email}}">{{feature.attributes.address_email}}</a></div>
+  <div><a href="{feature.attributes['address_homepage_'+ ctrl['language']]}}">{feature.attributes['address_homepage_'+ ctrl['language']]}}</a></div>
   <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
 </div>
