@@ -87,7 +87,7 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
             try:
                 self._extract_messages()
                 file = "geoportailv3_geoportal-legends.pot"
-                if str(self.__class__).index('LuxembourgTooltipsExtractor') > 0:
+                if str(self.__class__).find('LuxembourgTooltipsExtractor') > 0:
                     file = "geoportailv3_geoportal-tooltips.pot"
                 for attribute in self._get_missing_keys(file):
                     self._insert_attribute(
