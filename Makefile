@@ -98,10 +98,12 @@ OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
 update-translations:
 	tx push --source
 	tx pull --force
+	tx pull -s --force
 
 .PHONY: pull-translations
 pull-translations:
 	tx pull --force
+	tx pull -s --force
 
 .PHONY: update-search-layers
 update-search-layers:
