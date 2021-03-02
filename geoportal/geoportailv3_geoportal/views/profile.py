@@ -238,7 +238,7 @@ class Profile(Raster):
                 values = {}
                 has_one = False
                 for ref in rasters.keys():
-                    value = self.moving_average(coords, i_coord , 3, ref)
+                    value = self.moving_average(coords, i_coord , 4, ref)
                     if value is not None and value != 0:
                         has_one = True
                         values[ref] = value
