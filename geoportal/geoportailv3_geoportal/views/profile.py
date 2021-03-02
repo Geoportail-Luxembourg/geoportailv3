@@ -207,7 +207,7 @@ class Profile(Raster):
             return value
         return None
 
-    def running_mean(self, coords, i , n, ref):
+    def moving_average(self, coords, i , n, ref):
         cumulative_sum = 0
         for index in range(i - n - 1, i + n, 1):
             if index > len(coords) - 1 or index < 0:
@@ -230,8 +230,6 @@ class Profile(Raster):
             prev_coord = None
             coord = None
             for i_coord in range(len(coords)):
-                prev_value = None
-                next_value = None
                 coord = coords[i_coord]
                 if i_coord > 0:
                     prev_coord = coords[i_coord - 1]
@@ -240,7 +238,7 @@ class Profile(Raster):
                 values = {}
                 has_one = False
                 for ref in rasters.keys():
-                    value = self.running_mean(coords, i_coord , 3, ref)
+                    value = self.moving_average(coords, i_coord , 3, ref)
                     if value is not None and value != 0:
                         has_one = True
                         values[ref] = value
