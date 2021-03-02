@@ -7,6 +7,9 @@ from pyramid.response import Response
 from pyramid.i18n import TranslationStringFactory
 from shapely.ops import linemerge
 
+import logging
+log = logging.getLogger(__name__)
+
 import geojson
 import math
 from decimal import Decimal
@@ -18,6 +21,7 @@ _ = TranslationStringFactory("c2cgeoportal")
 class Profile(Raster):
 
     def __init__(self, request):
+        self.values = {}
         self.request = request
         if "geom" in self.request.params:
             geoms = self.request.params["geom"]
@@ -191,6 +195,29 @@ class Profile(Raster):
 
         return ordered_lines
 
+    def get_value(self, coords, index, ref):
+        if index in self.values:
+            return self.values[index]
+        coord = coords[index]
+        value = self._get_raster_value(
+            self.rasters[ref],
+            ref, coord[0], coord[1])
+        self.values[index] = value
+        if value is not None and value != 0:
+            return value
+        return None
+
+    def moving_average(self, coords, i , n, ref):
+        cumulative_sum = 0
+        for index in range(i - n - 1, i + n, 1):
+            if index > len(coords) - 1 or index < 0:
+                return None
+            value = self.get_value(coords, index, ref)
+            if value == 0 or value is None:
+                return None
+            cumulative_sum = cumulative_sum + value
+        return cumulative_sum / ((n * 2) + 1)
+
     def _compute_points(self):
         """Compute the alt=fct(dist) array"""
         geoms = self._create_geom(self.request.params["geom"])
@@ -201,21 +228,20 @@ class Profile(Raster):
         for geom in geoms:
             coords = self._create_points(geom.coordinates, nb_points)
             prev_coord = None
-
-            for coord in coords:
-                if prev_coord is not None:
+            coord = None
+            for i_coord in range(len(coords)):
+                coord = coords[i_coord]
+                if i_coord > 0:
+                    prev_coord = coords[i_coord - 1]
                     dist += self._dist(prev_coord, coord)
 
                 values = {}
                 has_one = False
                 for ref in rasters.keys():
-                    value = self._get_raster_value(
-                        self.rasters[ref],
-                        ref, coord[0], coord[1])
-
+                    value = self.moving_average(coords, i_coord , 3, ref)
                     if value is not None and value != 0:
-                        values[ref] = value
                         has_one = True
+                        values[ref] = value
 
                 if has_one:
                     # 10cm accuracy is enough for distances
@@ -226,7 +252,6 @@ class Profile(Raster):
                         "x": coord[0],
                         "y": coord[1]
                     })
-                prev_coord = coord
 
         return rasters.keys(), points
 
