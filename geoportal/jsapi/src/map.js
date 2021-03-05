@@ -82,6 +82,12 @@ _paq.push(['setSiteId', 22]);
  */
 lux.Map = function(options) {
 
+  this.grantedUrls = ['visitluxembourg.com', 'mullerthal-trail.lu', 'visitluxembourg.com', 'traveltrade.visitluxembourg.com', 'visit-eislek.lu', 'visitguttland.lu',
+    'visitmoselle.lu', 'visitminett.lu', 'mullerthal.lu', 'mullerthal-trail.lu', 'gites.lu', 'vins-cremants.lu', 'visitbeaufort.lu', 'visitberdorf.lu',
+    'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu', 'visitmondorf.lu',
+    'visitwasserbillig.lu', 'si-schengen.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'visit-wincrange.lu',
+    'public.lu', 'etat.lu', 'inondations.lu']
+
   this.mvtLayer_ = undefined;
   /**
    * @private
@@ -939,8 +945,13 @@ lux.Map.prototype.MVTLayerFactory_ = function(options) {
   // FIXME: should be taken from the layer config
   // TODO: when config is handled by c2cgeoportal
   // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
-  let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json';
-  let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png';
+  const host = new URL(window.location).host;
+  let layer = 'roadmap_jsapi';
+  if (this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
+    layer = 'roadmap';
+  }
+  let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/'+ layer + '/style.json';
+  let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/'+ layer +'/{z}/{x}/{y}.png';
   if (options && options.bgLayerStyle) {
     mapBoxStyle = options.bgLayerStyle;
   }
