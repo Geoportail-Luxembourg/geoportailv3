@@ -8,6 +8,11 @@ import logging
 import os
 import sys
 
+import ssl
+
+if hasattr(ssl, '_create_unverified_context'):
+    ssl._create_default_https_context = ssl._create_unverified_context
+
 
 log = logging.getLogger(__name__)
 
@@ -18,10 +23,16 @@ log = logging.getLogger(__name__)
 
 class PF():
     def __init__(self):
-        self.client = \
+        """self.client = \
             Client('https://titan.etat.lu/xxpfoWS/ParcelDetailVer1Service/ParcelDetailVer1Service.wsdl')
         self.client_mesurage = \
             Client('https://titan.etat.lu/xxpfoWS/Measure' +
+                   'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
+        """
+        self.client = \
+            Client('https://devl.cie.etat.lu/xxpfoWS/ParcelDetailVer1Service/ParcelDetailVer1Service.wsdl')
+        self.client_mesurage = \
+            Client('https://devl.cie.etat.lu/xxpfoWS/Measure' +
                    'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
         self.log = logging.getLogger(__name__)
 
@@ -96,12 +107,13 @@ class PF():
             town_info = self._get_town_by_code(int(town_code))
             if town_info is None:
                 return {}
-            files = os.listdir(town_info.get('path'))
+            mes = self._add_char_before(6, measurement_number)
 
-            mes = self._add_char_before(5, measurement_number)
+            files = os.listdir(town_info.get('path') + "/" + mes + "/")
+
             files_list = []
             for cur_file in files:
-                if cur_file.startswith(mes):
+                if cur_file.endswith('.pdf'):
                     files_list.append({'filename': cur_file,
                                        'is_downloadable':
                                        self._is_download_authorized(
@@ -132,7 +144,7 @@ class PF():
             return {
                 'name': cur_record.name,
                 'town_code': cur_record.town_code,
-                'path': cur_record.path
+                'path': cur_record.path_mo
                 }
         return None
 
@@ -143,7 +155,7 @@ class PF():
             return {
                 'name': cur_record.name,
                 'town_code': cur_record.town_code,
-                'path': cur_record.path
+                'path': cur_record.path_mo
                 }
         return None
 

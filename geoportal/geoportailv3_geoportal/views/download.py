@@ -148,7 +148,8 @@ class Download(object):
             filter(LuxMeasurementDirectory.name == townname).first()
         if cur_record is None:
             return HTTPBadRequest("Invalid Town name")
-        measurement_filepath = "%s/%s" % (cur_record.path, filename)
+
+        measurement_filepath = "%s/%s/%s" % (cur_record.path_mo, filename.split('_')[1], filename)
 
         f = open(measurement_filepath, 'rb')
 

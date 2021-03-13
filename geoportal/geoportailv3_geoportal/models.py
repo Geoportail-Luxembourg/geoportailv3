@@ -73,6 +73,9 @@ class LuxMeasurementDirectory(Base):
     path_star = Column(String, info={
         'colanderalchemy': {'title': _('Path (star)')}
     })
+    path_mo = Column(String, nullable=False, info={
+        'colanderalchemy': {'title': _('Path_mo')}
+    })
 
 
 class LuxLayerInternalWMS(LayerWMS):
