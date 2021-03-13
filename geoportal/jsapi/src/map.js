@@ -12,6 +12,7 @@ goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.control.MousePosition');
+goog.require('ol.control.ZoomToExtent');
 goog.require('ol.events');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
@@ -145,6 +146,12 @@ lux.Map = function(options) {
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
 
+  /**
+   * @private
+   * @type {function()=|undefined}
+   */
+  this.layerInfoCb_ = options.layerInfoCallback;
+
   this.setLanguage(lux.lang);
 
   /**
@@ -184,6 +191,26 @@ lux.Map = function(options) {
     source: new ol.source.Vector()
   });
 
+  /**
+   * @private
+   * @type {ol.source.Vector}
+   */
+  this.sourceDrawFeatures_ = new ol.source.Vector();
+
+  /**
+   * @private
+   * @type {ol.interaction.Modify | undefined}
+   */
+  this.modifyInteraction_ = undefined;
+
+  /**
+   * @private
+   * @type {ol.layer.Vector}
+   */
+  this.drawLayer_ = new ol.layer.Vector({
+    source: this.sourceDrawFeatures_
+  });
+
   this.showLayer_.setStyle(this.vectorStyle_);
 
   /**
@@ -204,6 +231,12 @@ lux.Map = function(options) {
    * @private
    */
   this.maxExtent_ = [2.6, 47.7, 8.6, 51];
+
+  /**
+   * @type {ol.interaction.Draw | undefined}
+   * @private
+   */
+  this.curDrawInteraction_ = undefined;
 
   /**
    * @private
@@ -344,6 +377,9 @@ lux.Map = function(options) {
     );
   }
 
+  if (options.zoomToExtent) {
+    controls.push(new ol.control.ZoomToExtent({extent: [631077,6337091, 724025, 6492411]}));
+  }
   var target;
   var el;
   if (options.mousePosition) {
@@ -432,6 +468,7 @@ lux.Map = function(options) {
   this.stateManager_.setMap(this);
 
   this.showLayer_.setMap(this);
+  this.drawLayer_.setMap(this);
 
   // change cursor on mouseover feature
   ol.events.listen(this, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
@@ -454,6 +491,84 @@ lux.Map = function(options) {
 
 ol.inherits(lux.Map, ol.Map);
 
+
+/**
+ * Draw a point on the map.
+ * @param {function()=|undefined} onDrawEnd the callback function.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableDrawPoint = function(onDrawEnd) {
+  this.drawType_('Point', onDrawEnd);
+};
+
+/**
+ * Draw a polygon on the map.
+ * @param {function()=|undefined} onDrawEnd the callback function.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableDrawPolygon = function(onDrawEnd) {
+  this.drawType_('Polygon', onDrawEnd);
+};
+
+/**
+ * Draw a polygon on the map.
+ * @param {function()=|undefined} onDrawEnd the callback function.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableDrawLine = function(onDrawEnd) {
+  this.drawType_('LineString', onDrawEnd);
+};
+
+/**
+ * Draw a polygon on the map.
+ * @param {boolean} enabled the callback function.
+ * @export
+ * @api
+ */
+lux.Map.prototype.activateModifyDrawing = function(enabled) {
+  if (this.modifyInteraction_ === undefined) {
+    this.modifyInteraction_ = new ol.interaction.Modify({source: this.sourceDrawFeatures_});
+    this.modifyInteraction_.setActive(false);
+    this.addInteraction(this.modifyInteraction_);
+  }
+
+  this.modifyInteraction_.setActive(enabled);
+};
+
+/**
+ * Disable the current drawing tool.
+ * @export
+ * @api
+ */
+lux.Map.prototype.disableDrawTool = function() {
+  if (this.curDrawInteraction_ !== undefined) {
+    this.removeInteraction(this.curDrawInteraction_);
+  }
+};
+
+/**
+ * Draw on the map.
+ * @param {string} type the kind of obejct we want to draw.
+ * @param {function()=|undefined} onDrawEnd the callback function.
+ */
+lux.Map.prototype.drawType_ = function(type, onDrawEnd) {
+  if (this.curDrawInteraction_ !== undefined) {
+    this.removeInteraction(this.curDrawInteraction_);
+  }
+  this.curDrawInteraction_ = new ol.interaction.Draw({
+    source: this.sourceDrawFeatures_,
+    type: type,
+  });
+  if (onDrawEnd !== undefined) {
+   ol.events.listen(this.curDrawInteraction_, 'drawend', onDrawEnd, this);
+  }
+  this.addInteraction(this.curDrawInteraction_);
+};
+
+
 /**
  * Adds the given layer to the top of this map. If you want to add a layer
  * elsewhere in the stack, use `getLayers()` and the methods available on
@@ -467,7 +582,6 @@ lux.Map.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
     ol.Map.prototype.addLayer.call(this, layer);
   }.bind(this));
-
 };
 
 /**
@@ -630,6 +744,16 @@ lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
  */
 lux.Map.prototype.getShowLayer = function() {
   return this.showLayer_;
+};
+
+/**
+ * Get the layer containing drawn features.
+ * @export
+ * @api
+ * @return {ol.layer.Vector} The show layer.
+ */
+lux.Map.prototype.getDrawLayer = function() {
+  return this.drawLayer_;
 };
 
 /**
@@ -1552,7 +1676,6 @@ lux.Map.prototype.decDegFromMatch_ = function(m) {
  * @api
  */
 lux.Map.prototype.addGPX = function(url, opt_options) {
-
   /** @type {ol.StyleFunction | undefined}*/
   var styleFunction;
   if (opt_options && opt_options.style !== undefined) {
@@ -1618,7 +1741,11 @@ lux.Map.prototype.addKML = function(url, opt_options) {
  * @api
  */
 lux.Map.prototype.addGeoJSON = function(url, opt_options) {
-  this.addVector_(url, new ol.format.GeoJSON(), opt_options);
+  var opt_format = {};
+  if (opt_options && opt_options.dataProjection !== undefined) {
+    opt_format['defaultDataProjection'] = opt_options.dataProjection;
+  }
+  this.addVector_(url, new ol.format.GeoJSON(opt_format), opt_options);
 };
 
 /**
@@ -1965,7 +2092,9 @@ lux.Map.prototype.setShowlayerStyle = function(style) {
  */
 lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   this.removeInfoPopup();
-  if (!this.showLayerInfoPopup_) {
+  console.log(this.layerInfoCb_);
+
+  if ((this.curDrawInteraction_ !== undefined) || (!this.showLayerInfoPopup_ && this.layerInfoCb_ === undefined)) {
     return;
   }
   this.showLayer_.getSource().clear();
@@ -1988,9 +2117,13 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         }
       }
       var features = this.readJsonFeatures_(resultLayer);
+      if (this.layerInfoCb_ !== undefined) {
+        this.layerInfoCb_.call(this, features);
+      }
+
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
-        if (this.popupContentTransformer_ !== undefined) {
+        if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {
           curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
         }
       }
@@ -1998,24 +2131,25 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         htmls.push(curHtml);
       }
     }.bind(this));
-
-    if (this.popupTarget_) {
-      this.popupTarget_.innerHTML = htmls.join('');
-    } else {
-      var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
-        this.removeOverlay(this.queryPopup_);
-      }.bind(this));
-      this.queryPopup_ = new ol.Overlay({
-        element: element,
-        position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
-        positioning: 'bottom-center',
-        offset: [0, -20],
-        insertFirst: false,
-        autoPan: this.popupAutoPan_
-      });
-      this.addOverlay(this.queryPopup_);
-      this.renderSync();
-      this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+    if (this.showLayerInfoPopup_) {
+      if (this.popupTarget_) {
+        this.popupTarget_.innerHTML = htmls.join('');
+      } else {
+        var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+          this.removeOverlay(this.queryPopup_);
+        }.bind(this));
+        this.queryPopup_ = new ol.Overlay({
+          element: element,
+          position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+          positioning: 'bottom-center',
+          offset: [0, -20],
+          insertFirst: false,
+          autoPan: this.popupAutoPan_
+        });
+        this.addOverlay(this.queryPopup_);
+        this.renderSync();
+        this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+      }
     }
   }.bind(this));
 
