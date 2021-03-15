@@ -207,7 +207,7 @@ lux.Map = function(options) {
    * @private
    * @type {ol.layer.Vector}
    */
-  this.drawLayer_ = new ol.layer.Vector({
+  this.drawingLayer_ = new ol.layer.Vector({
     source: this.sourceDrawFeatures_
   });
 
@@ -468,7 +468,7 @@ lux.Map = function(options) {
   this.stateManager_.setMap(this);
 
   this.showLayer_.setMap(this);
-  this.drawLayer_.setMap(this);
+  this.drawingLayer_.setMap(this);
 
   // change cursor on mouseover feature
   ol.events.listen(this, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
@@ -546,6 +546,7 @@ lux.Map.prototype.activateModifyDrawing = function(enabled) {
 lux.Map.prototype.disableDrawTool = function() {
   if (this.curDrawInteraction_ !== undefined) {
     this.removeInteraction(this.curDrawInteraction_);
+    this.curDrawInteraction_ = undefined;
   }
 };
 
@@ -700,6 +701,73 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
 };
 
 /**
+ * Get the print spec.
+ *
+ * @export
+ * @api
+ */
+lux.Map.prototype.getPrintSpec = function(layout, scale) {
+  var dpi = 127;
+  var format = 'png';
+
+  var pm = new lux.PrintManager(lux.printUrl, this);
+
+  var curLayout = '';
+  if (layout === undefined || layout === null ||
+      lux.PrintManager.LAYOUTS.indexOf(layout) === -1) {
+    var size = this.getSize();
+    if (size !== undefined && size[0] > size[1]) {
+      curLayout = 'A4 landscape';
+    } else {
+      curLayout = 'A4 portrait';
+    }
+  } else {
+    curLayout = layout;
+  }
+  var dataOwners = [];
+  this.getLayers().forEach(function(layer) {
+    var source = undefined;
+    if (/** @type{Object} */ (layer).getSource instanceof Function) {
+      source = /** @type{Object} */ (layer).getSource();
+    }
+    if (source != undefined) {
+      var attributions = source.getAttributions();
+      if (attributions !== null) {
+        attributions.forEach(function(attribution) {
+          dataOwners.push(attribution.getHTML());
+        }.bind(this));
+      }
+    }
+  });
+
+  dataOwners = dataOwners.filter(function(item, pos, self) {
+    return self.indexOf(item) == pos;
+  });
+
+  var disclaimer = lux.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
+  var dateText = lux.translate('Date d\'impression: ');
+  var scaleTitle = lux.translate('Echelle approximative 1:');
+  var appTitle = lux.translate('Le géoportail national du Grand-Duché du Luxembourg');
+
+  if (scale === undefined || scale === null) {
+    scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
+  }
+  var spec = pm.createSpec(scale, dpi, curLayout, format, {
+    'disclaimer': disclaimer,
+    'scaleTitle': scaleTitle,
+    'appTitle': appTitle,
+    'scale': scale,
+    'name': '',
+    'lang': lux.lang,
+    'legend': '',
+    'scalebar': {'geodetic': true},
+    'dataOwner': dataOwners.join(' '),
+    'dateText': dateText
+  });
+  return spec;
+};
+
+/**
  * @param {lux.PrintManager} pm Print manager.
  * @param {string} ref Ref.
  * @param {function(string)=} callback Optional callback function.
@@ -752,8 +820,8 @@ lux.Map.prototype.getShowLayer = function() {
  * @api
  * @return {ol.layer.Vector} The show layer.
  */
-lux.Map.prototype.getDrawLayer = function() {
-  return this.drawLayer_;
+lux.Map.prototype.getDrawingLayer = function() {
+  return this.drawingLayer_;
 };
 
 /**
@@ -829,6 +897,28 @@ lux.Map.prototype.setQueryableLayers = function(queryableLayers) {
  */
 lux.Map.prototype.showLayerInfoPopup = function(show) {
   this.showLayerInfoPopup_ = show;
+};
+
+/**
+ * Get the area of a geometry in square meters.
+ * @param {ol.geom.Geometry} geometry The geometry the get the area.
+ * @return {number} The spherical area (in square meters).
+ * @export
+ * @api
+ */
+lux.Map.prototype.getGeometryArea = function(geometry) {
+  return ol.Sphere.getArea(geometry);
+};
+
+/**
+ * Get the length of a geometry in meters.
+ * @param {ol.geom.Geometry} geometry The geometry the get the area.
+ * @return {number} The spherical length (in meters).
+ * @export
+ * @api
+ */
+lux.Map.prototype.getGeometryLength = function(geometry) {
+  return ol.Sphere.getLength(geometry);
 };
 
 /**
@@ -2092,7 +2182,6 @@ lux.Map.prototype.setShowlayerStyle = function(style) {
  */
 lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   this.removeInfoPopup();
-  console.log(this.layerInfoCb_);
 
   if ((this.curDrawInteraction_ !== undefined) || (!this.showLayerInfoPopup_ && this.layerInfoCb_ === undefined)) {
     return;
@@ -2173,3 +2262,18 @@ lux.Map.prototype.setCenter = function(coordinate, zoom, positionSrs) {
     this.getView().setZoom(zoom);
   }
 };
+
+/**
+ * Destroy the map.
+ * @export
+ * @api
+ */
+lux.Map.prototype.destroyMap = function() {
+  var target = this.getTarget();
+  var elem = document.getElementById(target);
+  this.setTarget(null);
+  while (elem.firstChild) {
+    elem.removeChild(elem.lastChild);
+  }
+};
+
