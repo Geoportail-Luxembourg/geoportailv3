@@ -199,6 +199,9 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
   var showLayer = this.map_.getShowLayer();
   var layers = this.getFlatLayers(mapLayerGroup);
   layers.push(showLayer);
+  var drawingLayer = this.map_.getDrawingLayer();
+  layers.push(drawingLayer);
+
   layers = layers.slice().reverse();
 
   layers.forEach(function(layer) {
@@ -482,6 +485,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
       originalFeature.setGeometry(ol.geom.Polygon.fromCircle(originalFeature.getGeometry(), 64));
     }
     var origGeojsonFeature = geojsonFormat.writeFeatureObject(originalFeature);
+    origGeojsonFeature.properties = {};
     /**
      * @type {Array<ol.style.Style>}
      */
