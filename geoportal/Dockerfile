@@ -43,11 +43,6 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
 # RUN make checks
 RUN make build
 
-# RUN find / -name Target.js
-# RUN ls /usr/lib/node_modules/o* -ld
-# RUN npm list --global |grep openlayers
-# RUN npm list --global |grep ol
-
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 # put Cesium build in static-ngeo
