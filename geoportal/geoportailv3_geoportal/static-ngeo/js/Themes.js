@@ -244,7 +244,9 @@ exports.prototype.getThemesPromise = function() {
  * @return {?angular.$q.Promise} Promise.
  */
 exports.prototype.loadThemes = function(roleId) {
-  this.promise_ = this.$http_.get(this.treeUrl_, {
+  var url = new URL(this.treeUrl_);
+  url.searchParams.set('background', 'background');
+  this.promise_ = this.$http_.get(url.toString(), {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
   }).then((resp) => {
