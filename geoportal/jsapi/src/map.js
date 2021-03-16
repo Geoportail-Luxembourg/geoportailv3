@@ -759,6 +759,12 @@ lux.Map.prototype.getPrintSpec = function(layout, scale) {
   if (scale === undefined || scale === null) {
     scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
   }
+  var longUrl = this.stateManager_.getUrl();
+  if (longUrl.toLowerCase().indexOf('http') !== 0 &&
+      longUrl.toLowerCase().indexOf('//') === 0) {
+    longUrl = 'http:' + longUrl;
+  }
+
   var spec = pm.createSpec(scale, dpi, curLayout, format, {
     'disclaimer': disclaimer,
     'scaleTitle': scaleTitle,
@@ -769,7 +775,9 @@ lux.Map.prototype.getPrintSpec = function(layout, scale) {
     'legend': '',
     'scalebar': {'geodetic': true},
     'dataOwner': dataOwners.join(' '),
-    'dateText': dateText
+    'dateText': dateText,
+    "url": longUrl,
+    "qrimage": "https://apiv3.geoportail.lu/qr?url="+longUrl
   });
   return spec;
 };
