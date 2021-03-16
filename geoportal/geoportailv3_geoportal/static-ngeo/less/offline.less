@@ -5,8 +5,7 @@ ngeo-offline {
   .main-button {
     position: absolute;
     right: 8px;
-    bottom: 148px;
-    font-size: 27px;
+    bottom: 15rem;
     cursor: pointer;
     .no-data {
       color: black;
@@ -14,11 +13,16 @@ ngeo-offline {
     .no-data, .with-data {
       background-color: white;
       text-align: center;
+      font-size: 2.7rem;
+      font-family: FontAwesome;
       line-height: 1.5em;
       color: #2980b9;
       width: 41px;
       height: 41px;
       border: 1px solid #8394a0;
+      &::after {
+        content: @fa-var-arrow-circle-o-down;
+      }
     }
     .with-data {
       color: red;
@@ -35,15 +39,15 @@ ngeo-offline {
 
   .validate-extent {
     position: absolute;
-    top: 3.5rem;
+    top: 4.5rem;
     width: 12rem;
-    left: calc(50% - 6rem);
+    left: calc(~"50% - 6rem");
   }
 
   .in-progress {
     position: absolute;
-    left: calc(50% - 3.3rem);
-    top: calc(50% - 3rem);
+    left: calc(~"50% - 3.3rem");
+    top: calc(~"50% - 3rem");
     color: white;
     font-weight: bold;
     background-color: #337ab7;
@@ -52,14 +56,14 @@ ngeo-offline {
   }
 
   .modal-content {
-    width: 20rem;
+    width: 30rem;
   }
 
   .modal-body {
     button {
       display: block;
       margin: 0.5rem auto;
-      width: 17rem;
+      width: 25rem;
     }
   }
 }
@@ -75,11 +79,11 @@ ngeo-offline {
     z-index: 10000;
     width: 100vw;
     text-align: center;
-    height: $topbar-height;
+    height: @topbar-height;
     padding-left: 1rem;
-    line-height: $topbar-height;
+    line-height: @topbar-height;
 
-    @media (max-width: map-get($grid-breakpoints, "md")) {
+    @media (max-width: @screen-xs-max) {
       height: 40px;
       line-height: 40px;
     }

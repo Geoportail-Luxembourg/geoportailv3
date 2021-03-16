@@ -31,40 +31,40 @@
   </div>
 
   <div class="feature-popup-footer hidden-3d">
-    <ul class="nav navbar-nav float-left">
+    <ul class="nav navbar-nav pull-left">
       <li ng-show="ctrl.isEditable() && !ctrl.feature.get('__editable__')" ng-click="ctrl.modifySelectedFeature()"><button class="btn btn-primary" translate>Editer l'objet</button></li>
       <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')" ng-click="ctrl.endModifySelectedFeature()"><button class="btn btn-primary" translate>Terminer édition</button></li>
     </ul>
-    <ul class="nav navbar-nav float-right draw-options">
+    <ul class="nav navbar-nav pull-right">
       <li>
         <a href ng-click="ctrl.fitFeature()">
-          <span class="fas fa-search"></span>
+          <span class="fa fa-search"></span>
         </a>
       </li>
       <li ng-show="ctrl.isEditable()">
         <a href ng-click="ctrl.editingAttributes = true">
-          <span class="fas fa-pencil-alt"></span>
+          <span class="fa fa-pencil"></span>
         </a>
       </li>
       <li ng-show="ctrl.isEditable()">
         <a href ng-click="ctrl.editingStyle = true">
-          <span class="fas fa-paint-brush"></span>
+          <span class="fa fa-paint-brush"></span>
         </a>
       </li>
       <li ng-show="ctrl.isEditable()">
         <a href href ng-click="ctrl.deletingFeature = true">
-          <span class="fas fa-trash-alt"></span></a>
+          <span class="fa fa-trash"></span></a>
       </li>
       <li class="{{ctrl.isDocked()?'dropup':'dropdown'}}">
-        <a href data-toggle="dropdown">
-          <i class="fas fa-caret-square-down"></i>
+        <a href class="dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-caret-square-o-down"></span>
         </a>
         <ul class="dropdown-menu {{ctrl.isDocked()?'dropdown-menu-right':''}}" role="menu">
-          <li class="dropdown-item" ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
-          <li class="dropdown-item" ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-          <li class="dropdown-item" ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
-          <li class="dropdown-item" ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
-          <li class="dropdown-item" ng-show="ctrl.isCircle()" ng-click="ctrl.tempCircleRadius = ctrl.getCircleRadius() ; ctrl.askRadius = true"><a href translate>Créer cercle concentrique</a></li>
+          <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
+          <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
+          <li ng-show="ctrl.isCircle()" ng-click="ctrl.tempCircleRadius = ctrl.getCircleRadius() ; ctrl.askRadius = true"><a href translate>Créer cercle concentrique</a></li>
         </ul>
       </li>
     </ul>
@@ -75,12 +75,12 @@
   <a class="close" ng-click="ctrl.close()">&times;</a>
   <div class="feature-popup-body">
     <div class="row">
-      <div class="col-8 form-group">
+      <div class="col-xs-8 form-group">
         <input type="text" class="form-control" ng-model="ctrl.tempName">
       </div>
     </div>
     <div class="row">
-      <div class="col-12 form-group">
+      <div class="col-xs-12 form-group">
         <textarea class="form-control" rows="3" ng-model="ctrl.tempDesc"></textarea>
       </div>
     </div>
@@ -94,7 +94,7 @@
       </div>
     </div>
   </div>
-  <div class="feature-popup-footer float-right">
+  <div class="feature-popup-footer pull-right">
     <button href class="btn btn-default" ng-click="ctrl.editingAttributes = false" translate>
       Cancel
     </button>
@@ -114,7 +114,7 @@
   <div class="feature-popup-body">
     <span translate>Êtes-vous certain de vouloir effacer cet élément de la carte ?</span>
   </div>
-  <div class="feature-popup-footer float-right">
+  <div class="feature-popup-footer pull-right">
     <button href class="btn btn-primary" ng-click="ctrl.deletingFeature = false" translate>
       Annuler
     </button>
@@ -134,7 +134,7 @@
       </div>
     </div>
   </div>
-  <div class="feature-popup-footer float-right">
+  <div class="feature-popup-footer pull-right">
     <button href class="btn btn-primary" ng-click="ctrl.askRadius = false" translate>
       Annuler
     </button>

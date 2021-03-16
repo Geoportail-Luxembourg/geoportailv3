@@ -9,7 +9,7 @@
 import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import {layerDecoration} from 'ngeo/misc/decorate.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olFormatWMSCapabilities from 'ol/format/WMSCapabilities.js';
 import olLayerImage from 'ol/layer/Image.js';
 import olLayerTile from 'ol/layer/Tile.js';
@@ -491,7 +491,7 @@ exports.prototype.createWmsLayers = function(map, layer) {
   newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
-  layerDecoration(newLayer);
+  ngeoMiscDecorate.layer(newLayer);
 
   this.getMetadata(layer['id']).then(function(metadata) {
     if (metadata['hasImageLegend']) {

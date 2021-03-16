@@ -11,12 +11,11 @@
 import appModule from './module.js';
 
 import {extend as arrayExtend} from 'ol/array.js';
-import olEventsEventTarget from 'ol/events/Target.js';
-import appEventsThemesEventType from './events/ThemesEventType.js';
+import olEventsEventTarget from 'ol/events/EventTarget.js';
 import olSourceVector from 'ol/source/Vector.js';
-import {inherits} from './utils.js';
-import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
-
+import appEventsThemesEventType from './events/ThemesEventType.js';
+import {inherits} from 'ol/index.js';
+import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 function hasLocalStorage() {
   return 'localStorage' in window && localStorage;
@@ -119,7 +118,6 @@ const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
   this.promise_ = null;
 
   this.flatCatalog = null;
-  this.layers3D = [];
 
   /**
    * @type {app.Mvtstyling}
@@ -246,16 +244,15 @@ exports.prototype.getThemesPromise = function() {
  * @return {?angular.$q.Promise} Promise.
  */
 exports.prototype.loadThemes = function(roleId) {
-  var url = new URL(this.treeUrl_);
-  url.searchParams.set('background', 'background');
-  this.promise_ = this.$http_.get(url.toString(), {
+  this.promise_ = this.$http_.get(this.treeUrl_, {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
-  }).then(resp => {
+  }).then((resp) => {
     const root = /** @type {app.ThemesResponse} */ (resp.data);
     const themes = root.themes;
     const flatCatalogue = [];
-    for (const theme of themes) {
+    for (var i = 0; i < themes.length; i++) {
+      const theme = themes[i];
       const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
       arrayExtend(flatCatalogue, children);
     }
@@ -295,13 +292,9 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
   for (var i = 0; i < elements.length; i++) {
     const element = elements[i];
     if (element.hasOwnProperty('children')) {
-      if (element.name !== '3d Layers') {
-        arrayExtend(array, this.getAllChildren_(
-            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-      } else {
-        arrayExtend(this.layers3D, this.getAllChildren_(
-            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-      }
+      arrayExtend(array, this.getAllChildren_(
+          element.children, theme, ogcServers, element.ogcServer || lastOgcServer)
+      );
     } else {
       // Rewrite url to match the behaviour of c2cgeoportal 1.6
       const ogcServer = element.ogcServer || lastOgcServer;
@@ -327,14 +320,6 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
  */
 exports.prototype.getFlatCatalog = function() {
   return this.promise_.then(() => this.flatCatalog);
-};
-
-/**
- * get the flat catlog
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.get3DLayers = function() {
-  return this.promise_.then(() => this.layers3D);
 };
 
 appModule.service('appThemes', exports);

@@ -9,8 +9,8 @@
   font-style: normal;
 }
 
-$controls3d-border: 20px;
-$controls3d-button-padding: 0px;
+@controls3d-border: 20px;
+@controls3d-button-padding: 0px;
 
 /*these 3 rules hide cesium ion logo.
 !important is needed because the display in these container are set directly in the HTML.
@@ -23,19 +23,19 @@ $controls3d-button-padding: 0px;
 
 ngeo-olcs-controls3d {
   position: absolute;
-  bottom: 20px - $controls3d-border;
+  bottom: 20px - @controls3d-border;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 180px + 2 * $controls3d-border;
+  width: 180px + 2 * @controls3d-border;
   button {
     width: 24px;
     height: 20px;
     background-color: transparent;
     background-repeat: no-repeat;
     border: 0;
-    padding: $controls3d-button-padding;
+    padding: @controls3d-button-padding;
     cursor: pointer;
     &.ngeo-left:after {
       font-family: "icomoon" !important;

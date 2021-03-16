@@ -45,6 +45,12 @@ class ExtendedMapBoxLayerRenderer extends MapBoxLayerRenderer {
 
 const exports = class extends olMap {
 
+  constructor(...args) {
+    super(...args);
+    this.getRenderer().registerLayerRenderers([
+      ExtendedMapBoxLayerRenderer
+    ]);
+  }
   /**
    * Currently the zIndex is used to order the layers.
    * Rremoving a layer does not reset the zindex.

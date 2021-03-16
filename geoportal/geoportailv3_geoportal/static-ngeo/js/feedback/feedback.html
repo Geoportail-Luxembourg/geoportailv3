@@ -8,15 +8,15 @@
     <div class="form-group">
       <label for="dropdownLayerPicker" translate>Pick layer where problem occurs</label>
       <div class="dropdown" id="dropdownLayerPicker">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          {{ctrl.concernedLayer | translate}}
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ctrl.concernedLayer | translate}}<span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
          <li>
             <a href ng-click="ctrl.setConcernedLayer(ctrl.bgLayer)">{{ctrl.bgLayer.get('label')|translate}}</a>
           </li>
           <li ng-repeat="layer in ctrl.layers">
-            <a href class=".dropdown-item" ng-click="ctrl.setConcernedLayer(layer)">{{layer.get('label')|translate}}</a>
+            <a href ng-click="ctrl.setConcernedLayer(layer)">{{layer.get('label')|translate}}</a>
           </li>
         </ul>
       </div>
@@ -33,6 +33,6 @@
       <p translate>The following <a ng-href="{{ctrl.url}}" target="_blank">map link</a> will be sent to our support team.</p>
       <p translate>You can also use the <a href ng-click="ctrl.activateDrawingTools()">Drawing Tools</a> to annotate the map send to the support team.<p></p>
     </div>
-    <button type="submit" class="float-right btn btn-default" translate>Send feedback to support team</button>
+    <button type="submit" class="pull-right btn btn-default" translate>Send feedback to support team</button>
   </form>
 </div>

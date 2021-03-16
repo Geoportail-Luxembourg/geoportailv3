@@ -22,7 +22,6 @@ import {unByKey} from 'ol/Observable.js';
 import {getPointResolution} from 'ol/proj.js';
 import LayerGroup from 'ol/layer/Group.js';
 import olRenderEventType from 'ol/render/EventType.js';
-import MaskLayer from 'ngeo/print/Mask.js';
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -92,11 +91,6 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @private
    */
   this.map_;
-
-  /**
-   * @private
-   */
-  this.maskLayer_ = new MaskLayer();
 
   /**
    * @type {angular.$timeout}
@@ -231,36 +225,39 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
   this['printing'] = false;
 
   /**
+   * @type {ol.EventsKey?}
+   */
+  var postcomposeListenerKey = null;
+
+  /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers_ = this['layers'];
 
-  var postcomposeListenerKey = null;
-
-    /**
-   * Return the size in dots of the map to print. Depends on
-   * the selected layout.
-   * @return {ol.Size} Size.
-   */
-  const getSizeFn = () => {
-    var layoutIdx = this['layouts'].indexOf(this['layout']);
-    console.assert(layoutIdx >= 0);
-    return exports.MAP_SIZES_[layoutIdx];
-  };
-  this.maskLayer_.getSize = getSizeFn;
-
   /**
-   * Return the scale of the map to print.
-   * @param {olx.FrameState} frameState Frame state.
-   * @return {number} Scale.
+   * @type {function(ol.render.Event)}
    */
-  const getScaleFn = (frameState) => {
-    return exports.adjustScale_(
-        this.map_.getView(), this['scale']);
-  };
-  this.maskLayer_.getScale = getScaleFn;
-
+  var postcomposeListener = ngeoPrintUtils.createPrintMaskPostcompose(
+          /**
+           * Return the size in dots of the map to print. Depends on
+           * the selected layout.
+           * @return {ol.Size} Size.
+           */
+          (function() {
+            var layoutIdx = this['layouts'].indexOf(this['layout']);
+            console.assert(layoutIdx >= 0);
+            return exports.MAP_SIZES_[layoutIdx];
+          }).bind(this),
+          /**
+           * Return the scale of the map to print.
+           * @param {olx.FrameState} frameState Frame state.
+           * @return {number} Scale.
+           */
+          (function(frameState) {
+            return exports.adjustScale_(
+                this.map_.getView(), this['scale']);
+          }).bind(this));
 
   // Show/hide the print mask based on the value of the "open" property.
   $scope.$watch(function() {
@@ -278,13 +275,16 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      this.map_.addLayer(this.maskLayer_);
+      console.assert(postcomposeListenerKey === null);
+      postcomposeListenerKey = listen(this.map_,
+          olRenderEventType.POSTCOMPOSE, postcomposeListener);
       const bgLayer = this.backgroundLayerMgr_.get(this.map_);
       if (bgLayer.get('defaultMapBoxStyle')) {
         this.appMvtStylingService_.publishIfSerial(this.map_);
       }
-    } else {
-      this.map_.removeLayer(this.maskLayer_);
+    } else if (postcomposeListenerKey !== null) {
+      unByKey(postcomposeListenerKey);
+      postcomposeListenerKey = null;
       this.appMvtStylingService_.unpublishIfSerial(this.map_);
     }
     this.map_.render();
@@ -456,17 +456,16 @@ exports.prototype.changeScale = function(newScale) {
   var optimalResolution = this.printUtils_.getOptimalResolution(
       /** @type {Array<number>} */ (mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
 
-  /** @type {import("ol/View.js".default)} */
   var view = map.getView();
   var currentResolution = view.getResolution();
 
   if (currentResolution < optimalResolution) {
-    var newResolution = view.getConstrainedResolution(optimalResolution, 1);
+    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
       easing: easeOut,
-      resolution: newResolution
+      resolution: currentResolution
     });
   }
 
@@ -500,19 +499,19 @@ exports.prototype.print = function(format) {
   var url = this.getHtmlLegendUrl;
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
-    var metaMaxDpi = curMetadata?.max_dpi;
+    var metaMaxDpi = curMetadata['max_dpi'];
     if (metaMaxDpi !== undefined) {
       var maxDpi = parseInt(metaMaxDpi, 10);
       if (dpi > maxDpi) {
         dpi = maxDpi;
       }
     }
-    var name = curMetadata?.legend_name;
+    var name = curMetadata['legend_name'];
     if (name !== undefined) {
       legend.push({'name': name});
     } else {
       var id = layer.get('queryable_id');
-      var isExternalWms = curMetadata?.isExternalWms;
+      var isExternalWms = curMetadata['isExternalWms'];
       if (isExternalWms) {
         var legendUrl = curMetadata['legendUrl'];
         var accessConstraints = curMetadata['legendAccessConstraints'];

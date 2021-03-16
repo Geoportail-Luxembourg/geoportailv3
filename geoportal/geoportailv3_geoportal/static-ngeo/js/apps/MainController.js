@@ -13,8 +13,8 @@
 
 import 'core-js';
 import 'jquery';
-import bootstrap from 'gmf/controllers/bootstrap.js';
-import angular from 'angular';
+import 'bootstrap';
+import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
@@ -42,7 +42,7 @@ import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
 import {isValidSerial} from '../utils.js';
 
-import '../../less/geoportailv3.scss';
+import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
  import appAskredirectAskredirectDirective from '../askredirect/askredirectDirective.js';
@@ -130,7 +130,6 @@ import '../../less/geoportailv3.scss';
 
  import appQueryQueryController from '../query/QueryController.js';
  import appResizemapDirective from '../resizemapDirective.js';
- import appLayerstabDirective from '../layerstabDirective.js';
  import appRoutingRoutingController from '../routing/RoutingController.js';
  import appRoutingRoutingDirective from '../routing/routingDirective.js';
  import appSearchSearchDirective from '../search/searchDirective.js';
@@ -366,7 +365,6 @@ function getSimpleStylings() {
  * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
  * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {string} geonetworkBaseUrl catalog base server url.
- * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
  * @constructor
  * @export
  * @ngInject
@@ -382,12 +380,7 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
-  /**
-   * @type {app.backgroundlayer.BlankLayer}
-   * @private
-   */
-  this.blankLayer_ = appBlankLayer;
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -771,6 +764,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['drawOpenMobile'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['infosOpen'] = false;
 
   /**
@@ -869,17 +867,10 @@ const MainController = function(
   this['selectedLayers'] = [];
 
   /**
-   * @type {string}
-   */
-  this.layersActiveTab = 'catalog'
-
-  /**
    * @type {function}
    */
   this.selectedLayersLength = function() {
-    return this.selectedLayers.filter(
-      l => l.get('metadata') && !l.get('metadata').hidden
-    ).length
+    return this.selectedLayers.filter(l => !l.get('metadata').hidden).length
   }
 
   /**
@@ -966,8 +957,7 @@ const MainController = function(
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
   this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTilesFromLocation();
-    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
+    this.ol3dm_.init3dTiles(this.tiles3dVisible);
   });
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
@@ -1062,12 +1052,7 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DLayers().then(
-      layers3D => {
-      layers3D.forEach(catItem => {
-        this.ol3dm_.addAvailableLayers(catItem);
-      });
-    });
+
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1101,7 +1086,7 @@ const MainController = function(
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
-        !infoOpen && !this.embedded) ? true : false;
+        !infoOpen) ? true : false;
     $scope.$watch(() => {
       return this['layersOpen'];
     }, newVal => {
@@ -1169,7 +1154,7 @@ const MainController = function(
         this.closeSidebar();
         this['layersOpen'] = true;
       }
-      this.showTab('mylayers');
+      this.showTab('a[href=\'#mylayers\']');
     }
   });
 
@@ -1177,7 +1162,7 @@ const MainController = function(
    * Listen on login to finish to reload the mvt style
    */
   $scope.$on('authenticated', () => {
-    // bgLayer is undefined at page loading as the theme is not fully loaded yet
+    // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     if (bgLayer && bgLayer.getMapBoxMap()) {
       this.appMvtStylingService.getBgStyle().then(configs => {
@@ -1303,7 +1288,7 @@ const MainController = function(
  */
 MainController.prototype.getUrlVtStyle = function() {
   const bgLayer = this.backgroundLayerMgr_.get(this.map);
-  if (bgLayer) {
+  if (bgLayer !== null && bgLayer !== undefined) {
     return this.appMvtStylingService.getUrlVtStyle(bgLayer);
   }
   return "";
@@ -1320,7 +1305,12 @@ MainController.prototype.enable3dCallback_ = function(active) {
   }
   this.appMvtStylingService.publishIfSerial(this.map_);
 
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', 'enable3d']);
+  piwik.push(['trackPageView']);
+
   this['drawOpen'] = false;
+  this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
   this['printOpen'] = false;
 };
@@ -1385,7 +1375,6 @@ MainController.prototype.createMap_ = function() {
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new olView({
-      // See in catalog controller for the real place where the view is defined...
       maxZoom: 19,
       minZoom: 8,
       enableRotation: true,
@@ -1416,7 +1405,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
   console.assert(this.map_ !== null && this.map_ !== undefined);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
   return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
+    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
 };
 
 
@@ -1780,12 +1769,8 @@ MainController.prototype.compareLayers_ = function() {
  * @param {string} selector JQuery selector for the tab link.
  * @export
  */
-MainController.prototype.showTab = function(selector, e) {
-  this.layersActiveTab = selector
-  if (e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
+MainController.prototype.showTab = function(selector) {
+  $(selector).tab('show');
 };
 
 
@@ -1800,15 +1785,31 @@ MainController.prototype.toggleThemeSelector = function() {
     if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
       this['layersOpen'] = false;
     } else {
-      this.showTab('catalog');
+      this.showTab('a[href=\'#catalog\']');
       themesSwitcher.collapse('show');
       layerTree.collapse('hide');
     }
   } else {
     this['layersOpen'] = true;
-    this.showTab('catalog');
+    this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+  }
+};
+
+/**
+ * @export
+ */
+MainController.prototype.toggleTiles3dVisibility = function() {
+  this.tiles3dVisible = !this.tiles3dVisible;
+  this.ol3dm_.set3dTilesetsVisible(this.tiles3dVisible);
+  this.stateManager_.updateState({
+    '3dtiles_visible': this.tiles3dVisible
+  });
+  if (this.tiles3dVisible) {
+    var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+    piwik.push(['setDocumentTitle', '3dtiles_visible']);
+    piwik.push(['trackPageView']);
   }
 };
 
@@ -1823,6 +1824,5 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
-bootstrap(appModule)
 
 export default MainController;
