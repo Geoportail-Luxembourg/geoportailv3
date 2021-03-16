@@ -43,6 +43,11 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
 # RUN make checks
 RUN make build
 
+# RUN find / -name Target.js
+# RUN ls /usr/lib/node_modules/o* -ld
+# RUN npm list --global |grep openlayers
+# RUN npm list --global |grep ol
+
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 # put Cesium build in static-ngeo
@@ -69,7 +74,7 @@ RUN \
 WORKDIR /app
 COPY . /app
 COPY --chown=www-data:www-data --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
-COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
+#COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/ /etc/static-ngeo/
 # COPY --from=builder /etc/apiv3/* /etc/apiv3/
 COPY --chown=www-data:www-data --from=builder /app/alembic.ini /app/alembic.yaml ./
