@@ -1827,6 +1827,7 @@ lux.Map.prototype.addKML = function(url, opt_options) {
  * It displays a GeoJSON file on the map.
  * @param {string} url Url to the GeoJSON file.
  * @param {luxx.VectorOptions=} opt_options Options.
+ * @return {Promise} The vector layer promise.
  * @export
  * @api
  */
@@ -1835,7 +1836,7 @@ lux.Map.prototype.addGeoJSON = function(url, opt_options) {
   if (opt_options && opt_options.dataProjection !== undefined) {
     opt_format['defaultDataProjection'] = opt_options.dataProjection;
   }
-  this.addVector_(url, new ol.format.GeoJSON(opt_format), opt_options);
+  return this.addVector_(url, new ol.format.GeoJSON(opt_format), opt_options);
 };
 
 /**
@@ -1843,6 +1844,7 @@ lux.Map.prototype.addGeoJSON = function(url, opt_options) {
  * @param {string} url Url to the vector file
  * @param {ol.format.GPX|ol.format.KML|ol.format.GeoJSON} format The format.
  * @param {luxx.VectorOptions=} opt_options Options.
+ * @return {Promise} The vector layer promise.
  * @private
  */
 lux.Map.prototype.addVector_ = function(url, format, opt_options) {
@@ -1884,7 +1886,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
   if (opt_options && opt_options.name) {
     options.name = opt_options.name;
   }
-  this.layersPromise.then(function() {
+  return this.layersPromise.then(function() {
     vector = new ol.layer.Vector(options);
 
     var interval = opt_options && opt_options.reloadInterval;
@@ -1898,12 +1900,17 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     this.addLayer(vector);
     this.addedKmlLayers_.push(vector);
     this.addedKmlOnClick_.push(opt_options.onClick);
-    if (fit) {
+    if (fit || (opt_options && opt_options.onFeatureAdded !== undefined)) {
       ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
-          function() {
-            var size = this.getSize();
-            console.assert(size !== undefined, 'size should be defined');
-            this.getView().fit(vector.getSource().getExtent(), {size: size});
+          function(evt) {
+            if (fit) {
+              var size = this.getSize();
+              console.assert(size !== undefined, 'size should be defined');
+              this.getView().fit(vector.getSource().getExtent(), {size: size});
+            }
+            if ((opt_options && opt_options.onFeatureAdd !== undefined)) {
+              opt_options.onFeatureAdd.call(this, evt.feature);
+            }
           }.bind(this)
       );
     }
@@ -1967,6 +1974,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
         }.bind(this));
       }
     }
+    return vector;
   }.bind(this));
 };
 
