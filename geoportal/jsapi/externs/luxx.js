@@ -534,6 +534,14 @@ luxx.FeaturesOptions.prototype.maxZoom;
 luxx.VectorOptions;
 
 /**
+ * Callback function called when a feature is added.
+ * @type {function() | undefined}
+ * @api
+ */
+luxx.VectorOptions.prototype.onFeatureAdd;
+
+
+/**
  * True if map should fit to the vector. Default and undefined are true.
  * @type {boolean | undefined}
  * @api
