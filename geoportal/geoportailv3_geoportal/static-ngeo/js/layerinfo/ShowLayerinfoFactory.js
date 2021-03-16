@@ -21,19 +21,12 @@ import appModule from '../module.js';
  * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
  * @param {string} geonetworkBaseUrl catalog base server url.
  * @return {app.layerinfo.ShowLayerinfo} The show layer info function.
- * @param {string} getHtmlLegendUrl The url.
  * @ngInject
  */
 function factory($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl,
-    getHtmlLegendUrl) {
+    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl) {
     const isIpv6 = location.search.includes('ipv6=true');
     const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
-  /**
-   * @type {string}
-   * @private
-   */
-  var getHtmlLegendUrl_ = getHtmlLegendUrl;
 
   /**
    * @type {ngeo.message.Popup}
@@ -60,21 +53,14 @@ function factory($http, $sce, $rootScope,
 
   /**
    * @param {ol.layer.Layer} layer The layer
-   * @param {any} node The node
    * @this {Object}
    */
-  function showLayerInfo(layer, node) {
+  function showLayerInfo(layer) {
     currentLayer = layer;
-    var title;
-    var localMetadata;
-    if (layer == undefined || layer == null) {
-      title = node['name'];
-      localMetadata =  node['metadata'];
-    } else {
-      title = /** @type {string} */ (layer.get('label'));
-      localMetadata = /** @type {Object.<string, string>} */
-          (layer.get('metadata'));
-    }
+    var title = /** @type {string} */ (layer.get('label'));
+    var localMetadata = /** @type {Object.<string, string>} */
+        (layer.get('metadata'));
+
     var metadataUid = localMetadata['metadata_id'];
     var legend_name = ('legend_name' in localMetadata) ?
         localMetadata['legend_name'] : '';
@@ -136,9 +122,18 @@ function factory($http, $sce, $rootScope,
                       content['layerMetadata']['responsibleParty'] = [content['layerMetadata']['responsibleParty']];
                     }
                   }
+                  if ('legend_name' in localMetadata) {
+                    var currentLanguage = gettextCatalog.currentLanguage;
+                    currentLanguage =
+                    currentLanguage === 'lb' ? 'lu' : currentLanguage;
+                    content['legendUrl'] = $sce.trustAsResourceUrl(
+                        '//wiki.' + domain + '/doku.php?id=' +
+                        currentLanguage + ':legend:' +
+                        localMetadata['legend_name'] + '&do=export_html'
+                    );
+                    content['hasLegend'] = true;
+                  }
 
-                  content['legendUrl'] = buildLegendUrl(layer);
-                  content['hasLegend'] = true;
                   return content;
                 }.bind(this));
       }
@@ -159,27 +154,7 @@ function factory($http, $sce, $rootScope,
       popup.setContent(content);
       popup.setOpen(true);
     }
-    /**
-     * @param {ol.layer.Layer} layer Layer.
-     * @return {boolean} True if the layer as a legend.
-     * @export
-     */
-    function buildLegendUrl(layer) {
-        var localMetadata = /** @type {Object.<string, string>} */
-            (layer.get('metadata'));
 
-        var currentLanguage = gettextCatalog.currentLanguage;
-        var queryParams = {'lang': currentLanguage};
-
-        if (localMetadata != undefined && 'legend_name' in localMetadata) {
-          queryParams['name'] = localMetadata['legend_name']
-        }
-        var id = layer.get('queryable_id');
-        if (id != undefined) {
-          queryParams['id'] = id;
-        }
-        return getHtmlLegendUrl_ + '?' + (new URLSearchParams(queryParams)).toString();
-    }
   }
 }
 

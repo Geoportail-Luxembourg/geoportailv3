@@ -1,17 +1,17 @@
 /** Top and bottom bars (header and footer) **/
 
-$navbars-button-border-color: #8394a0;
-$grid-float-breakpoint-max: 0px;
+@navbars-button-border-color: #8394a0;
+@grid-float-breakpoint-max: 0px;
 
 
 header {
   &.navbar {
     border-width: 0;
-    @media (max-width: map-get($grid-breakpoints, "md")) {
+    @media (max-width: @screen-xs-max) {
       min-height: 40px;
     }
   }
-  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.5);
+  .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
 
   .container-fluid {
     padding-left: 0;
@@ -24,32 +24,8 @@ header {
     line-height: 34px;
     cursor: pointer;
     text-transform: uppercase;
-    @media (max-width: map-get($grid-breakpoints, "lg")) {
+    @media (max-width: @screen-md-max) {
       display: none;
-    }
-  }
-  .navbar-nav  {
-    .theme-label {
-      text-indent: 0;
-    }
-    .theme-li a {
-      border-left: none;
-      width: auto;
-      padding-left: 3em;
-      &:hover .icon-only:after {
-        color: white;
-      }
-    }
-  }
-}
-@media (min-width: map-get($grid-breakpoints, "lg")) {
-  header .theme-li a {
-    text-indent: 0;
-    text-align: right;
-    padding-left: 1.5em;
-    padding-right: .5em;
-    &:after {
-      text-align: left;
     }
   }
 }
@@ -66,11 +42,6 @@ header {
   left: auto;
   right: 0;
 }
-.navbar-nav > li > a {
-  &:hover {
-    text-decoration: none;
-  }
-}
 
 /***************/
 /* positioning */
@@ -80,12 +51,10 @@ header {
   float: none;
   // FIXME to be set to real width (may depend on media width)
   width: 300px;
-  display: flex;
-  flex-direction: row;
   .enabled-3d & {
     width: 48px;
     li a {
-      border-left: 1px solid $navbars-button-border-color;
+      border-left: 1px solid @navbars-button-border-color;
     }
   }
   // center the toolbox bar
@@ -101,7 +70,7 @@ header {
   z-index: 2;
   position: absolute;
   top: auto;
-  bottom: calc(100% + 63px);
+  bottom: ~"calc(100% + 63px)";
   white-space: nowrap;
   padding-left: 128px;
   > li {
@@ -124,12 +93,12 @@ header {
   white-space: nowrap;
 
   > li {
-    flex: 1;
+    display: block;
+    float: left;
     > a {
       padding: 0;
       text-align: center;
       margin-right: 1px;
-      display: block;
     }
   }
 }
@@ -156,13 +125,11 @@ header {
 .sidebar-controls {
   touch-action: none;
   left: 0;
-  transition: left 300ms 0 ease-out;
+  .transition(left 300ms 0 ease-out);
   z-index: 1;
-  display: flex;
-  flex-direction: row;
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) {
+@media (max-width: @screen-xs-max) {
   .sidebar-controls,
   .toolbox {
     position: absolute;
@@ -174,7 +141,7 @@ header {
     }
   }
   .sidebar-controls {
-    bottom: 106px;
+    bottom: 100px;
     .enabled-3d &{
       bottom: 61px;
     }
@@ -199,8 +166,7 @@ header {
 
 /* Keep items in one line, even with not enough room for links */
 .footer-navigation {
-  display: flex;
-  flex-direction: row;
+  margin-left: -125px;
 }
 /***********/
 /* Sizing  */
@@ -213,16 +179,15 @@ header {
 .footer-navigation > li > a {
   padding-right: 7px;
   padding-left: 7px;
-  display: inline-block;
 }
 .toolbox-panel-mapmatching > li > a {
-  width: ($icon-width * 3) + 2;
+  width: (@icon-width * 3) + 2;
   line-height: 39px;
 }
 
 .toolbox-panel > li > a {
-  width: $icon-width;
-  line-height: $icon-width;
+  width: @icon-width;
+  line-height: @icon-width;
 }
 
 .toolbox-panel-bottom > li > a {
@@ -239,16 +204,16 @@ header {
 
 .draw .toolbox-panel {
   /* 4 draw tools */
-  width: 5 + (5 * $icon-width);
+  width: 5 + (5 * @icon-width);
 }
 
 .measure .toolbox-panel {
-  /* 5 measure tools */
-  width: 5 + (5 * $icon-width);
+  /* 4 measure tools */
+  width: 5 + (5 * @icon-width);
 }
 
 .share .toolbox-panel {
-  width: 4 + (4 * $icon-width);
+  width: 4 + (4 * @icon-width);
 }
 
 .measure .profile-open {
@@ -259,19 +224,19 @@ header {
 
 .lang .toolbox-panel {
   /* 4 languages */
-  width: 4 + (4 * $icon-width);
+  width: 4 + (4 * @icon-width);
   a {
     text-transform: uppercase;
   }
 }
 
-@media (min-width: map-get($grid-breakpoints, "md")){
+@media (min-width: @screen-xs-max){
   .brand > img {
     margin: 5px;
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) {
+@media (max-width: @screen-xs-max) {
   .brand,
   .navbar-nav,
   .navbar-nav > li > a {
@@ -295,23 +260,17 @@ header {
     padding: 0;
   }
   .navbar-nav > li > a {
-    border-left: 1px solid $navbars-button-border-color;
+    border-left: 1px solid @navbars-button-border-color;
     text-indent: -9999px;
-    display: inline-block;
   }
 }
 .toolbox > li:first-child > a {
-  border-left: 1px solid $navbars-button-border-color;
+  border-left: 1px solid @navbars-button-border-color;
 }
 .toolbox,
 .sidebar-controls {
-  > li {
-    position: relative;
-    & > a {
-      border-right: 1px solid $navbars-button-border-color;
-      display: inline-block;
-      padding: 32px 0 0;
-    }
+  > li > a {
+    border-right: 1px solid @navbars-button-border-color;
   }
 }
 
@@ -320,22 +279,21 @@ header {
   text-transform: uppercase;
 }
 
-@media (min-width: map-get($grid-breakpoints, "md")) {
+@media (min-width: @screen-sm-min) {
   footer {
-    box-shadow: 0px 2px 6px 1px rgba(0, 0, 0, 0.5);
+    .box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) {
+@media (max-width: @screen-xs-max) {
   .sidebar-controls,
   .toolbox {
-    flex-direction: column;
     > li {
       background-color: white;
       > a {
-        border-right: 1px solid $navbars-button-border-color;
-        border-bottom: 1px solid $navbars-button-border-color;
-        width: 48px;
+        border-right: 1px solid @navbars-button-border-color;
+        border-bottom: 1px solid @navbars-button-border-color;
+        width: 150px;
       }
     }
     > li:first-child > a {
@@ -347,7 +305,7 @@ header {
   }
   .sidebar-controls {
       > li:first-child > a {
-      border-top: 1px solid $navbars-button-border-color;
+      border-top: 1px solid @navbars-button-border-color;
     }
   }
   .toolbox {

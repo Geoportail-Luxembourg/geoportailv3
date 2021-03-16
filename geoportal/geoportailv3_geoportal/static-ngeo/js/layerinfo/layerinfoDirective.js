@@ -12,8 +12,7 @@ const exports = function(appLayerinfoTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'layer': '=appLayerinfoLayer',
-      'node': '=appLayerinfoNode'
+      'layer': '=appLayerinfoLayer'
     },
     controller: 'AppLayerinfoController',
     controllerAs: 'ctrl',

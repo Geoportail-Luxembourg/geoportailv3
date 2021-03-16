@@ -6,11 +6,7 @@ goog.require('app.layerinfo.layerinfoDirective');
 
 
 /**
- * @typedef {{
- *   themes: Array.<Object>,
- *   background_layers: Array.<Object>,
- *   ogcServers: Array.<Object>
- * }}
+ * @typedef {{themes: Array.<Object>, background_layers: Array.<Object>}}
  */
 app.ThemesResponse;
 

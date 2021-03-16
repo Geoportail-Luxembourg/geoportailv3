@@ -7,31 +7,15 @@
  */
 
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import {inherits} from './utils.js';
+import {inherits} from 'ol/index.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
 import {listen} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeolocation from 'ol/Geolocation.js';
+import olGeolocationProperty from 'ol/GeolocationProperty.js';
 import {getChangeEventType} from 'ol/Object.js';
-
-/**
- * @enum {string}
- */
-const GeolocationProperty = {
-  ACCURACY: 'accuracy',
-  ACCURACY_GEOMETRY: 'accuracyGeometry',
-  ALTITUDE: 'altitude',
-  ALTITUDE_ACCURACY: 'altitudeAccuracy',
-  HEADING: 'heading',
-  POSITION: 'position',
-  PROJECTION: 'projection',
-  SPEED: 'speed',
-  TRACKING: 'tracking',
-  TRACKING_OPTIONS: 'trackingOptions'
-};
-
 
 /**
  * @constructor
@@ -174,7 +158,7 @@ exports.prototype.initGeoLocation_ = function() {
   });
 
   listen(this.geolocation_,
-      getChangeEventType(GeolocationProperty.TRACKING),
+      getChangeEventType(olGeolocationProperty.TRACKING),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -189,7 +173,7 @@ exports.prototype.initGeoLocation_ = function() {
       }, this);
 
   listen(this.geolocation_,
-      getChangeEventType(GeolocationProperty.POSITION),
+      getChangeEventType(olGeolocationProperty.POSITION),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -201,7 +185,7 @@ exports.prototype.initGeoLocation_ = function() {
       }, this);
 
   listen(this.geolocation_,
-      getChangeEventType(GeolocationProperty.ACCURACY_GEOMETRY),
+      getChangeEventType(olGeolocationProperty.ACCURACY_GEOMETRY),
       /**
        * @param {ol.Object.Event} e Object event.
        */

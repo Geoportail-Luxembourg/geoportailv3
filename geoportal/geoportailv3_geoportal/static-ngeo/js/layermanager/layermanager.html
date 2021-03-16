@@ -1,23 +1,19 @@
-<ul id="layermanager-3d" class="layermanager" ng-if="ctrl.is3dEnabled()" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback3D" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}">
-  <li ng-repeat="layer in ctrl.get3DLayers()" class="panel layermanager-panel">
-    <span class="sortable-handle fa fa-reorder"></span>
-    <app-layerinfo app-layerinfo-node="::layer"></app-layerinfo>
-    <div class="layer-label">
-    {{layer.name | translate}}
-    </div>
-    <a class="delete" ng-click="ctrl.remove3dLayer(layer.layer);"><span class="fa fa-trash-o"></span></a>
+<ul id="layermanager-3d" class="layermanager" ng-if="ctrl.is3dEnabled">
+  <li ng-repeat="layer in ctrl.layers3dName" class="panel layermanager-panel">
+    {{layer}}
+    <a class="delete3d" ng-click="ctrl.remove3dLayer(layer);"><span class="fa fa-trash-o"></span></a>
   </li>
 </ul>
 
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
 <ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
   <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel" ng-if="!layer.get('metadata').hidden">
-  <span class="sortable-handle fas fa-bars"></span>
+  <span class="sortable-handle fa fa-reorder"></span>
     <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>
     <div data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" data-target="#layermanager-item-{{$index}}" class="layer-label">
     {{layer.get('label') | translate}}
     </div>
-    <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fas fa-trash-alt"></span></a>
+    <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>
     <a class="options-button" data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
       <span class="collapsed fa fa-ellipsis-h"></span>
       <span class="expanded fa fa-remove"></span>
@@ -38,6 +34,6 @@
     <div class="layer-label">
     {{ctrl.background | translate}}
     </div>
-    <a class="mvt" ng-if="ctrl.activeMvt" ng-click="ctrl.openMvtEditorPanel();"><span class="fa fa-pencil-alt"></span></a>
+    <a class="mvt" ng-if="ctrl.activeMvt" ng-click="ctrl.openMvtEditorPanel();"><span class="fa fa-pencil"></span></a>
   </li>
 </ul>

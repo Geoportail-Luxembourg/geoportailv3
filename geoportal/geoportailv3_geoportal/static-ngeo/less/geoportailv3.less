@@ -1,50 +1,27 @@
+@import (inline) "~ol/ol.css";
 
-$fa-font-path: "/usr/lib/node_modules/\@fortawesome/fontawesome-free/webfonts";
+@import "~bootstrap/less/bootstrap.less";
+@import "~font-awesome/less/font-awesome.less";
 
-@import "/usr/lib/node_modules/ngeo/contribs/gmf/src/sass/vars_only.scss";
-@import '/usr/lib/node_modules/ol/ol.css';
-//@import '../../../node_modules/ngeo/contribs/gmf/css/reset.css';
-@import '/usr/lib/node_modules/bootstrap/scss/bootstrap.scss';
-//@import "ngeo/contribs/gmf/src/sass/base.scss";
+@import "controls3d.less";
+@import "variables.less";
+@import "layout.less";
+@import "sidebar.less";
+@import "offline.less";
+@import "navbars.less";
+@import "icons.less";
+@import "catalog.less";
+@import "layermanager.less";
+@import "popup.less";
+@import "theme.less";
+@import "notify.less";
+@import "print.less";
+@import "search.less";
+@import "mymaps.less";
+@import "featurepopup.less";
+@import "routing.less";
+@import "backgroundselector.less";
 
-
-
-// start legacy bootstrap3
-.hide {
-  display: none !important;
-}
-.show {
-  display: block !important;
-}
-.btn-default {
-  @extend .btn-secondary;
-}
-label {
-  font-weight: bold;
-}
-.radio label, .checkbox label {
-  font-weight: normal;
-}
-// end legacy bootstrap 3
-
-@import "controls3d.scss";
-@import "variables.scss";
-@import "icons.scss";
-@import "layout.scss";
-@import "sidebar.scss";
-@import "offline.scss";
-@import "navbars.scss";
-@import "catalog.scss";
-@import "layermanager.scss";
-@import "popup.scss";
-@import "theme.scss";
-@import "notify.scss";
-@import "print.scss";
-@import "search.scss";
-@import "mymaps.scss";
-@import "featurepopup.scss";
-@import "routing.scss";
-@import "backgroundselector.scss";
 
 @font-face {
   font-family: 'DINNextLTPro-Condensed';
@@ -135,7 +112,7 @@ app-map {
     }
   }
 }
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: 768px) {
   .ol-viewport .ol-rotate {
     top: 96px;
   }
@@ -177,8 +154,8 @@ body.embedded {
     position: absolute;
     top: 0.5em;
     left: 0.5em;
-    max-height: calc(100% - 1em);
-    width: calc(50% - 0.5em);
+    max-height: ~"calc(100% - 1em)";
+    width: ~"calc(50% - 0.5em)";
     background: white;
     z-index: 100;
     display: none;
@@ -213,9 +190,9 @@ body.embedded {
 
 body.full header,
 body.full footer {
-  display: flex;
+  display: block;
 }
-@media (max-width: map-get($grid-breakpoints, "sm")) {
+@media (max-width: @screen-xs-max) {
   body.full .routing-goto-route {
     display: block;
   }
@@ -287,9 +264,6 @@ app-medium-style-item div {
     cursor: pointer;
     float: right;
     margin-right: 11px;
-  }
-  input[type=checkbox] {
-    margin-top: 5px;
   }
 }
 

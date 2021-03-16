@@ -15,7 +15,7 @@
  */
 
 import appModule from '../module.js';
-import {interactionDecoration} from 'ngeo/misc/decorate.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
@@ -122,8 +122,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
     return text.startsWith('NaN') ? '' : text
   }
   const generateStyle = baseStyle => f => {
-    const geomType = f.getGeometry()?.getType()
-    if (!geomType) return;
+    const geomType = f.getGeometry().getType()
 
     if (['Point', 'Circle'].includes(geomType)) {
       return baseStyle;
@@ -154,16 +153,11 @@ const exports = function($scope, $q, $http, $compile, gettext,
       return style
     }
 
-    let text
-    try {
-      text = (this[
-        geomType === 'LineString' ? 'measureLength' :
-        geomType === 'Polygon' ? 'measureArea' :
-        geomType === 'GeometryCollection' ? 'measureAzimut' : ''
-      ].getTooltipElement() || this['measureProfile'].getTooltipElement()).innerHTML
-    } catch {
-      text = ''
-    }
+    let text = (this[
+      geomType === 'LineString' ? 'measureLength' :
+      geomType === 'Polygon' ? 'measureArea' :
+      geomType === 'GeometryCollection' ? 'measureAzimut' : ''
+    ].getTooltipElement() || this['measureProfile'].getTooltipElement()).innerHTML
 
     style.getText().setText(clearText(text))
     if (geomType === 'GeometryCollection') {
@@ -227,7 +221,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
-  interactionDecoration(measureProfile);
+  ngeoMiscDecorate.interaction(measureProfile);
   this.map_.addInteraction(measureProfile);
 
   helpMsg = gettext('Click to start drawing length');
@@ -252,7 +246,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureLength'] = measureLength;
 
   measureLength.setActive(false);
-  interactionDecoration(measureLength);
+  ngeoMiscDecorate.interaction(measureLength);
   this.map_.addInteraction(measureLength);
 
   helpMsg = gettext('Click to start drawing area');
@@ -290,7 +284,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureArea'] = measureArea;
 
   measureArea.setActive(false);
-  interactionDecoration(measureArea);
+  ngeoMiscDecorate.interaction(measureArea);
   this.map_.addInteraction(measureArea);
 
   helpMsg = gettext('Click to start drawing azimut');
@@ -312,7 +306,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureAzimut'] = measureAzimut;
 
   measureAzimut.setActive(false);
-  interactionDecoration(measureAzimut);
+  ngeoMiscDecorate.interaction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
   listen(measureAzimut, 'measureend',

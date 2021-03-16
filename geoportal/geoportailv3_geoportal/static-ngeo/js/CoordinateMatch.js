@@ -31,8 +31,8 @@ export function matchCoordinate(searchString, mapEpsgCode, maxExtent, coordinate
       label: 'LUREF',
       epsgCode: 'EPSG:2169'
     },
-    'EPSG:2169:V2': {
-      regex: /(\d{4,6})\s*([E|N])?[\,\.]\s*(\d{4,6})\s*([E|N])?/,
+    'EPSG:2169': {
+      regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
       label: 'LUREF',
       epsgCode: 'EPSG:2169'
     },
@@ -56,9 +56,7 @@ export function matchCoordinate(searchString, mapEpsgCode, maxExtent, coordinate
      * @type {Array.<string | undefined>}
      */
     var m = re[epsgKey].regex.exec(searchString);
-    if (epsgKey === 'EPSG:2169' && (searchString.match(/\./g) || []).length == 1) {
-      m = undefined;
-    }
+
     if (m !== undefined && m !== null) {
       var epsgCode = re[epsgKey].epsgCode;
       var isDms = false;
@@ -80,7 +78,7 @@ export function matchCoordinate(searchString, mapEpsgCode, maxExtent, coordinate
             northing = parseFloat(m[2].replace(',', '.'));
           }
         }
-      } else if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169' || epsgKey === 'EPSG:2169:V2') {
+      } else if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
         if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
           if (arrayIncludes(northArray, m[2].toUpperCase()) &&
           arrayIncludes(eastArray, m[4].toUpperCase())) {

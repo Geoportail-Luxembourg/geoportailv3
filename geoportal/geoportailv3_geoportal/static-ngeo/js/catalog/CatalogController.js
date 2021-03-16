@@ -93,25 +93,28 @@ const exports = function($scope, appThemes, appTheme,
         this.setTree_();
       }), this);
 
-  $scope.$watch(
-    () => this.appTheme_.getCurrentTheme(),
-    (newVal, oldVal) => (newVal !== oldVal) && this.setTree_()
-  );
+  $scope.$watch(function() {
+    return this.appTheme_.getCurrentTheme();
+  }.bind(this), function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      this.setTree_();
+    }
+  }.bind(this));
 
   $scope.$watch(
     () => {
       if (!this.map.get('ol3dm')) return;
-      return this.map.get('ol3dm').is3dEnabled();
+      return this.map.get('ol3dm').is3dEnabled()
     },
     enabled => {
-      if (enabled === undefined || !this.tree) return;
+      if (enabled === undefined) return;
       if (enabled) {
         this.tree.children.unshift({
           id: -1,
           name: "3d Layers",
           metadata: {},
-          children: this.map.get('ol3dm').getAvailableLayers().map(
-            (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
+          children: this.map.get('ol3dm').getAvailableLayerName().map(
+            (layer, i) => ({ id: i, name: layer })
           ),
           type: "Cesium",
           ogcServer: "None",
@@ -119,21 +122,13 @@ const exports = function($scope, appThemes, appTheme,
           theme: this.appTheme_.getCurrentTheme()
         })
       } else {
-        if (this.tree !== undefined) {
-          const idx = this.tree.children.findIndex((e) => e.id === -1);
-          if (idx > -1) {
-            this.tree.children.splice(idx, 1);
-          }
-        }
+        const idx = this.tree.children.findIndex((e) => e.id === -1)
+        this.tree.children.splice(idx, 1)
       }
     }
   )
 };
 
-exports.prototype.is3dEnabled = function() {
-  if (!this.map.get('ol3dm')) return false;
-  return this.map.get('ol3dm').is3dEnabled();
-};
 
 
 /**
@@ -150,7 +145,7 @@ exports.prototype.getLayer = function(node) {
 exports.prototype.getActive = function(layertreeController) {
   const layer3dmanager = this.map.get('ol3dm')
   if (layer3dmanager) {
-    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.layer)) {
+    if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.name)) {
       return true
     }
   }
@@ -162,25 +157,22 @@ exports.prototype.getActive = function(layertreeController) {
  */
 exports.prototype.setTree_ = function() {
   this.appThemes_.getThemeObject(
-    this.appTheme_.getCurrentTheme()
-  ).then(tree => {
-    this.tree = tree
-    if (this.tree !== undefined) {
-      const idx = this.tree.children.findIndex((e) => ('display_in_switcher' in e.metadata && e.metadata['display_in_switcher'] === false));
-      if (idx > -1) {
-        this['tree'].children.splice(idx, 1);
-      }
-    }
-    this.setThemeZooms()
-  })
+      this.appTheme_.getCurrentTheme()).then(
+      /**
+       * @param {Object} tree Tree object for the theme.
+       */
+      (function(tree) {
+        this['tree'] = tree;
+        this.setThemeZooms(this['tree']);
+      }).bind(this));
 };
 
 
 /**
+ * @param {Object} tree Tree object for the theme.
  * Set the maximum scale regarding the loaded theme.
  */
-exports.prototype.setThemeZooms = function() {
-  var tree = this.tree
+exports.prototype.setThemeZooms = function(tree) {
   var maxZoom = 19;
   if (tree !== null) {
     console.assert('metadata' in tree);
@@ -203,9 +195,8 @@ exports.prototype.setThemeZooms = function() {
       extent: this.maxExtent_,
       center: currentView.getCenter(),
       enableRotation: true,
-      constrainResolution: true,
       zoom: currentView.getZoom(),
-      rotation
+      rotation,
     }));
   }
   this.scales_.setMaxZoomLevel(maxZoom);
@@ -223,11 +214,11 @@ exports.prototype.setThemeZooms = function() {
 exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
-  if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.layer)) !== -1) {
-      olcs.remove3dLayer(node.layer);
+  if (olcs.getAvailableLayerName().indexOf(node.name) !== -1) {
+    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.name)) !== -1) {
+      olcs.remove3dLayer(node.name);
     } else {
-      olcs.add3dTile(node.layer)
+      olcs.add3dTile(node.name)
     }
   } else {
     var layer = this.getLayerFunc_(node);
@@ -236,26 +227,26 @@ exports.prototype.toggle = function(node) {
       map.removeLayer(layer);
     } else {
       var layerMetadata = layer.get('metadata');
-      if (layerMetadata && layerMetadata.hasOwnProperty('start_opacity') &&
+      if (layerMetadata.hasOwnProperty('start_opacity') &&
           layerMetadata.hasOwnProperty('original_start_opacity')) {
         layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
       }
       map.addLayer(layer);
-      if (layerMetadata.hasOwnProperty('linked_layers')) {
-        var layers = layerMetadata['linked_layers'].split(',');
-        layers.forEach(function(layerId) {
-          this.appThemes_.getFlatCatalog().then(
-            function(flatCatalog) {
-              var node2 = flatCatalog.find(function(catItem) {
-                return catItem.id === Number(layerId);
-              });
-              if (node2 !== undefined) {
-                var linked_layer = this.getLayerFunc_(node2);
-                map.addLayer(linked_layer);
-              }
-            }.bind(this));
-        }, this);
-      }
+    }
+    if (layerMetadata.hasOwnProperty('linked_layers')) {
+      var layers = layerMetadata['linked_layers'].split(',');
+      layers.forEach(function(layerId) {
+        this.appThemes_.getFlatCatalog().then(
+          function(flatCatalog) {
+            var node2 = flatCatalog.find(function(catItem) {
+              return catItem.id === Number(layerId);
+            });
+            if (node2 !== undefined) {
+              var linked_layer = this.getLayerFunc_(node2);
+              map.addLayer(linked_layer);
+            }
+          }.bind(this));
+      }, this);
     }
   }
 };

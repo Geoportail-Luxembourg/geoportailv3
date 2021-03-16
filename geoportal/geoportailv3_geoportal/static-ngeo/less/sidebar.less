@@ -38,7 +38,7 @@
     float: left;
     width: 100%;
   }
-
+  
   .nav-tabs>li {
     padding-right: 5px;
     &>a {
@@ -46,10 +46,6 @@
       font-size: 24px;
       line-height: 1;
       border: 0;
-      padding: 10px 15px;
-      &:hover {
-        text-decoration: none;
-      }
     }
   }
   .tab-content {
@@ -58,27 +54,21 @@
   #mylayers, #catalog {
     touch-action: none;
   }
-  #catalog {
-    flex: 1;
-  }
-  app-catalog {
-    display: block;
-  }
-  #layers {
-    flex-direction: column;
-    .tab-content {
-      touch-action: none;
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      flex-direction: column;
-    }
+  #layers .tab-content {
+    touch-action: none;
+    // Height calculation:
+    // 100% - h2 font-size - padding-top - padding-bottom -
+    //  tab font-size - tab padding*2;
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - 40px - 2 * 12px - 24px - 2 * 10px)";
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   #mymaps .tab-content {
     touch-action: none;
     // FIXME: use variables for the calculation
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     color: #FFFFFF;
@@ -90,14 +80,14 @@
 
   #routing .tab-content {
     // FIXME: use variables for the calculation
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
   }
 
   #infos .tab-content {
     // FIXME: use variables for the calculation
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -105,7 +95,7 @@
   }
 
   #legends .tab-content {
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -113,35 +103,35 @@
   }
 
   #feedback .tab-content {
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackanf .tab-content {
-    height: calc(100% - 120px);
+    height: ~"calc(100% - 120px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackcrues .tab-content {
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackage .tab-content {
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #vectoreditor .tab-content {
-    height: calc(100% - 64px);
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -152,9 +142,25 @@
     width: 100%;
   }
 
+  .btn-vector-editor {
+    position: relative;
+    float: left;
+    padding: 5px;
+    border: solid lightgrey 1px;
+
+    &::after {
+      content: '\f1fc';
+      font-family: FontAwesome;
+      font-size: 1em;
+    }
+  }
+
+
   .themes-switcher {
     overflow-y: auto;
     overflow-x: hidden;
+    max-height: ~"calc(100% - 105px - 2 * 12px - @{input-height-base})";
+    position: absolute;
     width:100%;
     -webkit-transition: none;
     transition: none;
@@ -232,8 +238,8 @@
     width: 96%;
   }
 
-  $range-width: 70px;
-  $range-track-color: #fff;
+  @range-width: 70px;
+  @range-track-color: #fff;
   input[type=range] {
     /*removes default webkit styles*/
     -webkit-appearance: none;
@@ -242,7 +248,7 @@
     border: 0 solid white;
     padding: 0 0 0 0;
     /*required for proper track sizing in FF*/
-    width: $range-width;
+    width: @range-width;
     margin-left: 10px;
     float:none;
     vertical-align: middle;
@@ -250,9 +256,9 @@
     background-color: transparent;
   }
   input[type=range]::-webkit-slider-runnable-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
-    background: $range-track-color;
+    background: @range-track-color;
     border: none;
     border-radius: 3px;
   }
@@ -268,13 +274,13 @@
     outline: none;
   }
   input[type=range]:focus::-webkit-slider-runnable-track {
-    background: $range-track-color;
+    background: @range-track-color;
   }
 
   input[type=range]::-moz-range-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
-    background: $range-track-color;
+    background: @range-track-color;
     border: none;
     border-radius: 3px;
   }
@@ -290,7 +296,7 @@
   }
 
   input[type=range]::-ms-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
     padding: 0 0 0 0;
     /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
@@ -304,11 +310,11 @@
     color: transparent;
   }
   input[type=range]::-ms-fill-lower {
-    background: $range-track-color;
+    background: @range-track-color;
     border-radius: 10px;
   }
   input[type=range]::-ms-fill-upper {
-    background: $range-track-color;
+    background: @range-track-color;
     border-radius: 10px;
   }
   input[type=range]::-ms-thumb {
@@ -318,16 +324,15 @@
     border-radius: 50%;
   }
   input[type=range]:focus::-ms-fill-lower {
-    background: $range-track-color;
+    background: @range-track-color;
   }
   input[type=range]:focus::-ms-fill-upper {
-    background: $range-track-color;
+    background: @range-track-color;
   }
   input[type=range]::-ms-tooltip {
     display: none;
   }
   #infos .streetview {
-    width: 100%;
     height: 500px;
     background: url('../images/sv_bg.png') no-repeat;
     padding-top: 15px;
@@ -409,6 +414,7 @@
       float: left;
 
       &:after{
+        font-family: FontAwesome;
         font-size: 3em;
         width: 100%;
         text-indent: 0;
@@ -428,14 +434,16 @@
         font-size: 1.2em;
       }
     }
-    .launch-editor-button img {
-      width: 4.2em;
-      margin-top: 10px;
+
+    .launch-editor-button:after {
+      content: url(../images/palette.svg);
+      width: 1.2em;
+      top: 10px;
+      left: 20px;
+      color: white;
     }
     .upload-style-button:after {
-      content: "\f382";
-      font-family: "Font Awesome 5 Free";
-      font-weight: 900;
+      content: '\f0ee';
     }
 
     .upload-style-button {
@@ -466,7 +474,7 @@
   .clear-style-btn {
     margin-top: 10px;
   }
-
+  
   .hillshade-visible {
     float: right;
     margin-right: 11px;
@@ -501,6 +509,7 @@ app-simple-style {
     border-radius: initial;
     -webkit-box-shadow: initial;
     box-shadow: initial;
+    
 }
 #legends .legend-row {
 	display:flex;

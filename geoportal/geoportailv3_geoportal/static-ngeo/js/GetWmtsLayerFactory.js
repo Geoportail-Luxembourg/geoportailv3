@@ -10,7 +10,7 @@ let exports = {};
 
 import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
-import {layerDecoration} from 'ngeo/misc/decorate.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import {getTopLeft} from 'ol/extent.js';
 import {get as getProjection} from 'ol/proj.js';
 import olLayerTile from 'ol/layer/Tile.js';
@@ -34,12 +34,12 @@ function getImageExtension_(imageType) {
 
 /**
  * @param {string} requestScheme The scheme.
+ * @param {string} wmtsUrl The wmts url from env var.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
  */
-function factory(requestScheme) {
-  var wmtsUrl;
+function factory(requestScheme, wmtsUrl) {
   return getWmtsLayer;
 
   /**
@@ -103,7 +103,7 @@ function factory(requestScheme) {
     });
 
     layer.set('label', name);
-    layerDecoration(layer);
+    ngeoMiscDecorate.layer(layer);
 
     return layer;
   }

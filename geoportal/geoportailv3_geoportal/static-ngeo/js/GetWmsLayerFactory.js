@@ -10,7 +10,7 @@ let exports = {};
 
 import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
-import {layerDecoration} from 'ngeo/misc/decorate.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olLayerImage from 'ol/layer/Image.js';
 import olSourceImageWMS from 'ol/source/ImageWMS.js';
 
@@ -55,7 +55,7 @@ function factory(proxyWmsUrl, remoteProxyWms,
     });
 
     layer.set('label', name);
-    layerDecoration(layer);
+    ngeoMiscDecorate.layer(layer);
 
     return layer;
   }

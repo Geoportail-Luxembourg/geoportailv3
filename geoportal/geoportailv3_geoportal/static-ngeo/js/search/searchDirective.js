@@ -19,7 +19,7 @@ import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhou
 
 
 // Add dependency into Angular module
-appModule.requires.push(ngeoSearchCreateGeoJSONBloodhound.name);
+appModule.requires.push(ngeoSearchCreateGeoJSONBloodhound.module.name);
 
 
 /**

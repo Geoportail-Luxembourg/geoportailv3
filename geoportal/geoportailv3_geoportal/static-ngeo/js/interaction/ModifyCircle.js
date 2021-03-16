@@ -1,12 +1,12 @@
 /**
  * @module app.interaction.ModifyCircle
  */
-import {getDefaultModifyStyleFunction} from 'ngeo/interaction/common.js';
+import ngeoInteractionCommon from 'ngeo/interaction/common.js';
 import ViewHint from 'ol/ViewHint.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import {equals, squaredDistanceToSegment, closestOnSegment, squaredDistance} from 'ol/coordinate.js';
-import {listen, unlistenByKey} from 'ol/events.js';
+import {listen, unlisten} from 'ol/events.js';
 import {boundingExtent, getCenter} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomCircle from 'ol/geom/Circle.js';
@@ -15,12 +15,11 @@ import olGeomPoint from 'ol/geom/Point.js';
 import {fromCircle} from 'ol/geom/Polygon.js';
 import Interaction from 'ol/interaction/Interaction.js';
 import {ModifyEvent} from 'ol/interaction/Modify.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
-import {getUid} from 'ol/index.js';
-import {inherits} from '../utils.js';
+import {inherits, getUid} from 'ol/index.js';
 
 
 /**
@@ -137,7 +136,6 @@ const exports = function(options) {
   listen(this.features_, 'remove',
       this.handleFeatureRemove_, this);
 
-  this.FeatureListeners_ = new Map();
 };
 
 inherits(exports, olInteractionPointer);
@@ -157,7 +155,8 @@ exports.prototype.addFeature_ = function(feature) {
     if (map) {
       this.handlePointerAtPixel_(this.lastPixel_, map);
     }
-    this.FeatureListeners_.set(feature, listen(feature, 'change', this.handleFeatureChange_, this));
+    listen(feature, 'change',
+        this.handleFeatureChange_, this);
   }
 };
 
@@ -187,8 +186,9 @@ exports.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  const key = this.FeatureListeners_.delete(feature);
-  unlistenByKey(key);};
+  unlisten(feature, 'change',
+      this.handleFeatureChange_, this);
+};
 
 
 /**
@@ -423,7 +423,7 @@ exports.handleEvent = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return olInteractionPointer.prototype.handleEvent.call(this, mapBrowserEvent) && !handled;
+  return pointerHandleEvent.call(this, mapBrowserEvent) && !handled;
 };
 
 
@@ -518,7 +518,7 @@ exports.prototype.setGeometryCoordinates_ =
  * @return {ol.StyleFunction} Styles.
  */
 exports.getDefaultStyleFunction = function() {
-  var style = getDefaultModifyStyleFunction();
+  var style = ngeoInteractionCommon.getDefaultModifyStyleFunction();
   return function(feature, resolution) {
     return style[olGeomGeometryType.POINT];
   };

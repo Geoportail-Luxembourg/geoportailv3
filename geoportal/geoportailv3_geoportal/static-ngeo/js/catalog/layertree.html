@@ -1,4 +1,4 @@
-<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parent.uid}}"
+<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parentUid}}"
    href="#catalog-{{::layertreeCtrl.uid}}"
    aria-expanded="{{(layertreeCtrl.node.metadata && layertreeCtrl.node.metadata.is_expanded) ? 'true': 'false'}}"
    ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth < 10">
@@ -8,7 +8,7 @@
   {{layertreeCtrl.node.name | translate}}
 </span>
 <div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children">
-  <app-layerinfo app-layerinfo-layer="::layertreeCtrl.layer" app-layerinfo-node="::layertreeCtrl.node"></app-layerinfo>
+  <app-layerinfo app-layerinfo-layer="::layertreeCtrl.layer"></app-layerinfo>
   <a href ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
     <i class="fa" ng-class="(catalogCtrl.getActive(layertreeCtrl)) ? 'fa-check-square' : 'fa-square'"></i>
     {{layertreeCtrl.node.name | translate}}

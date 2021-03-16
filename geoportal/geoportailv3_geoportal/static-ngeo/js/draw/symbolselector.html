@@ -76,8 +76,8 @@
       <div class="form-group">
         <label translate>Color</label>
         <span class="dropdown">
-          <button class="btn btn-default btn-color" type="button" data-toggle="dropdown" style="background-color:{{ctrl.feature.get('color')}}">
-            <span class="fas fa-caret-square-down"></span>
+          <button class="btn btn-default btn-color dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:{{ctrl.feature.get('color')}}">
+            <span class="fa fa-caret-square-o-down"></span>
           </button>
           <ul class="dropdown-menu">
             <li>
@@ -95,7 +95,7 @@
   </div>
 </div>
 <br>
-<div class="feature-popup-footer float-right">
+<div class="feature-popup-footer pull-right">
     <span ng-show="ctrl.isAuthenticated() && ctrl.tab == 'us'" class="btn btn-default btn-file">
     {{'Importer un symbole'|translate}}<input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
     </span>

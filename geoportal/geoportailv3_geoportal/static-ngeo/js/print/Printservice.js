@@ -1,13 +1,13 @@
 /**
  * @module app.print.Printservice
  */
-import {PrintService} from 'ngeo/print/Service.js';
+import ngeoPrintService from 'ngeo/print/Service.js';
 import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
 
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
-import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
+import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -45,7 +45,7 @@ class AppVectorEncoder extends VectorEncoder {
   }
 }
 
-const exports = class extends PrintService {
+const exports = class extends ngeoPrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
