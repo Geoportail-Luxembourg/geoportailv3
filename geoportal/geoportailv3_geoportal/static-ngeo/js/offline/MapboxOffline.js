@@ -57,6 +57,7 @@ function storeData(dbPromise, url, dataUrl) {
 
 function fetchAndStoreResponseHelper(url, clone) {
   let response;
+  let count = 0;
   return fetch(url)
     .then(r => (response = (clone ? r.clone() : null), r.blob()))
     .then(blob => blobToDataUrl(blob))
@@ -72,7 +73,9 @@ function fetchBlobsAndStore(urls, progressCallback) {
         ++count;
         progressCallback(count / urls.length);
     })
-  }));
+  })).finally(() => {
+    progressCallback(1);
+  });
 }
 
 
@@ -154,7 +157,6 @@ export default class MapBoxOffline {
 
   getUrlsPromise(style, extentByZoom) {
     const glyphUrls = this.getGlyphUrls(style);
-    
     return this.getSourcesPromise(style).then(sources => this.getTileUrls(sources, extentByZoom)).then(sourceUrls => [
       ...glyphUrls, ...sourceUrls
     ]);
