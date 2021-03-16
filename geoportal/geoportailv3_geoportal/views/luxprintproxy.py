@@ -77,6 +77,17 @@ cache_region = get_region()
 
 
 class LuxPrintProxy(PrintProxy):
+    @view_config(route_name="lux_report_create_and_get")
+    def lux_report_create_and_get(self):
+        #spec = self.request.body.decode("utf-8")
+        spec = json.loads(self.request.params.get('spec', None))
+        print_url = self.config["print_url"]
+        resp, content = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+
+        return self._build_response(
+            resp, content, NO_CACHE, "print"
+        )
+
     @view_config(route_name="lux_get_thumbnail")
     def lux_get_thumbnail(self):
         layer_id = self.request.params.get('layerid', 359)
