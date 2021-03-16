@@ -57,7 +57,6 @@ function storeData(dbPromise, url, dataUrl) {
 
 function fetchAndStoreResponseHelper(url, clone) {
   let response;
-  let count = 0;
   return fetch(url)
     .then(r => (response = (clone ? r.clone() : null), r.blob()))
     .then(blob => blobToDataUrl(blob))
