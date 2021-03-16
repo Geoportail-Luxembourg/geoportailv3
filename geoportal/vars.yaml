@@ -172,6 +172,7 @@ vars:
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+        wmtsUrl: '{WMTSURL}'
       dynamic_constants:
         cacheVersion: cache_version
         langUrls: lang_urls
@@ -490,7 +491,7 @@ runtime_environment:
   - {name: ROUTING_MAPQUEST_API_KEY, default: null}
   - {name: SHORTENER_ALLOWED_HOST}
   - {name: SHORTENER_BASE_URL}
-  - {name: WMTS_URL, default: ''}
+  - {name: WMTSURL, default: ''}
 
 update_paths:
   - admin_interface.available_functionalities
