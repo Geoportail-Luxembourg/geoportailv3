@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
+<html lang={{mainCtrl.lang}} ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
   <head>
     <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
@@ -9,6 +9,8 @@
     <meta name="apple-mobile-web-app-title" content="geoportail.lu">
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="dynamicUrl" content="<%= htmlWebpackPlugin.options.vars.entry_point %>dynamic.json">
+    <meta name="interface" content="main">
     <link rel="shortcut icon" href="<%=require("../../images/favicon.ico")%>" />
 
     <% for (var css in htmlWebpackPlugin.files.css) { %>
@@ -457,7 +459,6 @@
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>
-        <script src="/dynamic.js?interface=main"></script>
 
         <!-- Piwik -->
           <script type="text/javascript">
