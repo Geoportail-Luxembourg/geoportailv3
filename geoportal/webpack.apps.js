@@ -69,8 +69,8 @@ rules.push({
 
 module.exports = {
   output: {
-    path: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/build/'),
-    publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '${VISIBLE_ENTRY_POINT}static-ngeo/UNUSED_CACHE_VERSION/build/'
+    path: '/etc/static-ngeo/',
+    publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '.__ENTRY_POINT__static-ngeo/'
   },
   entry: entry,
   module: {
