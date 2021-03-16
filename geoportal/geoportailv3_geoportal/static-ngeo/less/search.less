@@ -1,4 +1,4 @@
-$clear-button-width: 20px;
+@clear-button-width: 20px;
 
 // bugfix for IE textboxes who have own clear element
 input[type=text]::-ms-clear {
@@ -16,42 +16,40 @@ span.twitter-typeahead {
     cursor: hand;
     color: white;
     opacity: 0.5;
-    // FIXME: what about the old padding-base-vertical
-    // looks removed in ngeo
-    padding: 5px;
+    padding: @padding-base-vertical 5px;
     vertical-align: middle;
     border: 1px solid transparent;
     &:hover {
       opacity: 1;
     }
   }
-  .placeholder-text::placeholder {
-    opacity: 0.75;
-    color: white;
+  .placeholder-text:-moz-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text::-moz-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text:-ms-input-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text::-webkit-input-placeholder {
+    opacity: 0.5;
   }
   .form-control {
     min-width: 250px;
     position: relative;
-    padding-right: $clear-button-width;
+    padding-right: @clear-button-width;
     padding-left: 32px;
     width: auto;
-    height: calc(1.5em + 0.5rem + 2px);
-    font-size: 16px;
-    &::placeholder {
-      opacity: 0.75;
-      color: white;
-    }
   }
   .tt-menu {
-    max-height: calc(100vh - 50px);
-    overflow-y: auto;
     position: absolute;
     top: 100%;
     left: 0;
     z-index: 1000;
     display: none;
     float: left;
-    min-width: 370px;
+    min-width: 400px;
     padding: 5px 5px;
     margin: 2px 0 0;
     list-style: none;
@@ -108,14 +106,14 @@ span.twitter-typeahead {
   font-weight: bold;
   }
   &:after {
-    content: '\e00d';
-    font-family: geoportail-icons;
-    position: absolute;
-    top: 0;
-    left: .5em;
-    height: 32px;
-    line-height: 32px;
-    color: white;
+  content: '\f002';
+  font-family: FontAwesome;
+  position: absolute;
+  top: 0;
+  left: .5em;
+  height: 36px;
+  line-height: 36px;
+  color: white;
   }
 }
 
@@ -142,7 +140,7 @@ span.twitter-typeahead {
     right: 0;
     z-index: 1;
     top: 1px;
-    height: calc(100% - 2px);
+    height: ~"calc(100% - 2px)";
     padding: 6px 12px 6px 6px;
     .fa {
       color: white;
@@ -194,24 +192,24 @@ span.twitter-typeahead {
 }
 
 
-@media (min-width: map-get($grid-breakpoints, "md")) {
+@media (min-width: @screen-sm-min) {
   header .search-container {
     white-space: nowrap;
     margin-left: auto;
     margin-right: auto;
-    width: 370px;
+    width: 400px;
   }
 
   header .navbar-form {
   padding-right: 15px;
   span.twitter-typeahead,
     .form-control {
-    width: 370px;
+    width: 400px;
     }
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) {
+@media (max-width: @screen-xs-max) {
   .navbar-form {
   border: 0;
   }
@@ -246,7 +244,7 @@ span.twitter-typeahead {
   }
   }
   .search-container .facet-container {
-    width: calc(100% + 2.3em);
+    width: ~"calc(100% + 2.3em)";
   }
 }
 .search-result-container {

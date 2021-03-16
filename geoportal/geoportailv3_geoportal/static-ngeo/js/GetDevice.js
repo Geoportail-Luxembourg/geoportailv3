@@ -38,17 +38,19 @@ const exports = function($document, $window) {
   * @return {string} The device env.
  */
 exports.prototype.findBootstrapEnvironment = function() {
-  const envs = {
-    'lg': '(min-width: 1200px)',
-    'xs': '(max-width: 768px)',
-    'sm': '(max-width: 992px)',
-    'md': '(max-width: 1199px)',
-  }
+  var envs = ['xs', 'sm', 'md', 'lg'];
+  var el = $('<div>');
+  angular.element(this.$document_[0].body).append(el);
 
-  for (const [env, mq] of Object.entries(envs)) {
-    if (window.matchMedia(mq).matches) return env
+  for (var i = envs.length - 1; i >= 0; i--) {
+    var env = envs[i];
+    el.addClass('hidden-' + env);
+    if (el.is(':hidden')) {
+      el.remove();
+      return env;
+    }
   }
-  return 'xs'
+  return envs[0];
 };
 
 

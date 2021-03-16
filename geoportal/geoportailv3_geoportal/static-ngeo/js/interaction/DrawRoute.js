@@ -4,7 +4,7 @@
 
 import {createEditingStyle} from 'ol/style/Style.js';
 import olFeature from 'ol/Feature.js';
-import MapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import olEventsEvent from 'ol/events/Event.js';
@@ -15,10 +15,10 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
-import {inherits} from '../utils.js';
+import {inherits} from 'ol/index.js';
 import {transform} from 'ol/proj.js';
 
 
@@ -319,16 +319,16 @@ exports.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== exports.Mode_.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      event.type === MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+      event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
     this.addToDrawing_(event);
     pass = false;
   } else if (event.type ===
       'pointermove') {
     pass = this.handlePointerMove_(event);
-  } else if (event.type === MapBrowserEventType.DBLCLICK) {
+  } else if (event.type === olMapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return olInteractionPointer.prototype.handleEvent.call(this, event) && pass;
+  return pointerHandleEvent.call(this, event) && pass;
 };
 
 

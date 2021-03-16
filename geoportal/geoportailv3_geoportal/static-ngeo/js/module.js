@@ -7,7 +7,7 @@
  * module.
  */
 
-const TOUCH = 'ontouchstart' in window;
+import {TOUCH} from 'ol/has.js';
 
 import ngeoDatasourceModule from 'ngeo/datasource/module.js';
 import ngeoDownloadModule from 'ngeo/download/module.js';
@@ -29,11 +29,10 @@ import ngeoPrintModule from 'ngeo/print/module.js';
 import ngeoProfileModule from 'ngeo/profile/module.js';
 import ngeoQueryModule from 'ngeo/query/module.js';
 import ngeoSearchModule from 'ngeo/search/module.js';
+import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
-import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
+import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
-import mockProviderModule, {MockProvider} from './MockProvider.js';
-import angular from 'angular';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
 
@@ -41,7 +40,6 @@ const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControl
  * @type {!angular.Module}
  */
 const exports = angular.module('Appmain', [
-  ngeoStatemanagerWfsPermalinkModule.name,
   fakeGmfAbstractAppControllerModule.name,
   ngeoDatasourceModule.name,
   ngeoDownloadModule.name,
@@ -63,7 +61,7 @@ const exports = angular.module('Appmain', [
   ngeoQueryModule.name,
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
-  mockProviderModule.name,
+  ngeoStatemanagerWfsPermalink.module.name,
   'gettext']).run(function() {
     if (!TOUCH) {
       document.body.classList.add('no-touch');
@@ -73,7 +71,8 @@ const exports = angular.module('Appmain', [
 // Use ngeo's mockLocationProvider to work around a problem in Angular
 // and avoid problems when using both ngeoLocation and ng-include in
 // the application.
-exports.config(MockProvider)
+exports.config(ngeoStatemanagerLocation.MockProvider);
+
 
 exports.config(['$compileProvider', function($compileProvider) {
   // activate pre-assigning bindings
@@ -141,7 +140,6 @@ exports.constant('appSymbolSelectorTemplateUrl', 'templatecache/appSymbolSelecto
 exports.constant('appLayerinfoTemplateUrl', 'templatecache/appLayerinfoTemplateUrl');
 exports.constant('appAuthenticationTemplateUrl', 'templatecache/appAuthenticationTemplateUrl');
 exports.constant('appInfobarTemplateUrl', 'templatecache/appInfobarTemplateUrl');
-exports.constant('app3dbarTemplateUrl', 'templatecache/app3dbarTemplateUrl');
 exports.constant('appProjectionselectorTemplateUrl', 'templatecache/appProjectionselectorTemplateUrl');
 exports.constant('appMapTemplateUrl', 'templatecache/appMapTemplateUrl');
 exports.constant('appThemeswitcherTemplateUrl', 'templatecache/appThemeswitcherTemplateUrl');
@@ -189,7 +187,6 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appLayerinfoTemplateUrl', require('./layerinfo/layerinfo.html'));
   $templateCache.put('templatecache/appAuthenticationTemplateUrl', require('./authentication/authentication.html'));
   $templateCache.put('templatecache/appInfobarTemplateUrl', require('./infobar/infobar.html'));
-  $templateCache.put('templatecache/app3dbarTemplateUrl', require('./olcs/3dbar.html'));
   $templateCache.put('templatecache/appProjectionselectorTemplateUrl', require('./infobar/projectionselector.html'));
   $templateCache.put('templatecache/appMapTemplateUrl', require('./map/map.html'));
   $templateCache.put('templatecache/appThemeswitcherTemplateUrl', require('./themeswitcher/themes.html'));

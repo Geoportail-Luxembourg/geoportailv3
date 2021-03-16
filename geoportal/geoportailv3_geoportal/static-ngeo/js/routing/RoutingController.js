@@ -14,7 +14,7 @@
 
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import {createGeoJSONBloodhound} from 'ngeo/search/createGeoJSONBloodhound.js';
+import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
 import {get as projGet, transform, transformExtent} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -566,7 +566,7 @@ exports.prototype.removeTooltip_ = function() {
 exports.prototype.createAndInitPOIBloodhound_ =
     function(searchServiceUrl) {
       var geojsonFormat = new olFormatGeoJSON();
-      var bloodhound = createGeoJSONBloodhound(
+      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {

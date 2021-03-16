@@ -47,7 +47,7 @@
 
   .mymap-header .title {
     width: auto;
-    max-width: calc(100% - 15px);
+    max-width: ~"calc(100% - 15px)";
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: bold;
@@ -106,27 +106,7 @@
   .navbar-nav > li > button {
     margin: 0px 0px 5px 0px;
   }
-
-  .modal-dialog {
-    min-width: 800px;
-  }
-
-  .modal-body form.mymaps-modal-form {
-    display: flex !important;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    align-content: flex-start;
-  }
-
-  .dropdown-item {
-    padding: 0;
-  }
-  .dropup.show {
-    display: inline-block !important;
-  }
 }
-
 table.mymaps-list > tbody > tr {
   cursor: pointer;
   &.noclick {
@@ -140,7 +120,7 @@ table.mymaps-list > tbody > tr {
 }
 
 @media (min-height: 500px) {
-    .mymaps-list-scroll.modal-body {
+    .mymaps-list-scroll.modal-body { 
         max-height: 400px;
     }
 }
