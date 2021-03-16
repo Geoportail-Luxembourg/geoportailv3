@@ -72,7 +72,9 @@ function fetchBlobsAndStore(urls, progressCallback) {
         ++count;
         progressCallback(count / urls.length);
     })
-  }));
+  })).finally(() => {
+    progressCallback(1);
+  });
 }
 
 
@@ -154,7 +156,6 @@ export default class MapBoxOffline {
 
   getUrlsPromise(style, extentByZoom) {
     const glyphUrls = this.getGlyphUrls(style);
-    
     return this.getSourcesPromise(style).then(sources => this.getTileUrls(sources, extentByZoom)).then(sourceUrls => [
       ...glyphUrls, ...sourceUrls
     ]);
