@@ -49,8 +49,8 @@
     color: red;
   }
 
-  $range-width: 70px;
-  $range-track-color: #1F5D87;
+  @range-width: 70px;
+  @range-track-color: #1F5D87;
   .form-control:focus input[type=range] {
     box-shadow: none;
   }
@@ -62,14 +62,14 @@
     border: none;
     padding: 0 0 0 0;
     /*required for proper track sizing in FF*/
-    width: $range-width;
+    width: @range-width;
     margin-left: 10px;
     float:none;
     vertical-align: middle;
     display: inline;
   }
   input[type=range]::-webkit-slider-runnable-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
     border: none;
     border-radius: 3px;
@@ -87,7 +87,7 @@
   }
 
   input[type=range]::-moz-range-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
     border: none;
     border-radius: 3px;
@@ -104,7 +104,7 @@
   }
 
   input[type=range]::-ms-track {
-    width: $range-width;
+    width: @range-width;
     height: 5px;
     padding: 0 0 0 0;
     /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
@@ -184,9 +184,6 @@
     color: #000000;
     text-decoration: underline;
   }
-}
-.draw-options {
-  display: block;
 }
 
 .palette {

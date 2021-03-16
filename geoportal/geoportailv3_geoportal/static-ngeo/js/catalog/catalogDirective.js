@@ -34,7 +34,7 @@ const exports = function() {
     template: '<div ngeo-layertree="catalogCtrl.tree" ' +
         'ngeo-layertree-map="catalogCtrl.map" ' +
         'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
-        'class="themes-switcher"></div>'
+        'class="themes-switcher collapse in"></div>'
   };
 };
 

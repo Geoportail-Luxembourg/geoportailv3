@@ -70,10 +70,6 @@ class Controller {
             // Set initial opener class with loaded theme
             const idx = this.bgLayers.findIndex(layer => layer === current);
             this.openerClass = `bg-selector-layer-${idx}`;
-
-            const piwik = /** @type {Piwik} */ (window['_paq']);
-            piwik.push(['setDocumentTitle', 'BackgroundAdded/' + this.bgLayer.get('label')]);
-            piwik.push(['trackPageView']);
         });
       };
 

@@ -14,13 +14,13 @@
 
 import appModule from './module.js';
 import olMap from 'ol/Map.js';
-import {traverseLayer} from 'ngeo/offline/utils.js';
+import offlineUtils from 'ngeo/offline/utils.js';
 
 
 function resizeMap(map) {
   map.updateSize();
   map.renderSync();
-  traverseLayer(map.getLayerGroup(), [], layer => {
+  offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
     if (layer.getMapBoxMap) {
       const mbm = layer.getMapBoxMap();
       mbm.resize();

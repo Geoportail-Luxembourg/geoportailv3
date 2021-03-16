@@ -31,7 +31,6 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {string} getRemoteTemplateServiceUrl The remote template service.
  * @param {string} downloadmeasurementUrl The url to download measurements.
  * @param {string} downloadsketchUrl The url to download sketches.
- * @param {string} downloadPdfUrl The url to download pdf.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
@@ -55,17 +54,11 @@ import olStyleStyle from 'ol/style/Style.js';
 const exports = function($sce, $timeout, $scope, $http,
     appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
-    downloadmeasurementUrl, downloadsketchUrl, downloadPdfUrl, gettextCatalog,
-    appThemes, appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl,
-    appExport, appActivetool, appSelectedFeatures, appDrawnFeatures,
-    appAuthtktCookieName, appNotify, downloadresourceUrl, qrServiceUrl,
-    previewMesurementUrl, appLotChasse, appStateManager) {
-  /**
-   * @type {string}
-   * @private
-   */
-  this.downloadPdfUrl_ = downloadPdfUrl;
-
+    downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
+    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
+    appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
+    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl,
+    appLotChasse, appStateManager) {
   /**
    * @type {app.LotChasse}
    * @private
@@ -1131,15 +1124,6 @@ exports.prototype.getDownloadMeasurementUrl = function() {
  * @return {string} Get the URL.
  * @export
  */
-exports.prototype.getDownloadPdfUrl = function() {
-  return this.downloadPdfUrl_;
-};
-
-
-/**
- * @return {string} Get the URL.
- * @export
- */
 exports.prototype.getDownloadsketchUrl = function() {
   return this.downloadsketchUrl_;
 };
@@ -1220,7 +1204,7 @@ exports.prototype.getQrCodeForMymapsUrl = function(mapId) {
  * @export
  */
 exports.prototype.isEmpty = function(value) {
-  if (value === undefined || value === null) {
+  if (!value) {
     return true;
   }
   return String(value).length === 0;

@@ -11,19 +11,19 @@
     //overflow: hidden; // Fix scrollbar visible
 
     .bg-selector-layer-0 { // roadmap (mvt)
-        background-image: url(/static-ngeo/images/backgroundselector/routiere.png);
+        background-image: url(../images/backgroundselector/routiere.png);
     }
     .bg-selector-layer-1 { // topographic b&w
-        background-image: url(/static-ngeo/images/backgroundselector/topo_nb.png);
+        background-image: url(../images/backgroundselector/topo_nb.png);
     }
     .bg-selector-layer-2 { // topographic
-        background-image: url(/static-ngeo/images/backgroundselector/topo.png);
+        background-image: url(../images/backgroundselector/topo.png);
     }
     .bg-selector-layer-3 { // orthophoto
-        background-image: url(/static-ngeo/images/backgroundselector/orthophoto.png);
+        background-image: url(../images/backgroundselector/orthophoto.png);
     }
     .bg-selector-layer-4 { // hybrid orthophoto+label
-        background-image: url(/static-ngeo/images/backgroundselector/hybrid.png);
+        background-image: url(../images/backgroundselector/hybrid.png);
     }
     .bg-selector-layer-5 { // blank map
         background-color: white;
@@ -94,13 +94,13 @@
     }
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) and (orientation: portrait) {
+@media (max-width: @screen-xs-max) and (orientation: portrait) {
     .background-layer {
         width: 41px; // force top-bottom alignement
     }
 }
 
-@media (max-width: map-get($grid-breakpoints, "md")) {
+@media (max-width: @screen-xs-max) {
     .background-layer {
         .bg-selector-layer,
         .bg-selector-opener {
@@ -122,19 +122,19 @@
         }
 
         .bg-selector-layer-0 { // roadmap (mvt)
-            background-image: url(/static-ngeo/images/backgroundselector/routiere_sm.png);
+            background-image: url(../images/backgroundselector/routiere_sm.png);
         }
         .bg-selector-layer-1 { // topographic b&w
-            background-image: url(/static-ngeo/images/backgroundselector/topo_nb_sm.png);
+            background-image: url(../images/backgroundselector/topo_nb_sm.png);
         }
         .bg-selector-layer-2 { // topographic
-            background-image: url(/static-ngeo/images/backgroundselector/topo_sm.png);
+            background-image: url(../images/backgroundselector/topo_sm.png);
         }
         .bg-selector-layer-3 { // orthophoto
-            background-image: url(/static-ngeo/images/backgroundselector/orthophoto_sm.png);
+            background-image: url(../images/backgroundselector/orthophoto_sm.png);
         }
         .bg-selector-layer-4 { // hybrid orthophoto+label
-            background-image: url(/static-ngeo/images/backgroundselector/hybrid_sm.png);
+            background-image: url(../images/backgroundselector/hybrid_sm.png);
         }
         .bg-selector-layer-5 { // blank map
             background-color: white;
@@ -151,37 +151,37 @@ only screen and ( min-resolution: 1.25dppx)
     .background-layer {
         // Retina for thumbnails
         .bg-selector-layer-0 { // roadmap (mvt)
-            background-image: url(/static-ngeo/images/backgroundselector/routiere_retina.png);
+            background-image: url(../images/backgroundselector/routiere_retina.png);
         }
         .bg-selector-layer-1 { // topographic b&w
-            background-image: url(/static-ngeo/images/backgroundselector/topo_nb_retina.png);
+            background-image: url(../images/backgroundselector/topo_nb_retina.png);
         }
         .bg-selector-layer-2 { // topographic
-            background-image: url(/static-ngeo/images/backgroundselector/topo_retina.png);
+            background-image: url(../images/backgroundselector/topo_retina.png);
         }
         .bg-selector-layer-3 { // orthophoto
-            background-image: url(/static-ngeo/images/backgroundselector/orthophoto_retina.png);
+            background-image: url(../images/backgroundselector/orthophoto_retina.png);
         }
         .bg-selector-layer-4 { // hybrid orthophoto+label
-            background-image: url(/static-ngeo/images/backgroundselector/hybrid_retina.png);
+            background-image: url(../images/backgroundselector/hybrid_retina.png);
         }
     
         // Retina for small thumbnails
-        @media (max-width: 576px) {
+        @media (max-width: @screen-xs-max) {
             .bg-selector-layer-0 { // roadmap (mvt)
-                background-image: url(/static-ngeo/images/backgroundselector/routiere_sm_retina.png);
+                background-image: url(../images/backgroundselector/routiere_sm_retina.png);
             }
             .bg-selector-layer-1 { // topographic b&w
-                background-image: url(/static-ngeo/images/backgroundselector/topo_nb_sm_retina.png);
+                background-image: url(../images/backgroundselector/topo_nb_sm_retina.png);
             }
             .bg-selector-layer-2 { // topographic
-                background-image: url(/static-ngeo/images/backgroundselector/topo_sm_retina.png);
+                background-image: url(../images/backgroundselector/topo_sm_retina.png);
             }
             .bg-selector-layer-3 { // orthophoto
-                background-image: url(/static-ngeo/images/backgroundselector/orthophoto_sm_retina.png);
+                background-image: url(../images/backgroundselector/orthophoto_sm_retina.png);
             }
             .bg-selector-layer-4 { // hybrid orthophoto+label
-                background-image: url(/static-ngeo/images/backgroundselector/hybrid_sm_retina.png);
+                background-image: url(../images/backgroundselector/hybrid_sm_retina.png);
             }
         }
     }

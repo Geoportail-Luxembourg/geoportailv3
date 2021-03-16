@@ -21,7 +21,7 @@ const exports = function(appShowLayerinfo) {
  * @export
  */
 exports.prototype.getInfo = function() {
-  this.showLayerInfo_(this['layer'], this['node']);
+  this.showLayerInfo_(this['layer']);
 };
 
 

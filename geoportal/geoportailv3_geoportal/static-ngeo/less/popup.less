@@ -1,0 +1,54 @@
+@popup-width-sm: 500px;
+@popup-height: 400px;
+@popup-width-md: 700px;
+@popup-title-height: @font-size-h4 + 8px * 2;
+[ngeo-popup] {
+  top: 20px;
+  max-width: @popup-width-sm;
+  width: @popup-width-sm;
+  margin-left: ~"calc(-@{popup-width-sm} / 2)";
+  left: 50%;
+  right: 50%;
+  max-height: @popup-height;
+  position: fixed;
+  .popover-content {
+    overflow: auto;
+    max-height: ~"calc(@{popup-height} - @{popup-title-height})";
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  [ngeo-popup] {
+    max-width: @popup-width-md;
+    width: @popup-width-md;
+    margin-left: ~"calc(-@{popup-width-md} / 2)";
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  [ngeo-popup] {
+    position: fixed;
+    top: 0;
+    left: auto;
+    right: auto;
+    max-width: 100%;
+    width: ~"calc(100% - 20px)";
+    height: ~"calc(100% - 20px)";
+    max-height: none;
+    margin: 10px;
+    .popover-content {
+      max-height: ~"calc(100% - @{popup-title-height})";
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
+.url-control {
+    width: 300px !important;
+}
+
+.wms-catalog-content {
+    overflow: auto;
+    max-height: ~"calc(@{popup-height} - @{popup-title-height})";
+    text-align: left;
+}

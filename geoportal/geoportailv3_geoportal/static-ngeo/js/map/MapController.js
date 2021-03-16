@@ -12,7 +12,7 @@
 import appModule from '../module.js';
 import olMapProperty from 'ol/MapProperty.js';
 import {getTransform, transform} from 'ol/proj.js';
-import {traverseLayer} from 'ngeo/offline/utils.js';
+import offlineUtils from 'ngeo/offline/utils.js';
 
 /**
  * @param {app.StateManager} appStateManager State manager service.
@@ -76,7 +76,7 @@ const exports = function(appStateManager, ngeoDebounce) {
   const check = function() {
     map.updateSize();
     map.renderSync();
-    traverseLayer(map.getLayerGroup(), [], layer => {
+    offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
       if (layer.getMapBoxMap) {
         const mbm = layer.getMapBoxMap();
         mbm.resize();

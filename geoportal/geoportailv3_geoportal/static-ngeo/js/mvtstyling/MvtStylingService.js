@@ -3,20 +3,13 @@ import appModule from '../module.js';
 import {isValidSerial} from '../utils.js';
 
 function hasLocalStorage() {
-    try {
-      window.localStorage.setItem('test', '');
-      window.localStorage.removeItem('test');
-    } catch (error) {
-      return false;
-    }
-    return true;
+    return 'localStorage' in window && localStorage;
 }
 
 const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
 const url_config_mvt = '/apply_mvt_config'
-
 
 function getDefaultMapBoxStyleUrl(label) {
     const searchParams = new URLSearchParams(document.location.search);
@@ -192,10 +185,8 @@ class MvtStylingService {
 
                         // For deprovisionning, keep the id stored
                         let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
-                        if (lsData !== null) {
-                          lsData.serial = result;
-                          window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
-                        }
+                        lsData.serial = result;
+                        window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
                     });
                 } catch (error) {
                     console.log(error);
