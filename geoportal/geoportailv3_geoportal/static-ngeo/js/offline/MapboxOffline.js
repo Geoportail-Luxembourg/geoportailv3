@@ -64,16 +64,22 @@ function fetchAndStoreResponseHelper(url, clone) {
     .then(() => response);
 }
 
-function fetchBlobsAndStore(urls, progressCallback) {
-  let count = 0;
-  return Promise.all(urls.map(url => {
-    return fetchAndStoreResponseHelper(url)
-    .finally(() => {
-        ++count;
-        progressCallback(count / urls.length);
+function fetchBlobsAndStore(urls, progressCallback, i) {
+  if (i === undefined) {
+    i = 0;
+  }
+  let count = i;
+  const maxJob = 20;
+  const requests = urls.slice(i, i + maxJob).map((url) => {
+    return fetchAndStoreResponseHelper(url).finally(() => {
+      ++count;
+      progressCallback(count / urls.length);
     })
-  })).finally(() => {
-    progressCallback(1);
+  });
+  return Promise.all(requests).finally(() => {
+    if (i < urls.length) {
+      return fetchBlobsAndStore(urls, progressCallback, i + maxJob);
+    }
   });
 }
 
