@@ -14,8 +14,24 @@ import {listen} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeolocation from 'ol/Geolocation.js';
-import olGeolocationProperty from 'ol/GeolocationProperty.js';
 import {getChangeEventType} from 'ol/Object.js';
+
+/**
+ * @enum {string}
+ */
+const olGeolocationProperty = {
+  ACCURACY: 'accuracy',
+  ACCURACY_GEOMETRY: 'accuracyGeometry',
+  ALTITUDE: 'altitude',
+  ALTITUDE_ACCURACY: 'altitudeAccuracy',
+  HEADING: 'heading',
+  POSITION: 'position',
+  PROJECTION: 'projection',
+  SPEED: 'speed',
+  TRACKING: 'tracking',
+  TRACKING_OPTIONS: 'trackingOptions'
+};
+
 
 /**
  * @constructor
