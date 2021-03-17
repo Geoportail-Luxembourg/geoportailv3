@@ -12,9 +12,9 @@
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
   "devDependencies": {
-    "cesium": "1.75.0",
+    "cesium": "1.79.1",
     "@geoblocks/mapboxlayer": "0.0.6",
-    "ol-cesium": "2.11",
+    "ol-cesium": "2.12",
     "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
     "@geoblocks/mapboxlayer-legacy": "0.0.9",
     "@sentry/browser": "^5.27",
@@ -90,7 +90,7 @@
     "mapbox-gl": "1.7.0",
     "moment": "2.22.1",
     "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/b178a9e7451a4b660c728fedcf015e9f9854cd50",
-    "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/f284b95cb897b3ce1b49b985b58ebe1ca76be1fe",
+    "ol": "6.5.0",
     "phantomjs-polyfill-string-includes": "1.0.0",
     "phantomjs-prebuilt": "2.1.16",
     "proj4": "2.4.4",
