@@ -235,6 +235,7 @@ vars:
         uploadvtstyleUrl: {name: upload_vt_style}
         deletevtstyleUrl: {name: delete_vt_style}
         getvtstyleUrl: {name: get_vt_style}
+        downloadPdfUrl: {name: download_pdf}
       static:
         appImagesPath: {name: 'geoportailv3_geoportal:static-ngeo/images/'}
         appQueryTemplatesPath: {name: 'geoportailv3_geoportal:static-ngeo/js/query/'}
