@@ -4,7 +4,7 @@
 import ngeoInteractionCommon from 'ngeo/interaction/common.js';
 import ViewHint from 'ol/ViewHint.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
+import olMapBrowserEvent from 'ol/MapBrowserEvent.js';
 import {equals, squaredDistanceToSegment, closestOnSegment, squaredDistance} from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
 import {boundingExtent, getCenter} from 'ol/extent.js';
@@ -162,7 +162,7 @@ exports.prototype.addFeature_ = function(feature) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Map browser event
+ * @param {ol.MapBrowserEvent} evt Map browser event
  * @private
  */
 exports.prototype.willModifyFeatures_ = function(evt) {
@@ -314,7 +314,7 @@ exports.compareIndexes_ = function(a, b) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {ol.MapBrowserEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {app.interaction.ModifyCircle}
  * @private
@@ -358,7 +358,7 @@ exports.handleDownEvent_ = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {ol.MapBrowserEvent} evt Event.
  * @this {app.interaction.ModifyCircle}
  * @private
  */
@@ -384,7 +384,7 @@ exports.handleDragEvent_ = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {ol.MapBrowserEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {app.interaction.ModifyCircle}
  * @private
@@ -412,7 +412,7 @@ exports.handleUpEvent_ = function(evt) {
  * @api
  */
 exports.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof olMapBrowserPointerEvent)) {
+  if (!(mapBrowserEvent instanceof olMapBrowserEvent)) {
     return true;
   }
 
