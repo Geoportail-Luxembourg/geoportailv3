@@ -42,6 +42,8 @@ import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
 import {isValidSerial} from '../utils.js';
 
+import bootstrapApp from './bootstrap.js';
+
 import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
@@ -1820,5 +1822,6 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
+bootstrapApp(appModule);
 
 export default MainController;
