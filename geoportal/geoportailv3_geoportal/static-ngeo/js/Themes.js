@@ -118,6 +118,7 @@ const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
   this.promise_ = null;
 
   this.flatCatalog = null;
+  this.layers3D = [];
 
   /**
    * @type {app.Mvtstyling}
@@ -244,9 +245,7 @@ exports.prototype.getThemesPromise = function() {
  * @return {?angular.$q.Promise} Promise.
  */
 exports.prototype.loadThemes = function(roleId) {
-  var url = new URL(this.treeUrl_);
-  url.searchParams.set('background', 'background');
-  this.promise_ = this.$http_.get(url.toString(), {
+  this.promise_ = this.$http_.get(this.treeUrl_, {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
   }).then((resp) => {
@@ -294,9 +293,13 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
   for (var i = 0; i < elements.length; i++) {
     const element = elements[i];
     if (element.hasOwnProperty('children')) {
-      arrayExtend(array, this.getAllChildren_(
-          element.children, theme, ogcServers, element.ogcServer || lastOgcServer)
-      );
+      if (element.name !== '3d Layers') {
+        arrayExtend(array, this.getAllChildren_(
+            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+      } else {
+        arrayExtend(this.layers3D, this.getAllChildren_(
+            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+      }
     } else {
       // Rewrite url to match the behaviour of c2cgeoportal 1.6
       const ogcServer = element.ogcServer || lastOgcServer;
@@ -322,6 +325,14 @@ exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOg
  */
 exports.prototype.getFlatCatalog = function() {
   return this.promise_.then(() => this.flatCatalog);
+};
+
+/**
+ * get the flat catlog
+ * @return {angular.$q.Promise} Promise.
+ */
+exports.prototype.get3DLayers = function() {
+  return this.promise_.then(() => this.layers3D);
 };
 
 appModule.service('appThemes', exports);

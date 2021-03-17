@@ -55,8 +55,12 @@ function factory(appGetWmtsLayer, appGetWmsLayer, appGetDevice) {
     } else if (type == 'WMTS') {
       console.assert('name' in node);
       console.assert('imageType' in node);
-      var hasRetina = (node['metadata']['hasRetina'] === 'true' && appGetDevice.isHiDpi());
-      layer = appGetWmtsLayer(node['name'], node['imageType'], hasRetina);
+      if (node.url === 'https://3dtiles.geoportail.lu/tiles') {
+        return null;
+      } else {
+        var hasRetina = (node['metadata']['hasRetina'] === 'true' && appGetDevice.isHiDpi());
+        layer = appGetWmtsLayer(node['name'], node['imageType'], hasRetina);
+      }
     } else {
       return null;
     }
