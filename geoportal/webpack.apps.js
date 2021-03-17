@@ -81,9 +81,10 @@ module.exports = {
     modules: ['/usr/lib/node_modules'],
     alias: {
       geoportailv3: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/js'),
+      'bootstrap': '/usr/lib/node_modules/bootstrap/',
       'jsts': '/usr/lib/node_modules/jsts/org/locationtech/jts',
-      'ol/ol.css': '/usr/lib/node_modules/openlayers/css/ol.css',
-      'ol': '/usr/lib/node_modules/openlayers/src/ol',
+      'ol/ol.css': '/usr/lib/node_modules/ol/ol.css',
+      'ol': '/usr/lib/node_modules/ol/src',
       'olcs': '/usr/lib/node_modules/ol-cesium/src/olcs',
       'jquery-ui/datepicker': '/usr/lib/node_modules/jquery-ui/ui/widgets/datepicker', // For angular-ui-date
       'proj4': '/usr/lib/node_modules/proj4/lib',
