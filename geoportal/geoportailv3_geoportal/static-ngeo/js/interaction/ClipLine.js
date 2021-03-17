@@ -5,7 +5,7 @@
 import ngeoInteractionCommon from 'ngeo/interaction/common.js';
 import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
+import olMapBrowserEvent from 'ol/MapBrowserEvent.js';
 import {closestOnSegment, equals, squaredDistance, squaredDistanceToSegment} from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
 import {buffer, boundingExtent, createOrUpdateFromCoordinate} from 'ol/extent.js';
@@ -270,7 +270,7 @@ exports.compareIndexes_ = function(a, b) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {ol.MapBrowserEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {app.interaction.ClipLine}
  * @private
@@ -282,7 +282,7 @@ exports.handleUpEvent_ = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {ol.MapBrowserEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {app.interaction.ClipLine}
  * @private
@@ -342,7 +342,7 @@ exports.handleDownEvent_ = function(evt) {
  * @api
  */
 exports.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof olMapBrowserPointerEvent)) {
+  if (!(mapBrowserEvent instanceof olMapBrowserEvent)) {
     return true;
   }
 
