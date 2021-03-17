@@ -448,12 +448,13 @@ lux.geocode = function(obj, cb) {
   return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
-    goog.asserts.assert(json.results.length, 'No address was found');
-
-    var result = json.results[0];
-    if (cb !== undefined) {
-      cb.call(null, [result.easting, result.northing]);
+    if (json.results.length > 0) {
+      var result = json.results[0];
+      if (cb !== undefined) {
+        cb.call(null, [result.easting, result.northing]);
+      }
     }
+    return json;
   }));
 };
 
