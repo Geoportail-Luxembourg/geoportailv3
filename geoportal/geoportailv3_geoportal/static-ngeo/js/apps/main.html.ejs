@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
+<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
   <head>
     <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
@@ -9,8 +9,6 @@
     <meta name="apple-mobile-web-app-title" content="geoportail.lu">
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="dynamicUrl" content="<%= htmlWebpackPlugin.options.vars.entry_point %>dynamic.json">
-    <meta name="interface" content="main">
     <link rel="shortcut icon" href="<%=require("../../images/favicon.ico")%>" />
 
     <% for (var css in htmlWebpackPlugin.files.css) { %>
@@ -114,10 +112,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
-            <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
-            <span translate>Afficher les modèles 3D</span>
-          </div>
           <ul class="nav nav-tabs">
             <li role="presentation" class="my-layers-tab">
               <a href="#mylayers" data-toggle="tab">
@@ -409,15 +403,15 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
-        <li><a ng-href="https://geoportail.lu/{{mainCtrl.lang}}/questions/whats-new/" target="_blank" translate>What's new</a></li>
-        <li><a ng-href="{{mainCtrl.geonetworkBaseUrl}}" target="_blank" translate>Geocatalogue</a></li>
-        <li ng-if="mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
-        <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
-        <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
-        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" target="_blank" translate>A Propos</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" target="_blank" translate>Aide</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" target="_blank" translate>Contact</a></li>
+        <li class="hidden-sm"><a ng-href="https://geoportail.lu/{{mainCtrl.lang}}/questions/whats-new/" target="_blank" translate>What's new</a></li>
+        <li class="hidden-sm"><a ng-href="{{mainCtrl.geonetworkBaseUrl}}" target="_blank" translate>Geocatalogue</a></li>
+        <li class="hidden-sm"ng-if="mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
+        <li class="hidden-sm" ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li class="hidden-sm" ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
+        <li class="hidden-sm"><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
+        <li class="hidden-sm"><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" target="_blank" translate>A Propos</a></li>
+        <li class="hidden-sm"><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" target="_blank" translate>Aide</a></li>
+        <li class="hidden-sm"><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" target="_blank" translate>Contact</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" target="_blank" translate>Legalites</a></li>
         <li><a ng-href="http://www.act.public.lu/" target="_blank">ACT</a></li>
       </ul>
@@ -459,6 +453,7 @@
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>
+        <script src="/dynamic.js?interface=main"></script>
 
         <!-- Piwik -->
           <script type="text/javascript">

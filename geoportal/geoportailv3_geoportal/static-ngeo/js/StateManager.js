@@ -51,7 +51,7 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
       this.useLocalStorage = false;
     }
   } catch (err) {
-    console.error(err);
+    console.error('localStorage is not available');
     this.useLocalStorage = false;
   }
 

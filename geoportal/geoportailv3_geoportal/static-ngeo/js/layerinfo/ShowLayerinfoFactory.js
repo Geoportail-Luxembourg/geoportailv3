@@ -53,14 +53,21 @@ function factory($http, $sce, $rootScope,
 
   /**
    * @param {ol.layer.Layer} layer The layer
+   * @param {any} node The node
    * @this {Object}
    */
-  function showLayerInfo(layer) {
+  function showLayerInfo(layer, node) {
     currentLayer = layer;
-    var title = /** @type {string} */ (layer.get('label'));
-    var localMetadata = /** @type {Object.<string, string>} */
-        (layer.get('metadata'));
-
+    var title;
+    var localMetadata;
+    if (layer == undefined || layer == null) {
+      title = node['name'];
+      localMetadata =  node['metadata'];
+    } else {
+      title = /** @type {string} */ (layer.get('label'));
+      localMetadata = /** @type {Object.<string, string>} */
+          (layer.get('metadata'));
+    }
     var metadataUid = localMetadata['metadata_id'];
     var legend_name = ('legend_name' in localMetadata) ?
         localMetadata['legend_name'] : '';
