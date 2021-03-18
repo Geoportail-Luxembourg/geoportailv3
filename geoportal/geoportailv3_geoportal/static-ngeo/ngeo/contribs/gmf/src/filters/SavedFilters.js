@@ -1,31 +1,11 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import {remove as removeFromArray} from 'ol/array.js';
-
 /**
- * @hidden
+ * @module gmf.filters.SavedFilters
  */
-export class SavedFilter {
+import googAsserts from 'goog/asserts.js';
+import * as olArray from 'ol/array.js';
+
+const exports = class {
+
   /**
    * The GeoMapFish service responsible of storing filters that can be applied
    * to data sources. A filter consists of:
@@ -39,14 +19,16 @@ export class SavedFilter {
    * The filters are saved in the browser local storage, if available.
    * Otherwise, they are kept in this service for the duration of the visit.
    *
-   * @param {angular.IScope} $rootScope Angular rootScope.
+   * @param {!angular.Scope} $rootScope Angular rootScope.
+   * @struct
    * @ngInject
    * @ngdoc service
    * @ngname gmfSavedFilters
    */
   constructor($rootScope) {
+
     /**
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      * @private
      */
     this.rootScope_ = $rootScope;
@@ -60,7 +42,7 @@ export class SavedFilter {
     this.currentDataSourceId_ = null;
 
     /**
-     * @type {SavedFilterItem[]}
+     * @type {!Array.<!gmf.filters.SavedFilters.Item>}
      * @private
      */
     this.currentDataSourceItems_ = [];
@@ -91,7 +73,7 @@ export class SavedFilter {
     }
 
     /**
-     * @type {SavedFilterItem[]}
+     * @type {!Array.<!gmf.filters.SavedFilters.Item>}
      * @private
      */
     this.items_ = [];
@@ -106,10 +88,12 @@ export class SavedFilter {
     if (this.useLocalStorage_) {
       this.loadItemsFromLocalStorage_();
     }
+
   }
 
   /**
-   * @return {SavedFilterItem[]} Items
+   * @return {!Array.<!gmf.filters.SavedFilters.Item>} Items
+   * @export
    */
   get currentDataSourceItems() {
     return this.currentDataSourceItems_;
@@ -117,6 +101,7 @@ export class SavedFilter {
 
   /**
    * @param {?number} id Current data source id.
+   * @export
    */
   set currentDataSourceId(id) {
     this.currentDataSourceId_ = id;
@@ -124,7 +109,8 @@ export class SavedFilter {
   }
 
   /**
-   * @return {SavedFilterItem[]} Items
+   * @return {!Array.<!gmf.filters.SavedFilters.Item>} Items
+   * @export
    */
   get items() {
     return this.items_;
@@ -138,9 +124,7 @@ export class SavedFilter {
   loadItemsFromLocalStorage_() {
     if (window.localStorage[this.localStorageKey_]) {
       const items = JSON.parse(window.localStorage[this.localStorageKey_]);
-      if (!Array.isArray(items)) {
-        throw new Error('Wrong items type');
-      }
+      googAsserts.assertArray(items);
       this.items_ = items;
     }
   }
@@ -151,8 +135,10 @@ export class SavedFilter {
    * @param {string} name Name.
    * @param {number} id Data source id.
    * @return {number} The index of the item, if it exists.
+   * @export
    */
   indexOfItem(name, id) {
+
     let item;
     let idx = -1;
     for (let i = 0, ii = this.items_.length; i < ii; i++) {
@@ -167,9 +153,11 @@ export class SavedFilter {
   }
 
   /**
-   * @param {SavedFilterItem} item Item.
+   * @param {!gmf.filters.SavedFilters.Item} item Item.
+   * @export
    */
   save(item) {
+
     // (1) Add or replace item
     const idx = this.indexOfItem(item.name, item.dataSourceId);
     if (idx !== -1) {
@@ -185,11 +173,13 @@ export class SavedFilter {
   }
 
   /**
-   * @param {SavedFilterItem} item Item.
+   * @param {!gmf.filters.SavedFilters.Item} item Item.
+   * @export
    */
   remove(item) {
+
     // (1) Remove the item
-    const found = removeFromArray(this.items, item);
+    const found = olArray.remove(this.items, item);
 
     // (2) Update local storage
     if (found && this.useLocalStorage_) {
@@ -221,51 +211,62 @@ export class SavedFilter {
       }
     }
   }
-}
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('gmfSavedFilters', []);
+};
 
-module.service('gmfSavedFilters', SavedFilter);
+
+exports.module = angular.module('gmfSavedFilters', []);
+
+exports.module.service('gmfSavedFilters', exports);
+
 
 /**
  * The definition of a saved filter item.
  * @constructor
- * @hidden
+ * @struct
+ * @export
  */
-export function SavedFilterItem() {}
+exports.Item = function() {};
+
 
 /**
  * The condition of the saved filter item.
  * @type {string}
+ * @export
  */
-SavedFilterItem.prototype.condition;
+exports.Item.prototype.condition;
+
 
 /**
  * The list of custom rules of the saved filter item.
- * @type {Array<import("ngeo/filter/RuleHelper.js").AnyOptions>}
+ * @type {!Array.<!ngeox.rule.AnyOptions>}
+ * @export
  */
-SavedFilterItem.prototype.customRules;
+exports.Item.prototype.customRules;
+
 
 /**
  * The data source id related to the filter.
  * @type {number}
+ * @export
  */
-SavedFilterItem.prototype.dataSourceId;
+exports.Item.prototype.dataSourceId;
+
 
 /**
  * The list of directed rules of the saved filter item.
- * @type {Array<import("ngeo/filter/RuleHelper.js").AnyOptions>}
+ * @type {!Array.<!ngeox.rule.AnyOptions>}
+ * @export
  */
-SavedFilterItem.prototype.directedRules;
+exports.Item.prototype.directedRules;
+
 
 /**
  * A human-readable name given to the saved filter item.
  * @type {string}
+ * @export
  */
-SavedFilterItem.prototype.name;
+exports.Item.prototype.name;
 
-export default module;
+
+export default exports;

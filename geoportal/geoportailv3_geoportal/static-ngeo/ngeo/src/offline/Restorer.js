@@ -1,64 +1,43 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.offline.Restorer
+ */
 import ngeoMapBackgroundLayerMgr from 'ngeo/map/BackgroundLayerMgr.js';
-import angular from 'angular';
+
 
 class Restorer {
+
   /**
    * @ngInject
-   * @param {import("ngeo/offline/Configuration.js").default}
-   * ngeoOfflineConfiguration A service for customizing offline behaviour.
-   * @param {import("ngeo/map/BackgroundLayerMgr.js").MapBackgroundLayerManager}
-   * ngeoBackgroundLayerMgr The background layer manager.
+   * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
+   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer manager.
    */
   constructor(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr) {
     /**
      * @private
-     * @type {import("ngeo/offline/Configuration.js").default}
+     * @type {ngeo.offline.Configuration}
      */
     this.configuration_ = ngeoOfflineConfiguration;
 
     /**
      * @private
-     * @type {import("ngeo/map/BackgroundLayerMgr.js").MapBackgroundLayerManager}
+     * @type {ngeo.map.BackgroundLayerMgr}
      */
     this.ngeoBackgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   }
 
   /**
-   * @param {import("ol/Map.js").default} map The map to work on.
-   * @return {Promise<import("ol/extent.js").Extent>} A promise to the extent of the restored area.
+   * @param {ol.Map} map The map to work on.
+   * @return {Promise<ol.Extent>} A promise to the extent of the restored area.
    */
   restore(map) {
-    return this.configuration_
-      .getItem('offline_content')
-      .then((offlineContent) => this.doRestore(map, offlineContent));
+    return this.configuration_.getItem('offline_content').then(offlineContent => this.doRestore(map, offlineContent));
   }
 
   /**
    * @protected
-   * @param {import("ol/Map.js").default} map A map
-   * @param {import("./index.js").OfflinePersistentContent} offlineContent The offline content
-   * @return {import("ol/extent.js").Extent} The extent of the restored area
+   * @param {ol.Map} map A map
+   * @param {ngeox.OfflinePersistentContent} offlineContent The offline content
+   * @return {ol.Extent} The extent of the restored area
    */
   doRestore(map, offlineContent) {
     map.getLayerGroup().getLayers().clear();
@@ -76,8 +55,11 @@ class Restorer {
 }
 
 const name = 'ngeoOfflineRestorer';
-Restorer.module = angular.module(name, [ngeoMapBackgroundLayerMgr.name]).service(name, Restorer);
+Restorer.module = angular.module(name, [
+  ngeoMapBackgroundLayerMgr.module.name
+]).service(name, Restorer);
 
 const exports = Restorer;
+
 
 export default exports;

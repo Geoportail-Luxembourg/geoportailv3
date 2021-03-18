@@ -1,45 +1,25 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * @hidden
+ * @module gmf.editing.EnumerateAttribute
  */
-export class EditingEnumerateAttributeService {
+const exports = class {
+
   /**
    * The EnumerateAttribute is responsible of fetching all possible of a given
    * attribute of a given data source (gmf layer).
    *
-   * @param {angular.IHttpService} $http Angular $http service.
+   * @struct
+   * @param {angular.$http} $http Angular $http service.
    * @param {string} gmfLayersUrl Url to the GeoMapFish layers service.
    * @ngInject
    * @ngdoc service
    * @ngname gmfEnumerateAttribute
    */
   constructor($http, gmfLayersUrl) {
+
     // === Injected services ===
 
     /**
-     * @type {angular.IHttpService}
+     * @type {angular.$http}
      * @private
      */
     this.http_ = $http;
@@ -51,33 +31,48 @@ export class EditingEnumerateAttributeService {
     this.baseUrl_ = gmfLayersUrl;
 
     /**
-     * @type {Object<string, angular.IPromise<import('gmf/themes.js').GmfLayerAttributeValue[]>>}
+     * @type {Object.<string, !angular.$q.Promise>}
      * @private
      */
     this.promises_ = {};
   }
 
   /**
-   * @param {import("gmf/datasource/OGC.js").default} dataSource Data source.
+   * @param {gmf.datasource.OGC} dataSource Data source.
    * @param {string} attribute Attribute name.
-   * @return {angular.IPromise<import('gmf/themes.js').GmfLayerAttributeValue[]>} Promise.
+   * @return {angular.$q.Promise} Promise.
    */
   getAttributeValues(dataSource, attribute) {
     const promiseId = `${dataSource.id}_${attribute}`;
     const name = dataSource.name;
     if (!this.promises_[promiseId]) {
       const url = `${this.baseUrl_}/${name}/values/${attribute}`;
-      this.promises_[promiseId] = this.http_.get(url).then((resp) => resp.data.items);
+      this.promises_[promiseId] = this.http_.get(url).then(
+        this.handleGetAttributeValues_.bind(this));
     }
     return this.promises_[promiseId];
   }
-}
+
+  /**
+   * @param {angular.$http.Response} resp Ajax response.
+   * @return {Array.<gmfThemes.GmfLayerAttributeValue>} List of the attribute
+   *     values.
+   * @export
+   */
+  handleGetAttributeValues_(resp) {
+    const data = /** @type {gmfThemes.GmfLayerAttributeValuesResponse} */ (
+      resp.data);
+    return data.items;
+  }
+
+};
+
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfEnumerateAttribute', []);
-module.service('gmfEnumerateAttribute', EditingEnumerateAttributeService);
+exports.module = angular.module('gmfEnumerateAttribute', []);
+exports.module.service('gmfEnumerateAttribute', exports);
 
-export default module;
+
+export default exports;

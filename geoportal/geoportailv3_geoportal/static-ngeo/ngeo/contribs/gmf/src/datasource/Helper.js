@@ -1,136 +1,126 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.datasource.Helper
+ */
 import gmfEditingEnumerateAttribute from 'gmf/editing/EnumerateAttribute.js';
 import ngeoDatasourceHelper from 'ngeo/datasource/Helper.js';
 import ngeoFormatAttributeType from 'ngeo/format/AttributeType.js';
+import * as olArray from 'ol/array.js';
 
-/**
- * @hidden
- */
-export class DatasourceHelper {
+const exports = class {
+
   /**
    * A service that provides utility methods to manipulate or get GMF data
    * sources.
    *
-   * @param {angular.IQService} $q The Angular $q service.
-   * @param {import("gmf/editing/EnumerateAttribute.js").EditingEnumerateAttributeService} gmfEnumerateAttribute
-   *    The Gmf enumerate attribute service.
-   * @param {import("ngeo/datasource/Helper.js").DatasourceHelper} ngeoDataSourcesHelper Ngeo data
+   * @struct
+   * @param {angular.$q} $q The Angular $q service.
+   * @param {gmf.editing.EnumerateAttribute} gmfEnumerateAttribute The Gmf enumerate
+   *     attribute service.
+   * @param {ngeo.datasource.Helper} ngeoDataSourcesHelper Ngeo data
    *     source helper service.
    * @ngdoc service
    * @ngname gmfDataSourcesHelper
    * @ngInject
    */
   constructor($q, gmfEnumerateAttribute, ngeoDataSourcesHelper) {
+
     // === Injected properties ===
 
     /**
-     * @type {angular.IQService}
+     * @type {angular.$q}
      * @private
      */
     this.q_ = $q;
 
     /**
-     * @type {import("gmf/editing/EnumerateAttribute.js").EditingEnumerateAttributeService}
+     * @type {gmf.editing.EnumerateAttribute}
      * @private
      */
     this.gmfEnumerateAttribute_ = gmfEnumerateAttribute;
 
     /**
-     * @type {import("ngeo/datasource/Helper.js").DatasourceHelper}
+     * @type {ngeo.datasource.Helper}
      * @private
      */
     this.ngeoDataSourcesHelper_ = ngeoDataSourcesHelper;
 
+
     // === Other properties ===
 
     /**
-     * @type {?import('ngeo/datasource/DataSource.js').DataSources}
+     * @type {gmfx.datasource.DataSources}
      * @protected
      */
-    this.collection_ = null;
+    this.collection_;
 
     /**
-     * @type {Object<number, import("gmf/datasource/OGC.js").default>}
+     * @type {Object.<number, gmf.datasource.OGC>}
      * @protected
      */
-    this.cache_ = {};
+    this.cache_;
   }
 
   /**
-   * @return {import('ngeo/datasource/DataSource.js').DataSources} Data sources collection.
+   * @return {gmfx.datasource.DataSources} Data sources collection.
+   * @export
    */
   get collection() {
-    return this.ngeoDataSourcesHelper_.collection;
+    return /** @type {gmfx.datasource.DataSources} */ (
+      this.ngeoDataSourcesHelper_.collection
+    );
   }
 
   /**
    * Return a data source using its id.
    * @param {number} id Data source id.
-   * @return {?import("gmf/datasource/OGC.js").default} Data source.
+   * @return {?gmf.datasource.OGC} Data source.
+   * @export
    */
   getDataSource(id) {
-    return /** @type {?import("gmf/datasource/OGC.js").default} */ (this.ngeoDataSourcesHelper_.getDataSource(
-      id
-    ));
+    return /** @type {?gmf.datasource.OGC} */ (
+      this.ngeoDataSourcesHelper_.getDataSource(id)
+    );
   }
 
   /**
-   * @param {import("gmf/datasource/OGC.js").default} dataSource Filtrable data source.
-   * @return {angular.IPromise<import("gmf/datasource/OGC.js").default>} Promise.
+   * @param {gmf.datasource.OGC} dataSource Filtrable data source.
+   * @return {angular.$q.Promise} Promise.
+   * @export
    */
   prepareFiltrableDataSource(dataSource) {
+
     const prepareFiltrableDataSourceDefer = this.q_.defer();
 
     // (1) Get the attributes. The first time, they will be asynchronously
     //     obtained using a WFS DescribeFeatureType request.
-    this.ngeoDataSourcesHelper_.getDataSourceAttributes(dataSource).then((attributes) => {
+    this.ngeoDataSourcesHelper_.getDataSourceAttributes(
+      dataSource
+    ).then((attributes) => {
       // (2) The attribute names that are in the `enumeratedAttributes`
       //     metadata are the ones that need to have their values fetched.
       //     Do that once then set the type to SELECT and the choices.
-      const enumAttributes = dataSource.gmfLayer.metadata
-        ? dataSource.gmfLayer.metadata.enumeratedAttributes
-        : undefined;
+      const meta = dataSource.gmfLayer.metadata || {};
+      const enumAttributes = meta.enumeratedAttributes;
       if (enumAttributes && enumAttributes.length) {
         const promises = [];
         for (const attribute of attributes) {
-          if (
-            enumAttributes.includes(attribute.name) &&
-            attribute.type !== ngeoFormatAttributeType.SELECT &&
-            (!attribute.choices || !attribute.choices.length)
-          ) {
+          if (olArray.includes(enumAttributes, attribute.name) &&
+             attribute.type !== ngeoFormatAttributeType.SELECT &&
+             (!attribute.choices || !attribute.choices.length)) {
             promises.push(
-              this.gmfEnumerateAttribute_.getAttributeValues(dataSource, attribute.name).then((values) => {
-                const choices = values.map((choice) => choice.value);
+              this.gmfEnumerateAttribute_.getAttributeValues(
+                dataSource, attribute.name
+              ).then((values) => {
+                const choices = values.map(choice => choice.value);
                 attribute.type = ngeoFormatAttributeType.SELECT;
                 attribute.choices = choices;
               })
             );
           }
         }
-        return this.q_.all(promises).then(() => {
-          prepareFiltrableDataSourceDefer.resolve(dataSource);
-        });
+        return this.q_.all(promises).then(
+          prepareFiltrableDataSourceDefer.resolve(dataSource)
+        );
       } else {
         prepareFiltrableDataSourceDefer.resolve(dataSource);
       }
@@ -138,16 +128,18 @@ export class DatasourceHelper {
 
     return prepareFiltrableDataSourceDefer.promise;
   }
-}
+
+};
+
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfDataSourcesHelper', [
-  ngeoDatasourceHelper.name,
-  gmfEditingEnumerateAttribute.name,
+exports.module = angular.module('gmfDataSourcesHelper', [
+  ngeoDatasourceHelper.module.name,
+  gmfEditingEnumerateAttribute.module.name,
 ]);
-module.service('gmfDataSourcesHelper', DatasourceHelper);
+exports.module.service('gmfDataSourcesHelper', exports);
 
-export default module;
+
+export default exports;

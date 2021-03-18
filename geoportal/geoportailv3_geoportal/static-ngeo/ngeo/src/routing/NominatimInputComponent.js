@@ -1,161 +1,139 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.routing.NominatimInputComponent
+ */
+const exports = {};
 import ngeoSearchSearchDirective from 'ngeo/search/searchDirective.js';
 import ngeoRoutingNominatimService from 'ngeo/routing/NominatimService.js';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoRoutingNominatimInputComponent', [
-  ngeoSearchSearchDirective.name,
-  ngeoRoutingNominatimService.name,
+exports.module = angular.module('ngeoRoutingNominatimInputComponent', [
+  ngeoSearchSearchDirective.module.name,
+  ngeoRoutingNominatimService.module.name
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/routing/nominatiminput', require('./nominatiminput.html'));
-  }
-);
+exports.module.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/routing/nominatiminput', require('./nominatiminput.html'));
+});
 
-module.value(
-  'ngeoRoutingNominatimInputComponentTemplateUrl',
+
+exports.module.value('ngeoRoutingNominatimInputComponentTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} Template URL.
    */
   ($attrs) => {
-    const templateUrl = $attrs.ngeoRoutingNominatimInputComponentTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'ngeo/routing/nominatiminput';
+    const templateUrl = $attrs['ngeoRoutingNominatimInputComponentTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/routing/nominatiminput';
   }
 );
 
+
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} ngeoRoutingNominatimInputComponentTemplateUrl
- *    Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} ngeoRoutingNominatimInputComponentTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
-function ngeoRoutingNominatimInputComponentTemplateUrl(
-  $attrs,
-  ngeoRoutingNominatimInputComponentTemplateUrl
-) {
+function ngeoRoutingNominatimInputComponentTemplateUrl($attrs, ngeoRoutingNominatimInputComponentTemplateUrl) {
   return ngeoRoutingNominatimInputComponentTemplateUrl($attrs);
 }
 
+
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IScope} $scope Scope.
- * @param {import("ngeo/routing/NominatimService.js").NominatimService} ngeoNominatimService service for
- *    Nominatim
+ * @param {!angular.JQLite} $element Element.
+ * @param {angular.$injector} $injector Main injector.
+ * @param {!angular.Scope} $scope Scope.
+ * @param {!ngeo.routing.NominatimService} ngeoNominatimService service for Nominatim
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname NgeoNominatimInputController
  */
-function Controller($element, $scope, ngeoNominatimService) {
+exports.Controller = function($element, $injector, $scope, ngeoNominatimService) {
+
   /**
-   * @type {JQuery}
+   * @type {!angular.JQLite}
    * @private
    */
   this.element_ = $element;
 
   /**
-   * @type {angular.IScope}
+   * @type {angular.Scope}
    * @private
    */
   this.$scope_ = $scope;
 
   /**
-   * @type {import("ngeo/routing/NominatimService.js").NominatimService}
+   * @type {ngeo.routing.NominatimService}
+   * @export
    */
   this.ngeoNominatimService = ngeoNominatimService;
 
   /**
-   * @type {?function(Object): void}
+   * @type {(function(Object)|undefined)}
+   * @export
    */
-  this.onSelect = null;
-
-  /**
-   * @type {?string}
-   */
-  this.inputValue = null;
-
-  /**
-   * @type {Twitter.Typeahead.Options}
-   */
-  this.options = /** @type {Twitter.Typeahead.Options} */ ({});
-
-  /**
-   * @type {Array<Twitter.Typeahead.Dataset<import('./NominatimService').NominatimSearchResult>>}
-   */
-  this.datasets = [
-    {
-      name: 'nominatim',
-      display: 'name',
-      source: this.ngeoNominatimService.typeaheadSourceDebounced,
-    },
-  ];
-
-  /**
-   * @type {import('ngeo/search/searchDirective.js').SearchDirectiveListeners<void>}
-   */
-  this.listeners = {
-    select: this.select_.bind(this),
-  };
+  this.onSelect;
 
   /**
    * @type {string}
+   * @export
+   */
+  this.inputValue;
+
+  /**
+   * @type {TypeaheadOptions}
+   * @export
+   */
+  this.options = /** @type {TypeaheadOptions} */ ({
+  });
+
+  /**
+   * @type {Array.<TypeaheadDataset>}
+   * @export
+   */
+  this.datasets = [/** @type {TypeaheadDataset} */({
+    name: 'nominatim',
+    display: 'name',
+    source: this.ngeoNominatimService.typeaheadSourceDebounced
+  })];
+
+  /**
+   * @type {ngeox.SearchDirectiveListeners}
+   * @export
+   */
+  this.listeners = /** @type {ngeox.SearchDirectiveListeners} */({
+    select: this.select_.bind(this)
+  });
+
+  /**
+   * @type {string}
+   * @export
    */
   this.placeholder = '';
-}
+
+};
 
 /**
- * @param {JQueryEventObject} event Event.
- * @param {import('ngeo/routing/NominatimService').NominatimSearchResult} suggestion Suggestion.
- * @param {Twitter.Typeahead.Dataset<void>} dataset Dataset.
+ * @param {jQuery.Event} event Event.
+ * @param {ngeox.NominatimSearchResult} suggestion Suggestion.
+ * @param {TypeaheadDataset} dataset Dataset.
+ * @this {ngeo.routing.NominatimInputComponent.Controller}
  * @private
- * @hidden
  */
-Controller.prototype.select_ = function (event, suggestion, dataset) {
+exports.Controller.prototype.select_ = function(event, suggestion, dataset) {
   if (this.onSelect) {
     this.onSelect(suggestion);
   }
 };
 
 /**
- * Input form field which provides Nominatim typeahead lookup using
- * {@link import("ngeo/routing/NominatimService.js").default}.
+ * Input form field which provides Nominatim typeahead lookup using {@link ngeo.routing.NominatimService}.
  *
  * Example:
  *
@@ -164,12 +142,12 @@ Controller.prototype.select_ = function (event, suggestion, dataset) {
  *         ngeo-nominatim-input-placeholder="type to search"
  *         ngeo-nominatim-input-on-select="ctrl.onSelect">
  *
- * Is used in in the partial of {@link import("ngeo/routingFeatureComponent.js").default}.
+ * Is used in in the partial of {@link ngeo.routingFeatureComponent}.
  *
  * See the [../examples/routing.html](../examples/routing.html) example to see it in action.
  *
- * @htmlAttribute {function(import('ngeo/routing/NominatimService').NominatimSearchResult)}
- *    ngeo-nominatim-input-on-select Event fired when user selects a new suggestion.
+ * @htmlAttribute {function(ngeox.NominatimSearchResult)} ngeo-nominatim-input-on-select
+ *  Event fired when user selects a new suggestion.
  * @htmlAttribute {string} ngeo-nominatim-input-value
  *  Value of input field, will be set to the label of the search result.
  * @htmlAttribute {string} ngeo-nominatim-input-placeholder
@@ -177,16 +155,17 @@ Controller.prototype.select_ = function (event, suggestion, dataset) {
  * @ngdoc directive
  * @ngname ngeoNominatimInput
  */
-const routingNominatimInputComponent = {
-  controller: Controller,
+const component = {
+  controller: exports.Controller,
   bindings: {
     'onSelect': '=?ngeoNominatimInputOnSelect',
     'inputValue': '=?ngeoNominatimInputValue',
-    'placeholder': '@?ngeoNominatimInputPlaceholder',
+    'placeholder': '@?ngeoNominatimInputPlaceholder'
   },
-  templateUrl: ngeoRoutingNominatimInputComponentTemplateUrl,
+  templateUrl: ngeoRoutingNominatimInputComponentTemplateUrl
 };
 
-module.component('ngeoNominatimInput', routingNominatimInputComponent);
+exports.module.component('ngeoNominatimInput', component);
 
-export default module;
+
+export default exports;

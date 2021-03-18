@@ -1,298 +1,236 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import 'bootstrap/js/alert.js';
-
-import ngeoMessagePopup, {MessagePopup} from 'ngeo/message/Popup.js';
-import ngeoMessageMessage, {MessageType} from 'ngeo/message/Message.js';
-import 'ngeo/sass/font.scss';
-
 /**
- * A message to display by the disclaimer service.
- *
- * @typedef {Object} Message
- * @property {number} [delay=7000] The delay in milliseconds the message is shown
- * @property {boolean} [popup=false] Whether the message should be displayed inside a popup window or not.
- * @property {string} msg The message text to display.
- * @property {string} [layerUid] The OpenLayers layer identifier.
- * @property {JQuery|Element|string} [target] The target element (or selector to get the element) in which
- *    to display the message. If not defined, then the default target of the notification service is used.
- * @property {string} [type='info'] The type of message.
+ * @module ngeo.message.Disclaimer
  */
+import 'bootstrap/js/alert.js';
+import googAsserts from 'goog/asserts.js';
+
+import ngeoMessagePopup from 'ngeo/message/Popup.js';
+import ngeoMessageMessage from 'ngeo/message/Message.js';
+import * as olBase from 'ol/index.js';
+import 'font-awesome/css/font-awesome.css';
 
 /**
  * Provides methods to display any sort of messages, disclaimers, errors,
  * etc. Requires Bootstrap library (both CSS and JS) to display the alerts
  * properly.
- * @hidden
+ *
+ * @param {angular.$sce} $sce Angular sce service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
+ * @param {ngeox.PopupFactory} ngeoCreatePopup Popup service.
+ * @constructor
+ * @struct
+ * @extends {ngeo.message.Message}
+ * @ngdoc service
+ * @ngname ngeoDisclaimer
+ * @ngInject
  */
-export class MessageDisclaimerService extends ngeoMessageMessage {
+const exports = function($sce, gettextCatalog, ngeoCreatePopup) {
+
   /**
-   * @param {angular.ISCEService} $sce Angular sce service.
-   * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext service.
-   * @param {import('ngeo/message/Popup.js').PopupFactory} ngeoCreatePopup Popup service.
-   * @ngInject
+   * @private
+   * @type {angular.$sce}
    */
-  constructor($sce, gettextCatalog, ngeoCreatePopup) {
-    super();
-
-    /**
-     * @private
-     * @type {angular.ISCEService}
-     */
-    this.sce_ = $sce;
-
-    /**
-     * @type {angular.gettext.gettextCatalog}
-     * @private
-     */
-    this.gettextCatalog_ = gettextCatalog;
-
-    /**
-     * @private
-     * @type {import('ngeo/message/Popup.js').PopupFactory}
-     */
-    this.createPopup_ = ngeoCreatePopup;
-
-    const container = angular.element('<div class="ngeo-disclaimer"></div>');
-    angular.element(document.body).append(container);
-
-    /**
-     * @type {JQuery}
-     * @private
-     */
-    this.container_ = container;
-
-    /**
-     * Cache of messages.
-     * @type {Object<string, JQuery|import("ngeo/message/Popup.js").MessagePopup>}
-     * @private
-     */
-    this.messages_ = {};
-
-    /**
-     * @type {Object<string, number>}
-     * @private
-     */
-    this.messagesConsumerCount_ = {};
-
-    /**
-     * @type {Object<string, boolean>}
-     * @private
-     */
-    this.uids_ = {};
-  }
+  this.sce_ = $sce;
 
   /**
-   * Show disclaimer message string or object or list of disclaimer message
-   * strings or objects.
-   * @param {string|Message|Array<string|Message>}
-   *     object A message or list of messages as text or configuration objects.
-   */
-  alert(object) {
-    this.show(object);
-  }
-
-  /**
-   * Close disclaimer message string or object or list of disclaimer message
-   * strings or objects.
-   * @param {string|Message|Array<string|Message>}
-   *     object A message or list of messages as text or configuration objects.
-   */
-  close(object) {
-    const msgObjects = this.getMessageObjects(object);
-    msgObjects.forEach((message) => this.closeMessage_(message));
-  }
-
-  /**
-   * Show the message.
-   * @param {Message} message Message.
-   * @protected
-   * @override
-   */
-  showMessage(message) {
-    const gettextCatalog = this.gettextCatalog_;
-    const type = message.type;
-    console.assert(typeof type == 'string', 'Type should be set.');
-
-    // No need to do anything if message already displayed.
-    const uid = this.getMessageUid_(message);
-    if (this.uids_[uid]) {
-      return;
-    }
-
-    this.uids_[uid] = true;
-
-    if (message.popup === true) {
-      // display the message in a popup, i.e. using the ngeo create popup
-      const popup = this.createPopup_();
-      const content = this.sce_.trustAsHtml(message.msg);
-      popup.open({
-        autoDestroy: true,
-        content: content,
-        title: '&nbsp;',
-      });
-
-      // Watch the open property
-      popup.scope.$watch('open', (newVal) => {
-        if (!newVal) {
-          this.closeMessage_(message);
-        }
-      });
-
-      this.messages_[uid] = popup;
-    } else {
-      // get an already displayed compatible message.
-      const compatibleMessageUid = this.getCompatibleMessageUid_(message);
-      if (this.messages_[compatibleMessageUid]) {
-        // we already have a message
-        this.messagesConsumerCount_[compatibleMessageUid]++;
-        return;
-      }
-
-      // display the message using a bootstrap dismissible alert
-      const classNames = ['alert', 'fade', 'alert-dismissible', 'show'];
-      switch (type) {
-        case MessageType.ERROR:
-          classNames.push('alert-danger');
-          break;
-        case MessageType.INFORMATION:
-          classNames.push('alert-info');
-          break;
-        case MessageType.SUCCESS:
-          classNames.push('alert-success');
-          break;
-        case MessageType.WARNING:
-          classNames.push('alert-warning');
-          break;
-        default:
-          break;
-      }
-
-      const el = angular.element(`<div role="alert" class="${classNames.join(' ')}"></div>`);
-      const button = angular.element(
-        `<button type="button" class="close" data-dismiss="alert" aria-label="${gettextCatalog.getString(
-          'Close'
-        )}"><span aria-hidden="true" class="fa fa-times"></span></button>`
-      );
-      const msg = angular.element('<span />').html(message.msg);
-      el.append(button).append(msg);
-
-      let container;
-
-      if (message.target) {
-        container = angular.element(message.target);
-      } else {
-        container = this.container_;
-      }
-
-      container.append(el);
-      el.addClass('show');
-
-      // Listen when the message gets closed to cleanup the cache of messages
-      el.on('closed.bs.alert', () => {
-        this.closeMessage_(message, true);
-      });
-      this.messages_[compatibleMessageUid] = el;
-      this.messagesConsumerCount_[compatibleMessageUid] = 1;
-    }
-  }
-
-  /**
-   * @param {Message} message Message.
-   * @return {string} The uid.
+   * @type {angularGettext.Catalog}
    * @private
    */
-  getMessageUid_(message) {
-    return `${message.msg}-${message.type}-${message.layerUid}`;
-  }
+  this.gettextCatalog_ = gettextCatalog;
 
   /**
-   * @param {Message} message Message.
-   * @return {string} The uid.
+   * @private
+   * @type {ngeox.PopupFactory}
+   */
+  this.createPopup_ = ngeoCreatePopup;
+
+  ngeoMessageMessage.call(this);
+
+  const container = angular.element('<div class="ngeo-disclaimer"></div>');
+  angular.element(document.body).append(container);
+
+  /**
+   * @type {angular.JQLite}
    * @private
    */
-  getCompatibleMessageUid_(message) {
-    return `${message.msg}-${message.type}`;
-  }
+  this.container_ = container;
 
   /**
-   * Close the message.
-   * @param {Message} message Message.
-   * @param {boolean} force Force close the message.
-   * @protected
+   * Cache of messages.
+   * @type {Object.<string, angular.JQLite|ngeo.message.Popup>}
+   * @private
    */
-  closeMessage_(message, force = false) {
-    const uid = this.getMessageUid_(message);
+  this.messages_ = {};
 
-    // (1) No need to do anything if message doesn't exist
-    if (!this.uids_[uid]) {
-      return;
-    }
-    delete this.uids_[uid];
-    const compatibleMessageUid = this.getCompatibleMessageUid_(message);
-    if (force) {
-      this.messagesConsumerCount_[compatibleMessageUid] = 0;
-    } else {
-      this.messagesConsumerCount_[compatibleMessageUid]--;
-    }
-    if (this.messagesConsumerCount_[compatibleMessageUid] > 0) {
-      // the message is still used
-      return;
-    }
+};
 
-    const obj = this.messages_[compatibleMessageUid];
+olBase.inherits(exports, ngeoMessageMessage);
 
-    // (2) Close message (popup or alert)
-    if (obj instanceof MessagePopup) {
-      // (2.1) Close popup, if not already closed
-      /**
-       * @type {MessagePopup}
-       */
-      const mpObj = obj;
-      if (mpObj.getOpen()) {
-        mpObj.setOpen(false);
-      }
-    } else {
-      // (2.2) Check if the message hasn't been closed using the UI, i.e. by
-      //       clicking the close button. If not, then close it.
-      const jqueryObj = /** @type {JQuery} */ (obj);
-      if (jqueryObj.hasClass('show')) {
-        jqueryObj.alert('close');
-      }
-    }
-
-    // (3) Remove message from cache since it's closed now.
-    delete this.messages_[compatibleMessageUid];
-    delete this.messagesConsumerCount_[compatibleMessageUid];
-  }
-}
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * Show disclaimer message string or object or list of disclamer message
+ * strings or objects.
+ * @param {string|Array.<string>|ngeox.Message|Array.<ngeox.Message>}
+ *     object A message or list of messages as text or configuration objects.
+ * @export
  */
-const module = angular.module('ngeoDisclaimer', [ngeoMessagePopup.name]);
+exports.prototype.alert = function(object) {
+  this.show(object);
+};
 
-module.service('ngeoDisclaimer', MessageDisclaimerService);
 
-export default module;
+/**
+ * Close disclaimer message string or object or list of disclamer message
+ * strings or objects.
+ * @param {string|Array.<string>|ngeox.Message|Array.<ngeox.Message>}
+ *     object A message or list of messages as text or configuration objects.
+ * @export
+ */
+exports.prototype.close = function(object) {
+  const msgObjects = this.getMessageObjects(object);
+  msgObjects.forEach(this.closeMessage_, this);
+};
+
+
+/**
+ * Show the message.
+ * @param {ngeox.Message} message Message.
+ * @protected
+ * @override
+ */
+exports.prototype.showMessage = function(message) {
+  const gettextCatalog = this.gettextCatalog_;
+  const type = message.type;
+  googAsserts.assertString(type, 'Type should be set.');
+
+  // No need to do anything if message already exist.
+  const uid = this.getMessageUid_(message);
+  if (this.messages_[uid] !== undefined) {
+    return;
+  }
+
+  const showInPopup = message.popup === true;
+
+  if (showInPopup) {
+    // display the message in a popup, i.e. using the ngeo create popup
+    const popup = this.createPopup_();
+    const content = this.sce_.trustAsHtml(message.msg);
+    popup.open({
+      autoDestroy: true,
+      content: content,
+      title: '&nbsp;'
+    });
+
+    // Watch the open property
+    popup.scope.$watch('open', (newVal, oldVal) => {
+      if (!newVal) {
+        this.closeMessage_(message);
+      }
+    });
+
+    this.messages_[uid] =  popup;
+
+  } else {
+    // display the message using a boostrap dismissible alert
+    const classNames = ['alert', 'fade', 'alert-dismissible'];
+    switch (type) {
+      case ngeoMessageMessage.Type.ERROR:
+        classNames.push('alert-danger');
+        break;
+      case ngeoMessageMessage.Type.INFORMATION:
+        classNames.push('alert-info');
+        break;
+      case ngeoMessageMessage.Type.SUCCESS:
+        classNames.push('alert-success');
+        break;
+      case ngeoMessageMessage.Type.WARNING:
+        classNames.push('alert-warning');
+        break;
+      default:
+        break;
+    }
+
+    const el = angular.element(
+      `<div role="alert" class="${classNames.join(' ')}"></div>`);
+    const button = angular.element(
+      `<button type="button" class="close" data-dismiss="alert" aria-label="${
+        gettextCatalog.getString('Close')
+      }"><span aria-hidden="true" class="fa fa-times"></span></button>`);
+    const msg = angular.element('<span />').html(message.msg);
+    el.append(button).append(msg);
+
+    let container;
+
+    if (message.target) {
+      container = angular.element(message.target);
+    } else {
+      container = this.container_;
+    }
+
+    container.append(el);
+    el.addClass('in');
+
+    // Listen when the message gets closed to cleanup the cache of messages
+    el.on('closed.bs.alert', () => {
+      this.closeMessage_(message);
+    });
+
+    this.messages_[uid] =  el;
+  }
+};
+
+
+/**
+ * @param {ngeox.Message} message Message.
+ * @return {string} The uid.
+ * @private
+ */
+exports.prototype.getMessageUid_ = function(message) {
+  return `${message.msg}-${message.type}`;
+};
+
+
+/**
+ * Close the message.
+ * @param {ngeox.Message} message Message.
+ * @protected
+ */
+exports.prototype.closeMessage_ = function(message) {
+  const uid = this.getMessageUid_(message);
+  const obj = this.messages_[uid];
+
+  // (1) No need to do anything if message doesn't exist
+  if (obj === undefined) {
+    return;
+  }
+
+  // (2) Close message (popup or alert)
+  if (obj instanceof ngeoMessagePopup) {
+    // (2.1) Close popup, if not already closed
+    if (obj.getOpen()) {
+      obj.setOpen(false);
+    }
+  } else {
+    // (2.2) Check if the message hasn't been closed using the UI, i.e. by
+    //       clicking the close button. If not, then close it.
+    if (obj.hasClass('in')) {
+      obj.alert('close');
+    }
+  }
+
+  // (3) Remove message from cache since it's closed now.
+  delete this.messages_[uid];
+};
+
+
+/**
+ * @type {angular.Module}
+ */
+exports.module = angular.module('ngeoDisclaimer', [
+  ngeoMessagePopup.module.name,
+]);
+
+exports.module.service('ngeoDisclaimer', exports);
+
+
+export default exports;

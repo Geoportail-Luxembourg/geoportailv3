@@ -1,76 +1,44 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.map.mousepositionComponent
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoMiscFilters from 'ngeo/misc/filters.js';
 import olControlMousePosition from 'ol/control/MousePosition.js';
+import * as olProj from 'ol/proj.js';
 
 import 'bootstrap/js/dropdown.js';
 
-/**
- * Projection object for the MousePositionDirective. Define a label and a filter
- * to use to display coordinates for a projection.
- * @typedef {Object} MousePositionProjection
- * @property {string} code The epsg name of a projection.
- * @property {string} label The label to display with this projection.
- * @property {string} filter The filter function to use to format this projection. Arguments can be passed
- * with colon as separator (example: MyFilter:args1:args2:...)
- */
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfMapMouseposition', [ngeoMiscFilters.name]);
+const exports = angular.module('gmfMapMouseposition', [
+  ngeoMiscFilters.name,
+]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/map/mousepositionComponent', require('./mousepositionComponent.html'));
-  }
-);
 
-module.value(
-  'gmfMapMousepositionTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/map/mousepositionComponent', require('./mousepositionComponent.html'));
+});
+
+
+exports.value('gmfMapMousepositionTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} The template url.
    */
   ($attrs) => {
-    const templateUrl = $attrs.gmfMapMousepositionTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/map/mousepositionComponent';
-  }
-);
+    const templateUrl = $attrs['gmfMapMousepositionTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/map/mousepositionComponent';
+  });
+
 
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} gmfMapMousepositionTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} gmfMapMousepositionTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfMapMousepositionTemplateUrl($attrs, gmfMapMousepositionTemplateUrl) {
   return gmfMapMousepositionTemplateUrl($attrs);
@@ -87,87 +55,92 @@ function gmfMapMousepositionTemplateUrl($attrs, gmfMapMousepositionTemplateUrl) 
  *     gmf-mouseposition-projections="ctrl.projections">
  *  </gmf-mouseposition>
  *
- * @htmlAttribute {import("ol/Map.js").default} gmf-mouseposition-map The map.
- * @htmlAttribute {MousePositionProjection[]}
+ * @htmlAttribute {ol.Map} gmf-mouseposition-map The map.
+ * @htmlAttribute {Array.<gmfx.MousePositionProjection>}
  *    gmf-mouseposition-projection The list of the projections.
  *
  * @ngdoc component
  * @ngname gmfMouseposition
  */
-const mapMousepositionComponent = {
+exports.component_ = {
   controller: 'gmfMousepositionController as ctrl',
   bindings: {
     'map': '<gmfMousepositionMap',
-    'projections': '<gmfMousepositionProjections',
+    'projections': '<gmfMousepositionProjections'
   },
-  templateUrl: gmfMapMousepositionTemplateUrl,
+  templateUrl: gmfMapMousepositionTemplateUrl
 };
 
-module.component('gmfMouseposition', mapMousepositionComponent);
+exports.component('gmfMouseposition',
+  exports.component_);
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IFilterService} $filter Angular filter.
- * @param {angular.IScope} $scope Angular scope.
- * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext catalog.
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.$filter} $filter Angular filter.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {!angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname gmfMousepositionController
  */
-function Controller($element, $filter, $scope, gettextCatalog) {
+exports.Controller_ = function($element, $filter, $scope, gettextCatalog) {
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {!ol.Map}
+   * @export
    */
-  this.map = null;
+  this.map;
 
   /**
-   * @type {MousePositionProjection[]}
+   * @type {!Array.<!gmfx.MousePositionProjection>}
+   * @export
    */
-  this.projections = [];
+  this.projections;
 
   /**
-   * @type {?MousePositionProjection}
+   * @type {!gmfx.MousePositionProjection}
+   * @export
    */
-  this.projection = null;
+  this.projection;
 
   /**
-   * @type {angular.IScope}
+   * @type {angular.Scope}
    * @private
    */
   this.$scope_ = $scope;
 
   /**
-   * @type {angular.gettext.gettextCatalog}
+   * @type {angularGettext.Catalog}
    * @private
    */
   this.gettextCatalog_ = gettextCatalog;
 
   /**
-   * @type {JQuery}
+   * @type {angular.JQLite}
    * @private
    */
   this.$element_ = $element;
 
   /**
-   * @type {angular.IFilterService}
+   * @type {angular.$filter}
    * @private
    */
   this.$filter_ = $filter;
 
   /**
-   * @type {?import("ol/control/MousePosition.js").default}
+   * @type  {?ol.control.MousePosition}
    * @private
    */
   this.control_ = null;
-}
+};
+
 
 /**
  * Initialise the controller.
  */
-Controller.prototype.$onInit = function () {
+exports.Controller_.prototype.$onInit = function() {
   this.$scope_.$on('gettextLanguageChanged', () => {
     this.initOlControl_();
   });
@@ -176,37 +149,22 @@ Controller.prototype.$onInit = function () {
   this.initOlControl_();
 };
 
+
 /**
  * Init the ol.control.MousePosition
  * @private
  */
-Controller.prototype.initOlControl_ = function () {
-  if (!this.map) {
-    throw new Error('Missing map');
-  }
+exports.Controller_.prototype.initOlControl_ = function() {
   if (this.control_ !== null) {
     this.map.removeControl(this.control_);
   }
 
   // function that apply the filter.
-  /**
-   * @param {number[]|undefined} coordinates
-   */
-  const formatFn = (coordinates) => {
-    if (!this.projection) {
-      throw new Error('Missing projection');
-    }
+  const formatFn = function(coordinates) {
     const filterAndArgs = this.projection.filter.split(':');
-    const shiftedFilterAndArgs = filterAndArgs.shift();
-    if (!shiftedFilterAndArgs) {
-      throw new Error('Missing shiftedFilterAndArgs');
-    }
-    const filter = this.$filter_(shiftedFilterAndArgs);
-    if (typeof filter != 'function') {
-      throw new Error('Wrong filter type');
-    }
+    const filter = this.$filter_(filterAndArgs.shift());
+    googAsserts.assertFunction(filter);
     const args = filterAndArgs;
-    // @ts-ignore: is the following line needed?
     args.unshift(coordinates);
     return filter.apply(this, args);
   };
@@ -214,9 +172,9 @@ Controller.prototype.initOlControl_ = function () {
   const gettextCatalog = this.gettextCatalog_;
   this.control_ = new olControlMousePosition({
     className: 'gmf-mouseposition-control',
-    coordinateFormat: formatFn,
-    target: this.$element_.find('.gmf-mouseposition-control-target').get(0),
-    undefinedHTML: gettextCatalog.getString('Coordinates'),
+    coordinateFormat: formatFn.bind(this),
+    target: angular.element('.gmf-mouseposition-control-target', this.$element_)[0],
+    undefinedHTML: gettextCatalog.getString('Coordinates')
   });
 
   this.setProjection(this.projections[0]);
@@ -224,17 +182,18 @@ Controller.prototype.initOlControl_ = function () {
   this.map.addControl(this.control_);
 };
 
+
 /**
- * @param {MousePositionProjection} projection The new projection to use.
+ * @param {gmfx.MousePositionProjection} projection The new projection to use.
+ * @export
  */
-Controller.prototype.setProjection = function (projection) {
-  if (!this.control_) {
-    throw new Error('Missing control');
-  }
-  this.control_.setProjection(projection.code);
+exports.Controller_.prototype.setProjection = function(projection) {
+  this.control_.setProjection(olProj.get(projection.code));
   this.projection = projection;
 };
 
-module.controller('gmfMousepositionController', Controller);
+exports.controller('gmfMousepositionController',
+  exports.Controller_);
 
-export default module;
+
+export default exports;

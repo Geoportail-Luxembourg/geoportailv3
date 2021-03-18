@@ -1,30 +1,15 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.format.FeatureHash
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
 import ngeoFormatFeatureHashStyleType from 'ngeo/format/FeatureHashStyleType.js';
-import {rgbArrayToHex} from 'ngeo/utils.js';
-import {asArray as asColorArray} from 'ol/color.js';
+import ngeoUtils from 'ngeo/utils.js';
+import * as olBase from 'ol/index.js';
 import olFeature from 'ol/Feature.js';
-import {transformGeometryWithOptions} from 'ol/format/Feature.js';
+import * as olColor from 'ol/color.js';
+import * as olArray from 'ol/array.js';
+import * as olFormatFeature from 'ol/format/Feature.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -38,96 +23,9 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleText from 'ol/style/Text.js';
-import Geometry from 'ol/geom/Geometry.js';
 
 /**
- * accuracy: The encoding and decoding accuracy. Optional. Default value is 1.
- *
- * @typedef {Object} FeatureHashOptions
- * @property {number} [accuracy] The encoding and decoding accuracy. Optional. Default value is 1.
- * @property {Object<string, function(olFeature<import("ol/geom/Geometry.js").default>)>} [defaultValues] defaultValues.
- * @property {boolean} [encodeStyles=true] Encode styles. Optional.
- * @property {function(olFeature<import("ol/geom/Geometry.js").default>): Object<string, (string|number|undefined)>} [properties]
- *    A function that returns serializable properties for a feature. Optional. By default the feature
- *    properties (as returned by `feature.getProperties()`) are used. To be serializable the returned
- *    properties should be numbers or strings.
- * @property {boolean} [setStyle=treu] Determines whether the style defined for each feature is read and
- * converted into:
- *   A) an `ol.style.Style` object set in the feature, or
- *   B) an object with key:values that defines the style properties set in the feature and for the
- *      `ngeo.misc.FeatureHelper` to use to style the feature with.
- * @property {Object<string, string>} [propertiesType]
- */
-
-/**
- * @type {Object<string, string>}
- * @private
- * @hidden
- */
-let LegacyProperties_ = {};
-
-/**
- * @const
- * @private
- * @hidden
- */
-const DEFAULT_ACCURACY = 0.1;
-
-/**
- * @type {Object<import("ol/geom/GeometryType.js").default, import("ngeo/format/FeatureHashStyleType.js").default>}
- * @private
- * @hidden
- */
-const StyleTypes_ = {
-  'LineString': ngeoFormatFeatureHashStyleType.LINE_STRING,
-  'Point': ngeoFormatFeatureHashStyleType.POINT,
-  'Polygon': ngeoFormatFeatureHashStyleType.POLYGON,
-  'MultiLineString': ngeoFormatFeatureHashStyleType.LINE_STRING,
-  'MultiPoint': ngeoFormatFeatureHashStyleType.POINT,
-  'MultiPolygon': ngeoFormatFeatureHashStyleType.POLYGON,
-};
-
-/**
- * Characters used to encode the coordinates. The characters "~", "'", "("
- * and ")" are not part of this character set, and used as separators (for
- * example to separate the coordinates from the feature properties).
- * @const
- * @private
- * @hidden
- */
-const CHAR64_ = '.-_!*ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghjkmnpqrstuvwxyz';
-
-/**
- * @const
- * @private
- * @hidden
- * @type {Object<string, function(string):Geometry>}
- */
-const GEOMETRY_READERS_ = {
-  'P': readMultiPointGeometry_,
-  'L': readMultiLineStringGeometry_,
-  'A': readMultiPolygonGeometry_,
-  'l': readLineStringGeometry_,
-  'p': readPointGeometry_,
-  'a': readPolygonGeometry_,
-};
-
-/**
- * @const
- * @private
- * @hidden
- * @type {Object<string, function(Geometry): ?string>}
- */
-const GEOMETRY_WRITERS_ = {
-  'MultiLineString': writeMultiLineStringGeometry_,
-  'MultiPoint': writeMultiPointGeometry_,
-  'MultiPolygon': writeMultiPolygonGeometry_,
-  'LineString': writeLineStringGeometry_,
-  'Point': writePointGeometry_,
-  'Polygon': writePolygonGeometry_,
-};
-
-/**
+ * @classdesc
  * Provide an OpenLayers format for encoding and decoding features for use
  * in permalinks.
  *
@@ -145,662 +43,467 @@ const GEOMETRY_WRITERS_ = {
  *   not supported.
  *
  * @see https://github.com/sbrunner/OpenLayers-URLCompressed
+ * @constructor
+ * @struct
+ * @extends {ol.format.TextFeature}
+ * @param {ngeox.format.FeatureHashOptions=} opt_options Options.
  */
-class FeatureHash extends olFormatTextFeature {
-  /**
-   * @param {FeatureHashOptions=} opt_options Options.
-   */
-  constructor(opt_options) {
-    super();
+const exports = function(opt_options) {
 
-    const options = opt_options || {};
+  olFormatTextFeature.call(this);
 
-    /**
-     * @type {number}
-     * @private
-     */
-    this.accuracy_ = options.accuracy || DEFAULT_ACCURACY;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.encodeStyles_ = options.encodeStyles || true;
-
-    /**
-     * @type {function(olFeature<import("ol/geom/Geometry.js").default>):Object<string, (string|number|undefined)>}
-     * @private
-     */
-    this.propertiesFunction_ = options.properties || defaultPropertiesFunction_;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.setStyle_ = options.setStyle !== undefined ? options.setStyle : true;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.prevX_ = 0;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.prevY_ = 0;
-
-    /**
-     * @type {Object<string, string>}
-     * @private
-     */
-    LegacyProperties_ = options.propertiesType || {};
-
-    /**
-     * @type {Object<string, function(olFeature<import("ol/geom/Geometry.js").default>): void>}
-     * @private
-     */
-    this.defaultValues_ = options.defaultValues || {};
-  }
+  const options = opt_options !== undefined ? opt_options : {};
 
   /**
-   * Read a logical sequence of characters and return (or complete then return)
-   * an array of numbers. The coordinates are assumed to be in
-   * two dimensions and in latitude, longitude order.
-   * corresponding to a geometry's coordinates.
-   * @param {string} text Text.
-   * @param {number[]=} opt_flatCoordinates Flat coordinates array.
-   * @return {number[]} Flat coordinates.
+   * @type {number}
    * @private
    */
-  decodeCoordinates_(text, opt_flatCoordinates) {
-    const len = text.length;
-    let index = 0;
-    const flatCoordinates = opt_flatCoordinates !== undefined ? opt_flatCoordinates : [];
-    let i = flatCoordinates.length;
-    while (index < len) {
-      let b;
-      let shift = 0;
-      let result = 0;
-      do {
-        b = CHAR64_.indexOf(text.charAt(index++));
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 32);
-      const dx = result & 1 ? ~(result >> 1) : result >> 1;
-      this.prevX_ += dx;
-      shift = 0;
-      result = 0;
-      do {
-        b = CHAR64_.indexOf(text.charAt(index++));
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 32);
-      const dy = result & 1 ? ~(result >> 1) : result >> 1;
-      this.prevY_ += dy;
-      flatCoordinates[i++] = this.prevX_ * this.accuracy_;
-      flatCoordinates[i++] = this.prevY_ * this.accuracy_;
-    }
-    return flatCoordinates;
-  }
+  this.accuracy_ = options.accuracy !== undefined ?
+    options.accuracy : exports.ACCURACY_;
 
   /**
-   * Encode an array of number (corresponding to some coordinates) into a
-   * logical sequence of characters. The coordinates are assumed to be in
-   * two dimensions and in latitude, longitude order.
-   * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} stride Stride.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @return {string} String.
+   * @type {boolean}
    * @private
-   * @hidden
    */
-  encodeCoordinates_(flatCoordinates, stride, offset, end) {
-    let encodedCoordinates = '';
-    for (let i = offset; i < end; i += stride) {
-      let x = flatCoordinates[i];
-      let y = flatCoordinates[i + 1];
-      x = Math.floor(x / this.accuracy_);
-      y = Math.floor(y / this.accuracy_);
-      const dx = x - this.prevX_;
-      const dy = y - this.prevY_;
-      this.prevX_ = x;
-      this.prevY_ = y;
-      encodedCoordinates += encodeSignedNumber_(dx) + encodeSignedNumber_(dy);
-    }
-    return encodedCoordinates;
-  }
+  this.encodeStyles_ = options.encodeStyles !== undefined ?
+    options.encodeStyles : true;
 
   /**
-   * Read a feature from a logical sequence of characters.
-   * @param {string} text Text.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {olFeature<import("ol/geom/Geometry.js").default>} Feature.
-   * @protected
-   * @override
+   * @type {function(ol.Feature):Object.<string, (string|number)>}
+   * @private
    */
-  readFeatureFromText(text, opt_options) {
-    console.assert(text.length > 2);
-    console.assert(text[1] === '(');
-    console.assert(text.endsWith(')'));
-    let splitIndex = text.indexOf('~');
-    const geometryText = splitIndex >= 0 ? `${text.substring(0, splitIndex)})` : text;
-    const geometry = this.readGeometryFromText(geometryText, opt_options);
-    const feature = new olFeature(geometry);
-    if (splitIndex >= 0) {
-      const attributesAndStylesText = text.substring(splitIndex + 1, text.length - 1);
-      splitIndex = attributesAndStylesText.indexOf('~');
-      const attributesText =
-        splitIndex >= 0 ? attributesAndStylesText.substring(0, splitIndex) : attributesAndStylesText;
-      if (attributesText != '') {
-        const parts = attributesText.split("'");
-        for (const encodedPart of parts) {
-          const part = decodeURIComponent(encodedPart);
-          const keyVal = part.split('*');
-          console.assert(keyVal.length === 2);
-          let key = keyVal[0];
-          const value = keyVal[1];
-          if (!this.setStyle_ && LegacyProperties_[key]) {
-            key = LegacyProperties_[key];
-          }
-          feature.set(key, castValue_(key, value));
-        }
-      }
-      if (splitIndex >= 0) {
-        const stylesText = attributesAndStylesText.substring(splitIndex + 1);
-        if (this.setStyle_) {
-          setStyleInFeature_(stylesText, feature);
-        } else {
-          setStyleProperties_(stylesText, feature);
-        }
-      }
-    }
-    return feature;
-  }
+  this.propertiesFunction_ = options.properties !== undefined ?
+    options.properties : exports.defaultPropertiesFunction_;
 
   /**
-   * Read multiple features from a logical sequence of characters.
-   * @param {string} text Text.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {Array<olFeature<import("ol/geom/Geometry.js").default>>} Features.
-   * @protected
-   * @override
+   * @type {boolean}
+   * @private
    */
-  readFeaturesFromText(text, opt_options) {
-    console.assert(text.startsWith('F'));
-    this.prevX_ = 0;
-    this.prevY_ = 0;
-    /** @type {Array<olFeature<import("ol/geom/Geometry.js").default>>} */
-    const features = [];
-    text = text.substring(1);
-    while (text.length > 0) {
-      const index = text.indexOf(')');
-      console.assert(index >= 0);
-      const feature = this.readFeatureFromText(text.substring(0, index + 1), opt_options);
-      features.push(feature);
-      text = text.substring(index + 1);
-    }
-
-    // set default values
-    features.forEach((feature) => {
-      for (const key in this.defaultValues_) {
-        const property = LegacyProperties_[key];
-        if (feature.get(property) === undefined) {
-          feature.set(property, this.defaultValues_[key].call(null, feature));
-        }
-      }
-    });
-    return features;
-  }
+  this.setStyle_ = options.setStyle !== undefined ? options.setStyle : true;
 
   /**
-   * Read a geometry from a logical sequence of characters.
-   * @param {string} text Text.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {Geometry} Geometry.
-   * @protected
-   * @override
+   * @type {number}
+   * @private
    */
-  readGeometryFromText(text, opt_options) {
-    const geometryReader = GEOMETRY_READERS_[text[0]];
-    console.assert(geometryReader !== undefined);
-    return geometryReader.call(this, text);
-  }
+  this.prevX_ = 0;
 
   /**
-   * Encode a feature into a logical sequence of characters.
-   * @param {olFeature<import("ol/geom/Geometry.js").default>} feature Feature.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {string} Encoded feature.
-   * @protected
-   * @override
+   * @type {number}
+   * @private
    */
-  writeFeatureText(feature, opt_options) {
-    const /** @type {string[]} */ encodedParts = [];
-
-    // encode geometry
-
-    let encodedGeometry = '';
-    const geometry = feature.getGeometry();
-    if (geometry) {
-      encodedGeometry = this.writeGeometryText(geometry, opt_options);
-    }
-
-    if (encodedGeometry.length > 0) {
-      // remove the final bracket
-      console.assert(encodedGeometry.endsWith(')'));
-      encodedGeometry = encodedGeometry.substring(0, encodedGeometry.length - 1);
-      encodedParts.push(encodedGeometry);
-    }
-
-    // encode properties
-
-    const /** @type {string[]} */ encodedProperties = [];
-    const propFunction = this.propertiesFunction_(feature);
-    for (const key in propFunction) {
-      const value = propFunction[key];
-      if (value !== undefined && value !== null && key !== feature.getGeometryName()) {
-        if (encodedProperties.length !== 0) {
-          encodedProperties.push("'");
-        }
-        const encoded = encodeURIComponent(
-          `${key.replace(/[()'*]/g, '_')}*${value.toString().replace(/[()'*]/g, '_')}`
-        );
-        encodedProperties.push(encoded);
-      }
-    }
-
-    if (encodedProperties.length > 0) {
-      encodedParts.push('~');
-      Array.prototype.push.apply(encodedParts, encodedProperties);
-    }
-
-    // encode styles
-
-    if (this.encodeStyles_) {
-      const styleFunction = feature.getStyleFunction();
-      if (styleFunction !== undefined) {
-        let styles = styleFunction(feature, 0);
-        if (styles !== null) {
-          /** @type {string[]} */
-          const encodedStyles = [];
-          styles = Array.isArray(styles) ? styles : [styles];
-          if (!geometry) {
-            throw new Error('Missing geometry');
-          }
-          encodeStyles_(styles, geometry.getType(), encodedStyles);
-          if (encodedStyles.length > 0) {
-            encodedParts.push('~');
-            Array.prototype.push.apply(encodedParts, encodedStyles);
-          }
-        }
-      }
-    }
-
-    // append the closing bracket and return the encoded feature
-
-    encodedParts.push(')');
-    return encodedParts.join('');
-  }
+  this.prevY_ = 0;
 
   /**
-   * Encode an array of features into a logical sequence of characters.
-   * @param {Array<olFeature<import("ol/geom/Geometry.js").default>>} features Feature.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {string} Encoded features.
-   * @protected
-   * @override
+   * @type {Object.<string, string>}
+   * @private
    */
-  writeFeaturesText(features, opt_options) {
-    this.prevX_ = 0;
-    this.prevY_ = 0;
-    const textArray = [];
-    if (features.length > 0) {
-      textArray.push('F');
-      for (let i = 0, ii = features.length; i < ii; ++i) {
-        textArray.push(this.writeFeatureText(features[i], opt_options));
-      }
-    }
-    return textArray.join('');
-  }
+  exports.LegacyProperties_ = (options.propertiesType !== undefined) &&  options.propertiesType;
 
   /**
-   * Encode a geometry into a logical sequence of characters.
-   * @param {Geometry} geometry Geometry.
-   * @param {import('ol/format/Feature.js').ReadOptions=} opt_options Read options.
-   * @return {string} Encoded geometry.
-   * @protected
-   * @override
+   * @type {Object.<string, function(ol.Feature)>}
+   * @private
    */
-  writeGeometryText(geometry, opt_options) {
-    const geometryWriter = GEOMETRY_WRITERS_[geometry.getType()];
-    console.assert(geometryWriter !== undefined);
-    const transformedGeometry = transformGeometryWithOptions(geometry, true, opt_options);
-    if (!(transformedGeometry instanceof Geometry)) {
-      throw new Error('Missing transformedGeometry');
-    }
-    const encGeom = geometryWriter.call(this, transformedGeometry);
-    if (!encGeom) {
-      throw new Error('Missing encodedGeometry');
-    }
-    return encGeom;
-  }
-}
+  this.defaultValues_ = options.defaultValues !== undefined ? options.defaultValues : {};
 
-export default FeatureHash;
+};
+
+olBase.inherits(exports, olFormatTextFeature);
+
+
+/**
+ * @type {Object.<ol.geom.GeometryType, ngeo.format.FeatureHashStyleType>}
+ * @private
+ */
+exports.StyleTypes_ = {
+  'LineString': ngeoFormatFeatureHashStyleType.LINE_STRING,
+  'Point': ngeoFormatFeatureHashStyleType.POINT,
+  'Polygon': ngeoFormatFeatureHashStyleType.POLYGON,
+  'MultiLineString': ngeoFormatFeatureHashStyleType.LINE_STRING,
+  'MultiPoint': ngeoFormatFeatureHashStyleType.POINT,
+  'MultiPolygon': ngeoFormatFeatureHashStyleType.POLYGON
+};
+
+/**
+ * @type {Object.<string, string>}
+ * @private
+ */
+exports.LegacyProperties_ = {};
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.readFeature;
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.readFeatures;
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.readGeometry;
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.writeFeature;
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.writeFeatures;
+
+
+/**
+ * @inheritDoc
+ */
+exports.prototype.writeGeometry;
+
+
+/**
+ * Characters used to encode the coordinates. The characters "~", "'", "("
+ * and ")" are not part of this character set, and used as separators (for
+ * example to separate the coordinates from the feature properties).
+ * @const
+ * @private
+ */
+exports.CHAR64_ =
+    '.-_!*ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghjkmnpqrstuvwxyz';
+
+
+/**
+ * @const
+ * @private
+ */
+exports.ACCURACY_ = 0.1;
+
 
 /**
  * Get features's properties.
- * @param {olFeature<import("ol/geom/Geometry.js").default>} feature Feature.
- * @return {Object<string, (string|number|undefined)>} The feature properties to
+ * @param {ol.Feature} feature Feature.
+ * @return {Object.<string, (string|number)>} The feature properties to
  * serialize.
  * @private
- * @hidden
  */
-function defaultPropertiesFunction_(feature) {
+exports.defaultPropertiesFunction_ = function(feature) {
   return feature.getProperties();
-}
+};
+
 
 /**
  * Sign then encode a number.
  * @param {number} num Number.
  * @return {string} String.
  * @private
- * @hidden
  */
-function encodeSignedNumber_(num) {
+exports.encodeSignedNumber_ = function(num) {
   let signedNum = num << 1;
   if (num < 0) {
-    signedNum = ~signedNum;
+    signedNum = ~(signedNum);
   }
-  return encodeNumber_(signedNum);
-}
+  return exports.encodeNumber_(signedNum);
+};
+
 
 /**
  * Transform a number into a logical sequence of characters.
  * @param {number} num Number.
  * @return {string} String.
  * @private
- * @hidden
  */
-function encodeNumber_(num) {
+exports.encodeNumber_ = function(num) {
   let encodedNumber = '';
   while (num >= 0x20) {
-    encodedNumber += CHAR64_.charAt(0x20 | (num & 0x1f));
+    encodedNumber += exports.CHAR64_.charAt(
+      0x20 | (num & 0x1f));
     num >>= 5;
   }
-  encodedNumber += CHAR64_.charAt(num);
+  encodedNumber += exports.CHAR64_.charAt(num);
   return encodedNumber;
-}
+};
+
 
 /**
- * For a type of geometry, transforms an array of {@link import("ol/style/Style.js").default} into
+ * For a type of geometry, transforms an array of {@link ol.style.Style} into
  * a logical sequence of characters and put the result into the given encoded
  * styles's array.
- * @param {Array<import("ol/style/Style.js").default>} styles Styles.
- * @param {import("ol/geom/GeometryType.js").default} geometryType Geometry type.
- * @param {string[]} encodedStyles Encoded styles array.
+ * @param {Array.<ol.style.Style>} styles Styles.
+ * @param {ol.geom.GeometryType} geometryType Geometry type.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStyles_(styles, geometryType, encodedStyles) {
-  const styleType = StyleTypes_[geometryType];
-  console.assert(styleType !== undefined);
-  for (const style of styles) {
+exports.encodeStyles_ = function(styles, geometryType, encodedStyles) {
+  const styleType = exports.StyleTypes_[geometryType];
+  googAsserts.assert(styleType !== undefined);
+  for (let i = 0; i < styles.length; ++i) {
+    const style = styles[i];
     const fillStyle = style.getFill();
     const imageStyle = style.getImage();
     const strokeStyle = style.getStroke();
     const textStyle = style.getText();
     if (styleType == ngeoFormatFeatureHashStyleType.POLYGON) {
       if (fillStyle !== null) {
-        encodeStylePolygon_(fillStyle, strokeStyle, encodedStyles);
+        exports.encodeStylePolygon_(
+          fillStyle, strokeStyle, encodedStyles);
       }
     } else if (styleType == ngeoFormatFeatureHashStyleType.LINE_STRING) {
       if (strokeStyle !== null) {
-        encodeStyleLine_(strokeStyle, encodedStyles);
+        exports.encodeStyleLine_(strokeStyle, encodedStyles);
       }
     } else if (styleType == ngeoFormatFeatureHashStyleType.POINT) {
       if (imageStyle !== null) {
-        encodeStylePoint_(imageStyle, encodedStyles);
+        exports.encodeStylePoint_(imageStyle, encodedStyles);
       }
     }
     if (textStyle !== null) {
-      encodeStyleText_(textStyle, encodedStyles);
+      exports.encodeStyleText_(textStyle, encodedStyles);
     }
   }
-}
+};
+
 
 /**
- * Transform an {@link import("ol/style/Stroke.js").default} into a logical sequence of
+ * Transform an {@link ol.style.Stroke} into a logical sequence of
  * characters and put the result into the given encoded styles's array.
- * @param {import("ol/style/Stroke.js").default} strokeStyle Stroke style.
- * @param {string[]} encodedStyles Encoded styles array.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStyleLine_(strokeStyle, encodedStyles) {
-  encodeStyleStroke_(strokeStyle, encodedStyles);
-}
+exports.encodeStyleLine_ = function(strokeStyle, encodedStyles) {
+  exports.encodeStyleStroke_(strokeStyle, encodedStyles);
+};
+
 
 /**
- * Transform an {@link import("ol/style/Circle.js").default} into a logical sequence of
+ * Transform an {@link ol.style.Circle} into a logical sequence of
  * characters and put the result into the given encoded styles's array.
- * @param {import("ol/style/Image.js").default} imageStyle Image style.
- * @param {string[]} encodedStyles Encoded styles array.
+ * @param {ol.style.Image} imageStyle Image style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStylePoint_(imageStyle, encodedStyles) {
+exports.encodeStylePoint_ = function(imageStyle, encodedStyles) {
   if (imageStyle instanceof olStyleCircle) {
     const radius = imageStyle.getRadius();
     if (encodedStyles.length > 0) {
-      encodedStyles.push("'");
+      encodedStyles.push('\'');
     }
     encodedStyles.push(encodeURIComponent(`pointRadius*${radius}`));
     const fillStyle = imageStyle.getFill();
     if (fillStyle !== null) {
-      encodeStyleFill_(fillStyle, encodedStyles);
+      exports.encodeStyleFill_(fillStyle, encodedStyles);
     }
     const strokeStyle = imageStyle.getStroke();
     if (strokeStyle !== null) {
-      encodeStyleStroke_(strokeStyle, encodedStyles);
+      exports.encodeStyleStroke_(strokeStyle, encodedStyles);
     }
   }
-}
+};
+
 
 /**
- * Transform an {@link import("ol/style/Fill.js").default} and an
- * {@link import("ol/style/Stroke.js").default} into a logical sequence of characters and put the result into
- * the given encoded styles's array.
- * @param {import("ol/style/Fill.js").default} fillStyle Fill style.
- * @param {import("ol/style/Stroke.js").default} strokeStyle Stroke style.
- * @param {string[]} encodedStyles Encoded styles array.
+ * Transform an {@link ol.style.Fill} and an {@link ol.style.Stroke} into
+ * a logical sequence of characters and put the result into the given
+ * encoded styles's array.
+ * @param {ol.style.Fill} fillStyle Fill style.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStylePolygon_(fillStyle, strokeStyle, encodedStyles) {
-  encodeStyleFill_(fillStyle, encodedStyles);
+exports.encodeStylePolygon_ = function(fillStyle, strokeStyle, encodedStyles) {
+  exports.encodeStyleFill_(fillStyle, encodedStyles);
   if (strokeStyle !== null) {
-    encodeStyleStroke_(strokeStyle, encodedStyles);
+    exports.encodeStyleStroke_(strokeStyle, encodedStyles);
   }
-}
+};
+
 
 /**
- * Transform an {@link import("ol/style/Fill.js").default} and optionally its properties into
+ * Transform an {@link ol.style.Fill} and optionally its properties into
  * a logical sequence of characters and put the result into the given encoded
  * styles's array.
- * @param {import("ol/style/Fill.js").default} fillStyle Fill style.
- * @param {string[]} encodedStyles Encoded styles array.
- * @param {string=} [propertyName='fillColor'] Property name.
+ * @param {ol.style.Fill} fillStyle Fill style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
+ * @param {string=} opt_propertyName Property name.
  * @private
- * @hidden
  */
-function encodeStyleFill_(fillStyle, encodedStyles, propertyName = 'fillColor') {
+exports.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) {
+  const propertyName = opt_propertyName !== undefined ?
+    opt_propertyName : 'fillColor';
   const fillColor = fillStyle.getColor();
-  let fillColorHex;
   if (fillColor !== null) {
-    if (Array.isArray(fillColor)) {
-      fillColorHex = rgbArrayToHex(fillColor);
-    } else if (typeof fillColor === 'string') {
-      fillColorHex = rgbArrayToHex(asColorArray(fillColor));
-    } else {
-      throw new Error('Unsupported color');
-    }
+    googAsserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
+    const fillColorRgba = olColor.asArray(fillColor);
+    googAsserts.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
+    const fillColorHex = ngeoUtils.rgbArrayToHex(fillColorRgba);
     if (encodedStyles.length > 0) {
-      encodedStyles.push("'");
+      encodedStyles.push('\'');
     }
-    encodedStyles.push(encodeURIComponent(`${propertyName}*${fillColorHex}`));
+    encodedStyles.push(
+      encodeURIComponent(`${propertyName}*${fillColorHex}`));
   }
-}
+};
+
 
 /**
- * Transform an {@link import("ol/style/Stroke.js").default} into a logical sequence of
+ * Transform an {@link ol.style.Stroke} into a logical sequence of
  * characters and put the result into the given encoded styles's array.
- * @param {import("ol/style/Stroke.js").default} strokeStyle Stroke style.
- * @param {string[]} encodedStyles Encoded styles array.
+ * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStyleStroke_(strokeStyle, encodedStyles) {
+exports.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   const strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
-    if (Array.isArray(strokeColor)) {
-      const strokeColorHex = rgbArrayToHex(strokeColor);
-      if (encodedStyles.length > 0) {
-        encodedStyles.push("'");
-      }
-      encodedStyles.push(encodeURIComponent(`strokeColor*${strokeColorHex}`));
+    googAsserts.assert(Array.isArray(strokeColor));
+    const strokeColorRgba = olColor.asArray(strokeColor);
+    googAsserts.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
+    const strokeColorHex = ngeoUtils.rgbArrayToHex(strokeColorRgba);
+    if (encodedStyles.length > 0) {
+      encodedStyles.push('\'');
     }
+    encodedStyles.push(encodeURIComponent(`strokeColor*${strokeColorHex}`));
   }
   const strokeWidth = strokeStyle.getWidth();
   if (strokeWidth !== undefined) {
     if (encodedStyles.length > 0) {
-      encodedStyles.push("'");
+      encodedStyles.push('\'');
     }
     encodedStyles.push(encodeURIComponent(`strokeWidth*${strokeWidth}`));
   }
-}
+};
+
 
 /**
- * Transform an {@link import("ol/style/Text.js").default} into a logical sequence of characters and
+ * Transform an {@link ol.style.Text} into a logical sequence of characters and
  * put the result into the given encoded styles's array.
- * @param {import("ol/style/Text.js").default} textStyle Text style.
- * @param {string[]} encodedStyles Encoded styles array.
+ * @param {ol.style.Text} textStyle Text style.
+ * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
- * @hidden
  */
-function encodeStyleText_(textStyle, encodedStyles) {
+exports.encodeStyleText_ = function(textStyle, encodedStyles) {
   const fontStyle = textStyle.getFont();
   if (fontStyle !== undefined) {
     const font = fontStyle.split(' ');
     if (font.length >= 3) {
       if (encodedStyles.length > 0) {
-        encodedStyles.push("'");
+        encodedStyles.push('\'');
       }
       encodedStyles.push(encodeURIComponent(`fontSize*${font[1]}`));
     }
   }
   const fillStyle = textStyle.getFill();
   if (fillStyle !== null) {
-    encodeStyleFill_(fillStyle, encodedStyles, 'fontColor');
+    exports.encodeStyleFill_(
+      fillStyle, encodedStyles, 'fontColor');
   }
-}
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/LineString.js").default}.
+ * {@link ol.geom.LineString}.
  * @param {string} text Text.
- * @return {import("ol/geom/LineString.js").default} Line string.
+ * @return {ol.geom.LineString} Line string.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readLineStringGeometry_(text) {
-  console.assert(text.startsWith('l('));
-  console.assert(text.endsWith(')'));
+exports.readLineStringGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'l(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   const flatCoordinates = this.decodeCoordinates_(text);
-  return new olGeomLineString(flatCoordinates, olGeomGeometryLayout.XY);
-}
+  const lineString = new olGeomLineString(null);
+  lineString.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
+  return lineString;
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/MultiLineString.js").default}.
+ * {@link ol.geom.MultiLineString}.
  * @param {string} text Text.
- * @return {import("ol/geom/MultiLineString.js").default} Line string.
+ * @return {ol.geom.MultiLineString} Line string.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readMultiLineStringGeometry_(text) {
-  console.assert(text.startsWith('L('));
-  console.assert(text.endsWith(')'));
+exports.readMultiLineStringGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'L(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
-  /** @type {number[]} */
   let flatCoordinates = [];
   const ends = [];
-  const lineStrings = text.split("'");
+  const lineStrings = text.split('\'');
   for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
     flatCoordinates = this.decodeCoordinates_(lineStrings[i], flatCoordinates);
     ends[i] = flatCoordinates.length;
   }
-  return new olGeomMultiLineString(flatCoordinates, olGeomGeometryLayout.XY, ends);
-}
+  const multiLineString = new olGeomMultiLineString(null);
+  multiLineString.setFlatCoordinates(
+    olGeomGeometryLayout.XY, flatCoordinates, ends);
+  return multiLineString;
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/Point.js").default}.
+ * {@link ol.geom.Point}.
  * @param {string} text Text.
- * @return {import("ol/geom/Point.js").default} Point.
+ * @return {ol.geom.Point} Point.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readPointGeometry_(text) {
-  console.assert(text.startsWith('p('));
-  console.assert(text.endsWith(')'));
+exports.readPointGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'p(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   const flatCoordinates = this.decodeCoordinates_(text);
-  console.assert(flatCoordinates.length === 2);
-  return new olGeomPoint(flatCoordinates, olGeomGeometryLayout.XY);
-}
+  googAsserts.assert(flatCoordinates.length === 2);
+  const point = new olGeomPoint(null);
+  point.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
+  return point;
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/MultiPoint.js").default}.
+ * {@link ol.geom.MultiPoint}.
  * @param {string} text Text.
- * @return {import("ol/geom/MultiPoint.js").default} MultiPoint.
+ * @return {ol.geom.MultiPoint} MultiPoint.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readMultiPointGeometry_(text) {
-  console.assert(text.startsWith('P('));
-  console.assert(text.endsWith(')'));
+exports.readMultiPointGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'P(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   const flatCoordinates = this.decodeCoordinates_(text);
-  return new olGeomMultiPoint(flatCoordinates, olGeomGeometryLayout.XY);
-}
+  const multiPoint = new olGeomMultiPoint(null);
+  multiPoint.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
+  return multiPoint;
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/Polygon.js").default}.
+ * {@link ol.geom.Polygon}.
  * @param {string} text Text.
- * @return {import("ol/geom/Polygon.js").default} Polygon.
+ * @return {ol.geom.Polygon} Polygon.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readPolygonGeometry_(text) {
-  console.assert(text.startsWith('a('));
-  console.assert(text.endsWith(')'));
+exports.readPolygonGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'a(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
-  /** @type {number[]} */
   let flatCoordinates = [];
   const ends = [];
-  const rings = text.split("'");
+  const rings = text.split('\'');
   for (let i = 0, ii = rings.length; i < ii; ++i) {
     flatCoordinates = this.decodeCoordinates_(rings[i], flatCoordinates);
     let end = flatCoordinates.length;
@@ -813,31 +516,30 @@ function readPolygonGeometry_(text) {
     }
     ends[i] = end;
   }
-  return new olGeomPolygon(flatCoordinates, olGeomGeometryLayout.XY, ends);
-}
+  const polygon = new olGeomPolygon(null);
+  polygon.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates, ends);
+  return polygon;
+};
+
 
 /**
  * Read a logical sequence of characters and return a corresponding
- * {@link import("ol/geom/MultiPolygon.js").default}.
+ * {@link ol.geom.MultiPolygon}.
  * @param {string} text Text.
- * @return {import("ol/geom/MultiPolygon.js").default} MultiPolygon.
+ * @return {ol.geom.MultiPolygon} MultiPolygon.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function readMultiPolygonGeometry_(text) {
-  console.assert(text.startsWith('A('));
-  console.assert(text.endsWith(')'));
+exports.readMultiPolygonGeometry_ = function(text) {
+  googAsserts.assert(text.substring(0, 2) === 'A(');
+  googAsserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
-  /** @type {number[]} */
   let flatCoordinates = [];
-  /** @type {number[][]} */
   const endss = [];
   const polygons = text.split(')(');
   for (let i = 0, ii = polygons.length; i < ii; ++i) {
-    const rings = polygons[i].split("'");
-    endss[i] = [];
-    const ends = endss[i];
+    const rings = polygons[i].split('\'');
+    const ends = endss[i] = [];
     for (let j = 0, jj = rings.length; j < jj; ++j) {
       flatCoordinates = this.decodeCoordinates_(rings[j], flatCoordinates);
       let end = flatCoordinates.length;
@@ -851,8 +553,12 @@ function readMultiPolygonGeometry_(text) {
       ends[j] = end;
     }
   }
-  return new olGeomMultiPolygon(flatCoordinates, olGeomGeometryLayout.XY, endss);
-}
+  const multipolygon = new olGeomMultiPolygon(null);
+  multipolygon.setFlatCoordinates(
+    olGeomGeometryLayout.XY, flatCoordinates, endss);
+  return multipolygon;
+};
+
 
 /**
  * DEPRECATED - Use the `ngeo.misc.FeatureHelper` instead in combination with the
@@ -861,141 +567,117 @@ function readMultiPolygonGeometry_(text) {
  * Read a logical sequence of characters and apply the decoded style on the
  * given feature.
  * @param {string} text Text.
- * @param {olFeature<import("ol/geom/Geometry.js").default>} feature Feature.
+ * @param {ol.Feature} feature Feature.
  * @private
- * @hidden
  */
-function setStyleInFeature_(text, feature) {
+exports.setStyleInFeature_ = function(text, feature) {
   if (text == '') {
     return;
   }
-  const properties = getStyleProperties_(text, feature);
-  const fillColor = properties.fillColor;
-  const fontSize = properties.fontSize;
-  const fontColor = properties.fontColor;
-  const pointRadius = properties.pointRadius;
-  const strokeColor = properties.strokeColor;
-  const strokeWidth = properties.strokeWidth;
+  const properties = exports.getStyleProperties_(text, feature);
+  const fillColor = properties['fillColor'];
+  const fontSize = properties['fontSize'];
+  const fontColor = properties['fontColor'];
+  const pointRadius = properties['pointRadius'];
+  const strokeColor = properties['strokeColor'];
+  const strokeWidth = properties['strokeWidth'];
 
   let fillStyle = null;
   if (fillColor !== undefined) {
     fillStyle = new olStyleFill({
-      color: /** @type {number[]|string} */ (fillColor),
+      color: /** @type {Array<number>|string} */ (fillColor)
     });
   }
   let strokeStyle = null;
   if (strokeColor !== undefined && strokeWidth !== undefined) {
-    if (typeof strokeWidth != 'number') {
-      throw new Error('Missing strokeWidth');
-    }
     strokeStyle = new olStyleStroke({
-      color: /** @type {number[]|string} */ (strokeColor),
-      width: strokeWidth,
+      color: /** @type {Array<number>|string} */ (strokeColor),
+      width: /** @type {number} */ (strokeWidth)
     });
   }
   let imageStyle = null;
   if (pointRadius !== undefined) {
-    if (typeof pointRadius != 'number') {
-      throw new Error('Missing pointRadius');
-    }
-    /** @type {import('ol/style/Circle.js').Options} */
-    const options = {
-      radius: pointRadius,
-    };
-    if (fillStyle) {
-      options.fill = fillStyle;
-    }
-    if (strokeStyle) {
-      options.stroke = strokeStyle;
-    }
-    imageStyle = new olStyleCircle(options);
-    fillStyle = null;
-    strokeStyle = null;
+    imageStyle = new olStyleCircle({
+      radius: /** @type {number} */ (pointRadius),
+      fill: fillStyle,
+      stroke: strokeStyle
+    });
+    fillStyle = strokeStyle = null;
   }
   let textStyle = null;
   if (fontSize !== undefined && fontColor !== undefined) {
     textStyle = new olStyleText({
       font: `${fontSize} sans-serif`,
       fill: new olStyleFill({
-        color: /** @type {number[]|string} */ (fontColor),
-      }),
+        color: /** @type {Array<number>|string} */ (fontColor)
+      })
     });
   }
-  const options = {};
-  if (fillStyle) {
-    options.fill = fillStyle;
-  }
-  if (strokeStyle) {
-    options.stroke = strokeStyle;
-  }
-  if (imageStyle) {
-    options.image = imageStyle;
-  }
-  if (textStyle) {
-    options.text = textStyle;
-  }
-  const style = new olStyleStyle(options);
+  const style = new olStyleStyle({
+    fill: fillStyle,
+    image: imageStyle,
+    stroke: strokeStyle,
+    text: textStyle
+  });
   feature.setStyle(style);
-}
+};
+
 
 /**
  * Read a logical sequence of characters and apply the decoded result as
  * style properties for the feature. Legacy keys are converted to the new ones
  * for compatibility.
  * @param {string} text Text.
- * @param {olFeature<import("ol/geom/Geometry.js").default>} feature Feature.
+ * @param {ol.Feature} feature Feature.
  * @private
- * @hidden
  */
-function setStyleProperties_(text, feature) {
-  const properties = getStyleProperties_(text, feature);
+exports.setStyleProperties_ = function(text, feature) {
+
+  const properties = exports.getStyleProperties_(text, feature);
   const geometry = feature.getGeometry();
 
   // Deal with legacy properties
   if (geometry instanceof olGeomPoint) {
-    if (properties.isLabel || properties[ngeoFormatFeatureProperties.IS_TEXT]) {
-      delete properties.strokeColor;
-      delete properties.fillColor;
+    if (properties['isLabel'] ||
+        properties[ngeoFormatFeatureProperties.IS_TEXT]) {
+      delete properties['strokeColor'];
+      delete properties['fillColor'];
     } else {
-      delete properties.fontColor;
-      delete properties.fontSize;
+      delete properties['fontColor'];
+      delete properties['fontSize'];
     }
   } else {
-    delete properties.fontColor;
+    delete properties['fontColor'];
 
     if (geometry instanceof olGeomLineString) {
-      delete properties.fillColor;
-      delete properties.fillOpacity;
+      delete properties['fillColor'];
+      delete properties['fillOpacity'];
     }
   }
 
   // Convert font size from px to pt
-  if (properties.fontSize) {
-    const fontSizeStr = properties.fontSize;
-    if (typeof fontSizeStr !== 'string') {
-      throw new Error('Wrong fontSizeStr type');
-    }
-    let fontSize = parseFloat(fontSizeStr);
-    if (fontSizeStr.includes('px')) {
+  if (properties['fontSize']) {
+    let fontSize = parseFloat(properties['fontSize']);
+    if (properties['fontSize'].indexOf('px') !== -1) {
       fontSize = Math.round(fontSize / 1.333333);
     }
-    properties.fontSize = fontSize;
+    properties['fontSize'] = fontSize;
   }
 
   // Convert legacy properties
-  /** @type {Object<string, string|number|boolean|undefined>} */
   const clone = {};
   for (const key in properties) {
     const value = properties[key];
-    if (LegacyProperties_[key]) {
-      clone[LegacyProperties_[key]] = value;
+    if (exports.LegacyProperties_[key]) {
+      clone[exports.LegacyProperties_[key]] = value;
     } else {
       clone[key] = value;
     }
   }
 
   feature.setProperties(clone);
-}
+};
+
 
 /**
  * Cast values in the correct type depending on the property.
@@ -1003,17 +685,15 @@ function setStyleProperties_(text, feature) {
  * @param {string} value Value.
  * @return {number|boolean|string} The casted value corresponding to the key.
  * @private
- * @hidden
- * @hidden
  */
-function castValue_(key, value) {
+exports.castValue_ = function(key, value) {
   const numProperties = [
     ngeoFormatFeatureProperties.ANGLE,
     ngeoFormatFeatureProperties.OPACITY,
     ngeoFormatFeatureProperties.SIZE,
     ngeoFormatFeatureProperties.STROKE,
     'pointRadius',
-    'strokeWidth',
+    'strokeWidth'
   ];
   const boolProperties = [
     ngeoFormatFeatureProperties.IS_CIRCLE,
@@ -1025,17 +705,18 @@ function castValue_(key, value) {
     'isRectangle',
     'isLabel',
     'showMeasure',
-    'showLabel',
+    'showLabel'
   ];
 
-  if (numProperties.includes(key)) {
+  if (olArray.includes(numProperties, key)) {
     return +value;
-  } else if (boolProperties.includes(key)) {
-    return value === 'true' ? true : false;
+  } else if (olArray.includes(boolProperties, key)) {
+    return (value === 'true') ? true : false;
   } else {
     return value;
   }
-}
+};
+
 
 /**
  * From a logical sequence of characters, create and return an object of
@@ -1043,193 +724,503 @@ function castValue_(key, value) {
  * depending on the property. Some properties are also deleted when they don't
  * match the geometry of the feature.
  * @param {string} text Text.
- * @param {olFeature<import("ol/geom/Geometry.js").default>} feature Feature.
- * @return {Object<string, boolean|number|string|undefined>} The style properties for the feature.
+ * @param {ol.Feature} feature Feature.
+ * @return {Object.<string, boolean|number|string>} The style properties for
+ *     the feature.
  * @private
- * @hidden
  */
-function getStyleProperties_(text, feature) {
-  const parts = text.split("'");
-  /** @type {Object<string, boolean|number|string>} */
+exports.getStyleProperties_ = function(text, feature) {
+  const parts = text.split('\'');
   const properties = {};
 
-  for (const encodedPart of parts) {
-    const part = decodeURIComponent(encodedPart);
+  for (let i = 0; i < parts.length; ++i) {
+    const part = decodeURIComponent(parts[i]);
     const keyVal = part.split('*');
-    console.assert(keyVal.length === 2);
+    googAsserts.assert(keyVal.length === 2);
     const key = keyVal[0];
     const val = keyVal[1];
 
-    properties[key] = castValue_(key, val);
+    properties[key] = exports.castValue_(key, val);
   }
 
   return properties;
-}
+};
+
 
 /**
- * Encode a {@link import("ol/geom/LineString.js").default} geometry into a logical sequence of
+ * Encode a {@link ol.geom.LineString} geometry into a logical sequence of
  * characters.
- * @param {Geometry} geometry Geometry.
- * @return {?string} Encoded geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writeLineStringGeometry_(geometry) {
-  if (geometry instanceof olGeomLineString) {
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const end = flatCoordinates.length;
-    return `l(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
-  }
-  return null;
-}
+exports.writeLineStringGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomLineString);
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  const end = flatCoordinates.length;
+  return `l(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
+};
+
 
 /**
- * Encode a {@link import("ol/geom/MultiLineString.js").default} geometry into a logical sequence
+ * Encode a {@link ol.geom.MultiLineString} geometry into a logical sequence
  * of characters.
- * @param {Geometry} geometry Geometry.
- * @return {?string} Encoded geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writeMultiLineStringGeometry_(geometry) {
-  if (geometry instanceof olGeomMultiLineString) {
-    const ends = geometry.getEnds();
-    const lineStringCount = ends.length;
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    let offset = 0;
-    const textArray = ['L('];
-    for (let i = 0; i < lineStringCount; ++i) {
-      const end = ends[i];
-      const text = this.encodeCoordinates_(flatCoordinates, stride, offset, end);
-      if (i !== 0) {
-        textArray.push("'");
-      }
-      textArray.push(text);
-      offset = end;
+exports.writeMultiLineStringGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomMultiLineString);
+  const ends = geometry.getEnds();
+  const lineStringCount = ends.length;
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  let offset = 0;
+  const textArray = ['L('];
+  for (let i = 0; i < lineStringCount; ++i) {
+    const end = ends[i];
+    const text = this.encodeCoordinates_(flatCoordinates, stride, offset, end);
+    if (i !== 0) {
+      textArray.push('\'');
     }
-    textArray.push(')');
-    return textArray.join('');
+    textArray.push(text);
+    offset = end;
   }
-  return null;
-}
+  textArray.push(')');
+  return textArray.join('');
+};
+
 
 /**
- * Encode a {@link import("ol/geom/Point.js").default} geometry into a logical sequence of
+ * Encode a {@link ol.geom.Point} geometry into a logical sequence of
  * characters.
- * @param {Geometry} geometry Geometry.
- * @return {?string} Encoded geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writePointGeometry_(geometry) {
-  if (geometry instanceof olGeomPoint) {
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const end = flatCoordinates.length;
-    return `p(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
-  }
-  return null;
-}
+exports.writePointGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomPoint);
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  const end = flatCoordinates.length;
+  return `p(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
+};
+
 
 /**
- * Encode an {@link import("ol/geom/MultiPoint.js").default} geometry into a logical sequence
+ * Encode an {@link ol.geom.MultiPoint} geometry into a logical sequence
  * of characters.
- * @param {Geometry} geometry Geometry.
- * @return {?string} Encoded geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writeMultiPointGeometry_(geometry) {
-  if (geometry instanceof olGeomMultiPoint) {
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const end = flatCoordinates.length;
-    return `P(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
-  }
-  return null;
-}
+exports.writeMultiPointGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomMultiPoint);
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  const end = flatCoordinates.length;
+  return `P(${this.encodeCoordinates_(flatCoordinates, stride, 0, end)})`;
+};
+
 
 /**
- * Helper to encode an {@link import("ol/geom/Polygon.js").default} geometry.
- * @param {number[]} flatCoordinates Flat coordinates.
+ * Helper to encode an {@link ol.geom.Polygon} geometry.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
  * @param {number} offset Offset.
- * @param {number[]} ends Ends.
- * @param {string[]} textArray Text array.
+ * @param {Array.<number>} ends Ends.
+ * @param {Array.<string>} textArray Text array.
  * @return {number} The new offset.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function encodeRings_(flatCoordinates, stride, offset, ends, textArray) {
+exports.encodeRings_ = function(flatCoordinates, stride, offset, ends, textArray) {
   const linearRingCount = ends.length;
   for (let i = 0; i < linearRingCount; ++i) {
     // skip the "closing" point
     const end = ends[i] - stride;
     const text = this.encodeCoordinates_(flatCoordinates, stride, offset, end);
     if (i !== 0) {
-      textArray.push("'");
+      textArray.push('\'');
     }
     textArray.push(text);
     offset = ends[i];
   }
   return offset;
-}
+};
+
 
 /**
- * Encode an {@link import("ol/geom/Polygon.js").default} geometry into a logical sequence
+ * Encode an {@link ol.geom.Polygon} geometry into a logical sequence
  * of characters.
- * @param {Geometry} geometry Geometry.
- * @return {?string} Encoded geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writePolygonGeometry_(geometry) {
-  if (geometry instanceof olGeomPolygon) {
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const ends = geometry.getEnds();
-    const offset = 0;
-    const textArray = ['a('];
-    encodeRings_.call(this, flatCoordinates, stride, offset, ends, textArray);
-    textArray.push(')');
-    return textArray.join('');
-  }
-  return null;
-}
+exports.writePolygonGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomPolygon);
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  const ends = geometry.getEnds();
+  const offset = 0;
+  const textArray = ['a('];
+  exports.encodeRings_.call(this,
+    flatCoordinates, stride, offset, ends, textArray);
+  textArray.push(')');
+  return textArray.join('');
+};
+
 
 /**
- * Encode an {@link import("ol/geom/MultiPoligon.js").default} geometry into a logical sequence of
+ * Encode an {@link ol.geom.MultiPoligon} geometry into a logical sequence of
  * characters.
- * @param {Geometry} geometry Geometry.
+ * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
+ * @this {ngeo.format.FeatureHash}
  * @private
- * @hidden
- * @this {FeatureHash}
  */
-function writeMultiPolygonGeometry_(geometry) {
-  if (geometry instanceof olGeomMultiPolygon) {
-    const flatCoordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const endss = geometry.getEndss();
-    const polygonCount = endss.length;
-    let offset = 0;
-    const textArray = ['A'];
-    for (let i = 0; i < polygonCount; ++i) {
-      const ends = endss[i];
-      textArray.push('(');
-      offset = encodeRings_.call(this, flatCoordinates, stride, offset, ends, textArray);
-      textArray.push(')');
-    }
-    return textArray.join('');
-  } else {
-    throw new Error('Wrong geometry type');
+exports.writeMultiPolygonGeometry_ = function(geometry) {
+  googAsserts.assertInstanceof(geometry, olGeomMultiPolygon);
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
+  const endss = geometry.getEndss();
+  const polygonCount = endss.length;
+  let offset = 0;
+  const textArray = ['A'];
+  for (let i = 0; i < polygonCount; ++i) {
+    const ends = endss[i];
+    textArray.push('(');
+    offset = exports.encodeRings_.call(this,
+      flatCoordinates, stride, offset, ends, textArray);
+    textArray.push(')');
   }
-}
+  return textArray.join('');
+};
+
+
+/**
+ * @const
+ * @private
+ * @type {Object.<string, function(string):ol.geom.Geometry>}
+ */
+exports.GEOMETRY_READERS_ = {
+  'P': exports.readMultiPointGeometry_,
+  'L': exports.readMultiLineStringGeometry_,
+  'A': exports.readMultiPolygonGeometry_,
+  'l': exports.readLineStringGeometry_,
+  'p': exports.readPointGeometry_,
+  'a': exports.readPolygonGeometry_
+};
+
+
+/**
+ * @const
+ * @private
+ * @type {Object.<string, function(ol.geom.Geometry):string>}
+ */
+exports.GEOMETRY_WRITERS_ = {
+  'MultiLineString': exports.writeMultiLineStringGeometry_,
+  'MultiPoint': exports.writeMultiPointGeometry_,
+  'MultiPolygon': exports.writeMultiPolygonGeometry_,
+  'LineString': exports.writeLineStringGeometry_,
+  'Point': exports.writePointGeometry_,
+  'Polygon': exports.writePolygonGeometry_
+};
+
+
+/**
+ * Read a logical sequence of characters and return (or complete then return)
+ * an array of numbers. The coordinates are assumed to be in
+ * two dimensions and in latitude, longitude order.
+ * corresponding to a geometry's coordinates.
+ * @param {string} text Text.
+ * @param {Array.<number>=} opt_flatCoordinates Flat coordinates array.
+ * @return {Array.<number>} Flat coordinates.
+ * @private
+ */
+exports.prototype.decodeCoordinates_ = function(text, opt_flatCoordinates) {
+  const len = text.length;
+  let index = 0;
+  const flatCoordinates = opt_flatCoordinates !== undefined ?
+    opt_flatCoordinates : [];
+  let i = flatCoordinates.length;
+  while (index < len) {
+    let b;
+    let shift = 0;
+    let result = 0;
+    do {
+      b = exports.CHAR64_.indexOf(text.charAt(index++));
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 32);
+    const dx = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    this.prevX_ += dx;
+    shift = 0;
+    result = 0;
+    do {
+      b = exports.CHAR64_.indexOf(text.charAt(index++));
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 32);
+    const dy = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    this.prevY_ += dy;
+    flatCoordinates[i++] = this.prevX_ * this.accuracy_;
+    flatCoordinates[i++] = this.prevY_ * this.accuracy_;
+  }
+  return flatCoordinates;
+};
+
+
+/**
+ * Encode an array of number (corresponding to some coordinates) into a
+ * logical sequence of characters. The coordinates are assumed to be in
+ * two dimensions and in latitude, longitude order.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} stride Stride.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @return {string} String.
+ * @private
+ */
+exports.prototype.encodeCoordinates_ = function(flatCoordinates, stride, offset, end) {
+  let encodedCoordinates = '';
+  for (let i = offset; i < end; i += stride) {
+    let x = flatCoordinates[i];
+    let y = flatCoordinates[i + 1];
+    x = Math.floor(x / this.accuracy_);
+    y = Math.floor(y / this.accuracy_);
+    const dx = x - this.prevX_;
+    const dy = y - this.prevY_;
+    this.prevX_ = x;
+    this.prevY_ = y;
+    encodedCoordinates += exports.encodeSignedNumber_(dx) +
+        exports.encodeSignedNumber_(dy);
+  }
+  return encodedCoordinates;
+};
+
+
+/**
+ * Read a feature from a logical sequence of characters.
+ * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {ol.Feature} Feature.
+ * @protected
+ * @override
+ */
+exports.prototype.readFeatureFromText = function(text, opt_options) {
+  googAsserts.assert(text.length > 2);
+  googAsserts.assert(text[1] === '(');
+  googAsserts.assert(text[text.length - 1] === ')');
+  let splitIndex = text.indexOf('~');
+  const geometryText = splitIndex >= 0 ?
+    `${text.substring(0, splitIndex)})` : text;
+  const geometry = this.readGeometryFromText(geometryText, opt_options);
+  const feature = new olFeature(geometry);
+  if (splitIndex >= 0) {
+    const attributesAndStylesText = text.substring(
+      splitIndex + 1, text.length - 1);
+    splitIndex = attributesAndStylesText.indexOf('~');
+    const attributesText = splitIndex >= 0 ?
+      attributesAndStylesText.substring(0, splitIndex) :
+      attributesAndStylesText;
+    if (attributesText != '') {
+      const parts = attributesText.split('\'');
+      for (let i = 0; i < parts.length; ++i) {
+        const part = decodeURIComponent(parts[i]);
+        const keyVal = part.split('*');
+        googAsserts.assert(keyVal.length === 2);
+        let key = keyVal[0];
+        const value = keyVal[1];
+        if (!this.setStyle_ && exports.LegacyProperties_[key]) {
+          key = exports.LegacyProperties_[key];
+        }
+        feature.set(key, exports.castValue_(key, value));
+      }
+    }
+    if (splitIndex >= 0) {
+      const stylesText = attributesAndStylesText.substring(splitIndex + 1);
+      if (this.setStyle_) {
+        exports.setStyleInFeature_(stylesText, feature);
+      } else {
+        exports.setStyleProperties_(stylesText, feature);
+      }
+    }
+  }
+  return feature;
+};
+
+
+/**
+ * Read multiple features from a logical sequence of characters.
+ * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {Array.<ol.Feature>} Features.
+ * @protected
+ * @override
+ */
+exports.prototype.readFeaturesFromText = function(text, opt_options) {
+  googAsserts.assert(text[0] === 'F');
+  this.prevX_ = 0;
+  this.prevY_ = 0;
+  /** @type {Array.<ol.Feature>} */
+  const features = [];
+  text = text.substring(1);
+  while (text.length > 0) {
+    const index = text.indexOf(')');
+    googAsserts.assert(index >= 0);
+    const feature = this.readFeatureFromText(
+      text.substring(0, index + 1), opt_options);
+    features.push(feature);
+    text = text.substring(index + 1);
+  }
+
+  // set default values
+  features.forEach((feature) => {
+    for (const key in this.defaultValues_) {
+      const property = exports.LegacyProperties_[key];
+      if (feature.get(property) === undefined) {
+        feature.set(property, this.defaultValues_[key].call(null, feature));
+      }
+    }
+  });
+  return features;
+};
+
+
+/**
+ * Read a geometry from a logical sequence of characters.
+ * @param {string} text Text.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {ol.geom.Geometry} Geometry.
+ * @protected
+ * @override
+ */
+exports.prototype.readGeometryFromText = function(text, opt_options) {
+  const geometryReader = exports.GEOMETRY_READERS_[text[0]];
+  googAsserts.assert(geometryReader !== undefined);
+  return geometryReader.call(this, text);
+};
+
+
+/**
+ * Encode a feature into a logical sequence of characters.
+ * @param {ol.Feature} feature Feature.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {string} Encoded feature.
+ * @protected
+ * @override
+ */
+exports.prototype.writeFeatureText = function(feature, opt_options) {
+  const /** @type {Array.<string>} */ encodedParts = [];
+
+  // encode geometry
+
+  let encodedGeometry = '';
+  const geometry = feature.getGeometry();
+  if (geometry) {
+    encodedGeometry = this.writeGeometryText(geometry, opt_options);
+  }
+
+  if (encodedGeometry.length > 0) {
+    // remove the final bracket
+    googAsserts.assert(encodedGeometry[encodedGeometry.length - 1] === ')');
+    encodedGeometry = encodedGeometry.substring(0, encodedGeometry.length - 1);
+    encodedParts.push(encodedGeometry);
+  }
+
+  // encode properties
+
+  const /** @type {Array.<string>} */ encodedProperties = [];
+  const propFunction = this.propertiesFunction_(feature);
+  for (const key in propFunction) {
+    const value = propFunction[key];
+    if (value !== undefined && value !== null && key !== feature.getGeometryName()) {
+      if (encodedProperties.length !== 0) {
+        encodedProperties.push('\'');
+      }
+      const encoded = encodeURIComponent(
+        `${key.replace(/[()'*]/g, '_')}*${
+          value.toString().replace(/[()'*]/g, '_')}`);
+      encodedProperties.push(encoded);
+    }
+  }
+
+  if (encodedProperties.length > 0) {
+    encodedParts.push('~');
+    Array.prototype.push.apply(encodedParts, encodedProperties);
+  }
+
+  // encode styles
+
+  if (this.encodeStyles_) {
+    const styleFunction = feature.getStyleFunction();
+    if (styleFunction !== undefined) {
+      let styles = styleFunction.call(feature, 0);
+      if (styles !== null) {
+        const encodedStyles = [];
+        styles = Array.isArray(styles) ? styles : [styles];
+        exports.encodeStyles_(
+          styles, geometry.getType(), encodedStyles);
+        if (encodedStyles.length > 0) {
+          encodedParts.push('~');
+          Array.prototype.push.apply(encodedParts, encodedStyles);
+        }
+      }
+    }
+  }
+
+  // append the closing bracket and return the encoded feature
+
+  encodedParts.push(')');
+  return encodedParts.join('');
+};
+
+
+/**
+ * Encode an array of features into a logical sequence of characters.
+ * @param {Array.<ol.Feature>} features Feature.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {string} Encoded features.
+ * @protected
+ * @override
+ */
+exports.prototype.writeFeaturesText = function(features, opt_options) {
+  this.prevX_ = 0;
+  this.prevY_ = 0;
+  const textArray = [];
+  if (features.length > 0) {
+    textArray.push('F');
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      textArray.push(this.writeFeatureText(features[i], opt_options));
+    }
+  }
+  return textArray.join('');
+};
+
+
+/**
+ * Encode a geometry into a logical sequence of characters.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @return {string} Encoded geometry.
+ * @protected
+ * @override
+ */
+exports.prototype.writeGeometryText = function(geometry, opt_options) {
+  const geometryWriter = exports.GEOMETRY_WRITERS_[
+    geometry.getType()];
+  googAsserts.assert(geometryWriter !== undefined);
+  const transformedGeometry = /** @type {ol.geom.Geometry} */
+      (olFormatFeature.transformWithOptions(geometry, true, opt_options));
+  return geometryWriter.call(this, transformedGeometry);
+};
+
+
+export default exports;

@@ -1,24 +1,6 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2019-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.offline.AbstractLocalforageWrapper
+ */
 /**
  * @typedef {{
  *   id: number,
@@ -36,22 +18,14 @@ let Action;
  */
 const exports = class AbstractLocalforageWrapper {
   constructor() {
-    this.waitingPromises_ = new Map();
+    this.waitingPromises_ = new window.Map();
     this.currentId_ = 0;
   }
 
-  /**
-   * @param  {...any} args Some arguments.
-   * @return Promise
-   */
   setItem(...args) {
     return this.createAction('setItem', ...args);
   }
 
-  /**
-   * @param  {...any} args Some arguments.
-   * @return Promise
-   */
   getItem(...args) {
     return this.createAction('getItem', ...args);
   }
@@ -60,10 +34,6 @@ const exports = class AbstractLocalforageWrapper {
     return this.createAction('clear');
   }
 
-  /**
-   * @param  {...any} args Some arguments.
-   * @return Promise
-   */
   config(...args) {
     return this.createAction('config', ...args);
   }
@@ -83,15 +53,12 @@ const exports = class AbstractLocalforageWrapper {
       'plugin': 'localforage',
       'command': command,
       'args': args,
-      'id': id,
+      'id': id
     };
-    const waitingPromise = {
-      resolve() {},
-      reject() {},
-    };
+    const waitingPromise = {};
     const promise = new Promise((resolve, reject) => {
-      waitingPromise.resolve = resolve;
-      waitingPromise.reject = reject;
+      waitingPromise['resolve'] = resolve;
+      waitingPromise['reject'] = reject;
     });
     this.waitingPromises_.set(id, waitingPromise);
     this.postToBackend(action);
@@ -133,7 +100,9 @@ const exports = class AbstractLocalforageWrapper {
    * @protected
    * @param {Action} action .
    */
-  postToBackend(action) {}
+  postToBackend(action) {
+  }
 };
+
 
 export default exports;

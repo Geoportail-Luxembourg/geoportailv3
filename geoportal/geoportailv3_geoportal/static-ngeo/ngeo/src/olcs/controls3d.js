@@ -1,72 +1,41 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-/* global Cesium */
-
-import angular from 'angular';
+/**
+ * @module ngeo.olcs.controls3d
+ */
+import googAsserts from 'goog/asserts.js';
 import * as olEasing from 'ol/easing.js';
-import {toRadians} from 'ol/math.js';
 import olcsCore from 'olcs/core.js';
+const exports = angular.module('ngeoOlcsControls3d', []);
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoOlcsControls3d', []);
 
-/**
- * @private
- * @hidden
- * @param {number} older Older
- * @param {number} newer Newer
- * @return {boolean} ?
- */
 function shouldUpdate(older, newer) {
   return Number.isFinite(newer) && (!Number.isFinite(older) || Math.abs(newer - older) > 0.05);
 }
 
-/**
- * @private
- * @hidden
- */
+
 const Controller = class {
+
   /**
    * @ngInject
-   * @param {JQuery} $element The element
-   * @param {import("ngeo/olcs/Service.js").OlcsService} ngeoOlcsService The ol-cesium service.
+   * @param {!jQuery} $element The element
+   * @param {ngeo.olcs.Service} ngeoOlcsService The ol-cesium service.
    */
   constructor($element, ngeoOlcsService) {
+
     /**
-     * @type {JQuery}
+     * @type {jQuery}
      * @private
      */
     this.element_ = $element;
 
     /**
-     * @type {?import('olcs/contrib/Manager.js').default}
+     * @type {olcs.contrib.Manager}
+     * @export
      */
-    this.ol3dm = null;
+    this.ol3dm;
 
     /**
      * @type {number}
+     * @export
      */
     this.minTilt;
 
@@ -77,70 +46,55 @@ const Controller = class {
     this.maxTilt;
 
     /**
-     * @type {?JQuery}
+     * @type {jQuery}
      * @private
      */
-    this.tiltRightEl_ = null;
+    this.tiltRightEl_;
 
     /**
-     * @type {?JQuery}
+     * @type {jQuery}
      * @private
      */
-    this.tiltLeftEl_ = null;
+    this.tiltLeftEl_;
 
     /**
-     * @type {?JQuery}
+     * @type {jQuery}
      * @private
      */
-    this.rotation3dEl_ = null;
+    this.rotation3dEl_;
 
     /**
-     * @type {?JQuery}
+     * @type {jQuery}
      * @private
      */
-    this.angle3dEl_ = null;
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.previousRotation_ = -1;
-
-    /**
-     * @type {?Cesium.Matrix4}
-     * @private
-     */
-    this.previousViewMatrix_ = null;
+    this.angle3dEl_;
 
     /**
      * @type {number}
      * @private
      */
-    this.animationFrameRequestId_ = -1;
+    this.previousRotation_;
 
     /**
-     * @type {import("ngeo/olcs/Service.js").OlcsService}
+     * @type {Cesium.Matrix4}
+     * @private
+     */
+    this.previousViewMatrix_;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.animationFrameRequestId_;
+
+    /**
+     * @type {ngeo.olcs.Service}
      * @private
      */
     this.olcsService_ = ngeoOlcsService;
   }
 
   updateWidget_() {
-    if (!this.ol3dm) {
-      throw new Error('Missing ol3dm');
-    }
-    if (!this.rotation3dEl_) {
-      throw new Error('Missing rotation3dEl_');
-    }
-    if (!this.angle3dEl_) {
-      throw new Error('Missing angle3dEl_');
-    }
-    if (!this.tiltRightEl_) {
-      throw new Error('Missing tiltRightEl_');
-    }
-    if (!this.tiltLeftEl_) {
-      throw new Error('Missing tiltLeftEl_');
-    }
     const newRotation = this.ol3dm.getOl3d().getOlView().getRotation();
     if (shouldUpdate(this.previousRotation_, newRotation)) {
       this.rotateElement_(this.rotation3dEl_, newRotation);
@@ -148,12 +102,10 @@ const Controller = class {
     }
 
     const newViewMatrix = this.ol3dm.getCesiumViewMatrix();
-    // @ts-ignore: Cesium
     if (!Cesium.Matrix4.equalsEpsilon(this.previousViewMatrix_, newViewMatrix, 1e-5)) {
       const newTilt = this.ol3dm.getTiltOnGlobe(); // this is expensive!!
-      if (newTilt != undefined && Number.isFinite(newTilt || 0)) {
+      if (Number.isFinite(newTilt || 0)) { // Workaround https://github.com/google/closure-compiler/pull/2712
         this.rotateElement_(this.angle3dEl_, newTilt);
-        // @ts-ignore: Cesium
         this.previousViewMatrix_ = Cesium.Matrix4.clone(newViewMatrix);
 
         // if min or max tilt is reached, disable the tilting buttons
@@ -185,10 +137,10 @@ const Controller = class {
       this.minTilt = 0;
     }
     if (this.maxTilt === undefined) {
-      this.maxTilt = (7 * Math.PI) / 16;
+      this.maxTilt = 7 * Math.PI / 16;
     }
     if (!this.ol3dm) {
-      this.ol3dm = this.olcsService_.getManager() || null;
+      this.ol3dm = googAsserts.assert(this.olcsService_.getManager());
     }
     this.tiltRightEl_ = this.element_.find('.ngeo-tilt-right');
     this.tiltLeftEl_ = this.element_.find('.ngeo-tilt-left');
@@ -197,8 +149,9 @@ const Controller = class {
     this.updateWidget_();
   }
 
+
   /**
-   * @param {JQuery} element Element to rotate.
+   * @param {jQuery} element Element to rotate.
    * @param {(number|undefined)} angle Angle in radians
    * @private
    */
@@ -209,91 +162,77 @@ const Controller = class {
       '-webkit-transform': r,
       '-o-transform': r,
       '-ms-transform': r,
-      'transform': r,
+      'transform': r
     });
   }
 
-  /**
-   * @param {number} angle Angle in degrees.
-   */
-  rotate(angle) {
-    if (!this.ol3dm) {
-      throw new Error('Missing ol3dm');
-    }
-    this.ol3dm.setHeading(toRadians(angle));
-  }
 
   /**
    * @param {number} angle Angle in degrees.
+   * @export
+   */
+  rotate(angle) {
+    angle = Cesium.Math.toRadians(angle);
+    this.ol3dm.setHeading(angle);
+  }
+
+
+  /**
+   * @param {number} angle Angle in degrees.
+   * @export
    */
   tilt(angle) {
-    if (!this.ol3dm) {
-      throw new Error('Missing ol3dm');
-    }
-    angle = toRadians(angle);
+    angle = Cesium.Math.toRadians(angle);
     const tiltOnGlobe = this.ol3dm.getTiltOnGlobe();
-    if (tiltOnGlobe == undefined) {
-      throw new Error('Missing tiltOnGlobe');
-    }
     if (tiltOnGlobe + angle < this.minTilt) {
       angle = this.minTilt - tiltOnGlobe;
     } else if (tiltOnGlobe + angle > this.maxTilt) {
       angle = this.maxTilt - tiltOnGlobe;
     }
     const scene = this.ol3dm.getCesiumScene();
-    // @ts-ignore: error TS2339: Property 'rotateAroundBottomCenter' does not exist on type '{}'...
     olcsCore.rotateAroundBottomCenter(scene, angle);
   }
 
+
   /**
    * @param {number} delta -1 to zoom out and 1 to zoom in.
+   * @export
    */
   zoom(delta) {
-    if (!this.ol3dm) {
-      throw new Error('Missing ol3dm');
-    }
     const view = this.ol3dm.getOlView();
     const cur = view.getResolution();
-    // resolution constraint looks broken in OL
-    // Using a slightly larger delta than 1 workaround the issue.
-    const newResolution = view.getConstrainedResolution(cur, -delta * 1.01);
+    const newResolution = view.constrainResolution(cur, delta);
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
     view.animate({
       resolution: newResolution,
       duration: 250,
-      easing: olEasing.easeOut,
+      easing: olEasing.easeOut
     });
   }
 };
 
+
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {string} ngeoOlcsControls3dTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!string} ngeoOlcsControls3dTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function ngeoOlcsControls3dTemplateUrlInjectable($attrs, ngeoOlcsControls3dTemplateUrl) {
   if (ngeoOlcsControls3dTemplateUrl) {
     return ngeoOlcsControls3dTemplateUrl;
   }
   const templateUrl = $attrs['ngeoOlcsControls3dTemplateUrl'];
-  return templateUrl ? templateUrl : 'ngeo/olsc/controls3d';
+  return templateUrl ? templateUrl :
+    'ngeo/olsc/controls3d';
 }
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/olsc/controls3d', require('./controls3d.html'));
-  }
-);
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/olsc/controls3d', require('./controls3d.html'));
+});
+
 
 /**
  * Provides the "ngeoOlcsControls3d" component, a widget for
@@ -310,22 +249,23 @@ module.run(
  * See our live example: [../examples/simple3d.html](../examples/simple3d.html)
  *
  * @htmlAttribute {olcs.contrib.Manager} ngeo-olcs-manager The OL-Cesium manager.
- * @type {angular.IComponentOptions}
+ * @type {!angular.Component}
  * @ngdoc component
  * @ngname ngeoOlcsControls3d
  */
-const olscControls3dComponent = {
+const component = {
   bindings: {
     'minTilt': '<?',
     'maxTilt': '<?',
-    'ol3dm': '<?',
+    'ol3dm': '<?'
   },
   controller: Controller,
-  templateUrl: ngeoOlcsControls3dTemplateUrlInjectable,
+  templateUrl: ngeoOlcsControls3dTemplateUrlInjectable
 };
 
-module.component('ngeoOlcsControls3d', olscControls3dComponent);
+exports.component('ngeoOlcsControls3d', component);
 
-module.value('ngeoOlcsControls3dTemplateUrl', '');
+exports.value('ngeoOlcsControls3dTemplateUrl', '');
 
-export default module;
+
+export default exports;

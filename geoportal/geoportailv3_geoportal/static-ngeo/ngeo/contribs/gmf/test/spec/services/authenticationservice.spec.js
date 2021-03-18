@@ -1,28 +1,5 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// @ts-nocheck
-import angular from 'angular';
-import {RouteSuffix} from 'gmf/authentication/Service.js';
-import {listenOnce} from 'ol/events.js';
+import gmfAuthenticationService from 'gmf/authentication/Service.js';
+import * as olEvents from 'ol/events.js';
 
 describe('gmf.authentication.Service', () => {
   let gmfAuthentication;
@@ -30,7 +7,6 @@ describe('gmf.authentication.Service', () => {
   let isLoggedInUrl;
   let loginUrl;
   let logoutUrl;
-  /** @type {angular.IHttpBackendService} */
   let $httpBackend;
 
   beforeEach(() => {
@@ -38,9 +14,9 @@ describe('gmf.authentication.Service', () => {
       gmfAuthentication = _gmfAuthenticationService_;
       authenticationBaseUrl = _authenticationBaseUrl_;
 
-      isLoggedInUrl = `${authenticationBaseUrl}/${RouteSuffix.IS_LOGGED_IN}`;
-      loginUrl = `${authenticationBaseUrl}/${RouteSuffix.LOGIN}`;
-      logoutUrl = `${authenticationBaseUrl}/${RouteSuffix.LOGOUT}`;
+      isLoggedInUrl = `${authenticationBaseUrl}/${gmfAuthenticationService.RouteSuffix.IS_LOGGED_IN}`;
+      loginUrl = `${authenticationBaseUrl}/${gmfAuthenticationService.RouteSuffix.LOGIN}`;
+      logoutUrl = `${authenticationBaseUrl}/${gmfAuthenticationService.RouteSuffix.LOGOUT}`;
 
       $httpBackend = _$httpBackend_;
       $httpBackend.when('GET', isLoggedInUrl).respond({});
@@ -58,12 +34,12 @@ describe('gmf.authentication.Service', () => {
 
   it('emits READY after login status check', () => {
     const spy = jasmine.createSpy();
-    /** @type {?import('gmf/authentication/Service.js').AuthenticationEvent} */
-    let event_ = null;
-    listenOnce(gmfAuthentication, 'ready', (evt) => {
-      event_ = /** @type {import('gmf/authentication/Service.js').AuthenticationEvent} */ (evt);
-      spy();
-    });
+    let event;
+    olEvents.listenOnce(
+      gmfAuthentication, 'ready', (evt) => {
+        event = evt;
+        spy();
+      });
 
     $httpBackend.when('GET', isLoggedInUrl).respond({});
 
@@ -71,24 +47,19 @@ describe('gmf.authentication.Service', () => {
     $httpBackend.flush();
 
     expect(spy.calls.count()).toBe(1);
-    expect(event_).toBeDefined();
-    if (!event_) {
-      throw new Error('Missing event_');
-    }
-    // @ts-ignore: ???
-    expect(event_.type).toBe('ready');
-    // @ts-ignore: ???
-    expect(event_.detail.user.username).toBe(null);
+    expect(event).toBeDefined();
+    expect(event.type).toBe('ready');
+    expect(event.detail.user.username).toBe(null);
   });
 
   it('logins successful', () => {
     const spy = jasmine.createSpy();
-    /** @type {?import('gmf/authentication/Service.js').AuthenticationEvent} */
-    let event_ = null;
-    listenOnce(gmfAuthentication, 'login', (evt) => {
-      event_ = /** @type {import('gmf/authentication/Service.js').AuthenticationEvent} */ (evt);
-      spy();
-    });
+    let event;
+    olEvents.listenOnce(
+      gmfAuthentication, 'login', (evt) => {
+        event = evt;
+        spy();
+      });
 
     $httpBackend.when('POST', loginUrl).respond({'username': 'user'});
 
@@ -96,19 +67,15 @@ describe('gmf.authentication.Service', () => {
     $httpBackend.flush();
 
     expect(spy.calls.count()).toBe(1);
-    expect(event_).toBeDefined();
-    if (!event_) {
-      throw new Error('Missing event_');
-    }
-    // @ts-ignore: ???
-    expect(event_.type).toBe('login');
-    // @ts-ignore: ???
-    expect(event_.detail.user.username).toBe('user');
+    expect(event).toBeDefined();
+    expect(event.type).toBe('login');
+    expect(event.detail.user.username).toBe('user');
   });
 
   it('trys to login with wrong credentials', () => {
     const spy = jasmine.createSpy();
-    listenOnce(gmfAuthentication, 'login', spy);
+    olEvents.listenOnce(
+      gmfAuthentication, 'login', spy);
 
     $httpBackend.when('POST', loginUrl).respond({});
 
@@ -120,7 +87,8 @@ describe('gmf.authentication.Service', () => {
 
   it('logs out', () => {
     const spy = jasmine.createSpy();
-    listenOnce(gmfAuthentication, 'logout', spy);
+    olEvents.listenOnce(
+      gmfAuthentication, 'logout', spy);
 
     $httpBackend.when('GET', logoutUrl).respond('true');
 

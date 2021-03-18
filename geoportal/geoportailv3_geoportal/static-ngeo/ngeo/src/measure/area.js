@@ -1,96 +1,75 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.measure.area
+ */
 import ngeoDrawController from 'ngeo/draw/Controller.js';
 import ngeoGeometryType from 'ngeo/GeometryType.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
-import {listen} from 'ol/events.js';
+import * as olEvents from 'ol/events.js';
 import olStyleStyle from 'ol/style/Style.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoMeasurearea', [ngeoDrawController.name]);
+const exports = angular.module('ngeoMeasurearea', [
+  ngeoDrawController.module.name
+]);
+
 
 /**
- * @param {angular.ICompileService} $compile Angular compile service.
- * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext service.
- * @param {angular.IFilterService} $filter Angular filter
- * @param {angular.auto.IInjectorService} $injector Main injector.
- * @return {angular.IDirective} The directive specs.
+ * @param {!angular.$compile} $compile Angular compile service.
+ * @param {!angularGettext.Catalog} gettextCatalog Gettext service.
+ * @param {!angular.$filter} $filter Angular filter
+ * @param {!angular.$injector} $injector Main injector.
+ * @return {!angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoDrawpoint
  */
-function measureAreaComponent($compile, gettextCatalog, $filter, $injector) {
+exports.directive_ = function($compile, gettextCatalog, $filter, $injector) {
   return {
     restrict: 'A',
     require: '^^ngeoDrawfeature',
     /**
-     * @param {angular.IScope} $scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController=} drawFeatureCtrl Controller.
+     * @param {!angular.Scope} $scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
+     * @param {ngeo.draw.Controller} drawFeatureCtrl Controller.
      */
     link: ($scope, element, attrs, drawFeatureCtrl) => {
-      if (!drawFeatureCtrl) {
-        throw new Error('Missing drawFeatureCtrl');
-      }
 
       const helpMsg = gettextCatalog.getString('Click to start drawing polygon');
-      const contMsg = gettextCatalog.getString(
-        'Click to continue drawing<br>' + 'Double-click or click starting point to finish'
-      );
+      const contMsg = gettextCatalog.getString('Click to continue drawing<br>' +
+          'Double-click or click starting point to finish');
 
-      /** @type {import('ngeo/interaction/Measure.js').MeasureOptions} */
-      const options = {
+      const measureArea = new ngeoInteractionMeasureArea($filter('ngeoUnitPrefix'), gettextCatalog, {
         style: new olStyleStyle(),
         startMsg: $compile(`<div translate>${helpMsg}</div>`)($scope)[0],
         continueMsg: $compile(`<div translate>${contMsg}</div>`)($scope)[0],
-      };
-      if ($injector.has('ngeoMeasurePrecision')) {
-        options.precision = $injector.get('ngeoMeasurePrecision');
-      }
-      const measureArea = new ngeoInteractionMeasureArea($filter('ngeoUnitPrefix'), gettextCatalog, options);
-
-      if (drawFeatureCtrl.uid) {
-        measureArea.set('ngeo-interaction-draw-uid', `${drawFeatureCtrl.uid}-area`);
-      }
+        precision: $injector.has('ngeoMeasurePrecision') ? $injector.get('ngeoMeasurePrecision') : undefined
+      });
 
       drawFeatureCtrl.registerInteraction(measureArea);
       drawFeatureCtrl.measureArea = measureArea;
 
-      listen(
+      olEvents.listen(
         measureArea,
         'measureend',
-        drawFeatureCtrl.handleDrawEnd.bind(drawFeatureCtrl, ngeoGeometryType.POLYGON),
+        drawFeatureCtrl.handleDrawEnd.bind(
+          drawFeatureCtrl, ngeoGeometryType.POLYGON),
         drawFeatureCtrl
       );
-      listen(measureArea, 'change:active', drawFeatureCtrl.handleActiveChange, drawFeatureCtrl);
-    },
+      olEvents.listen(
+        measureArea,
+        'change:active',
+        drawFeatureCtrl.handleActiveChange,
+        drawFeatureCtrl
+      );
+    }
   };
-}
+};
 
-module.directive('ngeoMeasurearea', measureAreaComponent);
 
-export default module;
+exports.directive('ngeoMeasurearea', exports.directive_);
+
+
+export default exports;

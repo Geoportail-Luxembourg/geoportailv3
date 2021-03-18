@@ -1,34 +1,13 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.editing.createregularpolygonfromclickComponent
+ */
 import ngeoInteractionDrawRegularPolygonFromClick from 'ngeo/interaction/DrawRegularPolygonFromClick.js';
-import {listen, unlistenByKey} from 'ol/events.js';
+import * as olEvents from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoCreateregularpolygonfromclick', []);
+const exports = angular.module('ngeoCreateregularpolygonfromclick', [
+]);
+
 
 /**
  * A directive used to draw vector features of a single geometry type using
@@ -63,19 +42,19 @@ const module = angular.module('ngeoCreateregularpolygonfromclick', []);
  * @htmlAttribute {number|undefined} ngeo-createregularpolygonfromclick-angle
  *     Angle in radians. A value of 0 will have one of the shape's point
  *     facing up. Default value is 0.
- * @htmlAttribute {import("ol/Collection.js").default} ngeo-createregularpolygonfromclick-features
+ * @htmlAttribute {ol.Collection} ngeo-createregularpolygonfromclick-features
  *     The collection of features where to add those created by this directive.
- * @htmlAttribute {import("ol/Map.js").default} ngeo-createregularpolygonfromclick-map The map.
+ * @htmlAttribute {ol.Map} ngeo-createregularpolygonfromclick-map The map.
  * @htmlAttribute {number} ngeo-createregularpolygonfromclick-radius Radius
  *     size in map units.
  * @htmlAttribute {number|undefined} ngeo-createregularpolygonfromclick-sides
  *     The number of sides for the regular polygon. Default value is 3.
  *
- * @return {angular.IDirective} The directive specs.
+ * @return {angular.Directive} The directive specs.
  * @ngdoc directive
  * @ngname ngeoCreateregularpolygonfromclick
  */
-function editingCreateRegularPolygonFromClickComponent() {
+exports.directive_ = function() {
   return {
     controller: 'ngeoCreateregularpolygonfromclickController',
     bindToController: true,
@@ -85,138 +64,142 @@ function editingCreateRegularPolygonFromClickComponent() {
       'features': '=ngeoCreateregularpolygonfromclickFeatures',
       'map': '=ngeoCreateregularpolygonfromclickMap',
       'radius': '<ngeoCreateregularpolygonfromclickRadius',
-      'sides': '<?ngeoCreateregularpolygonfromclickSides',
-    },
+      'sides': '<?ngeoCreateregularpolygonfromclickSides'
+    }
   };
-}
+};
 
-module.directive('ngeoCreateregularpolygonfromclick', editingCreateRegularPolygonFromClickComponent);
+exports.directive(
+  'ngeoCreateregularpolygonfromclick',
+  exports.directive_
+);
+
 
 /**
- * @param {angular.IScope} $scope Scope.
+ * @param {!angular.Scope} $scope Scope.
  * @constructor
  * @private
- * @hidden
+ * @struct
  * @ngInject
  * @ngdoc controller
  * @ngname ngeoCreateregularpolygonfromclickController
  */
-function Controller($scope) {
+exports.Controller_ = function($scope) {
+
   // == Scope properties ==
 
   /**
    * @type {boolean}
+   * @export
    */
   this.active = false;
 
   $scope.$watch(
     () => this.active,
     (newVal) => {
-      if (!this.interaction_) {
-        throw new Error('Missing interaction');
-      }
       this.interaction_.setActive(newVal);
     }
   );
 
   /**
-   * @type {?number}
+   * @type {number|undefined}
+   * @export
    */
-  this.angle = null;
+  this.angle;
 
   /**
-   * @type {?import("ol/Collection.js").default<olFeature<import("ol/geom/Geometry.js").default>>}
+   * @type {ol.Collection.<ol.Feature>}
+   * @export
    */
-  this.features = null;
+  this.features;
 
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {ol.Map}
+   * @export
    */
-  this.map = null;
+  this.map;
 
   /**
    * @type {number}
+   * @export
    */
-  this.radius = -1;
+  this.radius;
 
   /**
-   * @type {?number}
+   * @type {number|undefined}
+   * @export
    */
-  this.sides = null;
+  this.sides;
+
 
   // == Other properties ==
 
   /**
-   * @type {?import("ngeo/interaction/DrawRegularPolygonFromClick.js").default}
+   * @type {ngeo.interaction.DrawRegularPolygonFromClick}
    * @private
    */
-  this.interaction_ = null;
+  this.interaction_;
 
   /**
-   * @type {?import("ol/events.js").EventsKey}
+   * @type {ol.EventsKey}
    * @private
    */
-  this.interactionListenerKey_ = null;
+  this.interactionListenerKey_;
 
   $scope.$on('$destroy', this.handleDestroy_.bind(this));
-}
+};
+
 
 /**
  * Initialize the directive.
  */
-Controller.prototype.$onInit = function () {
-  /** @type {import('ngeo/interaction/DrawRegularPolygonFromClick.js').DrawRegularPolygonFromClickOptions} */
-  const options = {
+exports.Controller_.prototype.$onInit = function() {
+
+  this.interaction_ = new ngeoInteractionDrawRegularPolygonFromClick({
+    angle: this.angle,
     radius: this.radius,
-  };
-  if (this.angle !== null) {
-    options.angle = this.angle;
-  }
-  if (this.sides !== null) {
-    options.sides = this.sides;
-  }
-  this.interaction_ = new ngeoInteractionDrawRegularPolygonFromClick(options);
+    sides: this.sides
+  });
   this.interaction_.setActive(this.active);
 
-  this.interactionListenerKey_ = listen(this.interaction_, 'drawend', this.handleDrawEnd_, this);
+  this.interactionListenerKey_ = olEvents.listen(
+    this.interaction_,
+    'drawend',
+    this.handleDrawEnd_,
+    this
+  );
 
   this.map.addInteraction(this.interaction_);
 };
 
+
 /**
  * Called when a feature is finished being drawn. Add the feature to the
  * collection.
- * @param {Event|import('ol/events/Event.js').default} evt Event.
+ * @param {ol.interaction.Draw.Event} evt Event.
  * @private
  */
-Controller.prototype.handleDrawEnd_ = function (evt) {
-  if (!this.features) {
-    throw new Error('Missing features');
-  }
-  // @ts-ignore: evt should be of type {import('ol/interaction/Draw.js').DrawEvent but he is private
+exports.Controller_.prototype.handleDrawEnd_ = function(evt) {
   const feature = new olFeature(evt.detail.feature.getGeometry());
   this.features.push(feature);
 };
+
 
 /**
  * Cleanup event listeners and remove the interaction from the map.
  * @private
  */
-Controller.prototype.handleDestroy_ = function () {
-  if (!this.map) {
-    throw new Error('Missing map');
-  }
-  if (!this.interactionListenerKey_) {
-    throw new Error('Missing interactionListenerKey');
-  }
-  if (!this.interaction_) {
-    throw new Error('Missing interaction');
-  }
-  unlistenByKey(this.interactionListenerKey_);
+exports.Controller_.prototype.handleDestroy_ = function() {
+  olEvents.unlistenByKey(this.interactionListenerKey_);
   this.interaction_.setActive(false);
   this.map.removeInteraction(this.interaction_);
 };
 
-module.controller('ngeoCreateregularpolygonfromclickController', Controller);
 
-export default module;
+exports.controller(
+  'ngeoCreateregularpolygonfromclickController',
+  exports.Controller_
+);
+
+
+export default exports;

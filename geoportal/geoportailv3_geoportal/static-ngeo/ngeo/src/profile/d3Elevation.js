@@ -1,41 +1,34 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/**
+ * @module ngeo.profile.d3Elevation
+ */
+import googAsserts from 'goog/asserts.js';
+import * as olObj from 'ol/obj.js';
 
-import {
-  area as d3area,
-  bisector as d3bisector,
-  extent as d3extent,
-  select as d3select,
-  scaleLinear as d3scaleLinear,
-  axisBottom as d3axisBottom,
-  axisLeft as d3axisLeft,
-  line as d3line,
-  mouse as d3mouse,
-} from 'd3';
+import 'd3-transition';
+import {bisector, extent} from 'd3-array';
+import {axisBottom, axisLeft} from 'd3-axis';
+import {scaleLinear} from 'd3-scale';
+import {mouse, select, selectAll} from 'd3-selection';
+import {area, line} from 'd3-shape';
+const d3 = {
+  bisector,
+  extent,
+  axisBottom,
+  axisLeft,
+  scaleLinear,
+  mouse,
+  select,
+  selectAll,
+  area,
+  line,
+};
+
 
 /**
  * Provides a D3js component to be used to draw an elevation
  * profile chart.
  *
- *     let selection = d3select('#element_id');
+ *     let selection = d3.select('#element_id');
  *     let profile = ngeo.profile.d3Elevation({
  *       distanceExtractor: function (item) {return item['dist'];},
  *       linesConfiguration: {
@@ -80,32 +73,36 @@ import {
  *     ]
  *
  * @return {Object} D3js component.
- * @param {import('ngeo/profile/elevationComponent.js').ProfileOptions} options Profile options.
- * @private
+ * @param {ngeox.profile.ProfileOptions} options Profile options.
+ * @export
  */
-function d3Elevation(options) {
+const exports = function(options) {
   /**
    * Whether the simplified profile should be shown.
    * @type {boolean}
    */
   const light = options.light !== undefined ? options.light : false;
 
+
   /**
    * The values for margins around the chart defined in pixels.
    */
-  const margin = light ? {top: 0, right: 0, bottom: 0, left: 0} : {top: 10, right: 20, bottom: 30, left: 40};
+  const margin = light ? {top: 0, right: 0, bottom: 0, left: 0} :
+    {top: 10, right: 20, bottom: 30, left: 40};
 
   /**
    * Hover callback function.
-   * @type {function(Object, number, string, Object<string, number>, string): void}
+   * @type {function(Object, number, string, Object.<string, number>, string)}
    */
-  const hoverCallback = options.hoverCallback !== undefined ? options.hoverCallback : () => {};
+  const hoverCallback = options.hoverCallback !== undefined ?
+    options.hoverCallback : () => {};
 
   /**
    * Out callback function.
-   * @type {function}
+   * @type {function()}
    */
-  const outCallback = options.outCallback !== undefined ? options.outCallback : () => {};
+  const outCallback = options.outCallback !== undefined ?
+    options.outCallback : () => {};
 
   /**
    * Distance data extractor used to get the dist values.
@@ -125,7 +122,7 @@ function d3Elevation(options) {
   /**
    * Method to get the coordinate in pixels from a distance.
    */
-  const bisectDistance = d3bisector((d) => distanceExtractor(d)).left;
+  const bisectDistance = d3.bisector(d => distanceExtractor(d)).left;
 
   /**
    * POI data extractor.
@@ -140,25 +137,26 @@ function d3Elevation(options) {
   /**
    * @type {number}
    */
-  const poiLabelAngle = options.poiLabelAngle !== undefined ? options.poiLabelAngle : -60;
+  const poiLabelAngle = options.poiLabelAngle !== undefined ?
+    options.poiLabelAngle : -60;
 
   /**
-   * @type {Object<string, string>}
+   * @type {Object.<string, string>}
    */
   const i18n = options.i18n || {};
 
   /**
    * @type {string}
    */
-  const xAxisLabel = i18n.xAxis || 'Distance';
+  const xAxisLabel = (i18n.xAxis || 'Distance');
 
   /**
    * @type {string}
    */
-  const yAxisLabel = i18n.yAxis || 'Elevation';
+  const yAxisLabel = (i18n.yAxis || 'Elevation');
 
   /**
-   * @type {import('ngeo/profile/elevationComponent.js').ProfileFormatter}
+   * @type {ngeox.profile.ProfileFormatter}
    */
   const formatter = {
     /**
@@ -192,11 +190,11 @@ function d3Elevation(options) {
      */
     ytick(ele, units) {
       return ele;
-    },
+    }
   };
 
   if (options.formatter !== undefined) {
-    Object.assign(formatter, options.formatter);
+    olObj.assign(formatter, options.formatter);
   }
 
   /**
@@ -204,6 +202,7 @@ function d3Elevation(options) {
    */
   const lightXAxis = options.lightXAxis !== undefined ? options.lightXAxis : false;
 
+  // Objects shared with the showPois function
   /**
    * @type {Object}
    */
@@ -211,101 +210,85 @@ function d3Elevation(options) {
 
   /**
    * D3 x scale.
-   * @type {import('d3').ScaleLinear<number, number>}
    */
   let x;
 
   /**
    * D3 y scale.
-   * @type {import('d3').ScaleLinear<number, number>}
    */
   let y;
 
   /**
    * Scale modifier to allow customizing the x and y scales.
-   * @type {function(function, function, number, number): void}
    */
   const scaleModifier = options.scaleModifier;
 
-  /**
-   * @type {import('d3').Selection<void, void, void, void>}
-   */
   let g;
 
   /**
    * Height of the chart in pixels
-   * @type {number}
    */
   let height;
 
   /**
    * Width of the chart in pixels
-   * @type {number}
    */
   let width;
 
   /**
-   * Factor to determine whether to use 'm' or 'km'.
-   * @type {number}
-   */
+  * Factor to determine whether to use 'm' or 'km'.
+  */
   let xFactor;
 
   /**
-   * Distance units. Either 'm' or 'km'.
-   * @type {string}
-   */
+  * Distance units. Either 'm' or 'km'.
+  */
   let xUnits;
 
   /**
    * D3 extent of the distance.
-   * @type {[number, number]}
    */
   let xDomain;
 
-  /**
-   * @param {any} selection The selection
-   */
-  const profile = function (selection) {
-    /**
-     * @this {d3.ContainerElement}
-     * @param {any} data The selected data
-     */
-    const func = function (data) {
-      d3select(this).selectAll('svg').remove();
+
+  const profile = function(selection) {
+    selection.each(function(data) {
+      d3.select(this).selectAll('svg').remove();
       if (data === undefined) {
         return;
       }
 
       width = Math.max(this.clientWidth - margin.right - margin.left, 0);
-      x = d3scaleLinear().range([0, width]);
+      x = d3.scaleLinear().range([0, width]);
 
       height = Math.max(this.clientHeight - margin.top - margin.bottom, 0);
-      y = d3scaleLinear().range([height, 0]);
+      y = d3.scaleLinear().range([height, 0]);
 
-      const xAxis = d3axisBottom(x);
-      const yAxis = d3axisLeft(y);
+      const xAxis = d3.axisBottom(x);
+      const yAxis = d3.axisLeft(y);
 
-      /** @type {?d3.Area<[number, number]>} */
-      let area = null;
+      let area;
       if (numberOfLines === 1) {
-        area = d3area()
-          .x((d) => x(distanceExtractor(d)))
+        area = d3.area()
+          .x(d => x(distanceExtractor(d)))
           .y0(height)
           .y1((d) => {
-            const firstLineName = Object.keys(linesConfiguration)[0];
+            const firstLineName =  Object.keys(linesConfiguration)[0];
             return y(linesConfiguration[firstLineName].zExtractor(d));
           });
       }
 
       // Select the svg element, if it exists.
-      svg = d3select(this).selectAll('svg').data([data]);
+      svg = d3.select(this).selectAll('svg').data([data]);
       // Otherwise, create the skeletal chart.
       const svgEnter = svg.enter().append('svg');
       // Then select it again to get the complete object.
-      svg = d3select(this).selectAll('svg').data([data]);
+      svg = d3.select(this).selectAll('svg').data([data]);
 
       if (styleDefs !== undefined) {
-        svgEnter.append('defs').append('style').attr('type', 'text/css').text(styleDefs);
+        svgEnter.append('defs').append('style')
+          .attr('type', 'text/css')
+          .text(styleDefs);
       }
       const gEnter = svgEnter.append('g');
 
@@ -314,25 +297,28 @@ function d3Elevation(options) {
       gEnter.style('font', '11px Arial');
 
       if (numberOfLines === 1) {
-        gEnter.append('path').attr('class', 'area').style('fill', 'rgba(222, 222, 222, 0.5)');
+        gEnter.append('path').attr('class', 'area')
+          .style('fill', 'rgba(222, 222, 222, 0.5)');
       }
 
-      gEnter.insert('g', ':first-child').attr('class', 'grid-y');
+      gEnter.insert('g', ':first-child')
+        .attr('class', 'grid-y');
 
       if (!light) {
-        gEnter.append('g').attr('class', 'x axis').attr('transform', `translate(0,${height})`);
+        gEnter.append('g')
+          .attr('class', 'x axis')
+          .attr('transform', `translate(0,${height})`);
 
-        gEnter
-          .append('text')
+        gEnter.append('text')
           .attr('class', 'x label')
           .attr('text-anchor', 'end')
           .attr('x', width - 4)
           .attr('y', height - 4);
 
-        gEnter.append('g').attr('class', 'y axis');
+        gEnter.append('g')
+          .attr('class', 'y axis');
 
-        gEnter
-          .append('text')
+        gEnter.append('text')
           .attr('class', 'y label')
           .attr('text-anchor', 'end')
           .attr('y', 6)
@@ -341,8 +327,7 @@ function d3Elevation(options) {
           .style('fill', 'grey')
           .text(`${yAxisLabel} [m]`);
 
-        gEnter
-          .append('g')
+        gEnter.append('g')
           .attr('class', 'metas')
           .attr('transform', `translate(${width + 3}, 0)`);
       }
@@ -353,8 +338,7 @@ function d3Elevation(options) {
       xHover.append('svg:line').attr('stroke-dasharray', '5,5');
       xHover.append('text');
 
-      gEnter
-        .append('rect')
+      gEnter.append('rect')
         .attr('class', 'overlay')
         .attr('width', width)
         .attr('height', height)
@@ -362,34 +346,34 @@ function d3Elevation(options) {
         .style('pointer-events', 'all');
 
       // Update the outer dimensions.
-      svg
-        .attr('width', width + margin.left + margin.right)
+      svg.attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);
 
       // Update the inner dimensions.
-      g = svg.select('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      g = svg.select('g')
+        .attr('transform', `translate(${margin.left},${
+          margin.top})`);
 
-      xDomain = /** @type {[number, number]} */ (d3extent(data, (d) => distanceExtractor(d)));
+      xDomain = d3.extent(data, d => distanceExtractor(d));
       x.domain(xDomain);
 
       // Return an array with the min and max value of the min/max values of
       // each lines.
-      const yDomain = (function () {
-        /** @type {number[]} */
+      const yDomain = function() {
         let elevationsValues = [];
         // Get min/max values (extent) of each lines.
         for (const name in linesConfiguration) {
-          /** @type {[number, number]} */
-          const extent = /** @type {[number, number]} */ (d3extent(data, (d) =>
-            linesConfiguration[name].zExtractor(d)
-          ));
+          const extent = d3.extent(data, d => linesConfiguration[name].zExtractor(d));
           // only include defined extent
           if (extent.every(Number.isFinite)) {
             elevationsValues = elevationsValues.concat(extent);
           }
         }
-        return [Math.min(...elevationsValues), Math.max(...elevationsValues)];
-      })();
+        return [
+          Math.min.apply(null, elevationsValues),
+          Math.max.apply(null, elevationsValues)
+        ];
+      }();
 
       y.domain(yDomain);
 
@@ -404,22 +388,16 @@ function d3Elevation(options) {
 
       // Update the area path.
       if (numberOfLines === 1) {
-        if (!area) {
-          throw new Error('Missing area');
-        }
         g.select('.area')
           .transition()
-          // @ts-ignore: Wrong d3 type?
           .attr('d', area);
       }
 
       // Set style and update the lines paths and y hover guides for each lines.
-      let line, yHover;
-      for (const name in linesConfiguration) {
+      let line, name, yHover;
+      for (name in linesConfiguration) {
         // Set style of each line and add a class with its respective name.
-        gEnter
-          .append('path')
-          .attr('class', `line ${name}`)
+        gEnter.append('path').attr('class', `line ${name}`)
           .style('stroke', linesConfiguration[name].color || '#F00')
           .style('fill', 'none');
 
@@ -429,37 +407,37 @@ function d3Elevation(options) {
         yHover.append('text');
 
         // Configure the d3 line.
-        line = d3line()
-          .x((d) => x(distanceExtractor(d)))
-          .y((d) => y(linesConfiguration[name].zExtractor(d)))
-          .defined((d) => linesConfiguration[name].zExtractor(d) !== null);
+        line = d3.line()
+          .x(d => x(distanceExtractor(d)))
+          .y(d => y(linesConfiguration[name].zExtractor(d)))
+          .defined(d => linesConfiguration[name].zExtractor(d) !== null);
+
 
         // Update path for the line.
         g.select(`.line.${name}`)
           .transition()
-          // @ts-ignore: Wrong d3 type?
           .attr('d', line);
       }
 
-      xFactor = xDomain[1] > 2000 ? 1000 : 1;
-      xUnits = xDomain[1] > 2000 ? 'km' : 'm';
+      if (xDomain[1] > 2000) {
+        xFactor = 1000;
+        xUnits = 'km';
+      } else {
+        xFactor = 1;
+        xUnits = 'm';
+      }
 
       if (!light) {
-        xAxis.tickFormat(
-          (domainValue) =>
-            /** @type {string} */ (formatter.xtick(/** @type {number} */ (domainValue) / xFactor, xUnits))
-        );
+        xAxis.tickFormat(d => formatter.xtick(d / xFactor, xUnits));
         if (lightXAxis) {
           xAxis.tickValues([0, x.domain()[1]]);
         }
 
-        yAxis.tickFormat(
-          (dommainValue) => /** @type {string} */ (formatter.ytick(/** @type {number} */ (dommainValue), 'm'))
-        );
+        yAxis.tickFormat(d => formatter.ytick(d, 'm'));
 
         g.select('.x.axis')
           .transition()
-          .call(/** @type {any}*/ (xAxis));
+          .call(xAxis);
 
         g.select('.x.label')
           .text(`${xAxisLabel} [${xUnits}]`)
@@ -473,36 +451,34 @@ function d3Elevation(options) {
 
         g.select('.y.axis')
           .transition()
-          .call(/** @type {any}*/ (yAxis));
+          .call(yAxis);
       }
 
       g.select('.grid-y')
         .transition()
-        .call(/** @type {any}*/ (yAxis.tickSize(-width).tickFormat(null)))
+        .call(yAxis.tickSize(-width, 0).tickFormat(''))
         .selectAll('.tick line')
         .style('stroke', '#ccc')
         .style('opacity', 0.7);
 
-      // remove the text, it was already added in '.y.axis'
-      g.select('.grid-y').selectAll('.tick text').remove();
-
-      g.selectAll('.axis')
-        .selectAll('path, line')
+      g.selectAll('.axis').selectAll('path, line')
         .style('fill', 'none')
         .style('stroke', '#000')
         .style('shape-rendering', 'crispEdges');
 
-      g.select('.grid-y').select('path').style('stroke', 'none');
+      g.select('.grid-y').select('path')
+        .style('stroke', 'none');
 
-      g.selectAll('.grid-hover line').style('stroke', '#222').style('opacity', 0.8);
+      g.selectAll('.grid-hover line')
+        .style('stroke', '#222')
+        .style('opacity', 0.8);
 
-      g.select('.overlay').on('mouseout', mouseout).on('mousemove', mousemove);
+      g.select('.overlay')
+        .on('mouseout', mouseout)
+        .on('mousemove', mousemove);
 
-      /**
-       * @this {d3.ContainerElement}
-       */
       function mousemove() {
-        const mouseX = d3mouse(this)[0];
+        const mouseX = d3.mouse(this)[0];
         const x0 = x.invert(mouseX);
 
         profile.highlight(x0);
@@ -511,16 +487,16 @@ function d3Elevation(options) {
       function mouseout() {
         profile.clearHighlight();
       }
-    };
-    selection.each(func);
+    });
   };
 
   /**
    * Remove any highlight.
    * Fire the outCallback callback.
    */
-  profile.clearHighlight = function () {
-    g.selectAll('.grid-hover').style('display', 'none');
+  profile.clearHighlight = function() {
+    g.selectAll('.grid-hover')
+      .style('display', 'none');
     outCallback.call(null);
   };
 
@@ -529,7 +505,7 @@ function d3Elevation(options) {
    * Fire the hoverCallback callback with corresponding point.
    * @param {number} distance Distance.
    */
-  profile.highlight = function (distance) {
+  profile.highlight = function(distance) {
     const data = svg.datum();
     const i = bisectDistance(data, distance);
     if (i >= data.length) {
@@ -540,7 +516,6 @@ function d3Elevation(options) {
     const dist = distanceExtractor(point);
     let elevation;
     const elevations = [];
-    /** @type {Object<string, number>} */
     const elevationsRef = {};
     let lineName;
 
@@ -558,7 +533,8 @@ function d3Elevation(options) {
           .attr('y2', y(elevation));
       } else {
         // no data for this line: hide it
-        g.select(`.y.grid-hover.${lineName}`).style('display', 'none');
+        g.select(`.y.grid-hover.${lineName}`)
+          .style('display', 'none');
       }
     }
 
@@ -580,118 +556,77 @@ function d3Elevation(options) {
       .style('text-anchor', right ? 'end' : 'start')
       .attr('transform', `translate(${xtranslate},${height - 10})`);
 
+    const yUnits = 'm';
     // Display altitude on guides only if there is one line.
     if (numberOfLines === 1) {
-      const hasValue = Number.isFinite(elevations[0]);
+      const text = elevations[0] === null ? 'no value' : formatter.yhover(elevations[0], 'm');
       g.select('.y.grid-hover text')
-        .text(hasValue ? formatter.yhover(elevations[0], 'm') : 'no value')
+        .text(text)
         .style('text-anchor', right ? 'end' : 'start')
-        .attr('transform', `translate(${xtranslate},${hasValue ? y(elevations[0]) - 10 : 0})`);
+        .attr('transform', `translate(${xtranslate},${y(elevations[0]) - 10})`);
     }
-    hoverCallback.call(null, point, dist / xFactor, xUnits, elevationsRef, 'm');
+    hoverCallback.call(null, point, dist / xFactor, xUnits, elevationsRef, yUnits);
   };
 
-  /**
-   * @param {void[]} pois
-   */
-  profile.showPois = function (pois) {
-    if (!svg) {
-      return;
-    }
+
+  profile.showPois = function(pois) {
     pois = pois !== undefined ? pois : [];
-    console.assert(pois.length === 0 || poiExtractor !== undefined);
+    googAsserts.assert(pois.length === 0 || poiExtractor !== undefined);
 
     const pe = poiExtractor;
     const g = svg.select('g');
     const profileData = svg.datum();
     const ps = g.select('.pois');
 
-    const p = ps.selectAll('.poi').data(
-      pois,
-      /**
-       * @param {void} d
-       */
-      (d) => {
-        const i = bisectDistance(profileData, Math.round(pe.dist(d) * 10) / 10, 1);
-        const point = profileData[i];
-        if (point) {
-          let lineName;
-          const elevations = [];
-          for (lineName in linesConfiguration) {
-            elevations.push(linesConfiguration[lineName].zExtractor(point));
-          }
-          const z = Math.max.apply(null, elevations);
-          pe.z(d, z);
+    const p = ps.selectAll('.poi').data(pois, (d) => {
+      const i = bisectDistance(profileData, Math.round(pe.dist(d) * 10) / 10, 1);
+      const point = profileData[i];
+      if (point) {
+        let lineName;
+        const elevations = [];
+        for (lineName in linesConfiguration) {
+          elevations.push(linesConfiguration[lineName].zExtractor(point));
         }
-        return pe.id(d);
+        const z = Math.max.apply(null, elevations);
+        pe.z(d, z);
       }
-    );
+      return pe.id(d);
+    });
 
-    const poiEnterG = p.enter().append('g').attr('class', 'poi');
+    const poiEnterG = p.enter()
+      .append('g')
+      .attr('class', 'poi');
 
-    poiEnterG
-      .append('text')
+    poiEnterG.append('text')
       .attr('x', light ? 0 : 9)
       .attr('dy', '.35em')
       .attr('text-anchor', light ? 'middle' : 'start');
 
-    poiEnterG.append('line').style('shape-rendering', 'crispEdges');
+    poiEnterG.append('line')
+      .style('shape-rendering', 'crispEdges');
 
-    poiEnterG.style('opacity', 0).transition().duration(1000).delay(100).style('opacity', 1);
+    poiEnterG.style('opacity', 0)
+      .transition()
+      .duration(1000)
+      .delay(100)
+      .style('opacity', 1);
 
-    poiEnterG
-      .selectAll('text')
-      .attr(
-        'transform',
-        /**
-         * @param {void} d
-         */
-        (d) => {
-          if (light) {
-            return [`translate(${x(pe.dist(d))},${y(pe.z(d)) - 10})`];
-          } else {
-            return [`translate(${x(pe.dist(d))},${y(pe.z(d)) - 20}) rotate(${poiLabelAngle})`];
-          }
+    poiEnterG.selectAll('text')
+      .attr('transform', (d) => {
+        if (light) {
+          return [`translate(${x(pe.dist(d))},${y(pe.z(d)) - 10})`];
+        } else {
+          return [`translate(${x(pe.dist(d))},${y(pe.z(d)) - 20}) rotate(${poiLabelAngle})`];
         }
-      )
-      .text(
-        /**
-         * @param {void} d
-         */
-        (d) => `${pe.sort(d)}${light ? '' : ` - ${pe.title(d)}`}`
-      );
+      })
+      .text(d => pe.sort(d) + (light ? '' : (` - ${pe.title(d)}`)));
 
-    poiEnterG
-      .selectAll('line')
+    poiEnterG.selectAll('line')
       .style('stroke', 'grey')
-      .attr(
-        'x1',
-        /**
-         * @param {void} d
-         */
-        (d) => x(pe.dist(d))
-      )
-      .attr(
-        'y1',
-        /**
-         * @param {void} d
-         */
-        (d) => y(y.domain()[0])
-      )
-      .attr(
-        'x2',
-        /**
-         * @param {void} d
-         */
-        (d) => x(pe.dist(d))
-      )
-      .attr(
-        'y2',
-        /**
-         * @param {void} d
-         */
-        (d) => y(pe.z(d))
-      );
+      .attr('x1', d => x(pe.dist(d)))
+      .attr('y1', d => y(y.domain()[0]))
+      .attr('x2', d => x(pe.dist(d)))
+      .attr('y2', d => y(pe.z(d)));
 
     // remove unused pois
     poiEnterG.exit().remove();
@@ -701,7 +636,9 @@ function d3Elevation(options) {
     profile.showPois([]);
   }
 
-  return profile;
-}
 
-export default d3Elevation;
+  return profile;
+};
+
+
+export default exports;

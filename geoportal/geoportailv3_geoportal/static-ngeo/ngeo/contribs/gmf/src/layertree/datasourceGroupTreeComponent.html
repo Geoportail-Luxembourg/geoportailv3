@@ -12,7 +12,8 @@
     class="fa fa-fw gmf-layertree-state"
     href
     ng-click="$ctrl.toggle()"
-  ><%=require('gmf/icons/layers.svg?viewbox&height=1em')%></a>
+  >
+  </a>
 
   <a
     class="gmf-layertree-name"
@@ -33,7 +34,7 @@
 
 <ul
   id="gmf-layertree-layer-group-{{::$ctrl.getGroupUid()}}"
-  class="collapse in show"
+  class="collapse in"
 >
   <li
     class="gmf-layertree-node gmf-layertree-depth-2"
@@ -61,7 +62,7 @@
           ng-click="$ctrl.removeDataSource(dataSource)">
           <span class="fa fa-trash"></span>
         </a>
-      </span>
+  </span>
     </div>
   </li>
 </ul>
