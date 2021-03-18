@@ -201,7 +201,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   set3dTilesetVisible(visible, layerName) {
-    const tileset = this.tilesets3d.find((e) => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
+    const tileset = this.tilesets3d.find((e) => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
     tileset.show = visible;
   }
 
@@ -252,9 +252,9 @@ const exports = class extends ngeoOlcsManager {
   }
 
   remove3dLayer(layerName) {
-    const layer = this.tilesets3d.find(e => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
+    const layer = this.tilesets3d.find(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
     if (layer !== undefined) {
-      const idx = this.tilesets3d.findIndex(e => e.url.includes('3dtiles/' + layerName + '/tileset.json'));
+      const idx = this.tilesets3d.findIndex(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
       this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
       this.ol3d.getCesiumScene().primitives.remove(layer);
@@ -301,7 +301,7 @@ const exports = class extends ngeoOlcsManager {
   get3DLayers() {
     const layers = [];
     this.tilesets3d.forEach(function(layer) {
-      layers.push(layer.url.substring(layer.url.indexOf('3dtiles/') + 8, layer.url.indexOf('/tileset.json')));
+      layers.push(layer._url.substring(layer._url.indexOf('3dtiles/') + 8, layer._url.indexOf('/tileset.json')));
     });
     return layers;
   }
