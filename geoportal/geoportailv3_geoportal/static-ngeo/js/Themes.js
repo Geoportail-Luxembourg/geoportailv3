@@ -11,10 +11,9 @@
 import appModule from './module.js';
 
 import {extend as arrayExtend} from 'ol/array.js';
-import olEventsEventTarget from 'ol/events/EventTarget.js';
+import olEventsEventTarget from 'ol/events/Target.js';
 import olSourceVector from 'ol/source/Vector.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
-import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 function hasLocalStorage() {
@@ -71,64 +70,242 @@ function replaceWithMVTLayer(bgLayers, target, styleConfigs) {
  * @param {app.Mvtstyling} appMvtStylingService The mvt styling service.
  * @ngInject
  */
-const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
+class Themes extends olEventsEventTarget {
+
+  constructor($window, $http, gmfTreeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice, appMvtStylingService) {
-  olEventsEventTarget.call(this);
+    super()
+
+    /**
+     * @type {angular.$http}
+     * @private
+     */
+    this.$http_ = $http;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.isHiDpi_ = appGetDevice.isHiDpi();
+
+    /**
+     * @type {app.GetWmtsLayer}
+     * @private
+     */
+    this.getWmtsLayer_ = appGetWmtsLayer;
+
+    /**
+     * @type {app.backgroundlayer.BlankLayer}
+     * @private
+     */
+    this.blankLayer_ = appBlankLayer;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.treeUrl_ = gmfTreeUrl;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.isThemePrivateUrl_ = isThemePrivateUrl;
+
+    /**
+     * @type {?angular.$q.Promise}
+     * @private
+     */
+    this.promise_ = null;
+
+    this.flatCatalog = null;
+    this.layers3D = [];
+
+    /**
+     * @type {app.Mvtstyling}
+     * @private
+     */
+    this.appMvtStylingService_ = appMvtStylingService;
+
+  }
+
 
   /**
-   * @type {angular.$http}
-   * @private
+   * Get background layers.
+   * @return {Promise<any[]>} Promise.
    */
-  this.$http_ = $http;
+  getBgLayers(map) {
+    console.assert(this.promise_);
+    console.assert(map);
+    if (!this.getBgLayersPromise_) {
+      this.getBgLayersPromise_ = this.promise_.then(
+        /**
+         * @param {app.ThemesResponse} data The "themes" web service response.
+         * @return {Array.<Object>} Array of background layer objects.
+         */
+        data => {
+          var bgLayers = data['background_layers'].map(item => {
+            var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
+            console.assert('name' in item);
+            console.assert('imageType' in item);
+            var layer = this.getWmtsLayer_(
+              item['name'], item['imageType'], hasRetina
+            );
+            layer.set('metadata', item['metadata']);
+            if ('attribution' in item['metadata']) {
+              var source = layer.getSource();
+              source.setAttributions(
+                item['metadata']['attribution']
+              );
+            }
+            return layer;
+          });
+
+          // add the blank layer
+          bgLayers.push(this.blankLayer_.getLayer());
+
+          // add MVT layer
+          const bothPromises = Promise.all([
+            onFirstTargetChange(map),
+            this.appMvtStylingService_.getBgStyle()
+          ]);
+          return bothPromises.then(([target, styleConfigs]) => {
+            replaceWithMVTLayer(bgLayers, target, styleConfigs);
+            return bgLayers;
+          });
+        });
+    }
+    return this.getBgLayersPromise_;
+  };
 
   /**
-   * @type {boolean}
-   * @private
+   * Get a theme object by its name.
+   * @param {string} themeName Theme name.
+   * @return {angular.$q.Promise} Promise.
    */
-  this.isHiDpi_ = appGetDevice.isHiDpi();
+  getThemeObject(themeName) {
+    console.assert(this.promise_ !== null);
+    return this.promise_.then(
+        /**
+         * @param {app.ThemesResponse} data The "themes" web service response.
+         * @return {Object} The theme object for themeName, or null if not found.
+         */
+        function(data) {
+          var themes = data['themes'];
+          return exports.findTheme_(themes, themeName);
+        });
+  };
+
 
   /**
-   * @type {app.GetWmtsLayer}
-   * @private
+   * Get the promise resolving to the themes root object.
+   * @return {angular.$q.Promise} Promise.
    */
-  this.getWmtsLayer_ = appGetWmtsLayer;
+  getThemesPromise() {
+    console.assert(this.promise_ !== null);
+    return this.promise_;
+  };
+
 
   /**
-   * @type {app.backgroundlayer.BlankLayer}
-   * @private
+   * @param {?number} roleId The role id to send in the request.
+   * Load themes from the "themes" service.
+   * @return {?angular.$q.Promise} Promise.
    */
-  this.blankLayer_ = appBlankLayer;
+  loadThemes(roleId) {
+    var url = new URL(this.treeUrl_);
+    url.searchParams.set('background', 'background');
+    this.promise_ = this.$http_.get(url.toString(), {
+      params: (roleId !== undefined) ? {'role': roleId} : {},
+      cache: false
+    }).then((resp) => {
+      const root = /** @type {app.ThemesResponse} */ (resp.data);
+      const themes = root.themes;
+      const flatCatalogue = [];
+      for (var i = 0; i < themes.length; i++) {
+        const theme = themes[i];
+        const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
+        arrayExtend(flatCatalogue, children);
+      }
+
+      this.flatCatalog = flatCatalogue;
+
+      this.dispatchEvent(appEventsThemesEventType.LOAD);
+      return root;
+    });
+    return this.promise_;
+  };
+
 
   /**
-   * @type {string}
-   * @private
+   * @param {string} themeId The theme id to send in the request.
+   * checks if the theme is protected or not.
+   * @return {angular.$q.Promise} Promise.
    */
-  this.treeUrl_ = gmfTreeUrl;
+  isThemePrivate(themeId) {
+    return this.$http_.get(this.isThemePrivateUrl_, {
+      params: {'theme': themeId},
+      cache: false
+    });
+  };
+
 
   /**
-   * @type {string}
+   * @param {Array} element The element.
+   * @param {string} theme Theme name.
+   * @param {Object} ogcServers All OGC servers definitions.
+   * @param {Object} lastOgcServer The last OGC server.
+   * @return {Array} array The children.
    * @private
    */
-  this.isThemePrivateUrl_ = isThemePrivateUrl;
+  getAllChildren_(elements, theme, ogcServers, lastOgcServer) {
+    var array = [];
+    for (var i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      if (element.hasOwnProperty('children')) {
+        if (element.name !== '3d Layers') {
+          arrayExtend(array, this.getAllChildren_(
+              element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+        } else {
+          arrayExtend(this.layers3D, this.getAllChildren_(
+              element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+        }
+      } else {
+        // Rewrite url to match the behaviour of c2cgeoportal 1.6
+        const ogcServer = element.ogcServer || lastOgcServer;
+        if (ogcServer) {
+          const def = ogcServers[ogcServer];
+          if (def === undefined) {
+            element.url = null;
+          } else {
+            element.url = def.credential ? null : def.url;
+          }
+        }
+        element.theme = theme;
+        array.push(element);
+      }
+    }
+    return array;
+  };
+
 
   /**
-   * @type {?angular.$q.Promise}
-   * @private
+   * get the flat catlog
+   * @return {angular.$q.Promise} Promise.
    */
-  this.promise_ = null;
-
-  this.flatCatalog = null;
-  this.layers3D = [];
+  getFlatCatalog() {
+    return this.promise_.then(() => this.flatCatalog);
+  };
 
   /**
-   * @type {app.Mvtstyling}
-   * @private
+   * get the flat catlog
+   * @return {angular.$q.Promise} Promise.
    */
-  this.appMvtStylingService_ = appMvtStylingService;
+  get3DLayers() {
+    return this.promise_.then(() => this.layers3D);
+  };
 
-};
-
-inherits(exports, olEventsEventTarget);
+}
 
 
 /**
@@ -138,7 +315,7 @@ inherits(exports, olEventsEventTarget);
  * @return {Object} The object.
  * @private
  */
-exports.findObjectByName_ = function(objects, objectName) {
+Themes.findObjectByName_ = function(objects, objectName) {
   var obj = objects.find(function(object) {
     return object['name'] === objectName;
   });
@@ -156,186 +333,11 @@ exports.findObjectByName_ = function(objects, objectName) {
  * @return {Object} The theme object.
  * @private
  */
-exports.findTheme_ = function(themes, themeName) {
-  var theme = exports.findObjectByName_(themes, themeName);
+Themes.findTheme_ = function(themes, themeName) {
+  var theme = Themes.findObjectByName_(themes, themeName);
   return theme;
 };
 
-
-/**
- * Get background layers.
- * @return {Promise<any[]>} Promise.
- */
-exports.prototype.getBgLayers = function(map) {
-  console.assert(this.promise_);
-  console.assert(map);
-  if (!this.getBgLayersPromise_) {
-    this.getBgLayersPromise_ = this.promise_.then(
-      /**
-       * @param {app.ThemesResponse} data The "themes" web service response.
-       * @return {Array.<Object>} Array of background layer objects.
-       */
-      data => {
-        var bgLayers = data['background_layers'].map(item => {
-          var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
-          console.assert('name' in item);
-          console.assert('imageType' in item);
-          var layer = this.getWmtsLayer_(
-            item['name'], item['imageType'], hasRetina
-          );
-          layer.set('metadata', item['metadata']);
-          if ('attribution' in item['metadata']) {
-            var source = layer.getSource();
-            source.setAttributions(
-              item['metadata']['attribution']
-            );
-          }
-          return layer;
-        });
-
-        // add the blank layer
-        bgLayers.push(this.blankLayer_.getLayer());
-
-        // add MVT layer
-        const bothPromises = Promise.all([
-          onFirstTargetChange(map),
-          this.appMvtStylingService_.getBgStyle()
-        ]);
-        return bothPromises.then(([target, styleConfigs]) => {
-          replaceWithMVTLayer(bgLayers, target, styleConfigs);
-          return bgLayers;
-        });
-      });
-  }
-  return this.getBgLayersPromise_;
-};
-
-/**
- * Get a theme object by its name.
- * @param {string} themeName Theme name.
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.getThemeObject = function(themeName) {
-  console.assert(this.promise_ !== null);
-  return this.promise_.then(
-      /**
-       * @param {app.ThemesResponse} data The "themes" web service response.
-       * @return {Object} The theme object for themeName, or null if not found.
-       */
-      function(data) {
-        var themes = data['themes'];
-        return exports.findTheme_(themes, themeName);
-      });
-};
-
-
-/**
- * Get the promise resolving to the themes root object.
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.getThemesPromise = function() {
-  console.assert(this.promise_ !== null);
-  return this.promise_;
-};
-
-
-/**
- * @param {?number} roleId The role id to send in the request.
- * Load themes from the "themes" service.
- * @return {?angular.$q.Promise} Promise.
- */
-exports.prototype.loadThemes = function(roleId) {
-   var url = new URL(this.treeUrl_);
-   url.searchParams.set('background', 'background');
-   this.promise_ = this.$http_.get(url.toString(), {
-    params: (roleId !== undefined) ? {'role': roleId} : {},
-    cache: false
-  }).then((resp) => {
-    const root = /** @type {app.ThemesResponse} */ (resp.data);
-    const themes = root.themes;
-    const flatCatalogue = [];
-    for (var i = 0; i < themes.length; i++) {
-      const theme = themes[i];
-      const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
-      arrayExtend(flatCatalogue, children);
-    }
-
-    this.flatCatalog = flatCatalogue;
-
-    this.dispatchEvent(appEventsThemesEventType.LOAD);
-    return root;
-  });
-  return this.promise_;
-};
-
-
-/**
- * @param {string} themeId The theme id to send in the request.
- * checks if the theme is protected or not.
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.isThemePrivate = function(themeId) {
-  return this.$http_.get(this.isThemePrivateUrl_, {
-    params: {'theme': themeId},
-    cache: false
-  });
-};
-
-
-/**
- * @param {Array} element The element.
- * @param {string} theme Theme name.
- * @param {Object} ogcServers All OGC servers definitions.
- * @param {Object} lastOgcServer The last OGC server.
- * @return {Array} array The children.
- * @private
- */
-exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOgcServer) {
-  var array = [];
-  for (var i = 0; i < elements.length; i++) {
-    const element = elements[i];
-    if (element.hasOwnProperty('children')) {
-      if (element.name !== '3d Layers') {
-        arrayExtend(array, this.getAllChildren_(
-            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-      } else {
-        arrayExtend(this.layers3D, this.getAllChildren_(
-            element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-      }
-    } else {
-      // Rewrite url to match the behaviour of c2cgeoportal 1.6
-      const ogcServer = element.ogcServer || lastOgcServer;
-      if (ogcServer) {
-        const def = ogcServers[ogcServer];
-        if (def === undefined) {
-          element.url = null;
-        } else {
-          element.url = def.credential ? null : def.url;
-        }
-      }
-      element.theme = theme;
-      array.push(element);
-    }
-  }
-  return array;
-};
-
-
-/**
- * get the flat catlog
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.getFlatCatalog = function() {
-  return this.promise_.then(() => this.flatCatalog);
-};
-
-/**
- * get the flat catlog
- * @return {angular.$q.Promise} Promise.
- */
-exports.prototype.get3DLayers = function() {
-  return this.promise_.then(() => this.layers3D);
-};
 
 appModule.service('appThemes', exports);
 
