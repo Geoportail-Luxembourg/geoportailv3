@@ -1,0 +1,31 @@
+@import '~gmf/sass/vars.scss';
+
+.twitter-typeahead {
+  width: 100%;
+  height: 100%;
+
+  .tt-hint {
+    display: none;
+  }
+
+  .tt-menu {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: $map-tools-bg-color;
+    box-shadow: $light-box-shadow;
+    border: $border;
+
+    .tt-suggestion {
+      text-align: left;
+      padding: $app-margin;
+      margin: 0;
+      border-bottom: $border;
+
+      &:hover, &.tt-cursor {
+        cursor: pointer;
+        background-color: $onhover-color;
+      }
+    }
+  }
+}
