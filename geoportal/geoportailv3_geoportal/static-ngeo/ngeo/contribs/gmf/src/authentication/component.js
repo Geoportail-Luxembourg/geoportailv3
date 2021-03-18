@@ -1,101 +1,51 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.authentication.component
+ */
 import gmfAuthenticationService from 'gmf/authentication/Service.js';
-import {MessageType} from 'ngeo/message/Message.js';
+import ngeoMessageMessage from 'ngeo/message/Message.js';
 import ngeoMessageNotification from 'ngeo/message/Notification.js';
+
+/** @suppress {extraRequire} */
 import ngeoMessageModalComponent from 'ngeo/message/modalComponent.js';
-import {listen} from 'ol/events.js';
-
-import qruri from 'qruri';
 
 /**
- * @typedef {import("gmf/authentication/Service").AuthenticationLoginResponsePromise} AuthenticationLoginResponsePromise
+ * @type {angular.Module}
  */
-
-/**
- * Password validator function with an error message.
- * Configuration options for the permalink service.
- * @typedef {Object} PasswordValidator
- * @property {function(string): boolean} isPasswordValid
- * @property {string} notValidMessage
- */
-
-/**
- * The Authentication configuration.
- * @typedef {Object} AuthenticationConfig
- * @property {boolean} allowPasswordReset Whether to show the password forgotten link. Default to true.
- * @property {boolean} allowPasswordChange Whether to show the change password button. Default to true.
- *    You can also specify a `PasswordValidator` Object to add constraint on user's new password.
- * @property {boolean} forcePasswordChange Force the user to change its password. Default to false.
- *    If you set it to true, you should also allow the user to change its password. Don't add this option
- *    alone, use it in a dedicated authentication component.
- */
-
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('gmfAuthentication', [
-  gmfAuthenticationService.name,
-  ngeoMessageNotification.name,
+const exports = angular.module('gmfAuthentication', [
+  gmfAuthenticationService.module.name,
+  ngeoMessageNotification.module.name,
   ngeoMessageModalComponent.name,
 ]);
 
+
 /**
- * @param {JQuery} element Element.
- * @param {angular.IAttributes} attrs Attributes.
+ * @param {angular.JQLite} element Element.
+ * @param {angular.Attributes} attrs Attributes.
  * @return {string} Template URL.
- * @private
- * @hidden
  */
-function gmfAuthenticationTemplateUrl_(element, attrs) {
-  const templateUrl = attrs.gmfAuthenticationTemplateurl;
-  return templateUrl !== undefined ? templateUrl : 'gmf/authentication';
-}
+exports.gmfAuthenticationTemplateUrl_ = (element, attrs) => {
+  const templateUrl = attrs['gmfAuthenticationTemplateurl'];
+  return templateUrl !== undefined ? templateUrl :
+    'gmf/authentication';
+};
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/authentication', require('./component.html'));
-  }
-);
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/authentication', require('./component.html'));
+});
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(JQuery, angular.IAttributes): string} gmfAuthenticationTemplateUrl Template function.
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.JQLite, !angular.Attributes): string} gmfAuthenticationTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfAuthenticationTemplateUrl($element, $attrs, gmfAuthenticationTemplateUrl) {
   return gmfAuthenticationTemplateUrl($element, $attrs);
 }
+
 
 /**
  * An "authentication" component for a GeoMapFish application. With the
@@ -114,155 +64,161 @@ function gmfAuthenticationTemplateUrl($element, $attrs, gmfAuthenticationTemplat
  * Example:
  *
  *      <gmf-authentication
- *        gmf-authentication-info-message="mainCtrl.loginInfoMessage">
+ *        gmf-authentication-info-message="mainCtrl.loginInfoMessage"
+ *        gmf-authentication-allow-password-change="::true">
  *      </gmf-authentication>
  *
- * @htmlAttribute {PasswordValidator} gmf-authentication-password-validator A PasswordValidator
- *     Object to add constraint on user's new password. The `allowPasswordChange` config. To use
+ * @htmlAttribute {boolean} gmf-authentication-allow-password-reset Whether to
+ *     show the password forgotten link. Default to true.
+ * @htmlAttribute {boolean|function} gmf-authentication-allow-password-change Whether to
+ *     show the change password button. Default to true. You can also specify a gmfx.PasswordValidator Object
+ *     to add constraint on user's new password.
+ * @htmlAttribute {gmfx.PasswordValidator} gmf-authentication-password-validator A gmfx.PasswordValidator
+ *     Object to add constraint on user's new password. The gmf-authentication-allow-password-change. To use
  *     it you must also allow the user to change its password.
+ * @htmlAttribute {boolean} gmf-authentication-force-password-change Force the
+ *     user to change its password. Default to false. If you set it to true, you
+ *     should also allow the user to change its password. Don't add this option alone, use
+ *     it in a dedicated authentication component, in a ngeo-modal, directly in
+ *     your index.html (see example 2.)
  * @htmlAttribute {string} gmf-authentication-info-message Message to show above the authentication form.
+ *
+ * Example 2:
+ *
+ *     <ngeo-modal
+ *         ngeo-modal-closable="false"
+ *         ng-model="mainCtrl.userMustChangeItsPassword">
+ *       <div class="modal-header">
+ *         <h4 class="modal-title">
+ *           {{'You must change your password' | translate}}
+ *         </h4>
+ *       </div>
+ *       <div class="modal-body">
+ *         <gmf-authentication
+ *           gmf-authentication-force-password-change="::true">
+ *         </gmf-authentication>
+ *       </div>
+ *     </ngeo-modal>
  *
  * @ngdoc component
  * @ngname gmfAuthentication
  */
-const authenticationComponent = {
+exports.component_ = {
   bindings: {
+    'allowPasswordReset': '<?gmfAuthenticationAllowPasswordReset',
+    'allowPasswordChange': '<?gmfAuthenticationAllowPasswordChange',
     'passwordValidator': '<?gmfAuthenticationPasswordValidator',
-    'onSuccessfulLogin': '<?gmfAuthenticationOnSuccessfulLogin',
-    'infoMessage': '=?gmfAuthenticationInfoMessage',
+    'forcePasswordChange': '<?gmfAuthenticationForcePasswordChange',
+    'infoMessage': '=?gmfAuthenticationInfoMessage'
   },
   controller: 'GmfAuthenticationController',
-  templateUrl: gmfAuthenticationTemplateUrl,
+  templateUrl: gmfAuthenticationTemplateUrl
 };
 
-module.value('gmfAuthenticationTemplateUrl', gmfAuthenticationTemplateUrl_);
+exports.value('gmfAuthenticationTemplateUrl',
+  exports.gmfAuthenticationTemplateUrl_);
 
-module.component('gmfAuthentication', authenticationComponent);
+exports.component('gmfAuthentication', exports.component_);
+
 
 /**
  * @private
- * @hidden
  */
-class AuthenticationController {
+exports.AuthenticationController_ = class {
   /**
-   * @param {angular.IScope} $scope Scope.
-   * @param {JQuery} $element Element.
-   * @param {boolean} gmfTwoFactorAuth Two factor authentication is required.
-   * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext catalog.
-   * @param {import("gmf/authentication/Service.js").AuthenticationService} gmfAuthenticationService
-   *    GMF Authentication service
-   * @param {import('gmf/authentication/Service.js').User} gmfUser User.
-   * @param {import("ngeo/message/Notification.js").MessageNotification} ngeoNotification Ngeo notification
-   *    service.
-   * @param {AuthenticationConfig} gmfAuthenticationConfig The configuration
+   * @private
+   * @param {!angular.JQLite} $element Element.
+   * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+   * @param {gmf.authentication.Service} gmfAuthenticationService GMF Authentication service
+   * @param {gmfx.User} gmfUser User.
+   * @param {ngeo.message.Notification} ngeoNotification Ngeo notification service.
    * @ngInject
    * @ngdoc controller
    * @ngname GmfAuthenticationController
    */
-  constructor(
-    $scope,
-    $element,
-    gmfTwoFactorAuth,
-    gettextCatalog,
-    gmfAuthenticationService,
-    gmfUser,
-    ngeoNotification,
-    gmfAuthenticationConfig
-  ) {
+  constructor($element, gettextCatalog, gmfAuthenticationService, gmfUser, ngeoNotification) {
+
     /**
-     * @type {JQuery}
+     * @type {!angular.JQLite}
      * @private
      */
     this.$element_ = $element;
 
     /**
-     * @type {import('gmf/authentication/Service.js').User}
+     * @type {gmfx.User}
+     * @export
      */
     this.gmfUser = gmfUser;
 
     /**
-     * @type {angular.gettext.gettextCatalog}
+     * @type {angularGettext.Catalog}
      * @private
      */
     this.gettextCatalog = gettextCatalog;
 
     /**
-     * @type {import("gmf/authentication/Service.js").AuthenticationService}
+     * @type {gmf.authentication.Service}
      * @private
      */
     this.gmfAuthenticationService_ = gmfAuthenticationService;
 
     /**
-     * @type {import("ngeo/message/Notification.js").MessageNotification}
+     * @type {ngeo.message.Notification}
      * @private
      */
     this.notification_ = ngeoNotification;
 
     /**
      * @type {boolean}
+     * @export
      */
-    this.twoFactorAuth = gmfTwoFactorAuth;
+    this.allowPasswordReset;
 
     /**
      * @type {boolean}
+     * @export
      */
-    this.allowPasswordReset = gmfAuthenticationConfig.allowPasswordReset !== false;
+    this.allowPasswordChange;
 
     /**
-     * @type {boolean}
-     */
-    this.allowPasswordChange = gmfAuthenticationConfig.allowPasswordChange !== false;
-
-    /**
-     * @type {PasswordValidator?}
+     * @type {gmfx.PasswordValidator?}
+     * @export
      */
     this.passwordValidator = null;
 
     /**
-     * @type {function(AuthenticationLoginResponsePromise): AuthenticationLoginResponsePromise}
+     * @type {boolean}
+     * @export
      */
-    this.onSuccessfulLogin = null;
+    this.forcePasswordChange;
 
     /**
      * @type {?string}
+     * @export
      */
     this.infoMessage = null;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.changingPassword = false;
 
     /**
-     * @type {?string}
-     */
-    this.changingPasswordUsername = null;
-
-    /**
      * @type {boolean}
+     * @export
      */
     this.userMustChangeItsPassword = false;
 
-    listen(gmfAuthenticationService, 'mustChangePassword', (event) => {
-      const username = /** @type {CustomEvent} */ (event).detail.user.username;
-      this.gmfUser = /** @type {CustomEvent} */ (event).detail.user;
-      this.changingPasswordUsername = username;
-      this.changingPassword = true;
-      this.userMustChangeItsPassword = true;
-    });
-
-    listen(gmfAuthenticationService, 'login', () => {
-      this.changingPassword = false;
-      this.userMustChangeItsPassword = false;
-    });
-
     /**
      * @type {boolean}
+     * @export
      */
     this.resetPasswordModalShown = false;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.error = false;
 
@@ -270,68 +226,56 @@ class AuthenticationController {
 
     /**
      * @type {string}
+     * @export
      */
     this.loginVal = '';
 
     /**
      * @type {string}
+     * @export
      */
     this.pwdVal = '';
-
-    /**
-     * @type {string}
-     */
-    this.otpVal;
 
     // CHANGE PASSWORD form values
 
     /**
      * @type {string}
+     * @export
      */
     this.oldPwdVal = '';
 
     /**
      * @type {string}
+     * @export
      */
     this.newPwdVal = '';
 
     /**
      * @type {string}
+     * @export
      */
     this.newPwdConfVal = '';
-
-    this.otpImage;
-
-    /**
-     * @type {boolean}
-     */
-    this.isLoading = false;
-
-    $scope.$watch(
-      () => this.gmfUser.otp_uri,
-      (val) => {
-        if (val) {
-          this.otpImage = qruri(val, {
-            margin: 2,
-          });
-        }
-      }
-    );
   }
 
   /**
    * Initialise the controller.
    */
   $onInit() {
-    if (this.onSuccessfulLogin) {
-      this.gmfAuthenticationService_.onSuccessfulLogin = this.onSuccessfulLogin;
+    this.allowPasswordReset = this.allowPasswordReset !== false;
+    this.allowPasswordChange = this.allowPasswordChange !== false;
+    this.forcePasswordChange = this.forcePasswordChange === true;
+    if (this.forcePasswordChange) {
+      this.changingPassword = true;
     }
+    this.userMustChangeItsPassword = (this.gmfUser.is_password_changed === false && this.forcePasswordChange);
   }
+
 
   // METHODS THAT CALL THE AUTHENTICATION SERVICE METHODS
 
   /**
    * Calls the authentication service changePassword method.
+   * @export
    */
   changePassword() {
     const gettextCatalog = this.gettextCatalog;
@@ -360,7 +304,7 @@ class AuthenticationController {
         errors.push(gettextCatalog.getString('The old and new passwords are the same.'));
       }
       if (newPwd !== confPwd) {
-        errors.push(gettextCatalog.getString("The passwords don't match."));
+        errors.push(gettextCatalog.getString('The passwords don\'t match.'));
       }
       // Custom validation - If a passwordValidator is set, use it to validate the new password.
       if (this.passwordValidator) {
@@ -373,25 +317,15 @@ class AuthenticationController {
         this.setError_(errors);
       } else {
         // Send request with current credentials, which may fail if the old password given is incorrect.
-        let username;
-        if (this.userMustChangeItsPassword) {
-          username = this.changingPasswordUsername;
-        } else {
-          username = this.gmfUser.username;
-        }
-        console.assert(username);
-        this.gmfAuthenticationService_
-          .changePassword(username, oldPwd, newPwd, confPwd, this.otpVal)
+        this.gmfAuthenticationService_.changePassword(oldPwd, newPwd, confPwd)
           .then(() => {
             this.changePasswordReset();
             this.setError_(
               [gettextCatalog.getString('Your password has successfully been changed.')],
-              MessageType.INFORMATION
+              ngeoMessageMessage.Type.INFORMATION
             );
           })
           .catch((err) => {
-            this.oldPwdVal = '';
-            this.otpVal = '';
             this.setError_(gettextCatalog.getString('Incorrect old password.'));
           });
       }
@@ -400,11 +334,11 @@ class AuthenticationController {
 
   /**
    * Calls the authentication service login method.
+   * @export
    */
   login() {
     const gettextCatalog = this.gettextCatalog;
 
-    this.isLoading = true;
     const errors = [];
     if (this.loginVal === '') {
       errors.push(gettextCatalog.getString('The username is required.'));
@@ -413,94 +347,78 @@ class AuthenticationController {
       errors.push(gettextCatalog.getString('The password is required.'));
     }
     if (errors.length) {
-      this.isLoading = false;
       this.setError_(errors);
     } else {
-      this.gmfAuthenticationService_
-        .login(this.loginVal, this.pwdVal, this.otpVal)
-        .then(() => {
-          this.isLoading = false;
-          this.loginVal = '';
-          this.pwdVal = '';
-          this.otpVal = '';
-          this.resetError_();
-        })
-        .catch(() => {
-          this.isLoading = false;
-          this.pwdVal = '';
-          this.otpVal = '';
-          this.setError_(gettextCatalog.getString('Incorrect credentials or disabled account.'));
-        });
+      const error = gettextCatalog.getString('Incorrect credentials or disabled account.');
+      this.gmfAuthenticationService_.login(this.loginVal, this.pwdVal).then(
+        this.resetError_.bind(this),
+        this.setError_.bind(this, error));
     }
   }
 
   /**
    * Calls the authentication service logout method.
+   * @export
    */
   logout() {
     const gettextCatalog = this.gettextCatalog;
-
-    this.isLoading = true;
-    this.gmfAuthenticationService_
-      .logout()
-      .then(() => {
-        this.isLoading = false;
-        this.resetError_();
-      })
-      .catch(() => {
-        this.isLoading = false;
-        this.setError_(gettextCatalog.getString('Could not log out.'));
-      });
+    const error = gettextCatalog.getString('Could not log out.');
+    this.gmfAuthenticationService_.logout().then(
+      this.resetError_.bind(this),
+      this.setError_.bind(this, error));
   }
 
   /**
    * Calls the authentication service resetPassword method.
+   * @export
    */
   resetPassword() {
     const gettextCatalog = this.gettextCatalog;
 
-    this.isLoading = true;
     if (!this.loginVal) {
-      this.isLoading = false;
       this.setError_(gettextCatalog.getString('Please, input a login...'));
       return;
     }
 
-    this.gmfAuthenticationService_
-      .resetPassword(this.loginVal)
-      .then(() => {
-        this.isLoading = false;
-        this.resetPasswordModalShown = true;
-        this.resetError_();
-      })
-      .catch(() => {
-        this.isLoading = false;
-        this.setError_(gettextCatalog.getString('An error occurred while resetting the password.'));
-      });
+    const error = gettextCatalog.getString('An error occurred while resetting the password.');
+
+    /**
+     * @param {gmfx.AuthenticationDefaultResponse} respData Response.
+     */
+    const resetPasswordSuccessFn = function(respData) {
+      this.resetPasswordModalShown = true;
+      this.resetError_();
+    }.bind(this);
+
+    this.gmfAuthenticationService_.resetPassword(this.loginVal).then(
+      resetPasswordSuccessFn,
+      this.setError_.bind(this, error)
+    );
   }
+
 
   // OTHER METHODS
 
   /**
    * Reset the changePassword values and error.
+   * @export
    */
   changePasswordReset() {
     this.resetError_();
     this.changingPassword = false;
-    this.userMustChangeItsPassword = false;
     this.oldPwdVal = '';
     this.newPwdVal = '';
     this.newPwdConfVal = '';
   }
 
   /**
-   * @param {string|string[]} errors Errors.
-   * @param {MessageType} [messageType] Type.
+   * @param {string|Array.<string>} errors Errors.
+   * @param {ngeoMessageMessage.Type} [messageType] Type.
    * @private
    */
   setError_(errors, messageType) {
     if (messageType == undefined) {
-      messageType = MessageType.ERROR;
+      messageType = ngeoMessageMessage.Type.ERROR;
     }
     if (this.error) {
       this.resetError_();
@@ -514,17 +432,13 @@ class AuthenticationController {
       errors = [errors];
     }
 
-    errors.forEach((error) => {
-      /** @type {import('ngeo/message/Message.js').Message} */
-      const options = {
+    errors.forEach(function(error) {
+      this.notification_.notify({
         msg: error,
         target: container,
-      };
-      if (messageType) {
-        options.type = messageType;
-      }
-      this.notification_.notify(options);
-    });
+        type: messageType
+      });
+    }, this);
   }
 
   /**
@@ -534,8 +448,10 @@ class AuthenticationController {
     this.notification_.clear();
     this.error = false;
   }
-}
+};
 
-module.controller('GmfAuthenticationController', AuthenticationController);
+exports.controller('GmfAuthenticationController',
+  exports.AuthenticationController_);
 
-export default module;
+
+export default exports;

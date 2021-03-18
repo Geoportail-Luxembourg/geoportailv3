@@ -1,17 +1,18 @@
-<div class="dropdown">
-  <button
-      class="btn btn-default btn-sm btn-block dropdown-toggle"
+<div
+    class="dropdown"
+    ng-class="{open: $ctrl.rule.active}">
+  <a
+      class="btn btn-default btn-sm dropdown-toggle"
       type="button"
-      data-toggle="dropdown"
       ng-click="$ctrl.toggle()">
     <span>{{ ::$ctrl.clone.name | translate }}</span>
-  </button>
-  <div
-    class="dropdown-menu form-group"
-    ng-class="{show: $ctrl.rule.active}">
+    <span class="caret"></span>
+  </a>
+  <div class="dropdown-menu form-group">
 
     <select
-        class="form-control ngeo-rule-operators-list"
+        class="form-control input-sm ngeo-rule-operators-list"
+        ng-disabled="$ctrl.drawActive"
         ng-if="::$ctrl.clone.operators"
         ng-model="$ctrl.clone.operator"
         ng-options="$ctrl.operators[operator] | translate for operator in ::$ctrl.clone.operators track by operator">
@@ -45,24 +46,24 @@
           ng-switch-when="geometry">
         <div ng-switch="$ctrl.geomType">
           <span
+              class="gmf-icon gmf-icon-point"
               ng-switch-when="Point">
-          <%=require('gmf/icons/point.svg')%>
           </span>
           <span
+              class="gmf-icon gmf-icon-line"
               ng-switch-when="LineString">
-          <%=require('gmf/icons/line.svg')%>
           </span>
           <span
+              class="gmf-icon gmf-icon-polygon"
               ng-switch-when="Polygon">
-          <%=require('gmf/icons/polygon.svg')%>
           </span>
           <span
+              class="gmf-icon gmf-icon-circle"
               ng-switch-when="Circle">
-          <%=require('gmf/icons/circle.svg')%>
           </span>
           <span
+              class="gmf-icon gmf-icon-rectangle"
               ng-switch-when="Rectangle">
-          <%=require('gmf/icons/rectangle.svg')%>
           </span>
         </div>
         <ngeo-drawfeature
@@ -82,7 +83,7 @@
                 ng-show="['intersects', 'within'].indexOf($ctrl.clone.operator) !== -1"
                 ng-class="{active: dfCtrl.drawPoint.active}"
                 ng-model="dfCtrl.drawPoint.active">
-                <%=require('gmf/icons/point.svg')%>
+                <span class="gmf-icon gmf-icon-point"></span>
               </a>
               <a
                 data-toggle="tooltip"
@@ -94,7 +95,7 @@
                 ng-show="['intersects', 'within'].indexOf($ctrl.clone.operator) !== -1"
                 ng-class="{active: dfCtrl.measureLength.active}"
                 ng-model="dfCtrl.measureLength.active">
-                <%=require('gmf/icons/line.svg')%>
+                <span class="gmf-icon gmf-icon-line"></span>
               </a>
               <a
                 data-toggle="tooltip"
@@ -105,7 +106,7 @@
                 class="btn btn-sm btn-default ngeo-drawfeature-polygon"
                 ng-class="{active: dfCtrl.measureArea.active}"
                 ng-model="dfCtrl.measureArea.active">
-                <%=require('gmf/icons/polygon.svg')%>
+                <span class="gmf-icon gmf-icon-polygon"></span>
               </a>
               <a
                 data-toggle="tooltip"
@@ -113,11 +114,10 @@
                 href
                 ngeo-btn
                 ngeo-measureazimut
-                ngeo-measureazimut-nbpoints="32"
                 class="btn btn-sm btn-default ngeo-drawfeature-circle"
                 ng-class="{active: dfCtrl.measureAzimut.active}"
                 ng-model="dfCtrl.measureAzimut.active">
-                <%=require('gmf/icons/circle.svg')%>
+                <span class="gmf-icon gmf-icon-circle"></span>
               </a>
               <a
                 data-toggle="tooltip"
@@ -128,7 +128,7 @@
                 class="btn btn-sm btn-default ngeo-drawfeature-rectangle"
                 ng-class="{active: dfCtrl.drawRectangle.active}"
                 ng-model="dfCtrl.drawRectangle.active">
-                <%=require('gmf/icons/rectangle.svg')%>
+                <span class="gmf-icon gmf-icon-rectangle"></span>
               </a>
           </div>
 
@@ -181,22 +181,22 @@
           <div ng-switch-when="..">
             <input
                 type="number"
-                class="form-control"
+                class="form-control input-sm"
                 ng-model="$ctrl.clone.lowerBoundary"/>
             <input
                 type="number"
-                class="form-control"
+                class="form-control input-sm"
                 ng-model="$ctrl.clone.upperBoundary"/>
           </div>
           <div ng-switch-default>
             <input
                 type="number"
-                class="form-control"
+                class="form-control input-sm"
                 ng-if="$ctrl.clone.type === 'number'"
                 ng-model="$ctrl.clone.expression"/>
             <input
                 type="text"
-                class="form-control"
+                class="form-control input-sm"
                 ng-if="$ctrl.clone.type !== 'number'"
                 ng-model="$ctrl.clone.expression"/>
           </div>
@@ -205,11 +205,11 @@
 
       <div class="ngeo-rule-btns">
         <button
-            class="btn btn-sm btn-default"
+            class="btn btn-xs btn-default"
             ng-click="$ctrl.apply()"
             type="button">{{'Apply' | translate}}</button>
         <button
-            class="btn btn-sm btn-default"
+            class="btn btn-xs btn-default"
             ng-click="$ctrl.cancel()"
             type="button">{{'Cancel' | translate}}</button>
       </div>
@@ -224,11 +224,11 @@
     ng-if="$ctrl.rule.value !== null">
 
   <a
-      class="btn btn-sm btn-link"
+      class="btn btn-xs btn-link"
       ng-click="!$ctrl.rule.active && $ctrl.reset()"
       ng-disabled="$ctrl.rule.active"
       href>
-    <span class="fa fa-times"></span>
+    <span class="fa fa-remove"></span>
   </a>
 
   <div ng-switch="::$ctrl.rule.type">

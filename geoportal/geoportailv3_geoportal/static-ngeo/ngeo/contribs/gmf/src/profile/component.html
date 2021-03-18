@@ -2,15 +2,9 @@
   class="gmf-profile-container panel"
   ng-show="ctrl.active">
 
-  <div class="spinner-profile" ng-show="ctrl.isLoading">
-    <i class="fa fa-spin">
-      <%=require('gmf/icons/spinner.svg?viewbox&height=3rem')%>
-    </i>
-  </div>
-
   <div
     class="ngeo-profile"
-    ng-if="!ctrl.isErrored && !ctrl.isLoading"
+    ng-show="!ctrl.isErrored"
     ngeo-profile="ctrl.profileData"
     ngeo-profile-highlight="ctrl.profileHighlight"
     ngeo-profile-options="::ctrl.profileOptions">
@@ -18,7 +12,7 @@
 
   <ul
     class="gmf-profile-legend"
-    ng-if="!ctrl.isErrored && !ctrl.isLoading">
+    ng-show="!ctrl.isErrored">
 
     <li ng-repeat="name in ::ctrl.getLayersNames()">
       <i
@@ -33,7 +27,7 @@
 
   <div
     class="gmf-profile-export btn-group dropup"
-    ng-show="!ctrl.isErrored && !ctrl.isLoading">
+    ng-show="!ctrl.isErrored">
 
     <a
       class="dropdown-toggle"
@@ -41,7 +35,7 @@
       ng-show="ctrl.profileData.length !== 0"
       data-toggle="dropdown"
       aria-expanded="false">
-      {{'Export' | translate}}
+      {{'Export' | translate}}&nbsp;<i class="fa fa-caret-up"></i>
     </a>
 
     <ul

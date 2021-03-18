@@ -1,178 +1,167 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/**
+ * @module ngeo.message.displaywindowComponent
+ */
+import googAsserts from 'goog/asserts.js';
 
-import angular from 'angular';
-
-import 'ngeo/sass/font.scss';
+import 'font-awesome/css/font-awesome.css';
 import 'jquery-ui/ui/widgets/resizable.js';
 import 'jquery-ui/ui/widgets/draggable.js';
-import 'ngeo/sass/jquery-ui.scss';
 import 'angular-sanitize';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoMessageDisplaywindowComponent', ['ngSanitize']);
+const exports = angular.module('ngeoMessageDisplaywindowComponent', [
+  'ngSanitize',
+]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/message/displaywindowComponent', require('./displaywindowComponent.html'));
-  }
-);
 
-module.value(
-  'ngeoMessageDisplaywindowTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/message/displaywindowComponent', require('./displaywindowComponent.html'));
+});
+
+
+exports.value('ngeoMessageDisplaywindowTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} The template url.
    */
   ($attrs) => {
     const templateUrl = $attrs['ngeoMessageDisplaywindowTemplateUrl'];
-    return templateUrl !== undefined ? templateUrl : 'ngeo/message/displaywindowComponent';
-  }
-);
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/message/displaywindowComponent';
+  });
 
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} ngeoMessageDisplaywindowTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} ngeoMessageDisplaywindowTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function ngeoMessageDisplaywindowTemplateUrl($attrs, ngeoMessageDisplaywindowTemplateUrl) {
   return ngeoMessageDisplaywindowTemplateUrl($attrs);
 }
 
+
 /**
  * @private
- * @hidden
  */
-class Controller {
+exports.Controller_ = class {
+
   /**
-   * @param {JQuery} $element Element.
-   * @param {angular.ISCEService} $sce Angular sce service.
-   * @param {angular.IScope} $scope Scope.
-   * @param {angular.ICompileService} $compile The compile provider.
+   * @param {!jQuery} $element Element.
+   * @param {!angular.$sce} $sce Angular sce service.
+   * @param {!angular.Scope} $scope Scope.
+   * @param {!angular.$compile} $compile The compile provider.
    * @private
    * @ngInject
    * @ngdoc controller
    * @ngname ngeoDisplaywindowComponentController
    */
   constructor($element, $sce, $scope, $compile) {
+
     // === Binding Properties ===
 
     /**
      * @type {boolean}
+     * @export
      */
     this.clearOnClose;
 
     /**
      * @type {?string}
+     * @export
      */
-    this.content;
+    this.content = null;
 
     /**
      * @type {?string}
      */
-    this.contentTemplate;
+    this.contentTemplate = null;
 
     /**
-     * @type {?angular.IScope}
+     * @type {?angular.Scope}
      */
-    this.contentScope;
+    this.contentScope = null;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.draggable;
 
     /**
      * @type {Element|string}
+     * @export
      */
     this.draggableContainment;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.desktop;
 
     /**
-     * @type {string}
+     * @type {?string}
+     * @export
      */
-    this.height;
+    this.height = null;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.open;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.resizable;
 
     /**
      * @type {?string}
+     * @export
      */
-    this.title;
+    this.title = null;
 
     /**
      * @type {?string}
+     * @export
      */
-    this.url;
+    this.url = null;
 
     /**
-     * @type {string}
+     * @type {?string}
+     * @export
      */
-    this.width;
+    this.width = null;
+
 
     // === Injected Properties ===
 
     /**
-     * @type {JQuery}
+     * @type {!jQuery}
      * @private
      */
     this.element_ = $element;
 
     /**
-     * @type {angular.ISCEService}
+     * @type {!angular.$sce}
      * @private
      */
     this.sce_ = $sce;
 
     /**
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      * @private
      */
     this.scope_ = $scope;
 
     /**
-     * @type {angular.ICompileService}
+     * @type {angular.$compile}
      * @private
      */
     this.compile_ = $compile;
@@ -182,6 +171,7 @@ class Controller {
    * Called on initialization of the component.
    */
   $onInit() {
+
     // Initialize binding properties
     this.clearOnClose = this.clearOnClose !== false;
     this.content = this.content || null;
@@ -193,14 +183,16 @@ class Controller {
     this.height = this.height || '240px';
     this.width = this.width || '240px';
 
-    this.draggable = this.draggable !== undefined ? this.draggable : this.desktop;
-    this.resizable = this.resizable !== undefined ? this.resizable : this.desktop;
+    this.draggable = this.draggable !== undefined ?
+      this.draggable : this.desktop;
+    this.resizable = this.resizable !== undefined ?
+      this.resizable : this.desktop;
 
     // Draggable
     if (this.draggable) {
       this.element_.find('.ngeo-displaywindow .windowcontainer').draggable({
         'containment': this.draggableContainment,
-        'handle': 'div.header',
+        'handle': 'div.header'
       });
     }
 
@@ -208,7 +200,7 @@ class Controller {
     if (this.resizable) {
       this.element_.find('.ngeo-displaywindow .windowcontainer').resizable({
         'minHeight': 240,
-        'minWidth': 240,
+        'minWidth': 240
       });
     }
 
@@ -226,19 +218,15 @@ class Controller {
    *  @private
    */
   updateContentTemplate_() {
-    if (!this.contentTemplate) {
-      return;
-    }
-    const scope = this.contentScope || this.scope_;
+    const scope = googAsserts.assert(this.contentScope || this.scope_);
     const compiled = this.compile_(this.contentTemplate)(scope);
-    const displayWindow = this.element_.find(
-      '.ngeo-displaywindow .windowcontainer .animation-container .content-template-container'
-    );
+    const displayWindow = this.element_.find('.ngeo-displaywindow .windowcontainer .animation-container .content-template-container');
     displayWindow.empty();
     displayWindow.append(/** @type {?} */ (compiled));
   }
 
   /**
+   * @export
    */
   close() {
     this.open = false;
@@ -248,17 +236,19 @@ class Controller {
   }
 
   /**
-   * @return {Object<string, string>} CSS style when using width/height
+   * @return {!Object.<string, string>} CSS style when using width/height
+   * @export
    */
   get style() {
     return {
-      height: this.height,
-      width: this.width,
+      'height': this.height,
+      'width': this.width
     };
   }
 
   /**
    * @return {string|undefined} Trusted url.
+   * @export
    */
   get urlTrusted() {
     if (this.url) {
@@ -267,13 +257,15 @@ class Controller {
   }
 
   /**
+   * @export
    */
   clear_() {
     this.content = null;
     this.title = null;
     this.url = null;
   }
-}
+};
+
 
 /**
  * The `ngeo-displaywindow` component is an alternative to the `ngeo.message.Popup`.
@@ -303,10 +295,9 @@ class Controller {
  * @htmlAttribute {boolean=} ngeo-displaywindow-clear-on-close Whether to clear the content on close or not.
  * @htmlAttribute {string=} ngeo-displaywindow-content The html content. If not provided, you must provide
  *     an url.
- * @htmlAttribute {string=} ngeo-displaywindow-content-template AngularJS template. It gets compiled during
- *    runtime with the supplied scope (ngeo-displaywindow-content-scope).
- * @htmlAttribute {angular.IScope=} ngeo-displaywindow-content-scope Scope used for
- *    ngeo-displaywindow-content-template.
+ * @htmlAttribute {string=} ngeo-displaywindow-content-template AngularJS template. It gets compiled during runtime
+ * with the supplied scope (ngeo-displaywindow-content-scope).
+ * @htmlAttribute {angular.Scope=} ngeo-displaywindow-content-scope Scope used for ngeo-displaywindow-content-template.
  * @htmlAttribute {boolean=} ngeo-displaywindow-desktop If true, the window is draggable and resizable. If
  *     not set, you must set manually both parameter.
  * @htmlAttribute {boolean=} ngeo-displaywindow-draggable Whether the window is draggable or not.
@@ -321,7 +312,7 @@ class Controller {
  * @ngdoc component
  * @ngname ngeoDisplaywindow
  */
-const ngeoMessageDisplaywindowComponent = {
+exports.component('ngeoDisplaywindow', {
   bindings: {
     'clearOnClose': '<?',
     'content': '=?',
@@ -335,11 +326,11 @@ const ngeoMessageDisplaywindowComponent = {
     'resizable': '<?',
     'title': '=?',
     'url': '=?',
-    'width': '=?',
+    'width': '=?'
   },
-  controller: Controller,
-  templateUrl: ngeoMessageDisplaywindowTemplateUrl,
-};
-module.component('ngeoDisplaywindow', ngeoMessageDisplaywindowComponent);
+  controller: exports.Controller_,
+  templateUrl: ngeoMessageDisplaywindowTemplateUrl
+});
 
-export default module;
+
+export default exports;

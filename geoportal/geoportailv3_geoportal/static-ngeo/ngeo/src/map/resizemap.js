@@ -1,32 +1,13 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2014-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.map.resizemap
+ */
+import googAsserts from 'goog/asserts.js';
 import olMap from 'ol/Map.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoResizemap', []);
+const exports = angular.module('ngeoResizemap', []);
 
 /**
  * Provides a directive that resizes the map in an animation loop
@@ -43,34 +24,32 @@ const module = angular.module('ngeoResizemap', []);
  *
  * See our live example: [../examples/animation.html](../examples/animation.html)
  *
- * @param {angular.IWindowService} $window Angular window service.
- * @return {angular.IDirective} The directive specs.
+ * @param {angular.$window} $window Angular window service.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoResizemap
  */
-function mapResizeComponent($window) {
+exports.directive_ = function($window) {
   const /** @type {number} */ duration = 1000;
 
   return {
     restrict: 'A',
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
      */
     link: (scope, element, attrs) => {
       const attr = 'ngeoResizemap';
       const prop = attrs[attr];
       const map = scope.$eval(prop);
-      console.assert(map instanceof olMap);
+      googAsserts.assertInstanceof(map, olMap);
 
-      const stateExpr = attrs.ngeoResizemapState;
-      console.assert(stateExpr !== undefined);
+      const stateExpr = attrs['ngeoResizemapState'];
+      googAsserts.assert(stateExpr !== undefined);
 
-      /** @type {number} */
       let start;
-      /** @type {number} */
       let animationDelayKey;
 
       const animationDelay = () => {
@@ -96,10 +75,12 @@ function mapResizeComponent($window) {
           animationDelayKey = $window.requestAnimationFrame(animationDelay);
         }
       });
-    },
+    }
   };
-}
+};
 
-module.directive('ngeoResizemap', mapResizeComponent);
 
-export default module;
+exports.directive('ngeoResizemap', exports.directive_);
+
+
+export default exports;

@@ -1,113 +1,87 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.query.windowComponent
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoMapFeatureOverlayMgr from 'ngeo/map/FeatureOverlayMgr.js';
-import ngeoMiscFeatureHelper, {getFilteredFeatureValues} from 'ngeo/misc/FeatureHelper.js';
+import ngeoMiscFeatureHelper from 'ngeo/misc/FeatureHelper.js';
 
+/** @suppress {extraRequire} */
 import ngeoMiscSwipe from 'ngeo/misc/swipe.js';
 
+/** @suppress {extraRequire} - required for `ngeoQueryResult` */
 import ngeoQueryMapQuerent from 'ngeo/query/MapQuerent.js';
 
 import olCollection from 'ol/Collection.js';
-import {isEmpty} from 'ol/obj.js';
+import * as olObj from 'ol/obj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 
 import 'jquery-ui/ui/widgets/resizable.js';
-import 'ngeo/sass/jquery-ui.scss';
 import 'angular-animate';
 import 'angular-touch';
 import 'bootstrap/js/collapse.js';
 import 'bootstrap/js/dropdown.js';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfQueryWindowComponent', [
-  ngeoMapFeatureOverlayMgr.name,
-  ngeoMiscFeatureHelper.name,
+const exports = angular.module('gmfQueryWindowComponent', [
+  ngeoMapFeatureOverlayMgr.module.name,
+  ngeoMiscFeatureHelper.module.name,
   ngeoMiscSwipe.name,
-  ngeoQueryMapQuerent.name,
+  ngeoQueryMapQuerent.module.name,
   'ngAnimate',
   'ngTouch',
 ]);
 
-module.config([
-  '$animateProvider',
+
+exports.config(['$animateProvider',
   /**
    * For performance reason, only perform animation on elements that have the
    * `gmf-animatable` css class.
-   * @param {angular.animate.IAnimateProvider} $animateProvider animate provider.
+   * @param {angular.$animateProvider} $animateProvider animate provider.
    */
-  function ($animateProvider) {
+  function($animateProvider) {
     $animateProvider.classNameFilter(/gmf-animatable/);
-  },
+  }
 ]);
 
-module.value(
-  'gmfDisplayquerywindowTemplateUrl',
+
+exports.value('gmfDisplayquerywindowTemplateUrl',
   /**
-   * @param {JQuery} $element Element.
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.JQLite} $element Element.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} Template.
    */
   ($element, $attrs) => {
-    const templateUrl = $attrs.gmfDisplayquerywindowTemplateurl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/query/windowComponent';
-  }
-);
+    const templateUrl = $attrs['gmfDisplayquerywindowTemplateurl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/query/windowComponent';
+  });
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/query/windowComponent', require('./windowComponent.html'));
-  }
-);
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/query/windowComponent', require('./windowComponent.html'));
+});
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(JQuery, angular.IAttributes): string} gmfDisplayquerywindowTemplateUrl Template
- *    function.
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.JQLite, !angular.Attributes): string} gmfDisplayquerywindowTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfDisplayquerywindowTemplateUrl($element, $attrs, gmfDisplayquerywindowTemplateUrl) {
   return gmfDisplayquerywindowTemplateUrl($element, $attrs);
 }
 
+
 /**
- * Provide a component to display results of the {@link import("ngeo/queryResult.js").default}
- * and shows related features on the map using the
- * {@link import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr}.
+ * Provide a component to display results of the {@link ngeo.queryResult}
+ * and shows related features on the map using the {@link ngeo.map.FeatureOverlayMgr}.
  *
  * You can override the default component's template by setting the
  * value `gmfDisplayquerywindowTemplateUrl`.
@@ -122,19 +96,21 @@ function gmfDisplayquerywindowTemplateUrl($element, $attrs, gmfDisplayquerywindo
  *        gmf-displayquerywindow-selectedfeaturestyle="ctrl.styleForTheCurrentFeature">
  *      </gmf-displayquerywindow>
  *
- * @htmlAttribute {import("ol/style/Style.js").default} gmf-displayquerywindow-featuresstyle A style
+ * @htmlAttribute {ol.style.Style} gmf-displayquerywindow-featuresstyle A style
  *     object for all features from the result of the query.
- * @htmlAttribute {import("ol/style/Style.js").default} selectedfeaturestyle A style
+ * @htmlAttribute {ol.style.Style} selectedfeaturestyle A style
  *     object for the current displayed feature.
  * @htmlAttribute {boolean=} defaultcollapsed If the query result window is
  *     collapsed.
  * @htmlAttribute {boolean} desktop If the component is used in the desktop
  *     application.
+ * @htmlAttribute {boolean} showunqueriedlayers If also layers, that have not
+ *     been queried for the last query, should be shown in the filter.
  *
  * @ngdoc component
  * @ngname gmfDisplayquerywindow
  */
-const queryWindowComponent = {
+exports.component_ = {
   controller: 'GmfDisplayquerywindowController as ctrl',
   bindings: {
     'draggableContainment': '<?gmfDisplayquerywindowDraggableContainment',
@@ -142,39 +118,40 @@ const queryWindowComponent = {
     'selectedFeatureStyleFn': '&gmfDisplayquerywindowSelectedfeaturestyle',
     'defaultCollapsedFn': '&?gmfDisplayquerywindowDefaultcollapsed',
     'desktop': '=gmfDisplayquerywindowDesktop',
+    'showUnqueriedLayers': '=gmfDisplayquerywindowShowunqueriedlayers'
   },
-  templateUrl: gmfDisplayquerywindowTemplateUrl,
+  templateUrl: gmfDisplayquerywindowTemplateUrl
 };
 
-module.component('gmfDisplayquerywindow', queryWindowComponent);
+
+exports.component('gmfDisplayquerywindow', exports.component_);
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IScope} $scope Angular scope.
- * @param {import('ngeo/query/MapQuerent.js').QueryResult} ngeoQueryResult ngeo query result.
- * @param {import("ngeo/query/MapQuerent.js").MapQuerent} ngeoMapQuerent ngeo map querent service.
- * @param {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr} ngeoFeatureOverlayMgr The ngeo feature
+ * @param {!jQuery} $element Element.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {!ngeox.QueryResult} ngeoQueryResult ngeo query result.
+ * @param {!ngeo.query.MapQuerent} ngeoMapQuerent ngeo map querent service.
+ * @param {!ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr The ngeo feature
  *     overlay manager service.
  * @constructor
- * @hidden
+ * @private
  * @ngInject
  * @ngdoc controller
  * @ngname GmfDisplayquerywindowController
  */
-export function QueryWindowController(
-  $element,
-  $scope,
-  ngeoQueryResult,
-  ngeoMapQuerent,
-  ngeoFeatureOverlayMgr
-) {
+exports.Controller_ = function($element, $scope, ngeoQueryResult, ngeoMapQuerent,
+  ngeoFeatureOverlayMgr) {
+
   /**
    * @type {Element|string}
+   * @export
    */
-  this.draggableContainment = '';
+  this.draggableContainment;
 
   /**
    * @type {boolean}
+   * @export
    */
   this.desktop = false;
 
@@ -182,103 +159,108 @@ export function QueryWindowController(
    * Is the window currently collapsed?
    * When used for Desktop, it is shown non-collapsed.
    * @type {boolean}
+   * @export
    */
   this.collapsed = !this.desktop;
 
   /**
-   * @type {import('ngeo/query/MapQuerent.js').QueryResult}
+   * @type {boolean}
+   * @private
+   */
+  this.showUnqueriedLayers_ = false;
+
+  /**
+   * Object that is used to filter the source list in the template.
+   * @type {Object}
+   * @export
+   */
+  this.sourcesFilter = {'queried': true};
+
+  /**
+   * @type {ngeox.QueryResult}
+   * @export
    */
   this.ngeoQueryResult = {
     sources: [],
     total: 0,
-    pending: false,
+    pending: false
   };
 
   /**
-   * @type {import("ngeo/query/MapQuerent.js").MapQuerent}
+   * @type {!ngeo.query.MapQuerent}
    * @private
    */
   this.ngeoMapQuerent_ = ngeoMapQuerent;
 
   /**
-   * @type {?import('ngeo/statemanager/WfsPermalink.js').QueryResultSource}
+   * @type {?ngeox.QueryResultSource}
+   * @export
    */
   this.selectedSource = null;
 
   /**
-   * @type {import("ol/Collection.js").default<import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>>}
+   * @type {!ol.Collection}
    * @private
    */
   this.features_ = new olCollection();
 
   /**
-   * @type {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr}
+   * @type {!ngeo.map.FeatureOverlayMgr}
    * @private
    */
   this.ngeoFeatureOverlayMgr_ = ngeoFeatureOverlayMgr;
 
   /**
-   * @type {import("ol/Collection.js").default<import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>>}
+   * @type {!ol.Collection}
    * @private
    */
   this.highlightFeatures_ = new olCollection();
 
   /**
-   * @type {?import('ngeo/statemanager/WfsPermalink.js').QueryResultSource}
+   * @type {?ngeox.QueryResultSource}
+   * @export
    */
   this.source = null;
 
   /**
-   * @type {?import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>}
+   * @type {?ol.Feature}
+   * @export
    */
   this.feature = null;
 
   /**
    * @type {number}
+   * @export
    */
   this.currentResult = -1;
 
   /**
    * @type {boolean}
+   * @export
    */
   this.isNext = true;
 
   /**
    * @type {number}
+   * @export
    */
   this.animate = 0;
 
   /**
    * @type {boolean}
+   * @export
    */
   this.open = false;
 
   /**
-   * @const {JQuery}
+   * @const {!jQuery}
    * @private
    */
   this.element_ = $element;
 
-  this.defaultCollapsedFn = () => !this.desktop;
-
-  /**
-   * @type {?() => olStyleStyle}
-   */
-  this.featuresStyleFn = null;
-  /**
-   * @type {?() => olStyleStyle}
-   */
-  this.selectedFeatureStyleFn = null;
-
-  /**
-   * @type {boolean}
-   */
-  this.isLoading = false;
-
   $scope.$watchCollection(
     () => ngeoQueryResult,
     (newQueryResult, oldQueryResult) => {
-      this.isLoading = newQueryResult.pending;
       this.updateQueryResult_(newQueryResult);
       if (newQueryResult.total > 0) {
         this.show();
@@ -286,41 +268,36 @@ export function QueryWindowController(
         this.open = false;
         this.clear();
       }
-    }
-  );
-}
+    });
+};
 
 /**
  * Initialise the controller.
  */
-QueryWindowController.prototype.$onInit = function () {
-  if (!this.featuresStyleFn) {
-    throw new Error('Missing featuresStyleFn');
-  }
-  if (!this.selectedFeatureStyleFn) {
-    throw new Error('Missing selectedFeatureStyleFn');
-  }
+exports.Controller_.prototype.$onInit = function() {
   this.draggableContainment = this.draggableContainment || 'document';
   this.desktop = this.desktop;
-  this.collapsed = this.defaultCollapsedFn();
+  this.collapsed = this['defaultCollapsedFn'] ?
+    this['defaultCollapsedFn']() === true : !this.desktop;
+
+  this.showUnqueriedLayers_ = this['showUnqueriedLayers'] ?
+    this['showUnqueriedLayers'] === true : false;
+
+  this.sourcesFilter = this.showUnqueriedLayers_ ? {} : {'queried': true};
 
   const featuresOverlay = this.ngeoFeatureOverlayMgr_.getFeatureOverlay();
   featuresOverlay.setFeatures(this.features_);
-  const featuresStyle = this.featuresStyleFn();
+  const featuresStyle = this['featuresStyleFn']();
   if (featuresStyle !== undefined) {
-    if (!(featuresStyle instanceof olStyleStyle)) {
-      throw new Error('Wrong featuresStyle type');
-    }
+    googAsserts.assertInstanceof(featuresStyle, olStyleStyle);
     featuresOverlay.setStyle(featuresStyle);
   }
 
   const highlightFeaturesOverlay = this.ngeoFeatureOverlayMgr_.getFeatureOverlay();
   highlightFeaturesOverlay.setFeatures(this.highlightFeatures_);
-  let highlightFeatureStyle = this.selectedFeatureStyleFn();
+  let highlightFeatureStyle = this['selectedFeatureStyleFn']();
   if (highlightFeatureStyle !== undefined) {
-    if (!(highlightFeatureStyle instanceof olStyleStyle)) {
-      throw new Error('Wrong highlightFeatureStyle type');
-    }
+    googAsserts.assertInstanceof(highlightFeatureStyle, olStyleStyle);
   } else {
     const fill = new olStyleFill({color: [255, 0, 0, 0.6]});
     const stroke = new olStyleStroke({color: [255, 0, 0, 1], width: 2});
@@ -329,9 +306,9 @@ QueryWindowController.prototype.$onInit = function () {
       image: new olStyleCircle({
         fill: fill,
         radius: 5,
-        stroke: stroke,
+        stroke: stroke
       }),
-      stroke: stroke,
+      stroke: stroke
     });
   }
   highlightFeaturesOverlay.setStyle(highlightFeatureStyle);
@@ -340,30 +317,32 @@ QueryWindowController.prototype.$onInit = function () {
   if (this.desktop) {
     windowContainer.draggable({
       handle: '.header',
-      containment: this.draggableContainment,
+      containment: this.draggableContainment
     });
     windowContainer.resizable({
-      handles: 'all',
       minHeight: 240,
-      minWidth: 240,
+      minWidth: 240
     });
   }
 };
+
 
 /**
  * Remove current displayed results then get new results from the
  * ngeoQueryResult service. Display all results on the map and display,
  * highlight the first feature.
+ * @export
  */
-QueryWindowController.prototype.show = function () {
+exports.Controller_.prototype.show = function() {
   this.clear();
   this.updateFeatures_();
 };
 
+
 /**
  * @private
  */
-QueryWindowController.prototype.updateFeatures_ = function () {
+exports.Controller_.prototype.updateFeatures_ = function() {
   this.setCurrentResult_(0, false);
   if (this.source !== null) {
     this.collectFeatures_();
@@ -380,7 +359,8 @@ QueryWindowController.prototype.updateFeatures_ = function () {
  * @return {boolean} True if result has changed. False else.
  * @private
  */
-QueryWindowController.prototype.setCurrentResult_ = function (position, setHighlight) {
+exports.Controller_.prototype.setCurrentResult_ = function(
+  position, setHighlight) {
   let hasChanged = false;
   if (position !== this.currentResult) {
     let i, source, features;
@@ -404,17 +384,19 @@ QueryWindowController.prototype.setCurrentResult_ = function (position, setHighl
       }
     }
     if (setHighlight) {
-      this.highlightCurrentFeature_(lastFeature || undefined);
+      this.highlightCurrentFeature_(lastFeature);
     }
   }
   return hasChanged;
 };
 
+
 /**
  * Select the logical previous source and feature then highlight this feature on
  * the map.
+ * @export
  */
-QueryWindowController.prototype.previous = function () {
+exports.Controller_.prototype.previous = function() {
   let position = this.currentResult - 1;
   if (position < 0) {
     position = this.getResultLength() - 1;
@@ -425,11 +407,13 @@ QueryWindowController.prototype.previous = function () {
   }
 };
 
+
 /**
  * Select the logical next source and feature then highlight this feature on
  * the map.
+ * @export
  */
-QueryWindowController.prototype.next = function () {
+exports.Controller_.prototype.next = function() {
   let position = this.currentResult + 1;
   const positionMax = this.getResultLength() - 1;
   if (position > positionMax) {
@@ -441,20 +425,20 @@ QueryWindowController.prototype.next = function () {
   }
 };
 
+
 /**
  * Remove features without properties from the query result.
- * @param {import('ngeo/query/MapQuerent.js').QueryResult} queryResult ngeo query result.
+ * @param {ngeox.QueryResult} queryResult ngeo query result.
  * @private
  */
-QueryWindowController.prototype.updateQueryResult_ = function (queryResult) {
+exports.Controller_.prototype.updateQueryResult_ = function(queryResult) {
   this.ngeoQueryResult.total = 0;
   this.ngeoQueryResult.sources.length = 0;
-  for (const source of queryResult.sources) {
+  for (let i = 0; i < queryResult.sources.length; i++) {
+    const source = queryResult.sources[i];
     source.features = source.features.filter((feature) => {
-      if (!feature) {
-        throw new Error('Missing feature');
-      }
-      return !isEmpty(getFilteredFeatureValues(feature));
+      googAsserts.assert(feature);
+      return !olObj.isEmpty(ngeoMiscFeatureHelper.getFilteredFeatureValues(feature));
     });
     this.ngeoQueryResult.sources.push(source);
     this.ngeoQueryResult.total += source.features.length;
@@ -465,8 +449,9 @@ QueryWindowController.prototype.updateQueryResult_ = function (queryResult) {
  * Get the total count of features in the result of the query. If a source
  * has been select, only the number of features of that source are returned.
  * @return {number} Total number of features.
+ * @export
  */
-QueryWindowController.prototype.getResultLength = function () {
+exports.Controller_.prototype.getResultLength = function() {
   if (this.selectedSource === null) {
     return this.ngeoQueryResult.total;
   } else {
@@ -474,31 +459,38 @@ QueryWindowController.prototype.getResultLength = function () {
   }
 };
 
+
 /**
  * @return {boolean} If the first result is active.
+ * @export
  */
-QueryWindowController.prototype.isFirst = function () {
+exports.Controller_.prototype.isFirst = function() {
   return this.currentResult == 0;
 };
 
+
 /**
  * @return {boolean} If the last result is active.
+ * @export
  */
-QueryWindowController.prototype.isLast = function () {
+exports.Controller_.prototype.isLast = function() {
   return this.currentResult == this.getResultLength() - 1;
 };
+
 
 /**
  * Delete the unwanted ol3 properties from the current feature then return the
  * properties.
  * @return {Object?} Filtered properties of the current feature or null.
+ * @export
  */
-QueryWindowController.prototype.getFeatureValues = function () {
+exports.Controller_.prototype.getFeatureValues = function() {
   if (!this.feature) {
     return null;
   }
-  return getFilteredFeatureValues(this.feature);
+  return ngeoMiscFeatureHelper.getFilteredFeatureValues(this.feature);
 };
+
 
 /**
  * Special function that's used to set the "animation" value after to set the
@@ -509,40 +501,41 @@ QueryWindowController.prototype.getFeatureValues = function () {
  * or the previous result.
  * @private
  */
-QueryWindowController.prototype.animate_ = function (isNext) {
+exports.Controller_.prototype.animate_ = function(isNext) {
   this.isNext = isNext;
   this.animate++;
 };
+
 
 /**
  * Collect all features in the queryResult object.
  * @private
  */
-QueryWindowController.prototype.collectFeatures_ = function () {
+exports.Controller_.prototype.collectFeatures_ = function() {
   const sources = this.ngeoQueryResult.sources;
   this.features_.clear();
-  for (const source of sources) {
+  for (let i = 0; i < sources.length; i++) {
+    const source = sources[i];
     if (this.selectedSource !== null && this.selectedSource !== source) {
       // when filtering on a source, only add features of the selected source
       continue;
     }
     const features = source.features;
-    for (const feature of features) {
-      this.features_.push(feature);
+    for (let ii = 0; ii < features.length; ii++) {
+      this.features_.push(features[ii]);
     }
   }
 };
 
+
 /**
  * Highlight the current displayed feature.
- * @param {import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>=} opt_lastFeature last highlighted feature. Require if
+ * @param {ol.Feature=} opt_lastFeature last highlighted feature. Require if
  * it exists because it must be added to the 'non-selected' features collection.
  * @private
  */
-QueryWindowController.prototype.highlightCurrentFeature_ = function (opt_lastFeature) {
-  if (!this.feature) {
-    throw new Error('Missing feature');
-  }
+exports.Controller_.prototype.highlightCurrentFeature_ =
+function(opt_lastFeature) {
   this.highlightFeatures_.clear();
   this.features_.remove(this.feature);
   this.highlightFeatures_.push(this.feature);
@@ -551,21 +544,25 @@ QueryWindowController.prototype.highlightCurrentFeature_ = function (opt_lastFea
   }
 };
 
+
 /**
  * Remove the current selected feature and source and remove all features
  * from the map.
+ * @export
  */
-QueryWindowController.prototype.close = function () {
+exports.Controller_.prototype.close = function() {
   this.open = false;
   this.clear();
   this.ngeoMapQuerent_.clear();
 };
 
+
 /**
  * Remove the current selected feature and source and remove all features
  * from the map.
+ * @export
  */
-QueryWindowController.prototype.clear = function () {
+exports.Controller_.prototype.clear = function() {
   this.feature = null;
   this.source = null;
   this.currentResult = -1;
@@ -574,10 +571,12 @@ QueryWindowController.prototype.clear = function () {
   this.selectedSource = null;
 };
 
+
 /**
- * @param {import('ngeo/statemanager/WfsPermalink.js').QueryResultSource} source The source to select.
+ * @param {ngeox.QueryResultSource} source The source to select.
+ * @export
  */
-QueryWindowController.prototype.setSelectedSource = function (source) {
+exports.Controller_.prototype.setSelectedSource = function(source) {
   if (source !== null && source.features.length <= 0) {
     // sources with no results can not be selected
     return;
@@ -587,6 +586,9 @@ QueryWindowController.prototype.setSelectedSource = function (source) {
   this.updateFeatures_();
 };
 
-module.controller('GmfDisplayquerywindowController', QueryWindowController);
 
-export default module;
+exports.controller('GmfDisplayquerywindowController',
+  exports.Controller_);
+
+
+export default exports;

@@ -1,95 +1,79 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
+/**
+ * @module app.mobile.Controller
+ */
 /**
  * Application entry point.
  *
- * This file includes `import`'s for all the components/directives used
+ * This file includes `goog.require`'s for all the components/directives used
  * by the HTML page and the controller to provide the configuration.
  */
 
-import './sass/vars_mobile.scss';
-import './sass/mobile.scss';
-
-import angular from 'angular';
-import gmfControllersAbstractMobileController, {AbstractMobileController}
-  from 'gmf/controllers/AbstractMobileController.js';
+import gmfControllersAbstractMobileController from 'gmf/controllers/AbstractMobileController.js';
+import 'gmf/controllers/mobile.less';
 import appBase from '../appmodule.js';
-import EPSG2056 from '@geoblocks/proj/src/EPSG_2056.js';
-import EPSG21781 from '@geoblocks/proj/src/EPSG_21781.js';
+import ngeoProjEPSG2056 from 'ngeo/proj/EPSG2056.js';
+import ngeoProjEPSG21781 from 'ngeo/proj/EPSG21781.js';
+import * as olBase from 'ol/index.js';
+import Raven from 'raven-js/src/raven.js';
+import RavenPluginsAngular from 'raven-js/plugins/angular.js';
 
 if (!window.requestAnimationFrame) {
   alert('Your browser is not supported, please update it or use another one. You will be redirected.\n\n'
-    + 'Votre navigateur n\'est pas supporté, veuillez le mettre à jour ou en utiliser un autre. '
-    + 'Vous allez être redirigé.\n\n'
-    + 'Ihr Browser wird nicht unterstützt, bitte aktualisieren Sie ihn oder verwenden Sie einen anderen. '
-    + 'Sie werden weitergeleitet.');
-  window.location.href = 'https://geomapfish.org/';
+    + 'Votre navigateur n\'est pas supporté, veuillez le mettre à jour ou en utiliser un autre. Vous allez être redirigé.\n\n'
+    + 'Ihr Browser wird nicht unterstützt, bitte aktualisieren Sie ihn oder verwenden Sie einen anderen. Sie werden weitergeleitet.');
+  window.location = 'http://geomapfish.org/';
 }
 
-
 /**
- * @private
+ * @param {angular.Scope} $scope Scope.
+ * @param {angular.$injector} $injector Main injector.
+ * @constructor
+ * @extends {gmf.controllers.AbstractMobileController}
+ * @ngInject
+ * @export
  */
-class Controller extends AbstractMobileController {
+const exports = function($scope, $injector) {
+  gmfControllersAbstractMobileController.call(this, {
+    autorotate: false,
+    srid: 21781,
+    mapViewConfig: {
+      center: [632464, 185457],
+      zoom: 3,
+      resolutions: [250, 100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05]
+    }
+  }, $scope, $injector);
+
   /**
-   * @param {angular.IScope} $scope Scope.
-   * @param {angular.auto.IInjectorService} $injector Main injector.
-   * @ngInject
+   * @type {Array.<gmf.mobile.measure.pointComponent.LayerConfig>}
+   * @export
    */
-  constructor($scope, $injector) {
-    super({
-      autorotate: false,
-      srid: 2056,
-      mapViewConfig: {
-        center: [2632464, 1185457],
-        zoom: 3,
-        resolutions: [250, 100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05]
-      }
-    }, $scope, $injector);
+  this.elevationLayersConfig = [
+    {name: 'aster', unit: 'm'},
+    {name: 'srtm', unit: 'm'}
+  ];
 
-    /**
-     * @type {Array<import('gmf/mobile/measure/pointComponent.js').LayerConfig>}
-     */
-    this.elevationLayersConfig = [
-      {name: 'aster', unit: 'm'},
-      {name: 'srtm', unit: 'm'}
-    ];
+  /**
+   * @type {Array.<string>}
+   * @export
+   */
+  this.searchCoordinatesProjections = [ngeoProjEPSG21781, ngeoProjEPSG2056, 'EPSG:4326'];
 
-    /**
-     * @type {string[]}
-     */
-    this.searchCoordinatesProjections = [EPSG21781, EPSG2056, 'EPSG:4326'];
+  if ($injector.has('sentryUrl')) {
+    const options = $injector.has('sentryOptions') ? $injector.get('sentryOptions') : undefined;
+    const raven = new Raven();
+    raven.config($injector.get('sentryUrl'), options)
+      .addPlugin(RavenPluginsAngular)
+      .install();
   }
-}
+};
 
-/**
- * @hidden
- */
-const module = angular.module('Appmobile', [
-  appBase.name,
-  gmfControllersAbstractMobileController.name,
+olBase.inherits(exports, gmfControllersAbstractMobileController);
+
+exports.module = angular.module('Appmobile', [
+  appBase.module.name,
+  gmfControllersAbstractMobileController.module.name,
 ]);
 
-module.controller('MobileController', Controller);
+exports.module.controller('MobileController', exports);
 
-export default module;
+export default exports;

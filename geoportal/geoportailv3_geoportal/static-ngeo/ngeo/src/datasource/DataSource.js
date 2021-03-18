@@ -1,57 +1,11 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 /**
- * The options required to create a `DataSource`.
- *
- * The synchronization is made in the `ngeo.datasource.syncDataSourcesMap`
- * service.
- *
- *
- * @typedef {Object} DataSourceOptions
- * @property {Array<import('ngeo/format/Attribute.js').Attribute>} [attributes] The attributes of the data
- *    source.
- * @property {import('ngeo/datasource/OGC.js').DimensionsFiltersConfig} [dimensionsFiltersConfig]
- *    The dimensions filters configuration, which determines dimensions supported by this data source using
- *    filters and give the corresponding field and whether they should use a static value or the one defined
- *    in the dimensions.
- * @property {number} id The data source id.
- * @property {string} [identifierAttribute] The name of an attribute among the attributes of the data source.
- *    The value of that attribute, in records, can be used to identify each record individually.
- * @property {boolean} [inRange] A data source is considered 'in range' when it is synchronized to
- *    a map view and the resolution of that view is within the range of the `maxResolution` and
- *    `minResolution`. These 2 properties are required for the `inRange` property to be dynamic, otherwise its
- *    value is always `true` by default.
- * @property {number} [minResolution] Minimum resolution where the data source can be displayed or queried.
- * @property {number} [maxResolution] Maximum resolution where the data source can be displayed or queried.
- * @property {string} name A human-readable name for the data source.
- * @property {boolean} [visible=false] Whether the data source is visible or not, i.e.
- *    whether its is ON or OFF.
+ * @module ngeo.datasource.DataSource
  */
-
 /**
- * @private
- * @hidden
+ * @implements {ngeox.datasource.DataSource}
  */
-class DataSource {
+const exports = class {
+
   /**
    * A `ngeo.datasource.DataSource` represents a single source of data, which
    * can combine different type of servers to display or fetch the data. It can
@@ -65,9 +19,11 @@ class DataSource {
    *  - know whether the data is visible or not
    *  - apply filter rules on it
    *
-   * @param {DataSourceOptions} options Options.
+   * @struct
+   * @param {ngeox.datasource.DataSourceOptions} options Options.
    */
   constructor(options) {
+
     // === DYNAMIC properties (i.e. that can change / be watched ===
 
     /**
@@ -77,19 +33,22 @@ class DataSource {
      * required for the `inRange` property to be dynamic, otherwise its
      * value is always `true` by default.
      *
-     * The synchronization is made in the `import('ngeo/datasource/DataSource.js').DataSources`
+     * The synchronization is made in the `ngeo.datasource.DataSources`
      * service.
      *
      * @type {boolean}
+     * @private
      */
-    this.inRange = options.inRange !== false;
+    this.inRange_ = options.inRange !== false;
 
     /**
      * Whether the data source is visible or not, i.e. whether its is ON or OFF.
      * Defaults to `false`.
      * @type {boolean}
+     * @private
      */
-    this.visible = options.visible === true;
+    this.visible_ = options.visible === true;
+
 
     // === STATIC properties (i.e. that never change) ===
 
@@ -99,7 +58,8 @@ class DataSource {
      * Note: `attributes` is not using the conventionnal getter/setter due
      * to:  See: https://github.com/google/closure-compiler/issues/1089
      *
-     * @type {?Array<import('ngeo/format/Attribute.js').Attribute>}
+     * @type {?Array.<ngeox.Attribute>}
+     * @export
      */
     this.attributes = options.attributes || null;
 
@@ -141,19 +101,57 @@ class DataSource {
     this.name_ = options.name;
   }
 
+  // ========================================
+  // === Dynamic property getters/setters ===
+  // ========================================
+
+  /**
+   * @return {boolean} In range
+   * @export
+   */
+  get inRange() {
+    return this.inRange_;
+  }
+
+  /**
+   * @param {boolean} inRange In range
+   * @export
+   */
+  set inRange(inRange) {
+    this.inRange_ = inRange;
+  }
+
+  /**
+   * @return {boolean} Visible
+   * @export
+   */
+  get visible() {
+    return this.visible_;
+  }
+
+  /**
+   * @param {boolean} visible Visible
+   * @export
+   */
+  set visible(visible) {
+    this.visible_ = visible;
+  }
+
   // =======================================
   // === Static property getters/setters ===
   // =======================================
 
   /**
-   * @return {?Array<import('ngeo/format/Attribute.js').Attribute>} Attributes
+   * @return {?Array.<ngeox.Attribute>} Attributes
+   * @export
    */
   getAttributes() {
     return this.attributes;
   }
 
   /**
-   * @param {Array<import('ngeo/format/Attribute.js').Attribute>} attributes Attributes
+   * @param {?Array.<ngeox.Attribute>} attributes Attributes
+   * @export
    */
   setAttributes(attributes) {
     this.attributes = attributes;
@@ -161,6 +159,7 @@ class DataSource {
 
   /**
    * @return {number} Id
+   * @export
    */
   get id() {
     return this.id_;
@@ -168,6 +167,7 @@ class DataSource {
 
   /**
    * @return {string|undefined} Identifier attribute
+   * @export
    */
   get identifierAttribute() {
     return this.identifierAttribute_;
@@ -175,6 +175,7 @@ class DataSource {
 
   /**
    * @return {number|undefined} Maximum resolution
+   * @export
    */
   get maxResolution() {
     return this.maxResolution_;
@@ -182,6 +183,7 @@ class DataSource {
 
   /**
    * @return {number|undefined} Minimum resolution
+   * @export
    */
   get minResolution() {
     return this.minResolution_;
@@ -189,10 +191,12 @@ class DataSource {
 
   /**
    * @return {string} Name
+   * @export
    */
   get name() {
     return this.name_;
   }
+
 
   // ===================================
   // === Calculated property getters ===
@@ -201,6 +205,7 @@ class DataSource {
   /**
    * Whether the data source is queryable or not.
    * @return {boolean} Whether the data source is queryable or not.
+   * @export
    */
   get queryable() {
     return false;
@@ -209,14 +214,12 @@ class DataSource {
   /**
    * @return {boolean} Whether the data source supports a dynamic `inRange`
    *     property or not, i.e. whether it can be calculated.
+   * @export
    */
   get supportsDynamicInRange() {
     return this.maxResolution !== null || this.minResolution !== null;
   }
-}
+};
 
-/**
- * @typedef {import("ol/Collection.js").default<DataSource>} DataSources
- */
 
-export default DataSource;
+export default exports;

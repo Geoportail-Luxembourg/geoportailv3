@@ -1,52 +1,28 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import {getUid as olUtilGetUid} from 'ol/util.js';
-import {listen, unlistenByKey} from 'ol/events.js';
+/**
+ * @module gmf.drawing.featureStyleComponent
+ */
+import googAsserts from 'goog/asserts.js';
+import * as olEvents from 'ol/events.js';
 import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
 
+/** @suppress {extraRequire} */
 import ngeoMiscColorpickerComponent from 'ngeo/misc/colorpickerComponent.js';
 
 import ngeoMiscFeatureHelper from 'ngeo/misc/FeatureHelper.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfDrawingFeatureStyle', [
+const exports = angular.module('gmfDrawingFeatureStyle', [
   ngeoMiscColorpickerComponent.name,
-  ngeoMiscFeatureHelper.name,
+  ngeoMiscFeatureHelper.module.name,
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/drawing/featureStyleComponent', require('./featureStyleComponent.html'));
-  }
-);
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/drawing/featureStyleComponent', require('./featureStyleComponent.html'));
+});
+
 
 /**
  * Directive used to set the style of a vector feature. The options depend
@@ -57,100 +33,113 @@ module.run(
  *         gmf-featurestyle-feature="ctrl.selectedFeature">
  *     </gmf-featurestyle>
  *
- * @htmlAttribute {import("ol/Feature.js").default<import("ol/geom/Geometry.js").default>} gmf-featurestyle-feature The feature.
- * @return {angular.IDirective} The directive specs.
+ * @htmlAttribute {ol.Feature} gmf-featurestyle-feature The feature.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname gmfFeaturestyle
  */
-function drawingDrawFeatureComponent() {
+exports.directive_ = function() {
   return {
     controller: 'GmfFeaturestyleController as fsCtrl',
     scope: {
-      'feature': '=gmfFeaturestyleFeature',
+      'feature': '=gmfFeaturestyleFeature'
     },
     bindToController: true,
-    templateUrl: 'gmf/drawing/featureStyleComponent',
+    templateUrl: 'gmf/drawing/featureStyleComponent'
   };
-}
+};
 
-module.directive('gmfFeaturestyle', drawingDrawFeatureComponent);
+
+exports.directive('gmfFeaturestyle',
+  exports.directive_);
+
 
 /**
- * @param {angular.IScope} $scope Angular scope.
- * @param {import("ngeo/misc/FeatureHelper.js").FeatureHelper} ngeoFeatureHelper Gmf feature helper service.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {ngeo.misc.FeatureHelper} ngeoFeatureHelper Gmf feature helper service.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname GmfFeaturestyleController
  */
-function Controller($scope, ngeoFeatureHelper) {
-  /**
-   * @type {string}
-   */
-  this.uid = olUtilGetUid(this);
+exports.Controller_ = function($scope, ngeoFeatureHelper) {
 
   /**
-   * @type {?import("ol/Feature.js").default<import("ol/geom/Geometry.js").default>}
+   * @type {?ol.Feature}
+   * @export
    */
-  this.feature = null;
+  this.feature;
 
   /**
-   * @type {angular.IScope}
+   * @type {!angular.Scope}
    * @private
    */
   this.scope_ = $scope;
 
   /**
-   * @type {import("ngeo/misc/FeatureHelper.js").FeatureHelper}
+   * @type {ngeo.misc.FeatureHelper}
    * @private
    */
   this.featureHelper_ = ngeoFeatureHelper;
 
   /**
    * @type {string|undefined}
+   * @export
    */
   this.color = undefined;
 
   /**
    * @type {string|undefined}
+   * @export
    */
   this.label = undefined;
 
   /**
    * @type {string|undefined}
+   * @export
    */
   this.measure = undefined;
 
-  $scope.$watch(() => this.color, this.handleColorSet_.bind(this));
+  $scope.$watch(
+    () => this.color,
+    this.handleColorSet_.bind(this)
+  );
 
   /**
-   * @type {Array<import("ol/events.js").EventsKey>}
+   * @type {Array.<ol.EventsKey>}
    * @private
    */
   this.featureListenerKeys_ = [];
 
   /**
    * @type {string|undefined}
+   * @export
    */
   this.type;
 
-  $scope.$watch(() => this.feature, this.handleFeatureSet_.bind(this));
-}
+  $scope.$watch(
+    () => this.feature,
+    this.handleFeatureSet_.bind(this)
+  );
+
+};
+
 
 /**
  * Called when a new feature is set, which can also be null.
- * @param {?import("ol/Feature.js").default<import("ol/geom/Geometry.js").default>} newFeature New feature or null value.
- * @param {?import("ol/Feature.js").default<import("ol/geom/Geometry.js").default>} previousFeature Previous feature or null value.
+ * @param {?ol.Feature} newFeature New feature or null value.
+ * @param {?ol.Feature} previousFeature Previous feature or null value.
  * @private
  */
-Controller.prototype.handleFeatureSet_ = function (newFeature, previousFeature) {
+exports.Controller_.prototype.handleFeatureSet_ = function(
+  newFeature, previousFeature) {
+
   const keys = this.featureListenerKeys_;
 
   if (previousFeature) {
-    keys.forEach(unlistenByKey);
+    keys.forEach(olEvents.unlistenByKey);
     keys.length = 0;
     this.type = undefined;
     this.color = undefined;
@@ -167,17 +156,29 @@ Controller.prototype.handleFeatureSet_ = function (newFeature, previousFeature) 
       ngeoFormatFeatureProperties.OPACITY,
       ngeoFormatFeatureProperties.SHOW_MEASURE,
       ngeoFormatFeatureProperties.SIZE,
-      ngeoFormatFeatureProperties.STROKE,
-    ].forEach((propName) => {
-      keys.push(listen(newFeature, `change:${propName}`, this.handleFeatureChange_, this));
-    });
+      ngeoFormatFeatureProperties.STROKE
+    ].forEach(function(propName) {
+      keys.push(
+        olEvents.listen(
+          newFeature,
+          `change:${propName}`,
+          this.handleFeatureChange_,
+          this
+        )
+      );
+    }, this);
 
     const geometry = newFeature.getGeometry();
-    if (!geometry) {
-      throw new Error('Missing geometry');
-    }
+    googAsserts.assert(geometry, 'Geometry should be thruthy');
 
-    keys.push(listen(geometry, 'change', this.handleGeometryChange_, this));
+    keys.push(
+      olEvents.listen(
+        geometry,
+        'change',
+        this.handleGeometryChange_,
+        this
+      )
+    );
 
     this.type = this.featureHelper_.getType(newFeature);
     this.color = this.featureHelper_.getColorProperty(newFeature);
@@ -185,11 +186,13 @@ Controller.prototype.handleFeatureSet_ = function (newFeature, previousFeature) 
   }
 };
 
+
 /**
  * @param {string|undefined} newColor Color.
  * @private
  */
-Controller.prototype.handleColorSet_ = function (newColor) {
+exports.Controller_.prototype.handleColorSet_ = function(
+  newColor) {
   if (this.feature && newColor) {
     const currentColor = this.feature.get(ngeoFormatFeatureProperties.COLOR);
     if (currentColor !== newColor) {
@@ -198,63 +201,76 @@ Controller.prototype.handleColorSet_ = function (newColor) {
   }
 };
 
+
 /**
  * @param {number|undefined} value A name value to set or undefined to get.
  * @return {number} The angle of the feature.
+ * @export
  */
-Controller.prototype.getSetAngle = function (value) {
-  return /** @type {number} */ (this.getSetProperty_(ngeoFormatFeatureProperties.ANGLE, value));
+exports.Controller_.prototype.getSetAngle = function(value) {
+  return googAsserts.assertNumber(this.getSetProperty_(ngeoFormatFeatureProperties.ANGLE, value));
 };
+
 
 /**
  * @param {string|undefined} value A name value to set or undefined to get.
  * @return {string} The name of the feature.
+ * @export
  */
-Controller.prototype.getSetName = function (value) {
-  return /** @type {string} */ (this.getSetProperty_(ngeoFormatFeatureProperties.NAME, value));
+exports.Controller_.prototype.getSetName = function(value) {
+  return googAsserts.assertString(this.getSetProperty_(ngeoFormatFeatureProperties.NAME, value));
 };
 
 /**
  * @param {boolean|undefined} value A value to set or undefined for the
  *     purpose of showing the attribute labels or not.
  * @return {boolean} Whether to show the labels or not.
+ * @export
  */
-Controller.prototype.getSetShowLabel = function (value) {
-  return /** @type {boolean} */ (this.getSetProperty_(ngeoFormatFeatureProperties.SHOW_LABEL, value));
+exports.Controller_.prototype.getSetShowLabel = function(value) {
+  return googAsserts.assertBoolean(this.getSetProperty_(ngeoFormatFeatureProperties.SHOW_LABEL, value));
 };
 
 /**
  * @param {number|undefined} value A stroke value to set or undefined to get.
  * @return {number} The stroke of the feature.
+ * @export
  */
-Controller.prototype.getSetOpacity = function (value) {
-  return /** @type {number} */ (this.getSetProperty_(ngeoFormatFeatureProperties.OPACITY, value));
+exports.Controller_.prototype.getSetOpacity = function(value) {
+  return googAsserts.assertNumber(this.getSetProperty_(ngeoFormatFeatureProperties.OPACITY, value));
 };
+
 
 /**
  * @param {boolean|undefined} value A value to set or undefined to get for the
  *     purpose of showing the geometry measurements or not.
  * @return {boolean} Whether to show the measurements or not.
+ * @export
  */
-Controller.prototype.getSetShowMeasure = function (value) {
-  return /** @type {boolean} */ (this.getSetProperty_(ngeoFormatFeatureProperties.SHOW_MEASURE, value));
+exports.Controller_.prototype.getSetShowMeasure = function(value) {
+  return googAsserts.assertBoolean(this.getSetProperty_(ngeoFormatFeatureProperties.SHOW_MEASURE, value));
 };
+
 
 /**
  * @param {number|undefined} value A size value to set or undefined to get.
  * @return {number} The size of the feature.
+ * @export
  */
-Controller.prototype.getSetSize = function (value) {
-  return /** @type {number} */ (this.getSetProperty_(ngeoFormatFeatureProperties.SIZE, value));
+exports.Controller_.prototype.getSetSize = function(value) {
+  return googAsserts.assertNumber(this.getSetProperty_(ngeoFormatFeatureProperties.SIZE, value));
 };
+
 
 /**
  * @param {number|undefined} value A stroke value to set or undefined to get.
  * @return {number} The stroke of the feature.
+ * @export
  */
-Controller.prototype.getSetStroke = function (value) {
-  return /** @type {number} */ (this.getSetProperty_(ngeoFormatFeatureProperties.STROKE, value));
+exports.Controller_.prototype.getSetStroke = function(value) {
+  return googAsserts.assertNumber(this.getSetProperty_(ngeoFormatFeatureProperties.STROKE, value));
 };
+
 
 /**
  * @param {string} key The property name.
@@ -263,20 +279,18 @@ Controller.prototype.getSetStroke = function (value) {
  * @return {boolean|number|string} The property value of the feature.
  * @private
  */
-Controller.prototype.getSetProperty_ = function (key, value) {
-  if (!this.feature) {
-    throw new Error('Missing feature');
-  }
+exports.Controller_.prototype.getSetProperty_ = function(key, value) {
   if (value !== undefined) {
     this.feature.set(key, value);
   }
   return /** @type {boolean|number|string} */ (this.feature.get(key));
 };
 
+
 /**
  * @private
  */
-Controller.prototype.handleFeatureChange_ = function () {
+exports.Controller_.prototype.handleFeatureChange_ = function() {
   const feature = this.feature;
 
   if (!feature) {
@@ -286,13 +300,12 @@ Controller.prototype.handleFeatureChange_ = function () {
   this.featureHelper_.setStyle(feature, true);
 };
 
+
 /**
  * @private
  */
-Controller.prototype.handleGeometryChange_ = function () {
-  if (!this.feature) {
-    throw new Error('Missing feature');
-  }
+exports.Controller_.prototype.handleGeometryChange_ = function() {
+  googAsserts.assert(this.feature);
   this.measure = this.featureHelper_.getMeasure(this.feature);
 
   const showMeasure = this.featureHelper_.getShowMeasureProperty(this.feature);
@@ -303,6 +316,9 @@ Controller.prototype.handleGeometryChange_ = function () {
   this.scope_.$apply();
 };
 
-module.controller('GmfFeaturestyleController', Controller);
 
-export default module;
+exports.controller('GmfFeaturestyleController',
+  exports.Controller_);
+
+
+export default exports;

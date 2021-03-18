@@ -1,33 +1,7 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * An entry for a tool in a `ngeo.misc.ToolActivateMgr` group.
- * @typedef {Object} miscToolActivateMgrEntry
- * @property {import('ngeo/misc/ToolActivate.js').default} tool
- * @property {boolean} defaultTool
- * @property {function(): void} unlisten
+ * @module ngeo.misc.ToolActivateMgr
  */
+import googAsserts from 'goog/asserts.js';
 
 /**
  * Provides a service to manage the activation of `ngeo.misc.ToolActivate` objects.
@@ -50,64 +24,85 @@ import angular from 'angular';
  * [../examples/mapquery.html](../examples/mapquery.html)
  * [../examples/toolActivate.html](../examples/toolActivate.html)
  *
- * @param {angular.IScope} $rootScope The rootScope provider.
+ * @param {angular.Scope} $rootScope The rootScope provider.
  * @constructor
+ * @struct
  * @ngdoc service
  * @ngname ngeoToolActivateMgr
  * @ngInject
- * @hidden
  */
-export function ToolActivateMgr($rootScope) {
+const exports = function($rootScope) {
+
   /**
-   * @type {Object<string, miscToolActivateMgrEntry[]>}
+   * @type {!Object.<string, Array.<ngeox.miscToolActivateMgrEntry>>}
    * @private
    */
   this.groups_ = {};
 
   /**
    * The scope.
-   * @type {angular.IScope}
+   * @type {angular.Scope}
    * @private
    */
   this.scope_ = $rootScope;
-}
+};
+
 
 /**
  * Register a tool.
  * @param {string} groupName Name of the group of this tool.
- * @param {import("ngeo/misc/ToolActivate.js").default} tool Tool to register.
+ * @param {ngeo.misc.ToolActivate} tool Tool to register.
  * @param {boolean=} opt_defaultActivate If true, this tool will be activated
  *     when all other tools in the group are deactivated.
+ * @export
  */
-ToolActivateMgr.prototype.registerTool = function (groupName, tool, opt_defaultActivate) {
-  if (!this.groups_[groupName]) {
-    this.groups_[groupName] = [];
+exports.prototype.registerTool = function(groupName, tool,
+  opt_defaultActivate) {
+  let entries = this.groups_[groupName];
+  if (!entries) {
+    entries = this.groups_[groupName] = [];
   }
 
-  const unlisten = this.scope_.$watch(tool.getActive, (newVal, oldVal) => {
-    if (newVal === oldVal) {
-      return;
-    }
-    if (newVal) {
-      this.deactivateTools_(groupName, tool);
-    } else {
-      this.activateDefault_(groupName);
-    }
-  });
+  const unlisten = this.scope_.$watch(
+    tool.getActive,
+    (newVal, oldVal) => {
+      if (newVal === oldVal) {
+        return;
+      }
+      if (newVal) {
+        this.deactivateTools_(groupName, tool);
+      } else {
+        this.activateDefault_(groupName);
+      }
+    });
 
-  this.groups_[groupName].push({
+  entries.push({
     tool: tool,
     defaultTool: opt_defaultActivate || false,
-    unlisten: unlisten,
+    unlisten: unlisten
   });
+
+  if (googAsserts.ENABLE_ASSERTS) {
+    // check that only one default tool per group exists
+    let defaultTools = 0;
+    entries.forEach((entry) => {
+      if (entry.defaultTool) {
+        defaultTools++;
+      }
+    });
+    googAsserts.assert(
+      defaultTools <= 1, `more than one default tool in group ${groupName}`);
+  }
 };
+
 
 /**
  * Unregister a tool from a group.
  * @param {string} groupName Name of the group of this tool.
- * @param {import("ngeo/misc/ToolActivate.js").default} tool Tool to unregister.
+ * @param {ngeo.misc.ToolActivate} tool Tool to unregister.
+ * @export
  */
-ToolActivateMgr.prototype.unregisterTool = function (groupName, tool) {
+exports.prototype.unregisterTool = function(groupName, tool) {
   const entries = this.groups_[groupName];
   if (entries) {
     for (let i = 0; i < entries.length; i++) {
@@ -120,51 +115,59 @@ ToolActivateMgr.prototype.unregisterTool = function (groupName, tool) {
   }
 };
 
+
 /**
  * Unregister each tool from a group.
  * @param {string} groupName Name of the group of tools to unregister.
+ * @export
  */
-ToolActivateMgr.prototype.unregisterGroup = function (groupName) {
+exports.prototype.unregisterGroup = function(groupName) {
   const entries = this.groups_[groupName];
   if (entries) {
-    for (const entry of entries) {
-      entry.unlisten();
+    for (let i = 0; i < entries.length; i++) {
+      entries[i].unlisten();
     }
     delete this.groups_[groupName];
   }
 };
 
+
 /**
  * Activate a tool.
- * @param {import("ngeo/misc/ToolActivate.js").default} tool Tool to activate.
+ * @param {ngeo.misc.ToolActivate} tool Tool to activate.
+ * @export
  */
-ToolActivateMgr.prototype.activateTool = function (tool) {
+exports.prototype.activateTool = function(tool) {
   tool.setActive(true);
 };
 
+
 /**
  * Deactivate a tool.
- * @param {import("ngeo/misc/ToolActivate.js").default} tool Tool to deactivate.
+ * @param {ngeo.misc.ToolActivate} tool Tool to deactivate.
+ * @export
  */
-ToolActivateMgr.prototype.deactivateTool = function (tool) {
+exports.prototype.deactivateTool = function(tool) {
   tool.setActive(false);
 };
+
 
 /**
  * Deactivate all tools except the given one.
  *
  * @param {string} groupName Name of the group.
- * @param {import("ngeo/misc/ToolActivate.js").default} tool Tool to activate.
+ * @param {ngeo.misc.ToolActivate} tool Tool to activate.
  * @private
  */
-ToolActivateMgr.prototype.deactivateTools_ = function (groupName, tool) {
+exports.prototype.deactivateTools_ = function(groupName, tool) {
   const entries = this.groups_[groupName];
-  for (const entry of entries) {
-    if (tool != entry.tool) {
-      entry.tool.setActive(false);
+  for (let i = 0; i < entries.length; i++) {
+    if (tool != entries[i].tool) {
+      entries[i].tool.setActive(false);
     }
   }
 };
+
 
 /**
  * Activate the default tool in the given group if no other tool is active.
@@ -172,16 +175,16 @@ ToolActivateMgr.prototype.deactivateTools_ = function (groupName, tool) {
  * @param {string} groupName Name of the group.
  * @private
  */
-ToolActivateMgr.prototype.activateDefault_ = function (groupName) {
+exports.prototype.activateDefault_ = function(groupName) {
   const entries = this.groups_[groupName];
   let defaultTool = null;
   let hasActiveTool = false;
 
-  for (const entry of entries) {
-    hasActiveTool = hasActiveTool || entry.tool.getActive();
+  for (let i = 0; i < entries.length; i++) {
+    hasActiveTool = hasActiveTool || entries[i].tool.getActive();
 
-    if (entry.defaultTool) {
-      defaultTool = entry.tool;
+    if (entries[i].defaultTool) {
+      defaultTool = entries[i].tool;
     }
   }
 
@@ -190,11 +193,9 @@ ToolActivateMgr.prototype.activateDefault_ = function (groupName) {
   }
 };
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoToolActivateMgr', []);
-module.service('ngeoToolActivateMgr', ToolActivateMgr);
 
-export default module;
+exports.module = angular.module('ngeoToolActivateMgr', []);
+exports.module.service('ngeoToolActivateMgr', exports);
+
+
+export default exports;

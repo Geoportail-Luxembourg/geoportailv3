@@ -1,9 +1,3 @@
-<div class="spinner-window" ng-if="ctrl.isLoading">
-  <i class="fa fa-spin">
-    <%=require('gmf/icons/spinner.svg?viewbox&height=3rem')%>
-  </i>
-</div>
-
 <div
   class="gmf-displayquerywindow"
   ng-class="{'desktop': ctrl.desktop, 'mobile': !ctrl.desktop}"
@@ -28,7 +22,7 @@
 
     <button
       type="button"
-      class="btn fa-times close"
+      class="btn fa-close close"
       ng-click="ctrl.close()">
     </button>
 
@@ -60,7 +54,7 @@
                 ></td>
               <td
                 class="details-value"
-                ng-bind-html="value | removeCDATA | ngeoTrustHtmlAuto"
+                ng-bind-html="value | removeCDATA | ngeoTrustHtml"
                 ></td>
             </tr>
           </table>
@@ -96,6 +90,7 @@
             data-toggle="dropdown"
             aria-expanded="false">
             <span class="fa fa-filter"></span>
+            <span class="fa fa-caret-up"></span>
           </button>
 
           <ul
@@ -120,7 +115,7 @@
             </li>
 
             <li
-              ng-repeat-start="source in ctrl.ngeoQueryResult.sources" ng-repeat-end
+              ng-repeat-start="source in ctrl.ngeoQueryResult.sources | filter: ctrl.sourcesFilter" ng-repeat-end
               ng-class="{'disabled': source.features.length <= 0}">
               <a
                 href="#"

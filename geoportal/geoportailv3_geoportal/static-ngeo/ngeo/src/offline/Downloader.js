@@ -1,129 +1,89 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.offline.Downloader
+ */
 import {DEVICE_PIXEL_RATIO} from 'ol/has.js';
+import googAsserts from 'goog/asserts.js';
 import olSourceTileWMS from 'ol/source/TileWMS.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import TilesDownloader from 'ngeo/offline/TilesDownloader.js';
-import angular from 'angular';
+
 
 /**
- * @param {import("ol/coordinate.js").Coordinate} a Some coordinates.
- * @param {import("ol/coordinate.js").Coordinate} b Some other coordinates.
+ * @param {ol.Coordinate} a Some coordinates.
+ * @param {ol.Coordinate} b Some other coordinates.
  * @return {number} The squared magnitude.
  */
 function magnitude2(a, b) {
   let magnitudeSquared = 0;
   for (let i = 0; i < a.length; ++i) {
-    magnitudeSquared += Math.pow(a[i] - b[i], 2);
+    magnitudeSquared += Math.pow(a[1] - b[1], 2);
   }
   return magnitudeSquared;
 }
 
+
 const Downloader = class {
+
   /**
    * @ngInject
-   * @param {import("ngeo/offline/Configuration.js").default} ngeoOfflineConfiguration
-   * A service for customizing offline behaviour.
+   * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    */
   constructor(ngeoOfflineConfiguration) {
     /**
      * @private
-     * @type {import("ngeo/offline/Configuration.js").default}
+     * @type {ngeo.offline.Configuration}
      */
     this.configuration_ = ngeoOfflineConfiguration;
 
     /**
-     * @type {?TilesDownloader}
+     * @type {TilesDownloader}
      * @private
      */
     this.tileDownloader_ = null;
   }
 
   cancel() {
-    if (this.tileDownloader_) {
-      this.tileDownloader_.cancel();
-    }
+    this.tileDownloader_.cancel();
   }
 
   /**
-   * @param {import("./index.js").OfflineLayerMetadata} layerMetadata Layers metadata.
-   * @param {Array<import("./index.js").OfflineTile>} queue Queue of tiles to download.
+   * @param {ngeox.OfflineLayerMetadata} layerMetadata Layers metadata.
+   * @param {Array<ngeox.OfflineTile>} queue Queue of tiles to download.
    */
   queueLayerTiles_(layerMetadata, queue) {
-    const source = /** @type {olSourceTileWMS|olSourceWMTS} */ (layerMetadata.source);
-    const {map, extentByZoom} = layerMetadata;
+    const {map, source, extentByZoom} = layerMetadata;
 
     if (!source) {
       return;
     }
-    console.assert(source instanceof olSourceTileWMS || source instanceof olSourceWMTS);
+    googAsserts.assert(source instanceof olSourceTileWMS || source instanceof olSourceWMTS);
     const projection = map.getView().getProjection();
     const tileGrid = source.getTileGrid();
     const tileUrlFunction = source.getTileUrlFunction();
 
-    console.assert(extentByZoom);
+    googAsserts.assert(extentByZoom);
     for (const extentZoom of extentByZoom) {
       const z = extentZoom.zoom;
       const extent = extentZoom.extent;
-      /**
-       * @type {import("./index.js").OfflineTile[]}
-       */
       const queueByZ = [];
-      /**
-       * @type {number}
-       */
-      let minX;
-      /**
-       * @type {number}
-       */
-      let minY;
-      /**
-       * @type {number}
-       */
-      let maxX;
-      /**
-       * @type {number}
-       */
-      let maxY;
+      let minX, minY, maxX, maxY;
       tileGrid.forEachTileCoord(extent, z, (coord) => {
         maxX = coord[1];
         maxY = coord[2];
-        if (minX === undefined || minY === undefined) {
+        if (minX === undefined) {
           minX = coord[1];
           minY = coord[2];
         }
         const url = tileUrlFunction(coord, DEVICE_PIXEL_RATIO, projection);
-        console.assert(url);
+        googAsserts.assert(url);
 
-        if (url) {
-          /**
-           * @type {import("./index.js").OfflineTile}
-           */
-          const tile = {coord, url, response: null};
-          queueByZ.push(tile);
-        }
+        /**
+         * @type {ngeox.OfflineTile}
+         */
+        const tile = {coord, url};
+        queueByZ.push(tile);
       });
 
-      // @ts-ignore
       const centerTileCoord = [z, (minX + maxX) / 2, (minY + maxY) / 2];
       queueByZ.sort((a, b) => magnitude2(a.coord, centerTileCoord) - magnitude2(b.coord, centerTileCoord));
       queue.push(...queueByZ);
@@ -131,33 +91,24 @@ const Downloader = class {
   }
 
   /**
-   * @param {import("ol/extent.js").Extent} extent The extent to download.
-   * @param {import("ol/Map.js").default} map The map to work on.
+   * @param {ol.Extent} extent The extent to download.
+   * @param {ol.Map} map The map to work on.
    * @return {Promise} A promise resolving when save is finished.
    */
   save(extent, map) {
     /**
-     * @type {!Array<import("./index.js").OfflineLayerMetadata>}
+     * @type {!Array<ngeox.OfflineLayerMetadata>}
      */
     const layersMetadatas = this.configuration_.createLayerMetadatas(map, extent);
 
     /**
-     * @type {!Array<import("./index.js").OfflinePersistentLayer>}
+     * @type {!Array<ngeox.OfflinePersistentLayer>}
      */
     const persistentLayers = [];
-    /**
-     * @type {import("./index.js").OfflineTile[]}
-     */
     const queue = [];
-    /**
-     * @type {number[]}
-     */
     const zooms = [];
     for (const layerItem of layersMetadatas) {
       if (layerItem.layerType === 'tile') {
-        /**
-         * @type {import("./index.js").OfflineTile[]}
-         */
         const tiles = [];
         this.queueLayerTiles_(layerItem, tiles);
         queue.push(...tiles);
@@ -171,24 +122,23 @@ const Downloader = class {
 
       layerItem.extentByZoom.forEach((obj) => {
         const zoom = obj.zoom;
-        if (!zooms.includes(zoom)) {
+        if (zooms.indexOf(zoom) < 0) {
           zooms.push(zoom);
         }
       });
     }
 
     /**
-     * @type {import("./index.js").OfflinePersistentContent}
+     * @type {ngeox.OfflinePersistentContent}
      */
     const persistentObject = {
       extent: extent,
       layers: persistentLayers,
-      zooms: zooms.sort((a, b) => (a < b ? -1 : 1)),
+      zooms: zooms.sort((a, b) => (a < b ? -1 : 1))
     };
     const setOfflineContentPromise = this.configuration_.setItem('offline_content', persistentObject);
 
-    const maxDownloads = this.configuration_.getMaxNumberOfParallelDownloads();
-    this.tileDownloader_ = new TilesDownloader(queue, this.configuration_, maxDownloads);
+    this.tileDownloader_ = new TilesDownloader(queue, this.configuration_, this.configuration_.getMaxNumberOfParallelDownloads());
     const tileDownloadPromise = this.tileDownloader_.download();
 
     const allPromise = Promise.all([setOfflineContentPromise, tileDownloadPromise]);
@@ -202,5 +152,6 @@ const name = 'offlineDownloader';
 Downloader.module = angular.module(name, []).service(name, Downloader);
 
 const exports = Downloader;
+
 
 export default exports;

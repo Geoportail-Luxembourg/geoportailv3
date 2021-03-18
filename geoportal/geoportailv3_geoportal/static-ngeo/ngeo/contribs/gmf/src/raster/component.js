@@ -1,75 +1,53 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.raster.component
+ */
 import gmfRasterRasterService from 'gmf/raster/RasterService.js';
+import googAsserts from 'goog/asserts.js';
 
+/** @suppress {extraRequire} */
 import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
 
-import {listen, unlistenByKey} from 'ol/events.js';
-import MapBrowserEvent from 'ol/MapBrowserEvent.js';
+import * as olEvents from 'ol/events.js';
 
 import 'bootstrap/js/dropdown.js';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfRasterComponent', [gmfRasterRasterService.name, ngeoMiscDebounce.name]);
+const exports = angular.module('gmfRasterComponent', [
+  gmfRasterRasterService.module.name,
+  ngeoMiscDebounce.name,
+]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/raster/widgetComponent', require('./widgetComponent.html'));
-  }
-);
 
-module.value(
-  'gmfElevationwidgetTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/raster/widgetComponent', require('./widgetComponent.html'));
+});
+
+
+exports.value('gmfElevationwidgetTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} The template url.
    */
   ($attrs) => {
-    const templateUrl = $attrs.gmfElevationwidgetTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/raster/widgetComponent';
-  }
-);
+    const templateUrl = $attrs['gmfElevationwidgetTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/raster/widgetComponent';
+  });
+
 
 /**
- * @hidden
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} gmfElevationwidgetTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} gmfElevationwidgetTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfElevationwidgetTemplateUrl($attrs, gmfElevationwidgetTemplateUrl) {
   return gmfElevationwidgetTemplateUrl($attrs);
 }
+
 
 /**
  * Provide a directive that set a value each 500ms with the elevation under the
@@ -101,17 +79,17 @@ function gmfElevationwidgetTemplateUrl($attrs, gmfElevationwidgetTemplateUrl) {
  *
  *
  * @htmlAttribute {boolean} gmf-elevation-active A boolean to set active or
- *     deactivate the component.
+ *     deactive the component.
  * @htmlAttribute {number} gmf-elevation-elevation The value to set with the
  *     elevation value.
  * @htmlAttribute {string} gmf-elevation-layer Elevation layer to use.
- * @htmlAttribute {Object<string, LayerConfig>} gmf-elevation-layersconfig Elevation layer configurations.
- * @htmlAttribute {import("ol/Map.js").default} gmf-elevation-map The map.
- * @return {angular.IDirective} Directive Definition Object.
+ * @htmlAttribute {Object.<string, gmf.raster.component.LayerConfig>} gmf-elevation-layersconfig Elevation layer configurations.
+ * @htmlAttribute {ol.Map} gmf-elevation-map The map.
+ * @return {angular.Directive} Directive Definition Object.
  * @ngdoc directive
  * @ngname gmfElevation
  */
-function rasterComponent() {
+exports.component_ = function() {
   return {
     restrict: 'A',
     controller: 'GmfElevationController as ctrl',
@@ -122,103 +100,101 @@ function rasterComponent() {
       'layersconfig': '=gmfElevationLayersconfig',
       'loading': '=?gmfElevationLoading',
       'layer': '<gmfElevationLayer',
-      'map': '=gmfElevationMap',
+      'map': '=gmfElevationMap'
     },
     link: (scope, element, attr) => {
-      // @ts-ignore: scope...
-      const ctrl = scope.ctrl;
+      const ctrl = scope['ctrl'];
 
       // Watch active or not.
-      scope.$watch(
-        () => ctrl.active,
-        (active) => {
-          ctrl.toggleActive_(active);
-        }
-      );
+      scope.$watch(() => ctrl.active, function(active) {
+        this.toggleActive_(active);
+      }.bind(ctrl));
 
       // Watch current layer.
-      scope.$watch(
-        () => ctrl.layer,
-        (layer) => {
-          ctrl.layer = layer;
-          ctrl.elevation = null;
-        }
-      );
-    },
+      scope.$watch(() => ctrl.layer, function(layer) {
+        this.layer = layer;
+        this.elevation = null;
+      }.bind(ctrl));
+    }
   };
-}
+};
 
-module.directive('gmfElevation', rasterComponent);
+
+exports.directive('gmfElevation', exports.component_);
 
 /**
- * @hidden
- * @param {angular.IScope} $scope Scope.
- * @param {angular.IFilterService} $filter Angular filter.
- * @param {import("ngeo/misc/debounce.js").miscDebounce<function(Event|import('ol/events/Event.js').default): void>} ngeoDebounce Ngeo debounce factory
- * @param {import("gmf/raster/RasterService.js").RasterService} gmfRaster Gmf Raster service
- * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext catalog.
+ * @param {!angular.Scope} $scope Scope.
+ * @param {!angular.$filter} $filter Angular filter.
+ * @param {!ngeox.miscDebounce} ngeoDebounce Ngeo debounce factory
+ * @param {!gmf.raster.RasterService} gmfRaster Gmf Raster service
+ * @param {!angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname gmfElevationController
  */
-function Controller($scope, $filter, ngeoDebounce, gmfRaster, gettextCatalog) {
+exports.Controller_ = function($scope, $filter, ngeoDebounce, gmfRaster, gettextCatalog) {
+
   /**
+   * @type {!angular.$filter}
    * @private
    */
   this.filter_ = $filter;
 
   /**
+   * @type {ngeox.miscDebounce}
    * @private
    */
   this.ngeoDebounce_ = ngeoDebounce;
 
   /**
+   * @type {gmf.raster.RasterService}
    * @private
    */
   this.gmfRaster_ = gmfRaster;
 
   /**
+   * @type {angularGettext.Catalog}
    * @private
    */
   this.gettextCatalog = gettextCatalog;
 
   /**
-   * @type {Object<string, LayerConfig>}
+   * @type {!Object.<string, gmf.raster.component.LayerConfig>}
    * @private
    */
-  this.layersconfig = {};
+  this.layersConfig;
 
   /**
    * @type {boolean}
    */
-  this.active = false;
+  this.active;
 
   /**
-   * @type {?string}
+   * @type {!string|undefined}
+   * @export
    */
-  this.elevation = null;
+  this.elevation;
 
   /**
    * @type {string}
    */
-  this.layer = '';
+  this.layer;
 
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {ol.Map}
    */
-  this.map = null;
+  this.map;
 
   /**
-   * @type {Array<import("ol/events.js").EventsKey>}
+   * @type {Array.<ol.EventsKey>}
    * @private
    */
   this.listenerKeys_ = [];
 
   /**
-   * @type {angular.IScope}
+   * @type {angular.Scope}
    * @private
    */
   this.scope_ = $scope;
@@ -231,104 +207,88 @@ function Controller($scope, $filter, ngeoDebounce, gmfRaster, gettextCatalog) {
 
   /**
    * @type {boolean}
+   * @export
    */
   this.loading = false;
-}
+};
 
 /**
- * Activate or deactivate the request of the raster each 500 ms on pointermove.
+ * Active or deactive the request of the raster each 500 ms on pointermove.
  * @param {boolean} active true to make requests.
  * @private
  */
-Controller.prototype.toggleActive_ = function (active) {
-  this.elevation = null;
+exports.Controller_.prototype.toggleActive_ = function(active) {
+  this.elevation = undefined;
   if (active) {
-    if (this.listenerKeys_.length) {
-      throw new Error('Unexpexted listenerKeys');
-    }
-    if (!this.map) {
-      throw new Error('Missing map');
-    }
+    googAsserts.assert(this.listenerKeys_.length === 0);
 
     // Moving the mouse clears previously displayed elevation
-    /**
-     * @param {Event|import("ol/events/Event.js").default} event The event
-     * @return {void}
-     */
-    const listener = (event) => {
-      this.scope_.$apply(() => {
-        this.inViewport_ = true;
-        this.elevation = null;
-        this.loading = false;
-      });
-    };
-    this.listenerKeys_.push(listen(this.map, 'pointermove', listener));
+    this.listenerKeys_.push(olEvents.listen(this.map, 'pointermove',
+      function(e) {
+        this.scope_.$apply(() => {
+          this.inViewport_ = true;
+          this.elevation = undefined;
+          this.loading = false;
+        });
+      }, this));
 
     // Launch the elevation service request when the user stops moving the
     // mouse for less short delay
-    this.listenerKeys_.push(
-      listen(
-        this.map,
-        'pointermove',
-        this.ngeoDebounce_(
-          /**
-           * @param {Event|import('ol/events/Event.js').default} e
-           */
-          (e) => {
-            if (this.inViewport_ && e instanceof MapBrowserEvent) {
-              this.loading = true;
-              const params = {
-                'layers': this.layer,
-              };
-              this.gmfRaster_
-                .getRaster(e.coordinate, params)
-                .then(this.getRasterSuccess_.bind(this), this.getRasterError_.bind(this));
-            }
-          },
-          500,
-          true
-        )
-      )
-    );
+    this.listenerKeys_.push(olEvents.listen(this.map, 'pointermove',
+      this.ngeoDebounce_(this.pointerStop_.bind(this), 500, true)
+    ));
 
-    this.listenerKeys_.push(
-      listen(this.map.getViewport(), 'mouseout', () => {
-        this.scope_.$apply(() => {
-          this.elevation = null;
-          this.inViewport_ = false;
-          this.loading = false;
-        });
-      })
-    );
+    this.listenerKeys_.push(olEvents.listen(this.map.getViewport(), 'mouseout', () => {
+      this.scope_.$apply(() => {
+        this.elevation = undefined;
+        this.inViewport_ = false;
+        this.loading = false;
+      });
+    }));
   } else {
-    this.elevation = null;
-    this.listenerKeys_.forEach(unlistenByKey);
+    this.elevation = undefined;
+    this.listenerKeys_.forEach(olEvents.unlistenByKey);
     this.listenerKeys_.length = 0;
   }
 };
 
+
 /**
- * @param {Object<string, number>} resp Response of the get Raster service.
+ * Request data from a raster from a MapBrowserPointerEvent's coordinates.
+ * Called when the user stopped moving the mouse for 500ms.
+ * @param {ol.MapBrowserPointerEvent} e An ol map browser pointer event.
  * @private
  */
-Controller.prototype.getRasterSuccess_ = function (resp) {
-  if (this.layer === undefined) {
-    throw new Error('Missing layer');
+exports.Controller_.prototype.pointerStop_ = function(e) {
+  if (this.inViewport_) {
+    this.loading = true;
+    const params = {
+      'layers': this.layer
+    };
+    this.gmfRaster_.getRaster(e.coordinate, params).then(
+      this.getRasterSuccess_.bind(this),
+      this.getRasterError_.bind(this)
+    );
   }
+};
+
+
+/**
+ * @param {Object.<string, number>} resp Response of the get Raster service.
+ * @private
+ */
+exports.Controller_.prototype.getRasterSuccess_ = function(resp) {
+  googAsserts.assert(this.layer, 'A layer should be selected');
   const value = resp[this.layer];
   if (value !== undefined && value !== null) {
     const options = this.layersconfig[this.layer] || {};
     const filter = options.filter || 'number';
     const custom_args = options.args || [];
     const postfix = options.hasOwnProperty('postfix') ? options.postfix : 'm';
-    const separator =
-      postfix.length > 0 ? (options.hasOwnProperty('separator') ? options.separator : '\u00a0') : '';
+    const separator = postfix.length > 0 ?
+      (options.hasOwnProperty('separator') ? options.separator : '\u00a0') : '';
     const args = Array.prototype.concat([value], custom_args);
-    const elevation = this.filter_(filter)(...args);
-    if (typeof elevation != 'string') {
-      throw new Error('Wrong elevation type');
-    }
-    this.elevation = elevation + separator + postfix;
+    this.elevation = this.filter_(filter)(...args) + separator + postfix;
   } else {
     const gettextCatalog = this.gettextCatalog;
     this.elevation = gettextCatalog.getString('No value');
@@ -336,16 +296,19 @@ Controller.prototype.getRasterSuccess_ = function (resp) {
   this.loading = false;
 };
 
+
 /**
  * @private
  */
-Controller.prototype.getRasterError_ = function () {
+exports.Controller_.prototype.getRasterError_ = function() {
   console.error('Error on getting the raster.');
-  this.elevation = null;
+  this.elevation = undefined;
   this.loading = false;
 };
 
-module.controller('GmfElevationController', Controller);
+
+exports.controller('GmfElevationController', exports.Controller_);
+
 
 /**
  * Provides a component which encapsulates the elevation component (see above)
@@ -359,8 +322,8 @@ module.controller('GmfElevationController', Controller);
  *      gmf-elevationwidget-active="mainCtrl.showInfobar">
  *  </gmf-elevationwidget>
  *
- * @htmlAttribute {import("ol/Map.js").default} gmf-elevationwidget-map The map.
- * @htmlAttribute {string[]} gmf-elevationwidget-layers The list of
+ * @htmlAttribute {ol.Map} gmf-elevationwidget-map The map.
+ * @htmlAttribute {Array.<string>} gmf-elevationwidget-layers The list of
  *     layers.
  * @htmlAttribute {boolean} gmf-elevationwidget-active Whether to activate the
  *     elevation component.
@@ -368,64 +331,72 @@ module.controller('GmfElevationController', Controller);
  * @ngdoc component
  * @ngname gmfElevationwidget
  */
-const rasterWidgetComponent = {
+exports.widgetComponent_ = {
   controller: 'gmfElevationwidgetController as ctrl',
   bindings: {
     'map': '<gmfElevationwidgetMap',
     'layers': '<gmfElevationwidgetLayers',
     'layersconfig': '=gmfElevationwidgetLayersconfig',
-    'active': '<gmfElevationwidgetActive',
+    'active': '<gmfElevationwidgetActive'
   },
-  templateUrl: gmfElevationwidgetTemplateUrl,
+  templateUrl: gmfElevationwidgetTemplateUrl
 };
-module.component('gmfElevationwidget', rasterWidgetComponent);
+exports.component('gmfElevationwidget', exports.widgetComponent_);
+
 
 /**
  * @constructor
  * @private
- * @hidden
  * @ngdoc controller
  */
-function WidgetController() {
+exports.WidgetController_ = function() {
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {!ol.Map}
+   * @export
    */
-  this.map = null;
+  this.map;
 
   /**
-   * @type {string[]}
+   * @type {!Array.<string>}
+   * @export
    */
-  this.layers = [];
+  this.layers;
 
   /**
-   * @type {Object<string, LayerConfig>}
+   * @type {!Object.<string, gmf.raster.component.LayerConfig>}
    * @private
    */
-  this.layersconfig = {};
+  this.layersconfig;
 
   /**
    * @type {boolean}
+   * @export
    */
-  this.active = false;
+  this.active;
 
   /**
    * @type {string}
+   * @export
    */
-  this.selectedElevationLayer = '';
-}
+  this.selectedElevationLayer;
+};
 
-WidgetController.prototype.$onInit = function () {
+
+exports.WidgetController_.prototype.$onInit = function() {
   this.selectedElevationLayer = this.layers[0];
 };
 
-module.controller('gmfElevationwidgetController', WidgetController);
+
+exports.controller('gmfElevationwidgetController', exports.WidgetController_);
 
 /**
- * @typedef {Object} LayerConfig
- * @property {string} [filter]
- * @property {string[]} [args]
- * @property {string} [postfix]
- * @property {string} [separator]
+ * @typedef {{
+ *     filter: (string|undefined),
+ *     args: (Array.<string>|undefined),
+ *     postfix: (string|undefined),
+ *     separator: (string|undefined)
+ * }}
  */
+exports.LayerConfig;
 
-export default module;
+export default exports;

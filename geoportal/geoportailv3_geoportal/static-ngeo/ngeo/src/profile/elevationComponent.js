@@ -1,94 +1,24 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import {listen} from 'ol/events.js';
+/**
+ * @module ngeo.profile.elevationComponent
+ */
+import googAsserts from 'goog/asserts.js';
+import * as olEvents from 'ol/events.js';
+import * as olObj from 'ol/obj.js';
 import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
 import ngeoProfileD3Elevation from 'ngeo/profile/d3Elevation.js';
 
-import {select as d3select} from 'd3';
+import {select} from 'd3-selection';
+const d3 = {
+  select,
+};
 
 /**
- * The POI data extractor is used to extract data from a POI.
- * The POI is an item of the POI data array.
- *
- * @typedef {Object} PoiExtractor
- * @property {function(Object): string} id Extract the id of a POI.
- * @property {function(Object): number} dist Extract the distance from origin of a POI.
- * @property {function(Object, number=): number} z Extract the elevation of a POI.
- * @property {function(Object): number} sort Extract the sequence number of a POI.
- * @property {function(Object): string} title Extract the title of a POI.
+ * @type {!angular.Module}
  */
+const exports = angular.module('ngeoProfile', [
+  ngeoMiscDebounce.name
+]);
 
-/**
- * Configuration object for one profile's line.
- *
- * @typedef {Object} LineConfiguration
- * @property {string} [color] Color of the line (hex color string).
- * @property {function(Object): number} zExtractor Extract the elevation of a point (an item of the
- * elevation data array).
- */
-
-/**
- * @typedef {Object} ProfileFormatter
- * @property {function(number, string): string} xhover Format the xhover distance.
- * @property {function(number, string): string} yhover Format the yhover elevation.
- * @property {function(number, string): (string|number)} xtick Format the xtick, for graduating the x axis.
- * @property {function(number, string): (string|number)} ytick Format the ytick, for graduating the y axis.
- */
-
-/**
- * @typedef {Object} I18n
- * @property {string} [xAxis] Text for the x axis. Will be completed by ` km` or ' m' (for kilometers or meters).
- * @property {string} [yAxis] Text for the y axis. Will be completed by ' m' (for meters).
- */
-
-/**
- * Options for the profile.
- *
- * @typedef {Object} ProfileOptions
- * @property {string} [styleDefs] Inline CSS style definition to inject in the SVG.
- * @property {number} [poiLabelAngle] Inline CSS style definition to inject in the SVG.
- * @property {ProfileFormatter} [formatter] Formatter giving full control on how numbers are formatted.
- * @property {function(Object): number} distanceExtractor Extract the distance from origin of a point (an
- * item of the elevation data array).
- * @property {Object<string, LineConfiguration>} linesConfiguration Configuration object for the profile's
- * lines. The key string of each object is used as class for its respective svg line.
- * @property {PoiExtractor} [poiExtractor] Extractor for parsing POI data.
- * @property {boolean} [light] Show a simplified profile when true.
- * @property {boolean} [lightXAxis] Show a simplified x axis with only both end ticks.
- * @property {function(function, function, number, number): void} [scaleModifier] Allows to modify the raw x
- * and y scales. Notably, it is possible to modify the y domain according to XY ratio rules,
- * add padding or enforce y lower bound.
- * @property {function(Object)} [hoverCallback] A callback called from the profile when the mouse moves over
- * a point. The point, an item of the elevation data array, is passed as the first argument of the function.
- * @property {function()} [outCallback] A callback called from the profile when the mouse leaves the profile.
- * @property {I18n} [i18n]
- */
-
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoProfile', [ngeoMiscDebounce.name]);
 
 /**
  * Provides a directive used to insert an elevation profile chart
@@ -101,46 +31,47 @@ const module = angular.module('ngeoProfile', [ngeoMiscDebounce.name]);
  *        ngeo-profile-pois="ctrl.profilePois">
  *      </div>
  *
- * Where `ctrl.profileOptions` is of type {@link ProfileOptions}; `ctrl.profileData` and `ctrl.profilePois`
- * are arrays which will be processed by `distanceExtractor` `{function(Object): number}`,
- * `linesConfiguration` `{Object<string, LineConfiguration>}` {@link LineConfiguration} and
- * {@link PoiExtractor}.
+ * Where "ctrl.profileOptions" is of type {@link ngeox.profile.ProfileOptions};
+ * "ctrl.profileData" and "ctrl.profilePois" are arrays which will be
+ * processed by {@link ngeox.profile.ElevationExtractor} and
+ * {@link ngeox.profile.PoiExtractor}.
  *
  * See our live example: [../examples/profile.html](../examples/profile.html)
  *
  * @htmlAttribute {?Object} ngeo-profile The profile data.
- * @htmlAttribute {ProfileOptions} ngeo-profile-options The options.
+ * @htmlAttribute {ngeox.profile.ProfileOptions} ngeo-profile-options The options.
  * @htmlAttribute {?Array} ngeo-profile-pois The data for POIs.
  * @htmlAttribute {*} ngeo-profile-highlight Any property on the scope which
- *    evaluated value may correspond to distance from origin.
- * @param {import("ngeo/misc/debounce.js").miscDebounce<function((Event|import('ol/events/Event.js').default)): void>} ngeoDebounce
- *    ngeo Debounce factory.
- * @return {angular.IDirective} Directive Definition Object.
+ * evaluated value may correspond to distance from origin.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeo Debounce factory.
+ * @return {angular.Directive} Directive Definition Object.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoProfile
  */
-function profileElevationComponent(ngeoDebounce) {
+exports.directive_ = function(ngeoDebounce) {
   return {
     restrict: 'A',
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
      */
     link: (scope, element, attrs) => {
-      const optionsAttr = attrs.ngeoProfileOptions;
-      console.assert(optionsAttr !== undefined);
 
-      const selection = d3select(element[0]);
+      const optionsAttr = attrs['ngeoProfileOptions'];
+      googAsserts.assert(optionsAttr !== undefined);
 
-      /** @type {*} */
-      let profile = undefined;
+      const selection = d3.select(element[0]);
+      let profile, elevationData, poiData;
+
       scope.$watchCollection(optionsAttr, (newVal) => {
-        /** @type {ProfileOptions} */
-        const options = Object.assign({}, newVal);
+
+        const options = /** @type {ngeox.profile.ProfileOptions} */
+                (olObj.assign({}, newVal));
 
         if (options !== undefined) {
+
           // proxy the hoverCallback and outCallbackin order to be able to
           // call $applyAsync
           //
@@ -152,7 +83,7 @@ function profileElevationComponent(ngeoDebounce) {
           // For that reason we use $applyAsync instead of $apply here.
           if (options.hoverCallback !== undefined) {
             const origHoverCallback = options.hoverCallback;
-            options.hoverCallback = function (...args) {
+            options.hoverCallback = function(...args) {
               origHoverCallback(...args);
               scope.$applyAsync();
             };
@@ -160,7 +91,7 @@ function profileElevationComponent(ngeoDebounce) {
 
           if (options.outCallback !== undefined) {
             const origOutCallback = options.outCallback;
-            options.outCallback = function () {
+            options.outCallback = function() {
               origOutCallback();
               scope.$applyAsync();
             };
@@ -171,37 +102,31 @@ function profileElevationComponent(ngeoDebounce) {
         }
       });
 
-      /** @type {undefined|*[]} */
-      let elevationData = undefined;
-      scope.$watch(attrs.ngeoProfile, (newVal, oldVal) => {
+      scope.$watch(attrs['ngeoProfile'], (newVal, oldVal) => {
         elevationData = newVal;
         refreshData();
       });
 
-      /** @type {undefined|*[]} */
-      let poiData = undefined;
-      scope.$watch(attrs.ngeoProfilePois, (newVal, oldVal) => {
+      scope.$watch(attrs['ngeoProfilePois'], (newVal, oldVal) => {
         poiData = newVal;
         refreshData();
       });
 
-      scope.$watch(attrs.ngeoProfileHighlight, (newVal, oldVal) => {
-        if (newVal === undefined) {
-          return;
-        }
-        if (newVal > 0) {
-          profile.highlight(newVal);
-        } else {
-          profile.clearHighlight();
-        }
-      });
+      scope.$watch(attrs['ngeoProfileHighlight'],
+        (newVal, oldVal) => {
+          if (newVal === undefined) {
+            return;
+          }
+          if (newVal > 0) {
+            profile.highlight(newVal);
+          } else {
+            profile.clearHighlight();
+          }
+        });
 
-      listen(window, 'resize', ngeoDebounce(refreshData, 50, true));
+      olEvents.listen(window, 'resize', ngeoDebounce(refreshData, 50, true));
 
-      /**
-       * @param {Event|import("ol/events/Event.js").default=} evt Event
-       */
-      function refreshData(evt) {
+      function refreshData() {
         if (profile !== undefined) {
           selection.datum(elevationData).call(profile);
           if (elevationData !== undefined) {
@@ -209,10 +134,11 @@ function profileElevationComponent(ngeoDebounce) {
           }
         }
       }
-    },
+    }
   };
-}
+};
 
-module.directive('ngeoProfile', profileElevationComponent);
+exports.directive('ngeoProfile', exports.directive_);
 
-export default module;
+
+export default exports;

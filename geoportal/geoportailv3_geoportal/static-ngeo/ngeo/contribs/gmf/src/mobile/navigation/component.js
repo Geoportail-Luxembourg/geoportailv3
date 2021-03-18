@@ -1,44 +1,9 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * @type {angular.IModule}
- * @hidden
+ * @module gmf.mobile.navigation.component
  */
-const module = angular.module('gmfMobileNav', []);
+import googAsserts from 'goog/asserts.js';
+const exports = angular.module('gmfMobileNav', []);
 
-/**
- * CSS class names toggled by the controller.
- * @enum {string}
- * @hidden
- */
-const CLASS_NAMES = {
-  ACTIVE: 'gmf-mobile-nav-active',
-  BACK: 'gmf-mobile-nav-back',
-  GO_BACK: 'gmf-mobile-nav-go-back',
-  SLIDE: 'gmf-mobile-nav-slide',
-  SLIDE_OUT: 'gmf-mobile-nav-slide-out',
-};
 
 /**
  * An "gmf-mobile-nav" directive defining the behavior of a tree-structured menu.
@@ -76,66 +41,63 @@ const CLASS_NAMES = {
  *
  * When an element slides in the directive changes the text in the header.
  *
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-function mobileNavigationComponent() {
+exports.component_ = function() {
   return {
     restrict: 'A',
     controller: 'gmfMobileNavController as navCtrl',
     bindToController: true,
     scope: true,
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController=} navCtrl Controller.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
+     * @param {gmf.mobile.navigation.component.Controller_} navCtrl Controller.
      */
     link: (scope, element, attrs, navCtrl) => {
-      if (!navCtrl) {
-        throw new Error('Missing navCtrl');
-      }
       navCtrl.init(element);
-    },
+    }
   };
-}
+};
 
-module.directive('gmfMobileNav', mobileNavigationComponent);
+exports.directive('gmfMobileNav', exports.component_);
+
 
 /**
- * @constructor
- * @private
- * @hidden
- * @ngInject
- * @ngdoc controller
- * @ngname gmfMobileNavController
- */
-function Controller() {
+* @constructor
+* @private
+* @ngInject
+* @ngdoc controller
+* @ngname gmfMobileNavController
+*/
+exports.Controller_ = function() {
   /**
    * Stack of slid-in items.
    * @private
-   * @type {JQuery[]}
+   * @type {Array.<!jQuery>}
    */
   this.slid_ = [];
 
   /**
    * Currently active sliding box.
    * @private
-   * @type {?JQuery}
+   * @type {jQuery}
    */
   this.active_ = null;
 
   /**
    * The navigation header.
    * @private
-   * @type {?JQuery}
+   * @type {jQuery}
    */
   this.header_ = null;
 
   /**
    * The back button in the navigation header.
    * @private
-   * @type {?JQuery}
+   * @type {jQuery}
    */
   this.backButton_ = null;
 
@@ -143,96 +105,82 @@ function Controller() {
    * Export the back function already bound to `this`. This makes sure that
    * the function is called on the right context, when it is passed to an
    * attribute in a template
+   * @export
    */
   this.back = this.back_.bind(this);
-}
+};
 
-module.controller('gmfMobileNavController', Controller);
+exports.controller('gmfMobileNavController', exports.Controller_);
+
 
 /**
  * Initialize the directive with the linked element.
- * @param {JQuery<HTMLElement>} element Element.
+ * @param {angular.JQLite} element Element.
  */
-Controller.prototype.init = function (element) {
-  this.active_ = $(element.find(`.${CLASS_NAMES.ACTIVE}.${CLASS_NAMES.SLIDE}`));
+exports.Controller_.prototype.init = function(element) {
+  const cls = exports.Controller_.ClassName_;
+  this.active_ = $(element.find(`.${cls.ACTIVE}.${cls.SLIDE}`));
   this.header_ = $(element.find('> header'));
-  this.backButton_ = $(element.find(`header > .${CLASS_NAMES.GO_BACK}`));
+  this.backButton_ = $(element.find(`header > .${cls.GO_BACK}`));
 
-  /**
-   * Watch for clicks on "slide-in" elements
-   * @param {JQuery.ClickEvent<any, any, any, HTMLElement>} evt The event
-   */
-  const onClick = (evt) => {
-    const slideOut = $(evt.currentTarget).parents(`.${CLASS_NAMES.SLIDE}`);
-    if (slideOut.length != 1) {
-      throw new Error('Wrong slideOut');
-    }
+  // watch for clicks on "slide-in" elements
+  element.find('[data-toggle=slide-in]').on('click', (evt) => {
+
+    const cls = exports.Controller_.ClassName_;
+
+    // the element to slide out is the div.slide parent
+    const slideOut = $(evt.currentTarget).parents(`.${cls.SLIDE}`);
+    googAsserts.assert(slideOut.length === 1);
 
     // push the item to the selected stack
     this.slid_.push(slideOut);
 
     // slide the "old" element out
-    slideOut.addClass(CLASS_NAMES.SLIDE_OUT).removeClass(CLASS_NAMES.ACTIVE);
+    slideOut.addClass(cls.SLIDE_OUT).removeClass(cls.ACTIVE);
 
     // element to slide in
-    const datatarget = $(evt.currentTarget).attr('data-target');
-    if (!datatarget) {
-      throw new Error('Missing datatarget');
-    }
-    const slideIn = $(datatarget);
-    if (slideIn.length != 1) {
-      throw new Error('Wrong slideIn');
-    }
+    const slideIn = $($(evt.currentTarget).attr('data-target'));
+    googAsserts.assert(slideIn.length === 1);
 
     // slide the "new" element in
-    slideIn.addClass(CLASS_NAMES.ACTIVE);
+    slideIn.addClass(cls.ACTIVE);
 
     // update the navigation header
     this.updateNavigationHeader_(slideIn, false);
 
     this.active_ = slideIn;
-  };
-  element.find('[data-toggle=slide-in]').on({
-    'click': onClick,
   });
 
   // watch for clicks on the header "go-back" link
   this.backButton_.click(this.back.bind(this));
 };
 
+
 /**
- * @param {JQuery} active The currently active sliding box.
+ * @param {!jQuery} active The currently active sliding box.
  * @param {boolean} back Whether to move back.
  * @private
  */
-Controller.prototype.updateNavigationHeader_ = function (active, back) {
-  if (!this.header_) {
-    throw new Error('Missing header');
-  }
-  if (!this.backButton_) {
-    throw new Error('Missing backButton');
-  }
-  this.header_.toggleClass(CLASS_NAMES.BACK, back);
+exports.Controller_.prototype.updateNavigationHeader_ = function(
+  active, back) {
+  const cls = exports.Controller_.ClassName_;
+  this.header_.toggleClass(cls.BACK, back);
 
   // remove any inactive nav
-  this.header_.find(`nav:not(.${CLASS_NAMES.ACTIVE} +)`).remove();
+  this.header_.find(`nav:not(.${cls.ACTIVE} +)`).remove();
 
   // deactivate the currently active nav
-  this.header_
-    .find(`nav.${CLASS_NAMES.ACTIVE}`)
-    .removeClass(CLASS_NAMES.ACTIVE)
-    .addClass(CLASS_NAMES.SLIDE_OUT);
+  this.header_.find(`nav.${cls.ACTIVE}`).removeClass(cls.ACTIVE)
+    .addClass(cls.SLIDE_OUT);
 
   // show the back button when relevant
-  this.backButton_.toggleClass(CLASS_NAMES.ACTIVE, this.slid_.length > 0);
+  this.backButton_.toggleClass(cls.ACTIVE, this.slid_.length > 0);
 
   // create a new nav
   const nav = $('<nav>');
-  nav.append(
-    $('<span>', {
-      text: active.attr('data-header-title'),
-    })
-  );
+  nav.append($('<span>', {
+    text: active.attr('data-header-title')
+  }));
   this.header_.append(nav);
 
   // Delay the activation of the new navigation so that the previous
@@ -250,34 +198,31 @@ Controller.prototype.updateNavigationHeader_ = function (active, back) {
       // fix: calling `position()` makes sure that the animation
       // is always run
       nav.position();
-      nav.addClass(CLASS_NAMES.ACTIVE);
+      nav.addClass(exports.Controller_.ClassName_.ACTIVE);
     }, 0);
   }, 0);
 };
+
 
 /**
  * Return to the previous slide.
  * @private
  */
-Controller.prototype.back_ = function () {
-  if (!this.active_) {
-    throw new Error('Missing active');
-  }
+exports.Controller_.prototype.back_ = function() {
   if (this.slid_.length <= 0) {
     return;
   }
 
+  const cls = exports.Controller_.ClassName_;
+
   // slide active item to the right
-  this.active_.removeClass(CLASS_NAMES.ACTIVE);
+  this.active_.removeClass(cls.ACTIVE);
 
   // get the previously active item
   const slideBack = this.slid_.pop();
-  if (!slideBack) {
-    throw new Error('Missing slideBack');
-  }
 
   // slide previous item to the right
-  slideBack.addClass(CLASS_NAMES.ACTIVE).removeClass(CLASS_NAMES.SLIDE_OUT);
+  slideBack.addClass(cls.ACTIVE).removeClass(cls.SLIDE_OUT);
 
   // update the navigation header
   this.updateNavigationHeader_(slideBack, true);
@@ -285,20 +230,37 @@ Controller.prototype.back_ = function () {
   this.active_ = slideBack;
 };
 
+
 /**
  * Return to the previous slide if the given element is active.
  *
  * @param {Element} element The element to check.
  */
-Controller.prototype.backIfActive = function (element) {
+exports.Controller_.prototype.backIfActive = function(element) {
   if (this.active_ !== null && this.active_.is(element)) {
     this.back_();
   }
 };
 
+
 /**
- * A directive to be used in conjunction with {@link import("gmf/mobile/navigation.js").default.component}.
- * The directive can be set on a slide element of {@link import("gmf/mobile/navigation.js").default.component}
+ * CSS class names toggled by the controller.
+ * @enum {string}
+ * @private
+ */
+
+exports.Controller_.ClassName_ = {
+  ACTIVE: 'gmf-mobile-nav-active',
+  BACK: 'gmf-mobile-nav-back',
+  GO_BACK: 'gmf-mobile-nav-go-back',
+  SLIDE: 'gmf-mobile-nav-slide',
+  SLIDE_OUT: 'gmf-mobile-nav-slide-out'
+};
+
+
+/**
+ * A directive to be used in conjunction with {@link gmf.mobile.navigation.component}.
+ * The directive can be set on a slide element of {@link gmf.mobile.navigation.component}
  * with an expression. When the value of the expression changes and becomes
  * true, the navigation returns to the previous slide, if the slide is
  * currently active.
@@ -308,45 +270,42 @@ Controller.prototype.backIfActive = function (element) {
  *    <nav class="gmf-mobile-nav-left" gmf-mobile-nav>
  *      ...
  *      <gmf-authentication class="gmf-mobile-nav-slide"
- *         gmf-mobile-nav-back="mainCtrl.gmfUser.username !== null">
+ *         gmf-mobile-nav-back="authCtrl.gmfUser.username !== null">
  *      </gmf-authentication>
  *
  * If `mainCtrl.gmfUser.username` becomes true and the login-slide is currently
  * active, the navigation will go back to the last slide.
  *
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-function mobileNavigationBackComponent() {
+exports.backDirective = function() {
   return {
     require: '^^gmfMobileNav',
     restrict: 'A',
     scope: false,
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController=} navCtrl Controller.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
+     * @param {gmf.mobile.navigation.component.Controller_} navCtrl Controller.
      */
     link: (scope, element, attrs, navCtrl) => {
-      scope.$watch(attrs.gmfMobileNavBack, (newVal, oldVal) => {
-        if (!navCtrl) {
-          throw new Error('Missing navCtrl');
-        }
+      scope.$watch(attrs['gmfMobileNavBack'], (newVal, oldVal) => {
         if (newVal === true) {
           navCtrl.backIfActive(element[0]);
         }
       });
-    },
+    }
   };
-}
+};
 
-module.directive('gmfMobileNavBack', mobileNavigationBackComponent);
+exports.directive('gmfMobileNavBack', exports.backDirective);
+
 
 /**
- * A directive to be used in conjunction with {@link import("gmf/mobile/navigation.js").default.component}.
- * The directive can be set on a slide element of
- * {@link import("gmf/mobile/navigation.js").default.component}.
+ * A directive to be used in conjunction with {@link gmf.mobile.navigation.component}.
+ * The directive can be set on a slide element of {@link gmf.mobile.navigation.component}.
  * When the element is clicked, the navigation returns to the previous slide if
  * the slide is currently active.
  *
@@ -359,31 +318,29 @@ module.directive('gmfMobileNavBack', mobileNavigationBackComponent);
  *         gmf-themeselector-currenttheme="mainCtrl.theme">
  *      </gmf-themeselector>
  *
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-function mobileNavigationBackOnClickComponent() {
+exports.backOnClickDirective = function() {
   return {
     require: '^^gmfMobileNav',
     restrict: 'A',
     scope: false,
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController=} navCtrl Controller.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
+     * @param {gmf.mobile.navigation.component.Controller_} navCtrl Controller.
      */
     link: (scope, element, attrs, navCtrl) => {
       element.on('click', () => {
-        if (!navCtrl) {
-          throw new Error('Missing navCtrl');
-        }
         navCtrl.backIfActive(element[0]);
       });
-    },
+    }
   };
-}
+};
 
-module.directive('gmfMobileNavBackOnClick', mobileNavigationBackOnClickComponent);
+exports.directive('gmfMobileNavBackOnClick', exports.backOnClickDirective);
 
-export default module;
+
+export default exports;

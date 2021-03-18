@@ -1,53 +1,25 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.layertree.timeSliderComponent
+ */
 import ngeoMiscWMSTime from 'ngeo/misc/WMSTime.js';
-import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
 
 import 'jquery-ui/ui/widgets/slider.js';
-import 'ngeo/sass/jquery-ui.scss';
 import 'angular-ui-slider';
-import './timeslider.scss';
+import './timeslider.less';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfLayertreeTimeSliderComponent', [
-  ngeoMiscWMSTime.name,
-  ngeoMiscDebounce.name,
+const exports = angular.module('gmfLayertreeTimeSliderComponent', [
+  ngeoMiscWMSTime.module.name,
   'ui.slider',
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/layertree/timesliderComponent', require('./timesliderComponent.html'));
-  }
-);
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/layertree/timesliderComponent', require('./timesliderComponent.html'));
+});
+
 
 /**
  * Provide a directive to select a single date or a range of dates with a slider
@@ -61,57 +33,41 @@ module.run(
  *          gmf-time-slider-on-date-selected="ctrl.onDateSelected(time)">
  *      </gmf-time-slider>
  *
- * @htmlAttribute {import('ngeo/datasource/OGC.js').TimeProperty} gmf-time-slider-time parameter
- *    for initialization.
+ * @htmlAttribute {ngeox.TimeProperty} gmf-time-slider-time parameter for initialization.
  * @htmlAttribute {function()} gmf-time-slider-on-date-selected Expression evaluated after
  * date(s) changed
- * @return {angular.IDirective} The directive specs.
+ * @param {angular.$timeout} $timeout angular timeout service
+ * @param {angular.$filter} $filter angular filter service
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname gmfTimeSlider
  */
-function layertreeTimeSliderComponent() {
+exports.directive_ = function($timeout, $filter) {
   return {
     scope: {
       onDateSelected: '&gmfTimeSliderOnDateSelected',
-      time: '=gmfTimeSliderTime',
+      time: '=gmfTimeSliderTime'
     },
     bindToController: true,
     controller: 'gmfTimeSliderController as sliderCtrl',
     restrict: 'AE',
     templateUrl: 'gmf/layertree/timesliderComponent',
-    link: {
+    link: /** @type {!angular.LinkingFunctions} */ ({
       pre: function preLink(scope, element, attrs, ctrl) {
-        if (!ctrl) {
-          throw new Error('Missing ctrl');
-        }
         ctrl.init();
 
-        ctrl.sliderOptions.stop = onSliderReleased_;
-        ctrl.sliderOptions.slide = ctrl.ngeoDebounce_(onSliderReleased_, 300, true);
+        ctrl.sliderOptions['stop'] = onSliderReleased_;
+        ctrl.sliderOptions['slide'] = computeDates_;
 
-        /**
-         * @param {never} e
-         * @param {never} sliderUi
-         */
         function onSliderReleased_(e, sliderUi) {
-          if (!ctrl) {
-            throw new Error('Missing ctrl');
-          }
           ctrl.onDateSelected({
-            time: computeDates_(e, sliderUi),
+            time: computeDates_(e, sliderUi)
           });
           scope.$apply();
         }
 
-        /**
-         * @param {never} e
-         * @param {{value: ?string, values: ?string[]}} sliderUi
-         */
         function computeDates_(e, sliderUi) {
-          if (!ctrl) {
-            throw new Error('Missing ctrl');
-          }
           let sDate, eDate, wmstime;
           if (sliderUi.values) {
             sDate = new Date(ctrl.getClosestValue_(sliderUi.values[0]));
@@ -119,128 +75,124 @@ function layertreeTimeSliderComponent() {
             ctrl.dates = [sDate, eDate];
             wmstime = {
               start: sDate.getTime(),
-              end: eDate.getTime(),
+              end: eDate.getTime()
             };
           } else {
             sDate = new Date(ctrl.getClosestValue_(sliderUi.value));
             ctrl.dates = sDate;
             wmstime = {
-              start: sDate.getTime(),
+              start: sDate.getTime()
             };
           }
           scope.$apply();
           return wmstime;
         }
-      },
-    },
+      }
+    })
   };
-}
+};
 
-module.directive('gmfTimeSlider', layertreeTimeSliderComponent);
+
+exports.directive('gmfTimeSlider', exports.directive_);
+
 
 /**
  * TimeSliderController - directive controller
- * @param {import("ngeo/misc/WMSTime.js").WMSTime} ngeoWMSTime WMSTime service.
- * @param {import("ngeo/misc/debounce.js").miscDebounce<function(): void>} ngeoDebounce ngeo Debounce factory.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {ngeo.misc.WMSTime} ngeoWMSTime WMSTime service.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname gmfTimeSliderController
  */
-function Controller(ngeoWMSTime, ngeoDebounce) {
+exports.Controller_ = function($scope, ngeoWMSTime) {
+
   /**
-   * @type {import("ngeo/misc/WMSTime.js").WMSTime}
+   * @type {ngeo.misc.WMSTime}
    * @private
    */
   this.ngeoWMSTime_ = ngeoWMSTime;
 
   /**
-   * @type {import("ngeo/misc/debounce.js").miscDebounce<function(): void>}
-   */
-  this.ngeoDebounce_ = ngeoDebounce;
-
-  /**
    * Function called after date(s) changed/selected
-   * @type {function(Object):any}
+   * @function
+   * @export
    */
-  this.onDateSelected = () => undefined;
+  this.onDateSelected;
+
 
   /**
    * A time object for directive initialization
-   * @type {?import('ngeo/datasource/OGC.js').TimeProperty}
+   * @type {ngeox.TimeProperty}
+   * @export
    */
-  this.time = null;
+  this.time;
 
   /**
    * If the component is used to select a date range
    * @type {boolean}
+   * @export
    */
-  this.isModeRange = false;
+  this.isModeRange;
 
   /**
    * Minimal value of the slider (time in ms)
    * @type {number}
+   * @export
    */
-  this.minValue = -1;
+  this.minValue;
 
   /**
    * Maximal value of the slider (time in ms)
    * @type {number}
+   * @export
    */
-  this.maxValue = 999999;
+  this.maxValue;
 
   /**
    * Used when WMS time object has a property 'values' instead of an interval
-   * @type {?number[]}
+   * @type (?Array<number>)
    */
-  this.timeValueList = null;
+  this.timeValueList;
 
   /**
    * Default Slider options (used by ui-slider directive)
-   * @type {?{
+   * @type {{
    *  range : boolean,
    *  min : number,
    *  max : number
    * }}
+   * @export
    */
-  this.sliderOptions = null;
+  this.sliderOptions;
 
   /**
    * Model for the ui-slider directive (date in ms format)
-   * @type {number[]|number}
+   * @type {Array.<number>|number}
+   * @export
    */
-  this.dates = [];
-}
+  this.dates;
+};
+
 
 /**
  * Initialise the controller.
  */
-Controller.prototype.init = function () {
-  if (!this.time) {
-    throw new Error('Missing time');
-  }
+exports.Controller_.prototype.init = function() {
+  this.timeValueList = this.getTimeValueList_();
 
   // Fetch the initial options for the component
   const initialOptions_ = this.ngeoWMSTime_.getOptions(this.time);
   this.isModeRange = this.time.mode === 'range';
   this.minValue = initialOptions_.minDate;
   this.maxValue = initialOptions_.maxDate;
-  const values = initialOptions_.values;
-  if (this.isModeRange) {
-    if (!Array.isArray(values)) {
-      throw new Error('Wrong Options values');
-    }
-    this.dates = [values[0], values[1]];
-  } else {
-    this.dates = initialOptions_.values;
-  }
-  this.timeValueList = this.getTimeValueList_();
+  this.dates = this.isModeRange ? [initialOptions_.values[0], initialOptions_.values[1]] :
+    initialOptions_.values;
   this.sliderOptions = {
     range: this.isModeRange,
     min: this.minValue,
-    max: this.maxValue,
+    max: this.maxValue
   };
 };
 
@@ -248,15 +200,11 @@ Controller.prototype.init = function () {
  * TimeSliderController.prototype.getTimeValueList_ - Get a list of time value instead
  * of using the wmstime interval as a list of possibles values
  * @private
- * @return {number[]}  - List of timestamp representing possible values
+ * @return {Array<number>}  - List of timestamp representing possible values
  */
-Controller.prototype.getTimeValueList_ = function () {
-  if (!this.time) {
-    throw new Error('Missing time');
-  }
+exports.Controller_.prototype.getTimeValueList_ = function() {
   const wmsTime = this.time;
-  /** @type {number[]} */
-  let timeValueList = [];
+  let timeValueList = null;
   const minDate = new Date(this.minValue);
   const maxDate = new Date(this.maxValue);
 
@@ -269,10 +217,8 @@ Controller.prototype.getTimeValueList_ = function () {
     const maxNbValues = 1024;
     const endDate = new Date(minDate.getTime());
     endDate.setFullYear(minDate.getFullYear() + maxNbValues * wmsTime.interval[0]);
-    endDate.setMonth(
-      minDate.getMonth() + maxNbValues * wmsTime.interval[1],
-      minDate.getDate() + maxNbValues * wmsTime.interval[2]
-    );
+    endDate.setMonth(minDate.getMonth() + maxNbValues * wmsTime.interval[1],
+      minDate.getDate() + maxNbValues * wmsTime.interval[2]);
     endDate.setSeconds(minDate.getSeconds() + maxNbValues * wmsTime.interval[3]);
 
     if (endDate > maxDate) {
@@ -282,10 +228,8 @@ Controller.prototype.getTimeValueList_ = function () {
       for (let i = 0; ; i++) {
         const nextDate = new Date(minDate.getTime());
         nextDate.setFullYear(minDate.getFullYear() + i * wmsTime.interval[0]);
-        nextDate.setMonth(
-          minDate.getMonth() + i * wmsTime.interval[1],
-          minDate.getDate() + i * wmsTime.interval[2]
-        );
+        nextDate.setMonth(minDate.getMonth() + i * wmsTime.interval[1],
+          minDate.getDate() + i * wmsTime.interval[2]);
         nextDate.setSeconds(minDate.getSeconds() + i * wmsTime.interval[3]);
         if (nextDate <= maxDate) {
           timeValueList.push(nextDate.getTime());
@@ -298,16 +242,14 @@ Controller.prototype.getTimeValueList_ = function () {
   return timeValueList;
 };
 
+
 /**
  * Compute the closest available date from the given timestamp
  * @param  {number} timestamp selected datetime (in ms format)
  * @return {number} the closest available datetime (in ms format) from the timestamp
  * @private
  */
-Controller.prototype.getClosestValue_ = function (timestamp) {
-  if (!this.time) {
-    throw new Error('Missing time');
-  }
+exports.Controller_.prototype.getClosestValue_ = function(timestamp) {
   if (timestamp <= this.minValue) {
     return this.minValue;
   }
@@ -322,7 +264,7 @@ Controller.prototype.getClosestValue_ = function (timestamp) {
     let leftIndex = 0;
     let rightIndex = this.timeValueList.length - 1;
 
-    while (rightIndex - leftIndex > 1) {
+    while ((rightIndex - leftIndex) > 1) {
       index = Math.floor((leftIndex + rightIndex) / 2);
       if (this.timeValueList[index] >= timestamp) {
         rightIndex = index;
@@ -341,7 +283,7 @@ Controller.prototype.getClosestValue_ = function (timestamp) {
     const startDate = new Date(this.minValue);
     let bestDate = new Date(this.minValue);
     const maxDate = new Date(this.maxValue);
-    let bestDistance = Math.abs(targetDate.getTime() - bestDate.getTime());
+    let bestDistance = Math.abs(targetDate - bestDate);
 
     for (let i = 1; ; i++) {
       // The start date should always be used as a reference
@@ -349,17 +291,15 @@ Controller.prototype.getClosestValue_ = function (timestamp) {
       // two months at once
       const next = new Date(startDate.getTime());
       next.setFullYear(startDate.getFullYear() + i * this.time.interval[0]);
-      next.setMonth(
-        startDate.getMonth() + i * this.time.interval[1],
-        startDate.getDate() + i * this.time.interval[2]
-      );
+      next.setMonth(startDate.getMonth() + i *  this.time.interval[1],
+        startDate.getDate() + i * this.time.interval[2]);
       next.setSeconds(startDate.getSeconds() + i * this.time.interval[3]);
 
       if (next > maxDate) {
         break;
       }
 
-      const distance = Math.abs(targetDate.getTime() - next.getTime());
+      const distance = Math.abs(targetDate - next);
       if (distance <= bestDistance) {
         bestDate = next;
         bestDistance = distance;
@@ -372,18 +312,20 @@ Controller.prototype.getClosestValue_ = function (timestamp) {
   }
 };
 
+
 /**
  * Format and localize time regarding a resolution.
  * @param {number} time (in ms format) timestamp to format and localize.
  * @return {string} Localized date string regarding the resolution.
+ * @export
  */
-Controller.prototype.getLocalizedDate = function (time) {
-  if (!this.time) {
-    throw new Error('Missing time');
-  }
+exports.Controller_.prototype.getLocalizedDate = function(time) {
   return this.ngeoWMSTime_.formatTimeValue(time, this.time.resolution);
 };
 
-module.controller('gmfTimeSliderController', Controller);
 
-export default module;
+exports.controller('gmfTimeSliderController',
+  exports.Controller_);
+
+
+export default exports;

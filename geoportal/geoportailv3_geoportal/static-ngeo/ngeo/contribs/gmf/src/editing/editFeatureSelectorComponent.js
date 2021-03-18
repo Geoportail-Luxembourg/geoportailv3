@@ -1,54 +1,28 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/**
+ * @module gmf.editing.editFeatureSelectorComponent
+ */
+import googAsserts from 'goog/asserts.js';
 
-import angular from 'angular';
-
-import gmfEditingEditFeatureComponent, {EditingState} from 'gmf/editing/editFeatureComponent.js';
+/** @suppress {extraRequire} */
+import gmfEditingEditFeatureComponent from 'gmf/editing/editFeatureComponent.js';
 
 import gmfLayertreeTreeManager from 'gmf/layertree/TreeManager.js';
 import gmfThemeThemes from 'gmf/theme/Themes.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('GmfEditingFeatureSelectorComponent', [
+const exports = angular.module('GmfEditingFeatureSelectorComponent', [
   gmfEditingEditFeatureComponent.name,
-  gmfLayertreeTreeManager.name,
-  gmfThemeThemes.name,
+  gmfLayertreeTreeManager.module.name,
+  gmfThemeThemes.module.name,
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    $templateCache.put(
-      // @ts-ignore: webpack
-      'gmf/editing/editFeatureSelectorComponent',
-      require('./editFeatureSelectorComponent.html')
-    );
-  }
-);
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/editing/editFeatureSelectorComponent', require('./editFeatureSelectorComponent.html'));
+});
+
 
 /**
  * Directive that uses the GMF Theme service to collect the editable layers
@@ -69,20 +43,20 @@ module.run(
  *
  * @htmlAttribute {boolean} gmf-editfeatureselector-active Whether the
  *     directive is active or not.
- * @htmlAttribute {import("ol/Map.js").default} gmf-editfeatureselector-map The map.
+ * @htmlAttribute {ol.Map} gmf-editfeatureselector-map The map.
  * @htmlAttribute {number|undefined} gmf-editfeatureselector-tolerance The
  *     buffer in pixels to use when making queries to get the features.
- * @htmlAttribute {import("ol/layer/Vector.js").default} gmf-editfeatureselector-vector The vector
+ * @htmlAttribute {ol.layer.Vector} gmf-editfeatureselector-vector The vector
  *     layer where the selected or created features are drawn.
- * @htmlAttribute {import("ngeo/layertree/Controller.js").default} gmf-editfeatureselector-tree The
+ * @htmlAttribute {ngeo.layertree.Controller} gmf-editfeatureselector-tree The
  *     layertree controller handling the selectable editable layers list.
  * @htmlAttribute {boolean} gmf-editfeatureselector-closeaftersave If true,
  *     immediately return to the main edit panel after save. Default is false.
- * @return {angular.IDirective} The directive specs.
+ * @return {angular.Directive} The directive specs.
  * @ngdoc directive
  * @ngname gmfEditfeatureselector
  */
-function editingEditFeatureComponent() {
+exports.component_ = function() {
   return {
     controller: 'GmfEditfeatureselectorController as efsCtrl',
     scope: {
@@ -91,90 +65,97 @@ function editingEditFeatureComponent() {
       'tolerance': '<?gmfEditfeatureselectorTolerance',
       'vectorLayer': '<gmfEditfeatureselectorVector',
       'selectedEditableTreeCtrl': '=?gmfEditfeatureselectorTree',
-      'closeAfterSave': '=?gmfEditfeatureselectorCloseaftersave',
+      'closeAfterSave': '=?gmfEditfeatureselectorCloseaftersave'
     },
     bindToController: true,
-    templateUrl: 'gmf/editing/editFeatureSelectorComponent',
+    templateUrl: 'gmf/editing/editFeatureSelectorComponent'
   };
-}
+};
 
-module.directive('gmfEditfeatureselector', editingEditFeatureComponent);
+
+exports.directive('gmfEditfeatureselector', exports.component_);
+
 
 /**
- * @param {angular.IScope} $scope Angular scope.
- * @param {angular.ITimeoutService} $timeout Angular timeout service.
- * @param {import("gmf/theme/Themes.js").ThemesService} gmfThemes The gmf Themes service.
- * @param {import("gmf/layertree/TreeManager.js").LayertreeTreeManager} gmfTreeManager The gmf TreeManager
- *    service.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {angular.$timeout} $timeout Angular timeout service.
+ * @param {gmf.theme.Themes} gmfThemes The gmf Themes service.
+ * @param {gmf.layertree.TreeManager} gmfTreeManager The gmf TreeManager service.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname GmfEditfeatureselectorController
  */
-function Controller($scope, $timeout, gmfThemes, gmfTreeManager) {
+exports.Controller_ = function($scope, $timeout, gmfThemes, gmfTreeManager) {
+
   // === Directive options ===
-
-  /**
-   * @type {boolean}
-   */
-  this.active = this.active === true;
-
-  $scope.$watch(() => this.active, this.handleActiveChange_.bind(this));
-
-  /**
-   * @type {?import("ol/Map.js").default}
-   */
-  this.map = null;
-
-  /**
-   * @type {?number}
-   */
-  this.tolerance = null;
-
-  /**
-   * @type {?import("ol/layer/Vector.js").default}
-   */
-  this.vectorLayer = null;
 
   /**
    * @type {boolean}
    * @export
    */
-  this.closeAfterSave = false;
+  this.active = this.active === true;
+
+  $scope.$watch(
+    () => this.active,
+    this.handleActiveChange_.bind(this)
+  );
+
+  /**
+   * @type {ol.Map}
+   * @export
+   */
+  this.map;
+
+  /**
+   * @type {number|undefined}
+   * @export
+   */
+  this.tolerance;
+
+  /**
+   * @type {ol.layer.Vector}
+   * @export
+   */
+  this.vectorLayer;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.closeAfterSave;
 
   // === Injected services ===
 
   /**
-   * @type {angular.IScope}
+   * @type {!angular.Scope}
    * @private
    */
   this.scope_ = $scope;
 
   /**
-   * @type {angular.ITimeoutService}
+   * @type {angular.$timeout}
    * @private
    */
   this.$timeout_ = $timeout;
 
   /**
-   * @type {import("gmf/theme/Themes.js").ThemesService}
+   * @type {gmf.theme.Themes}
    * @private
    */
   this.gmfThemes_ = gmfThemes;
 
   /**
-   * @type {import("gmf/layertree/TreeManager.js").LayertreeTreeManager}
+   * @type {gmf.layertree.TreeManager}
    * @private
    */
   this.gmfTreeManager_ = gmfTreeManager;
 
   /**
-   * @param {Array<import("ngeo/layertree/Controller.js").LayertreeController>} value First level
-   *    controllers.
+   * @param {Array.<ngeo.layertree.Controller>} value First level controllers.
    */
-  const updateEditableTreeCtrls = (value) => {
+  const updateEditableTreeCtrls = function(value) {
     // Timeout required, because the collection event is fired before the
     // leaf nodes are created and they are the ones we're looking for here.
     this.$timeout_(() => {
@@ -182,28 +163,26 @@ function Controller($scope, $timeout, gmfThemes, gmfTreeManager) {
         const editables = this.editableTreeCtrls;
 
         editables.length = 0;
-        if (this.gmfTreeManager_.rootCtrl) {
-          this.gmfTreeManager_.rootCtrl.traverseDepthFirst((treeCtrl) => {
-            const gmfLayer = /** @type {import('gmf/themes.js').GmfLayer} */ (treeCtrl.node);
-            if (gmfLayer.editable) {
-              editables.push(treeCtrl);
-            }
-          });
-        }
+        this.gmfTreeManager_.rootCtrl.traverseDepthFirst((treeCtrl) => {
+          if (treeCtrl.node.editable) {
+            googAsserts.assert(treeCtrl.children.length === 0);
+            editables.push(treeCtrl);
+          }
+        });
       }
     }, 0);
   };
 
   /**
-   * @type {function(): void}
+   * @type {function()}
    * @private
    */
   this.treeCtrlsWatcherUnregister_ = $scope.$watchCollection(() => {
     if (gmfTreeManager.rootCtrl) {
       return gmfTreeManager.rootCtrl.children;
     }
-    return [];
-  }, updateEditableTreeCtrls);
+  }, updateEditableTreeCtrls.bind(this));
+
 
   // === Other inner properties ===
 
@@ -211,18 +190,21 @@ function Controller($scope, $timeout, gmfThemes, gmfTreeManager) {
    * Flag shared with the `gmf-editfeature` directive used to determine if it
    * has unsaved changes or not.
    * @type {boolean}
+   * @export
    */
   this.dirty = false;
 
   /**
    * List of editable Layertree controllers.
-   * @type {Array<import("ngeo/layertree/Controller.js").LayertreeController>}
+   * @type {Array.<ngeo.layertree.Controller>}
+   * @export
    */
   this.editableTreeCtrls = [];
 
   /**
    * The currently selected Layertree controller.
-   * @type {?import("ngeo/layertree/Controller.js").LayertreeController}
+   * @type {?ngeo.layertree.Controller}
+   * @export
    */
   this.selectedEditableTreeCtrl = null;
 
@@ -230,7 +212,7 @@ function Controller($scope, $timeout, gmfThemes, gmfTreeManager) {
     () => this.selectedEditableTreeCtrl,
     (newValue, oldValue) => {
       this.dirty = false;
-      this.state = EditingState.IDLE;
+      this.state = gmfEditingEditFeatureComponent.State.IDLE;
     }
   );
 
@@ -241,32 +223,38 @@ function Controller($scope, $timeout, gmfThemes, gmfTreeManager) {
    * directive checks if it has unsaved changes and allow this directive to
    * continue the action that was made or not.
    * @type {string}
+   * @export
    */
-  this.state = EditingState.IDLE;
+  this.state = gmfEditingEditFeatureComponent.State.IDLE;
 
   $scope.$watch(
     () => this.state,
     (newValue, oldValue) => {
-      if (newValue === EditingState.STOP_EDITING_EXECUTE || newValue === EditingState.DEACTIVATE_EXECUTE) {
+      if (newValue === gmfEditingEditFeatureComponent.State.STOP_EDITING_EXECUTE ||
+          newValue === gmfEditingEditFeatureComponent.State.DEACTIVATE_EXECUTE) {
         this.selectedEditableTreeCtrl = null;
       }
-      if (newValue === EditingState.DEACTIVATE_EXECUTE) {
+      if (newValue === gmfEditingEditFeatureComponent.State.DEACTIVATE_EXECUTE) {
         this.active = false;
       }
     }
   );
 
   $scope.$on('$destroy', this.handleDestroy_.bind(this));
-}
+
+};
+
 
 /**
  * Called when the 'stop editing' button is clicked. Set the 'state'
  * variable to 'pending' allow the editfeature directive to check if it can
  * stop or if it requires confirmation due to unsaved modifications.
+ * @export
  */
-Controller.prototype.stopEditing = function () {
-  this.state = EditingState.STOP_EDITING_PENDING;
+exports.Controller_.prototype.stopEditing = function() {
+  this.state = gmfEditingEditFeatureComponent.State.STOP_EDITING_PENDING;
 };
+
 
 /**
  * Called when the active property of the this directive changes. Manage
@@ -274,7 +262,7 @@ Controller.prototype.stopEditing = function () {
  * @param {boolean} active Whether the directive is active or not.
  * @private
  */
-Controller.prototype.handleActiveChange_ = function (active) {
+exports.Controller_.prototype.handleActiveChange_ = function(active) {
   if (!active) {
     if (!this.dirty) {
       this.stopEditing();
@@ -292,13 +280,16 @@ Controller.prototype.handleActiveChange_ = function (active) {
   }
 };
 
+
 /**
  * @private
  */
-Controller.prototype.handleDestroy_ = function () {
+exports.Controller_.prototype.handleDestroy_ = function() {
   this.treeCtrlsWatcherUnregister_();
 };
 
-module.controller('GmfEditfeatureselectorController', Controller);
 
-export default module;
+exports.controller('GmfEditfeatureselectorController', exports.Controller_);
+
+
+export default exports;

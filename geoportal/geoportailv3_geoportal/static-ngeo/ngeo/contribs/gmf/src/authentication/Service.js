@@ -1,99 +1,8 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.authentication.Service
+ */
 import ngeoCustomEvent from 'ngeo/CustomEvent.js';
-import olEventsEventTarget from 'ol/events/Target.js';
-// @ts-ignore
-import * as Sentry from '@sentry/browser';
-
-/**
- * Availables functionalities.
- * @typedef {Object} AuthenticationFunctionalities
- * @property {string[]} default_basemap Base maps to use by default.
- * @property {string[]} default_theme Theme to use by default.
- * @property {string[]} [filterable_layers] A list of layer names that can be filtered.
- * @property {string[]} [open_panel] When set, contains the name of the panel to open upon loading
- *    an application.
- * @property {string[]} [preset_layer_filter] Default filtrable datasource name.
- */
-
-/**
- * @typedef {Object} RoleInfo
- * @property {number} id Role identifier.
- * @property {string} name Role name.
- */
-
-/**
- * @typedef {Object} User
- * @property {string|null} email User's email address
- * @property {boolean|null} is_intranet The user is in the intranet.
- * @property {AuthenticationFunctionalities|null} functionalities Configured functionalities of the user
- * @property {boolean|null} is_password_changed True if the password of the user has been changed.
- *    False otherwise.
- * @property {RoleInfo[]} roles Roles information.
- * @property {string|null} username The name of the user.
- * @property {string|null} otp_key
- * @property {string|null} otp_uri
- */
-
-/**
- * @typedef {Object} AuthenticationEventItem
- * @property {User} user
- */
-
-/**
- * @typedef {import("ngeo/CustomEvent.js").default<AuthenticationEventItem>} AuthenticationEvent
- */
-
-/**
- * @typedef {Object} AuthenticationLoginResponse
- * @property {AuthenticationFunctionalities} [functionalities]
- * @property {boolean} [is_password_changed]
- * @property {RoleInfo[]} [roles]
- * @property {string} [username]
- * @property {string} [otp_key]
- * @property {string} [otp_uri]
- */
-
-/**
- * @typedef {angular.IHttpResponse<AuthenticationLoginResponse>} AuthenticationLoginResponsePromise
- */
-
-/**
- * @typedef {Object} AuthenticationDefaultResponse
- * @property {boolean} success
- */
-
-/**
- * @enum {string}
- * @hidden
- */
-export const RouteSuffix = {
-  CHANGE_PASSWORD: 'loginchangepassword',
-  IS_LOGGED_IN: 'loginuser',
-  LOGIN: 'login',
-  LOGOUT: 'logout',
-  RESET_PASSWORD: 'loginresetpassword',
-};
+import olEventsEventTarget from 'ol/events/EventTarget.js';
 
 /**
  * An "authentication" service for a GeoMapFish application. Upon loading, it
@@ -106,30 +15,31 @@ export const RouteSuffix = {
  * - login
  * - logout
  * - resetPassword
- * @hidden
+ *
+ * @extends {ol.events.EventTarget}
  */
-export class AuthenticationService extends olEventsEventTarget {
+const exports = class extends olEventsEventTarget {
+
   /**
-   * @param {angular.IHttpService} $http Angular http service.
-   * @param {angular.auto.IInjectorService} $injector Main injector.
-   * @param {angular.IScope} $rootScope The directive's scope.
+   * @param {angular.$http} $http Angular http service.
+   * @param {angular.$injector} $injector Main injector.
+   * @param {angular.Scope} $rootScope The directive's scope.
    * @param {string} authenticationBaseUrl URL to "authentication" web service.
-   * @param {User} gmfUser User.
-   * @param {import("gmf/authentication/component.js").AuthenticationConfig} gmfAuthenticationConfig
-   *    The configuration
+   * @param {gmfx.User} gmfUser User.
    * @ngInject
    */
-  constructor($http, $injector, $rootScope, authenticationBaseUrl, gmfUser, gmfAuthenticationConfig) {
+  constructor($http, $injector, $rootScope, authenticationBaseUrl, gmfUser) {
+
     super();
 
     /**
-     * @type {angular.IHttpService}
+     * @type {angular.$http}
      * @private
      */
     this.$http_ = $http;
 
     /**
-     * @type {angular.IScope}
+     * @type {angular.Scope}
      * @private
      */
     this.$rootScope_ = $rootScope;
@@ -142,23 +52,18 @@ export class AuthenticationService extends olEventsEventTarget {
     this.baseUrl_ = authenticationBaseUrl.replace(/\/$/, '');
 
     /**
-     * @type {User}
+     * @type {gmfx.User}
      * @private
      */
     this.user_ = gmfUser;
 
     /**
-     * @type {boolean}
-     */
-    this.forcePasswordChange = gmfAuthenticationConfig.forcePasswordChange === true;
-
-    /**
-     * Don't request a new user object from the back-end after
-     * logging out if the logged-in user's role has this role.
-     * @type {?string}
-     * @private
-     */
-    this.noReloadRole_ = $injector.has('gmfAuthenticationNoReloadRole')
+      * Don't request a new user object from the back-end after
+      * logging out if the logged-in user's role has this role.
+      * @type {?string}
+      * @private
+      */
+    this.noReloadRole_ =  $injector.has('gmfAuthenticationNoReloadRole')
       ? $injector.get('gmfAuthenticationNoReloadRole')
       : null;
 
@@ -171,77 +76,57 @@ export class AuthenticationService extends olEventsEventTarget {
    * @private
    */
   load_() {
-    const url = `${this.baseUrl_}/${RouteSuffix.IS_LOGGED_IN}`;
-    this.$http_.get(url, {withCredentials: true}).then((resp) => this.handleLogin_(true, resp));
+    const url = `${this.baseUrl_}/${exports.RouteSuffix.IS_LOGGED_IN}`;
+    this.$http_.get(url, {withCredentials: true}).then(
+      this.handleLogin_.bind(this, true)
+    );
   }
 
   /**
-   * @param {string} login Login.
    * @param {string} oldPwd Old password.
    * @param {string} newPwd New password.
    * @param {string} confPwd New password confirmation.
-   * @param {string} [otp]
-   * @return {angular.IPromise<void>} Promise.
+   * @return {angular.$q.Promise} Promise.
+   * @export
    */
-  changePassword(login, oldPwd, newPwd, confPwd, otp = undefined) {
-    const url = `${this.baseUrl_}/${RouteSuffix.CHANGE_PASSWORD}`;
+  changePassword(oldPwd, newPwd, confPwd) {
+    const url = `${this.baseUrl_}/${exports.RouteSuffix.CHANGE_PASSWORD}`;
 
-    return this.$http_
-      .post(
-        url,
-        $.param({
-          'login': login,
-          'oldPassword': oldPwd,
-          'otp': otp,
-          'newPassword': newPwd,
-          'confirmNewPassword': confPwd,
-        }),
-        {
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          withCredentials: true,
-        }
-      )
-      .then((resp) => {
-        this.setUser_(resp.data, true);
-      });
+    return this.$http_.post(url, $.param({
+      'oldPassword': oldPwd,
+      'newPassword': newPwd,
+      'confirmNewPassword': confPwd
+    }), {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      withCredentials: true
+    }).then(((response) => {
+      this.user_.is_password_changed = true;
+    }));
   }
 
   /**
    * @param {string} login Login name.
    * @param {string} pwd Password.
-   * @param {string} [otp]
-   * @return {angular.IPromise<AuthenticationLoginResponsePromise>} Promise.
+   * @return {angular.$q.Promise} Promise.
+   * @export
    */
-  login(login, pwd, otp = undefined) {
-    const url = `${this.baseUrl_}/${RouteSuffix.LOGIN}`;
-    const params = {'login': login, 'password': pwd};
-    if (otp) {
-      Object.assign(params, {'otp': otp});
-    }
+  login(login, pwd) {
+    const url = `${this.baseUrl_}/${exports.RouteSuffix.LOGIN}`;
 
-    return this.$http_
-      .post(url, $.param(params), {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        withCredentials: true,
-      })
-      .then((resp) => this.onSuccessfulLogin(resp))
-      .then((resp) => this.handleLogin_(false, resp));
+    return this.$http_.post(url, $.param({'login': login, 'password': pwd}), {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      withCredentials: true
+    }).then(
+      this.handleLogin_.bind(this, false));
   }
 
   /**
-   * @param {AuthenticationLoginResponsePromise} resp Ajax response.
-   * @return {AuthenticationLoginResponsePromise} Response.
-   */
-  onSuccessfulLogin(resp) {
-    return resp;
-  }
-
-  /**
-   * @return {angular.IPromise<void>} Promise.
+   * @return {angular.$q.Promise} Promise.
+   * @export
    */
   logout() {
-    const noReload = this.noReloadRole_ ? this.getRolesNames().includes(this.noReloadRole_) : false;
-    const url = `${this.baseUrl_}/${RouteSuffix.LOGOUT}`;
+    const noReload = this.user_['role_name'] === this.noReloadRole_;
+    const url = `${this.baseUrl_}/${exports.RouteSuffix.LOGOUT}`;
     return this.$http_.get(url, {withCredentials: true}).then(() => {
       this.resetUser_(noReload);
     });
@@ -249,53 +134,52 @@ export class AuthenticationService extends olEventsEventTarget {
 
   /**
    * @param {string} login Login name.
-   * @return {angular.IPromise<AuthenticationDefaultResponse>} Promise.
+   * @return {angular.$q.Promise} Promise.
+   * @export
    */
   resetPassword(login) {
-    const url = `${this.baseUrl_}/${RouteSuffix.RESET_PASSWORD}`;
+    const url = `${this.baseUrl_}/${exports.RouteSuffix.RESET_PASSWORD}`;
 
-    return this.$http_
-      .post(url, $.param({'login': login}), {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      })
-      .then((resp) => resp.data);
+    /**
+     * @param {angular.$http.Response} resp Ajax response.
+     * @return {gmfx.AuthenticationDefaultResponse} Response.
+     */
+    const successFn = function(resp) {
+      const respData = /** @type gmfx.AuthenticationDefaultResponse} */ (
+        resp.data);
+      return respData;
+    }.bind(this);
+
+    return this.$http_.post(url, $.param({'login': login}), {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    }).then(successFn);
   }
 
   /**
-   * @return {string|null} User's email
+   * @return {?gmfx.AuthenticationFunctionalities} The role functionalities.
    */
-  getEmail() {
-    return this.user_.email || null;
+  getFunctionalities() {
+    return this.user_.functionalities;
   }
 
   /**
-   * @return {number[]} The roles IDs.
+   * @return {number|null} The role ID.
    */
-  getRolesIds() {
-    return this.user_.roles ? this.user_.roles.map((role) => role.id) : [];
-  }
-
-  /**
-   * @return {string[]} The roles names.
-   */
-  getRolesNames() {
-    return this.user_.roles ? this.user_.roles.map((role) => role.name) : [];
+  getRoleId() {
+    return this.user_.role_id;
   }
 
   /**
    * @param {boolean} checkingLoginStatus Checking the login status?
-   * @param {AuthenticationLoginResponsePromise} resp Ajax response.
-   * @return {AuthenticationLoginResponsePromise} Response.
+   * @param {angular.$http.Response} resp Ajax response.
+   * @return {angular.$http.Response} Response.
    * @private
    */
   handleLogin_(checkingLoginStatus, resp) {
-    if (resp.data.is_password_changed === false && this.forcePasswordChange) {
-      const event = new ngeoCustomEvent('mustChangePassword', {user: resp.data});
-      this.dispatchEvent(event);
-      return;
-    }
-    this.setUser_(resp.data, !checkingLoginStatus);
+    const respData = /** @type {gmfx.AuthenticationLoginResponse} */ (resp.data);
+    this.setUser_(respData, !checkingLoginStatus);
     if (checkingLoginStatus) {
+      /** @type {gmfx.AuthenticationEvent} */
       const event = new ngeoCustomEvent('ready', {user: this.user_});
       this.dispatchEvent(event);
     }
@@ -303,23 +187,16 @@ export class AuthenticationService extends olEventsEventTarget {
   }
 
   /**
-   * @param {AuthenticationLoginResponse} respData Response.
+   * @param {gmfx.AuthenticationLoginResponse} respData Response.
    * @param {boolean} emitEvent Emit a login event?
+   * @private
    */
   setUser_(respData, emitEvent) {
-    Sentry.setUser({
-      username: respData.username,
-    });
-
-    for (const key in this.user_) {
-      // @ts-ignore: unsupported syntax
-      this.user_[key] = null;
-    }
     for (const key in respData) {
-      // @ts-ignore: unsupported syntax
       this.user_[key] = respData[key];
     }
     if (emitEvent && respData.username !== undefined) {
+      /** @type {gmfx.AuthenticationEvent} */
       const event = new ngeoCustomEvent('login', {user: this.user_});
       this.dispatchEvent(event);
     }
@@ -333,29 +210,41 @@ export class AuthenticationService extends olEventsEventTarget {
   resetUser_(noReload) {
     noReload = noReload || false;
     for (const key in this.user_) {
-      // @ts-ignore: unsupported syntax
       this.user_[key] = null;
     }
+    /** @type {gmfx.AuthenticationEvent} */
     const event = new ngeoCustomEvent('logout', {user: this.user_});
     this.dispatchEvent(event);
     if (!noReload) {
       this.load_();
     }
   }
-}
+};
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @enum {string}
  */
-const module = angular.module('gmfAuthenticationService', []);
-module.service('gmfAuthenticationService', AuthenticationService);
+exports.RouteSuffix = {
+  CHANGE_PASSWORD: 'loginchange',
+  IS_LOGGED_IN: 'loginuser',
+  LOGIN: 'login',
+  LOGOUT: 'logout',
+  RESET_PASSWORD: 'loginresetpassword'
+};
 
-module.value('gmfUser', {
-  functionalities: null,
-  is_password_changed: null,
-  roles: null,
-  username: null,
+/**
+ * @type {!angular.Module}
+ */
+exports.module = angular.module('gmfAuthenticationService', []);
+exports.module.service('gmfAuthenticationService', exports);
+
+exports.module.value('gmfUser', {
+  'functionalities': null,
+  'is_password_changed': null,
+  'role_id': null,
+  'role_name': null,
+  'username': null
 });
 
-export default module;
+
+export default exports;

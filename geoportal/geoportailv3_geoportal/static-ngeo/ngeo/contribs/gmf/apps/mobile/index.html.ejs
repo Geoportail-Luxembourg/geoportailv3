@@ -1,52 +1,31 @@
 <!DOCTYPE html>
-<html lang="{{mainCtrl.lang}}" ng-controller="MobileController as mainCtrl" ng-strict-di>
+<html lang="{{mainCtrl.lang}}" ng-app="Appmobile" ng-controller="MobileController as mainCtrl" ng-strict-di>
   <head>
     <title ng-bind-template="{{'Mobile Application'|translate}}">GeoMapFish</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="dynamicUrl" content="https://geomapfish-demo-2-5.camptocamp.com/dynamic.json">
-    <meta name="interface" content="mobile">
     <link rel="shortcut icon" href="<%=require("./image/favicon.ico")%>" />
     <% for (var css in htmlWebpackPlugin.files.css) { %>
     <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
     <% } %>
   </head>
-
   <body ng-class="{'gmf-mobile-nav-is-visible': mainCtrl.navIsVisible(),
-                   'gmf-mobile-nav-left-is-visible': mainCtrl.leftNavVisible,
-                   'gmf-mobile-nav-right-is-visible': mainCtrl.rightNavVisible}">
-    <div ng-show="mainCtrl.loading" class="loading-mask">
-      <i class="fa custom-spinner-loading fa-spin spinner-loading-mask">
-        <%=require('gmf/icons/spinner.svg?viewbox&height=1em')%>
-      </i>
-    </div>
+                   'gmf-mobile-nav-left-is-visible': mainCtrl.leftNavIsVisible(),
+                   'gmf-mobile-nav-right-is-visible': mainCtrl.rightNavIsVisible()}">
     <main ng-class="{'gmf-search-is-active': mainCtrl.searchOverlayVisible}">
       <gmf-map
         gmf-map-map="mainCtrl.map"
         gmf-map-manage-resize="mainCtrl.manageResize"
-        gmf-map-resize-transition="mainCtrl.resizeTransition">
-      </gmf-map>
-
-      <div ng-show="!mainCtrl.leftNavVisible && !mainCtrl.rightNavVisible" class="nav-swipper nav-swipper-left" ng-swipe-right="mainCtrl.toggleLeftNavVisibility()"></div>
-      <div ng-show="!mainCtrl.leftNavVisible && !mainCtrl.rightNavVisible" class="nav-swipper nav-swipper-right" ng-swipe-left="mainCtrl.toggleRightNavVisibility()"></div>
-
-      <ngeo-query
-        active="mainCtrl.queryActive"
-        map="::mainCtrl.map">
-      </ngeo-query>
+        gmf-map-resize-transition="mainCtrl.resizeTransition"
+        ngeo-map-query=""
+        ngeo-map-query-map="::mainCtrl.map"
+        ngeo-map-query-active="mainCtrl.queryActive"></gmf-map>
       <gmf-displayquerywindow
         gmf-displayquerywindow-featuresstyle="::mainCtrl.queryFeatureStyle"
         gmf-displayquerywindow-defaultcollapsed="false">
       </gmf-displayquerywindow>
-      <div
-        class="gmf-mobile-measure"
-        gmf-mobile-measurearea
-        gmf-mobile-measurearea-active="mainCtrl.measureAreaActive"
-        gmf-mobile-measurearea-sketchstyle="::mainCtrl.customMeasureStyle"
-        gmf-mobile-measurearea-map="::mainCtrl.map">
-      </div>
       <div
         class="gmf-mobile-measure"
         gmf-mobile-measurelength
@@ -62,7 +41,7 @@
       </div>
       <button class="gmf-mobile-nav-trigger gmf-mobile-nav-left-trigger"
         ng-click="mainCtrl.toggleLeftNavVisibility()">
-        <%=require('gmf/icons/layers.svg')%>
+        <span class="gmf-icon gmf-icon-layers"></span>
       </button>
       <gmf-search gmf-search-map="::mainCtrl.map"
         gmf-search-datasources="::mainCtrl.searchDatasources"
@@ -80,12 +59,12 @@
         ng-click="mainCtrl.hideNav()"></div>
       <div
         class="gmf-search-overlay"
-        ng-click="mainCtrl.searchOverlayVisible = false">
+        ng-click="mainCtrl.hideSearchOverlay()">
       </div>
-      <button ngeo-geolocation=""
-        ngeo-geolocation-map="::mainCtrl.map"
-        ngeo-geolocation-options="::mainCtrl.geolocationOptions">
-        <span class="far fa-dot-circle"></span>
+      <button ngeo-mobile-geolocation=""
+        ngeo-mobile-geolocation-map="::mainCtrl.map"
+        ngeo-mobile-geolocation-options="::mainCtrl.mobileGeolocationOptions">
+        <span class="fa fa-dot-circle-o"></span>
       </button>
       <ngeo-displaywindow
         content="mainCtrl.displaywindowContent"
@@ -98,7 +77,7 @@
       ></ngeo-displaywindow>
       <div class="gmf-app-map-messages">
         <gmf-disclaimer gmf-disclaimer-map="::mainCtrl.map"></gmf-disclaimer>
-        <div class="alert alert-info alert-dismissible fade show d-none d-md-block" role="alert" ng-if="::mainCtrl.redirectUrl !== ''">
+        <div class="alert alert-info alert-dismissible fade in hidden-xs" role="alert" ng-if="::mainCtrl.redirectUrl !== ''">
           <button type="button" class="close" data-dismiss="alert" aria-label="{{'Close' | translate }}"><span aria-hidden="true" class="fa fa-times"></span></button>
           <span translate
             translate-params-url="::mainCtrl.redirectUrl">
@@ -106,10 +85,9 @@
         </div>
       </div>
     </main>
-    <nav class="gmf-mobile-nav-left" gmf-mobile-nav ng-swipe-left="mainCtrl.toggleLeftNavVisibility()">
+    <nav class="gmf-mobile-nav-left" gmf-mobile-nav>
       <header>
         <a class="gmf-mobile-nav-go-back" href>{{'Back' | translate}}</a>
-        <span class="gmf-mobile-nav-header-title">{{'Data' | translate}}</span>
       </header>
       <!-- main menu -->
       <div class="gmf-mobile-nav-active gmf-mobile-nav-slide">
@@ -142,10 +120,9 @@
         gmf-mobile-nav-back-on-click>
       </gmf-themeselector>
     </nav>
-    <nav class="gmf-mobile-nav-right" gmf-mobile-nav ng-swipe-right="mainCtrl.toggleRightNavVisibility()">
+    <nav class="gmf-mobile-nav-right" gmf-mobile-nav>
       <header>
         <a class="gmf-mobile-nav-go-back" href>{{'Back' | translate}}</a>
-        <span class="gmf-mobile-nav-header-title">{{'Tools' | translate}}</span>
       </header>
       <!-- main menu -->
       <div class="gmf-mobile-nav-active gmf-mobile-nav-slide">
@@ -176,26 +153,36 @@
               {{'Length' | translate}}
             </a>
           </li>
-          <li>
-            <a ngeo-btn
-              ng-click="mainCtrl.hideNav()"
-              class="gmf-mobile-nav-button"
-              ng-model="mainCtrl.measureAreaActive">
-              <span class="fa fa-fw" ng-class="{'fa-check': mainCtrl.measureAreaActive}"></span>
-              {{'Area' | translate}}
-            </a>
-          </li>
         </ul>
       </div>
       <gmf-authentication id="login" class="gmf-mobile-nav-slide" data-header-title="{{'Login' | translate}}"
         gmf-authentication-info-message="mainCtrl.loginInfoMessage"
-        gmf-mobile-nav-back="mainCtrl.gmfUser.username !== null">
+        gmf-mobile-nav-back="authCtrl.gmfUser.username !== null">
       </gmf-authentication>
     </nav>
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,default-3.6,Array.prototype.includes,Object.entries,Object.values"></script>
-    <script src="../../../dist/vendor.js?${htmlWebpackPlugin.options.vars.version}"></script>
+    <ngeo-modal
+        ng-model="mainCtrl.userMustChangeItsPassword">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          {{'You must change your password' | translate}}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <gmf-authentication
+          gmf-authentication-force-password-change="::true">
+        </gmf-authentication>
+      </div>
+    </ngeo-modal>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,default-3.6,Array.prototype.includes,Object.entries"></script>
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
     <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
     <% } %>
+    <script>
+    document.write(
+      '<script src="https://geomapfish-demo.camptocamp.com/2.3/wsgi/dynamic.js?' +
+      'interface=mobile&' +
+      'query=' + encodeURIComponent(document.location.search) +
+      '"><' + '/script>');
+    </script>
   </body>
 </html>

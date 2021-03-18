@@ -1,25 +1,6 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.editing.XSDAttributes
+ */
 import ngeoFormatXSDAttribute from 'ngeo/format/XSDAttribute.js';
 
 /**
@@ -27,14 +8,15 @@ import ngeoFormatXSDAttribute from 'ngeo/format/XSDAttribute.js';
  * id from a GeoMapFish server.
  *
  * @constructor
- * @param {angular.IHttpService} $http Angular http service.
+ * @struct
+ * @param {angular.$http} $http Angular http service.
  * @param {string} gmfLayersUrl Url to the GeoMapFish layers service.
  * @ngInject
- * @hidden
  */
-export function EditingXSDAttributeService($http, gmfLayersUrl) {
+const exports = function($http, gmfLayersUrl) {
+
   /**
-   * @type {angular.IHttpService}
+   * @type {angular.$http}
    * @private
    */
   this.http_ = $http;
@@ -46,29 +28,43 @@ export function EditingXSDAttributeService($http, gmfLayersUrl) {
   this.baseUrl_ = gmfLayersUrl;
 
   /**
-   * @type {Object<number, angular.IPromise<import('ngeo/format/Attribute.js').Attribute[]>>}
+   * @type {Object.<number, !angular.$q.Promise>}
    * @private
    */
   this.promises_ = {};
-}
+
+};
+
 
 /**
  * @param {number} id Layer id.
- * @return {angular.IPromise<import('ngeo/format/Attribute.js').Attribute[]>} Promise.
+ * @return {angular.$q.Promise} Promise.
+ * @export
  */
-EditingXSDAttributeService.prototype.getAttributes = function (id) {
+exports.prototype.getAttributes = function(id) {
   if (!this.promises_[id]) {
     const url = `${this.baseUrl_}/${id}/md.xsd`;
-    this.promises_[id] = this.http_.get(url).then((resp) => new ngeoFormatXSDAttribute().read(resp.data));
+    this.promises_[id] = this.http_.get(url).then(
+      this.handleGetAttributes_.bind(this));
   }
   return this.promises_[id];
 };
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @param {angular.$http.Response} resp Ajax response.
+ * @return {Array.<ngeox.Attribute>} List of attributes.
+ * @export
  */
-const module = angular.module('gmfXSDAttributes', []);
-module.service('gmfXSDAttributes', EditingXSDAttributeService);
+exports.prototype.handleGetAttributes_ = function(resp) {
+  return new ngeoFormatXSDAttribute().read(resp.data);
+};
 
-export default module;
+
+/**
+ * @type {!angular.Module}
+ */
+exports.module = angular.module('gmfXSDAttributes', []);
+exports.module.service('gmfXSDAttributes', exports);
+
+
+export default exports;

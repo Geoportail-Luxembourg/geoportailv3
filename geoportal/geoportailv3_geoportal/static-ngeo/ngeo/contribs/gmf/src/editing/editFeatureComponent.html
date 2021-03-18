@@ -15,27 +15,27 @@
       ng-model="efCtrl.createActive">
       <span ng-switch="::efCtrl.geomType">
         <span ng-switch-when="Point">
-          <%=require('gmf/icons/point.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-point"></span>
           {{'Draw new point' | translate}}
         </span>
         <span ng-switch-when="MultiPoint">
-          <%=require('gmf/icons/point.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-point"></span>
           {{'Draw new point' | translate}}
         </span>
         <span ng-switch-when="LineString">
-          <%=require('gmf/icons/line.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-line"></span>
           {{'Draw new linestring' | translate}}
         </span>
         <span ng-switch-when="MultiLineString">
-          <%=require('gmf/icons/line.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-line"></span>
           {{'Draw new linestring' | translate}}
         </span>
         <span ng-switch-when="Polygon">
-          <%=require('gmf/icons/polygon.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-polygon"></span>
           {{'Draw new polygon' | translate}}
         </span>
         <span ng-switch-when="MultiPolygon">
-          <%=require('gmf/icons/polygon.svg?viewbox&height=1em')%>
+          <span class="gmf-icon gmf-icon-polygon"></span>
           {{'Draw new polygon' | translate}}
         </span>
       </span>
@@ -87,8 +87,7 @@
     </div>
   </div>
   <ngeo-modal ng-model="efCtrl.unsavedModificationsModalShown">
-    <div class="modal-header ui-draggable-handle">
-      <h4 class="modal-title">{{'Unsaved modifications!' | translate}}</h4>
+    <div class="modal-header">
       <button
           type="button"
           class="close"
@@ -96,6 +95,9 @@
           aria-label="{{'Close' | translate}}">
         <span aria-hidden="true">&times;</span>
       </button>
+      <h4 class="modal-title">
+        {{'Unsaved modifications!' | translate}}
+      </h4>
     </div>
     <div class="modal-body">
       {{'There are unsaved changes.' | translate}}
@@ -110,7 +112,7 @@
       </button>
       <button
           type="button"
-          class="btn prime"
+          class="btn btn-primary"
           data-dismiss="modal">
         {{'Cancel' | translate}}
       </button>
@@ -124,7 +126,7 @@
     </div>
   </ngeo-modal>
   <ngeo-modal ng-model="efCtrl.showServerError">
-    <div class="modal-header ui-draggable-handle">{{'Server error.' | translate}}</div>
+    <div class="modal-header">{{'Server error.' | translate}}</div>
     <div class="modal-body">{{efCtrl.serverErrorType}}<br>
     {{efCtrl.serverErrorMessage || ('Unexpected server error.' | translate)}}</div>
   </ngeo-modal>

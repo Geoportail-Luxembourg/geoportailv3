@@ -1,73 +1,53 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import {isPlatformModifierKeyOnly, isShiftKeyOnly} from 'ngeo/utils.js';
+/**
+ * @module ngeo.grid.component
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoMiscFilters from 'ngeo/misc/filters.js';
-import {getRowUid} from 'ngeo/grid/Config.js';
+import ngeoGridConfig from 'ngeo/grid/Config.js';
+import * as olHas from 'ol/has.js';
 
 import 'floatthead';
 import 'angular-float-thead';
-import 'ngeo/sass/font.scss';
+import 'font-awesome/css/font-awesome.css';
+
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoGrid', [ngeoMiscFilters.name, 'floatThead']);
+const exports = angular.module('ngeoGrid', [
+  ngeoGridConfig.module.name,
+  ngeoMiscFilters.name,
+  'floatThead',
+]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/grid', require('./component.html'));
-  }
-);
 
-module.value(
-  'ngeoGridTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/grid', require('./component.html'));
+});
+
+
+exports.value('ngeoGridTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} Template URL.
    */
   ($attrs) => {
-    const templateUrl = $attrs.ngeoGridTemplateurl;
-    return templateUrl !== undefined ? templateUrl : 'ngeo/grid';
+    const templateUrl = $attrs['ngeoGridTemplateurl'];
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/grid';
   }
 );
 
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} ngeoGridTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} ngeoGridTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function ngeoGridTemplateUrl($attrs, ngeoGridTemplateUrl) {
   return ngeoGridTemplateUrl($attrs);
 }
+
 
 /**
  * A grid component for displaying tabular data. The columns of the grid
@@ -80,82 +60,85 @@ function ngeoGridTemplateUrl($attrs, ngeoGridTemplateUrl) {
  *       ngeo-grid-configuration="::ctrl.gridConfiguration"
  *     </ngeo-grid>
  *
- * @htmlAttribute {import("ngeo/grid/Config.js").default} ngeo-grid-configuration The
+ * @htmlAttribute {ngeo.grid.Config} ngeo-grid-configuration The
  * configuration to use.
  *
  * @ngdoc component
  * @ngname ngeoGrid
  */
-const gridComponent = {
-  controller: GridController,
+exports.component_ = {
+  controller: 'ngeoGridController as ctrl',
   bindings: {
-    'configuration': '=ngeoGridConfiguration',
+    'configuration': '=ngeoGridConfiguration'
   },
-  templateUrl: ngeoGridTemplateUrl,
+  templateUrl: ngeoGridTemplateUrl
 };
 
-module.component('ngeoGrid', gridComponent);
+exports.component('ngeoGrid', exports.component_);
+
 
 /**
- * @param {angular.IScope} $scope Angular scope.
+ * @param {!angular.Scope} $scope Angular scope.
  * @constructor
  * @private
- * @hidden
+ * @struct
  * @ngInject
  * @ngdoc controller
  * @ngname ngeoGridController
  */
-export function GridController($scope) {
+exports.Controller_ = function($scope) {
+
   /**
-   * @type {angular.IScope}
+   * @type {!angular.Scope}
    * @private
    */
   this.scope_ = $scope;
 
   /**
-   * @type {?import("ngeo/grid/Config.js").default}
+   * @type {ngeo.grid.Config}
+   * @export
    */
-  this.configuration = null;
+  this.configuration;
 
   /**
-   * @type {Object<string, Object>}
+   * @type {Object.<string, Object>}
+   * @export
    */
-  this.selectedRows = {};
+  this.selectedRows;
 
   /**
    * The name of the column used to sort the grid.
    * @type {string}
+   * @export
    */
-  this.sortedBy = '';
+  this.sortedBy;
 
   /**
    * @type {boolean}
+   * @export
    */
   this.sortAscending = true;
 
   /**
    * Configuration object for float-thead.
    * @type {Object}
+   * @export
    */
   this.floatTheadConfig = {
-    /**
-     * @param {JQuery} $table
-     */
-    scrollContainer: function ($table) {
+    'scrollContainer': function($table) {
       return $table.closest('.ngeo-grid-table-container');
-    },
+    }
   };
-}
+};
+
 
 /**
  * Init the controller
  */
-GridController.prototype.$onInit = function () {
-  if (!this.configuration) {
-    throw new Error('Missing configuration');
-  }
+exports.Controller_.prototype.$onInit = function() {
   this.selectedRows = this.configuration.selectedRows;
 };
+
 
 /**
  * Sort function that always puts undefined values to the bottom of the grid.
@@ -163,14 +146,9 @@ GridController.prototype.$onInit = function () {
  * on).
  * @param {string} columnName The name of the column that should be used to
  *    sort the data.
+ * @export
  */
-GridController.prototype.sort = function (columnName) {
-  if (!this.configuration) {
-    throw new Error('Missing configuration');
-  }
-  if (!this.configuration.data) {
-    throw new Error('Missing configuration.data');
-  }
+exports.Controller_.prototype.sort = function(columnName) {
   this.sortAscending = this.sortedBy === columnName ? !this.sortAscending : true;
   this.sortedBy = columnName;
 
@@ -186,17 +164,20 @@ GridController.prototype.sort = function (columnName) {
   });
 };
 
+
 /**
  * Handler for clicks on a row.
  * @param {Object} attributes An entry/row.
- * @param {JQueryEventObject} event Event.
+ * @param {jQuery.Event} event Event.
+ * @export
  */
-GridController.prototype.clickRow = function (attributes, event) {
-  const shiftKey = isShiftKeyOnly(event);
-  const platformModifierKey = isPlatformModifierKeyOnly(event);
+exports.Controller_.prototype.clickRow = function(attributes, event) {
+  const shiftKey = this.isShiftKeyOnly_(event);
+  const platformModifierKey = this.isPlatformModifierKeyOnly_(event);
 
   this.clickRow_(attributes, shiftKey, platformModifierKey);
 };
+
 
 /**
  * @param {Object} attributes An entry/row.
@@ -204,10 +185,8 @@ GridController.prototype.clickRow = function (attributes, event) {
  * @param {boolean} platformModifierKey CTRL/Meta pressed?
  * @private
  */
-GridController.prototype.clickRow_ = function (attributes, shiftKey, platformModifierKey) {
-  if (!this.configuration) {
-    throw new Error('Missing configuration');
-  }
+exports.Controller_.prototype.clickRow_ = function(
+  attributes, shiftKey, platformModifierKey) {
 
   if (shiftKey && !platformModifierKey) {
     this.selectRange_(attributes);
@@ -222,19 +201,14 @@ GridController.prototype.clickRow_ = function (attributes, shiftKey, platformMod
   }
 };
 
+
 /**
  * Selects all rows between the given row and the closest already selected row.
  * @param {Object} attributes An entry/row.
  * @private
  */
-GridController.prototype.selectRange_ = function (attributes) {
-  if (!this.configuration) {
-    throw new Error('Missing configuration');
-  }
-  if (!this.configuration.data) {
-    throw new Error('Missing configuration.data');
-  }
-  const targetUid = getRowUid(attributes);
+exports.Controller_.prototype.selectRange_ = function(attributes) {
+  const targetUid = ngeoGridConfig.getRowUid(attributes);
   const data = this.configuration.data;
 
   if (this.configuration.isRowSelected(attributes)) {
@@ -242,12 +216,12 @@ GridController.prototype.selectRange_ = function (attributes) {
   }
 
   // get the position of the clicked and all already selected rows
-  /** @type {number} */
-  let posClickedRow = 0;
+  /** @type {number|undefined} */
+  let posClickedRow = undefined;
   const posSelectedRows = [];
   for (let i = 0; i < data.length; i++) {
     const currentRow = data[i];
-    const currentUid = getRowUid(currentRow);
+    const currentUid = ngeoGridConfig.getRowUid(currentRow);
 
     if (targetUid === currentUid) {
       posClickedRow = i;
@@ -255,6 +229,7 @@ GridController.prototype.selectRange_ = function (attributes) {
       posSelectedRows.push(i);
     }
   }
+  googAsserts.assert(posClickedRow !== undefined);
 
   if (posSelectedRows.length == 0) {
     // if no other row is selected, select the clicked one and stop
@@ -264,8 +239,8 @@ GridController.prototype.selectRange_ = function (attributes) {
   // find the selected row which is the closest to the clicked row
   let distance = Infinity;
   let posClosestRow = posSelectedRows[0];
-  for (const posSelectedRow of posSelectedRows) {
-    const currentPos = posSelectedRow;
+  for (let j = 0; j < posSelectedRows.length; j++) {
+    const currentPos = posSelectedRows[j];
     const currentDistance = Math.abs(currentPos - posClickedRow);
     if (distance > currentDistance) {
       distance = currentDistance;
@@ -275,28 +250,59 @@ GridController.prototype.selectRange_ = function (attributes) {
   }
 
   // then select all rows between the clicked one and the closest
-  const rangeStart = posClickedRow < posClosestRow ? posClickedRow : posClosestRow;
-  const rangeEnd = posClickedRow > posClosestRow ? posClickedRow : posClosestRow;
+  const rangeStart = (posClickedRow < posClosestRow) ? posClickedRow : posClosestRow;
+  const rangeEnd = (posClickedRow > posClosestRow) ? posClickedRow : posClosestRow;
 
   for (let l = rangeStart; l <= rangeEnd; l++) {
     this.configuration.selectRow(data[l]);
   }
 };
 
+
 /**
  * Prevent the default browser behaviour of selecting text
  * when selecting multiple rows with SHIFT or CTRL/Meta.
- * @param {JQueryEventObject} event Event.
+ * @param {jQuery.Event} event Event.
+ * @export
  */
-GridController.prototype.preventTextSelection = function (event) {
-  const shiftKey = isShiftKeyOnly(event);
-  const platformModifierKey = isPlatformModifierKeyOnly(event);
+exports.Controller_.prototype.preventTextSelection = function(event) {
+  const shiftKey = this.isShiftKeyOnly_(event);
+  const platformModifierKey = this.isPlatformModifierKeyOnly_(event);
 
   if (shiftKey || platformModifierKey) {
     event.preventDefault();
   }
 };
 
-module.controller('ngeoGridController', GridController);
 
-export default module;
+/**
+ * Same as `ol.events.condition.platformModifierKeyOnly`.
+ * @param {jQuery.Event} event Event.
+ * @return {boolean} True if only the platform modifier key is pressed.
+ * @private
+ */
+exports.Controller_.prototype.isPlatformModifierKeyOnly_ = function(event) {
+  return !event.altKey &&
+    (olHas.MAC ? event.metaKey : event.ctrlKey) &&
+    !event.shiftKey;
+};
+
+
+/**
+ * Same as `ol.events.condition.shiftKeyOnly`.
+ * @param {jQuery.Event} event Event.
+ * @return {boolean} True if only the shift key is pressed.
+ * @private
+ */
+exports.Controller_.prototype.isShiftKeyOnly_ = function(event) {
+  return (
+    !event.altKey &&
+      !(event.metaKey || event.ctrlKey) &&
+      event.shiftKey);
+};
+
+
+exports.controller('ngeoGridController', exports.Controller_);
+
+
+export default exports;
