@@ -887,7 +887,7 @@ exports.RuleController_ = class {
         actions
       });
 
-      olEvents.listen(
+      this.unlistener = olEvents.listen(
         this.menu_,
         'actionclick',
         this.handleMenuActionClick_,
@@ -910,12 +910,7 @@ exports.RuleController_ = class {
    */
   removeMenu_() {
     if (this.menu_) {
-      olEvents.unlisten(
-        this.menu_,
-        'actionclick',
-        this.handleMenuActionClick_,
-        this
-      );
+      if (this.unlistener) { olEvents.unlistenByKey(this.unlistener) }
       this.map.removeOverlay(this.menu_);
       this.menu_ = null;
     }
