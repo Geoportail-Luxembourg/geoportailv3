@@ -1,32 +1,13 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import gmfControllersAbstractAppController, {
-  AbstractAppController,
-  getLocationIcon,
-} from 'gmf/controllers/AbstractAppController.js';
+/**
+ * @module gmf.controllers.AbstractMobileController
+ */
+import gmfControllersAbstractAppController from 'gmf/controllers/AbstractAppController.js';
 import gmfMobileMeasureModule from 'gmf/mobile/measure/module.js';
 import gmfMobileNavigationModule from 'gmf/mobile/navigation/module.js';
 import gmfQueryWindowComponent from 'gmf/query/windowComponent.js';
+import ngeoGeolocationMobile from 'ngeo/geolocation/mobile.js';
+import * as olBase from 'ol/index.js';
+import * as olObj from 'ol/obj.js';
 import * as olProj from 'ol/proj.js';
 import olMap from 'ol/Map.js';
 import olView from 'ol/View.js';
@@ -34,188 +15,231 @@ import olControlScaleLine from 'ol/control/ScaleLine.js';
 import olControlZoom from 'ol/control/Zoom.js';
 import olControlRotate from 'ol/control/Rotate.js';
 import * as olInteraction from 'ol/interaction.js';
+import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
-import olStyleRegularShape from 'ol/style/RegularShape.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
-
-import 'gmf/controllers/vars_mobile.scss';
-import 'gmf/controllers/mobile.scss';
 
 /**
  * Mobile application abstract controller.
  *
- * This file includes `import`'s mobile components/directives used
+ * This file includes `goog.require`'s mobile components/directives used
  * by the HTML page and the controller to provide the configuration.
+ *
+ * @param {gmfx.Config} config A part of the application config.
+ * @param {angular.Scope} $scope Scope.
+ * @param {angular.$injector} $injector Main injector.
+ * @constructor
+ * @extends {gmf.controllers.AbstractAppController}
+ * @ngdoc controller
+ * @ngInject
+ * @export
  */
-export class AbstractMobileController extends AbstractAppController {
-  /**
-   * @param {import('gmf/controllers/AbstractAppController.js').Config} config A part of the application
-   *     config.
-   * @param {angular.IScope} $scope Scope.
-   * @param {angular.auto.IInjectorService} $injector Main injector.
-   * @ngInject
-   */
-  constructor(config, $scope, $injector) {
-    const viewConfig = {
-      projection: olProj.get(`EPSG:${config.srid || 2056}`),
-    };
-    Object.assign(viewConfig, config.mapViewConfig || {});
+const exports = function(config, $scope, $injector) {
 
-    super(
-      config,
-      new olMap({
-        pixelRatio: config.mapPixelRatio,
-        maxTilesLoading: config.maxTilesLoading,
-        layers: [],
-        view: new olView(viewConfig),
-        controls: config.mapControls || [
-          new olControlScaleLine({
-            // See: https://www.w3.org/TR/CSS21/syndata.html#length-units
-            dpi: 96,
-          }),
-          new olControlZoom({
-            zoomInTipLabel: '',
-            zoomOutTipLabel: '',
-          }),
-          new olControlRotate({
-            label: getLocationIcon(),
-            tipLabel: '',
-          }),
-        ],
-        interactions: config.mapInteractions || olInteraction.defaults({pinchRotate: true}),
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.leftNavVisible = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.rightNavVisible = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.searchOverlayVisible = false;
+
+  /**
+   * @type {ngeox.SearchDirectiveListeners}
+   * @export
+   */
+  this.searchListeners = /** @type {ngeox.SearchDirectiveListeners} */ ({
+    open: function() {
+      this.searchOverlayVisible = true;
+    }.bind(this),
+    close: function() {
+      this.searchOverlayVisible = false;
+    }.bind(this)
+  });
+
+  const positionFeatureStyle = config.positionFeatureStyle || new olStyleStyle({
+    image: new olStyleCircle({
+      radius: 6,
+      fill: new olStyleFill({color: 'rgba(230, 100, 100, 1)'}),
+      stroke: new olStyleStroke({color: 'rgba(230, 40, 40, 1)', width: 2})
+    })
+  });
+
+  const accuracyFeatureStyle = config.accuracyFeatureStyle || new olStyleStyle({
+    fill: new olStyleFill({color: 'rgba(100, 100, 230, 0.3)'}),
+    stroke: new olStyleStroke({color: 'rgba(40, 40, 230, 1)', width: 2})
+  });
+
+  /**
+   * @type {ngeox.MobileGeolocationDirectiveOptions}
+   * @export
+   */
+  this.mobileGeolocationOptions = {
+    positionFeatureStyle: positionFeatureStyle,
+    accuracyFeatureStyle: accuracyFeatureStyle,
+    zoom: config.geolocationZoom,
+    autorotate: config.autorotate
+  };
+
+  const viewConfig = {
+    projection: olProj.get(`EPSG:${config.srid || 21781}`)
+  };
+  olObj.assign(viewConfig, config.mapViewConfig || {});
+
+  const arrow = gmfControllersAbstractAppController.prototype.getLocationIcon();
+
+  /**
+   * @type {ol.Map}
+   * @export
+   */
+  this.map = new olMap({
+    pixelRatio: config.mapPixelRatio,
+    layers: [],
+    view: new olView(viewConfig),
+    controls: config.mapControls || [
+      new olControlScaleLine(),
+      new olControlZoom({
+        zoomInTipLabel: '',
+        zoomOutTipLabel: ''
       }),
-      $scope,
-      $injector
-    );
+      new olControlRotate({
+        label: arrow,
+        tipLabel: ''
+      })
+    ],
+    interactions:
+        config.mapInteractions ||
+        olInteraction.defaults({pinchRotate: true})
+  });
 
-    /**
-     * @type {import("ol/style/Style.js").default}
-     */
-    this.customMeasureStyle = new olStyleStyle({
-      fill: new olStyleFill({
-        color: 'rgba(255, 128, 128, 0.2)',
-      }),
-      stroke: new olStyleStroke({
-        color: 'rgba(255, 0, 0, 0.5)',
-        lineDash: [10, 10],
-        width: 2,
-      }),
-      image: new olStyleRegularShape({
-        stroke: new olStyleStroke({
-          color: 'rgba(255, 0, 0, 0.7)',
-          width: 2,
-        }),
-        points: 4,
-        radius: 8,
-        radius2: 0,
-        angle: 0,
-      }),
-    });
+  gmfControllersAbstractAppController.call(this, config, $scope, $injector);
 
-    /**
-     * @type {boolean}
-     */
-    this.leftNavVisible = false;
+  this.manageResize = true;
+  this.resizeTransition = 500;
 
-    /**
-     * @type {boolean}
-     */
-    this.rightNavVisible = false;
-
-    /**
-     * @type {boolean}
-     */
-    this.searchOverlayVisible = false;
-
-    /**
-     * @type {import('ngeo/search/searchDirective.js').SearchDirectiveListeners<never>}
-     */
-    this.searchListeners = {
-      open: () => {
-        this.searchOverlayVisible = true;
-      },
-      close: () => {
-        this.searchOverlayVisible = false;
-      },
-    };
-
-    this.manageResize = true;
-    this.resizeTransition = 500;
-
-    // Close right nave on successful login.
-    $scope.$watch(
-      () => this.gmfUser.username,
-      (newVal) => {
-        if (newVal !== null && this.navIsVisible()) {
-          this.rightNavVisible = false;
-        }
-      }
-    );
-
-    /**
-     * @const {string}
-     */
-    this.redirectUrl = $injector.get('redirectUrl');
-  }
-
-  /**
-   */
-  toggleLeftNavVisibility() {
-    this.leftNavVisible = !this.leftNavVisible;
-  }
-
-  /**
-   */
-  toggleRightNavVisibility() {
-    this.rightNavVisible = !this.rightNavVisible;
-  }
-
-  /**
-   * Hide both navigation menus.
-   */
-  hideNav() {
-    this.leftNavVisible = false;
-    this.rightNavVisible = false;
-  }
-
-  /**
-   * @return {boolean} Return true if one of the navigation menus is visible,
-   * otherwise false.
-   */
-  navIsVisible() {
-    return this.leftNavVisible || this.rightNavVisible;
-  }
-
-  /**
-   * Open the menu with corresponding to the data-target attribute value.
-   * @param {string} target the data-target value.
-   */
-  openNavMenu(target) {
-    const navElements = document.getElementsByClassName('gmf-mobile-nav-button');
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < navElements.length; i++) {
-      const element = /** @type {HTMLElement} */ (navElements[i]);
-      if (element.dataset && element.dataset.target === target) {
-        element.click();
-      }
+  // Close right nave on successful login.
+  $scope.$watch(() => this.gmfUser.username, (newVal) => {
+    if (newVal !== null && this.navIsVisible()) {
+      this.rightNavVisible = false;
     }
-  }
-}
+  });
+
+  /**
+   * @const {string}
+   * @export
+   */
+  this.redirectUrl = $injector.get('redirectUrl');
+};
+
+olBase.inherits(exports, gmfControllersAbstractAppController);
+
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @export
  */
-const module = angular.module('GmfAbstractMobileControllerModule', [
-  gmfControllersAbstractAppController.name,
+exports.prototype.toggleLeftNavVisibility = function() {
+  this.leftNavVisible = !this.leftNavVisible;
+};
+
+
+/**
+ * @export
+ */
+exports.prototype.toggleRightNavVisibility = function() {
+  this.rightNavVisible = !this.rightNavVisible;
+};
+
+
+/**
+ * Hide both navigation menus.
+ * @export
+ */
+exports.prototype.hideNav = function() {
+  this.leftNavVisible = this.rightNavVisible = false;
+};
+
+
+/**
+ * @return {boolean} Return true if one of the navigation menus is visible,
+ * otherwise false.
+ * @export
+ */
+exports.prototype.navIsVisible = function() {
+  return this.leftNavVisible || this.rightNavVisible;
+};
+
+
+/**
+ * Hide search overlay.
+ * @export
+ */
+exports.prototype.hideSearchOverlay = function() {
+  this.searchOverlayVisible = false;
+};
+
+
+/**
+ * @return {boolean} Return true if the left navigation menus is visible,
+ * otherwise false.
+ * @export
+ */
+exports.prototype.leftNavIsVisible = function() {
+  return this.leftNavVisible;
+};
+
+
+/**
+ * @return {boolean} Return true if the right navigation menus is visible,
+ * otherwise false.
+ * @export
+ */
+exports.prototype.rightNavIsVisible = function() {
+  return this.rightNavVisible;
+};
+
+
+/**
+ * Open the menu with corresponding to the data-target attribute value.
+ * @param {string} target the data-target value.
+ * @export
+ */
+exports.prototype.openNavMenu = function(target) {
+  const navElements = document.getElementsByClassName('gmf-mobile-nav-button');
+  for (let i = 0; i < navElements.length; i++) {
+    const element = navElements[i];
+    if (element.dataset && element.dataset.target === target) {
+      element.click();
+    }
+  }
+};
+
+
+exports.module = angular.module('GmfAbstractMobileControllerModule', [
+  gmfControllersAbstractAppController.module.name,
   gmfMobileMeasureModule.name,
   gmfMobileNavigationModule.name,
   gmfQueryWindowComponent.name,
+  ngeoGeolocationMobile.name,
 ]);
 
-module.controller('AbstractMobileController', AbstractMobileController);
+exports.module.controller('AbstractMobileController', exports);
 
-module.value('isMobile', true);
+exports.module.value('isMobile', true);
 
-export default module;
+exports.module.value('ngeoQueryOptions', {
+  'tolerance': 10
+});
+
+
+export default exports;

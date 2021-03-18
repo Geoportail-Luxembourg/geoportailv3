@@ -1,30 +1,13 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import OlTilegridTileGrid from 'ol/tilegrid/TileGrid.js';
-import OlTilegridWMTS from 'ol/tilegrid/WMTS.js';
+/**
+ * @module ngeo.offline.SerializerDeserializer
+ */
+import olTilegridTileGrid from 'ol/tilegrid/TileGrid.js';
+import olTilegridWMTS from 'ol/tilegrid/WMTS.js';
 import * as olProj from 'ol/proj.js';
-import OlSourceTileWMS from 'ol/source/TileWMS.js';
-import OlSourceWMTS from 'ol/source/WMTS.js';
-import OlLayerTile from 'ol/layer/Tile.js';
+import olSourceTileWMS from 'ol/source/TileWMS.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
+import olLayerTile from 'ol/layer/Tile.js';
+
 
 const SerDes = class {
   /**
@@ -39,14 +22,11 @@ const SerDes = class {
 
   /**
    * @private
-   * @param {import("ol/Object.js").default} olObject An OL object
+   * @param {ol.Object} olObject An OL object
    * @return {Object} The serializable properties of the object
    */
   createBaseObject_(olObject) {
     const properties = olObject.getProperties();
-    /**
-     * @type {Object<string, string|number>}
-     */
     const obj = {};
     for (const key in properties) {
       const value = properties[key];
@@ -59,83 +39,72 @@ const SerDes = class {
   }
 
   /**
-   * @param {OlTilegridTileGrid} tilegrid .
+   * @param {ol.tilegrid.TileGrid} tilegrid .
    * @return {string} .
    */
   serializeTilegrid(tilegrid) {
-    /**
-     * @type {Object<string, any>}
-     */
     const obj = {};
-    obj.extent = tilegrid.getExtent();
-    obj.minZoom = tilegrid.getMinZoom();
-    obj.origin = tilegrid.getOrigin(0); // hack
-    obj.resolutions = tilegrid.getResolutions();
-    obj.tileSize = tilegrid.getTileSize(tilegrid.getMinZoom());
+    obj['extent'] = tilegrid.getExtent();
+    obj['minZoom'] = tilegrid.getMinZoom();
+    obj['origin'] = tilegrid.getOrigin(0); // hack
+    obj['resolutions'] = tilegrid.getResolutions();
+    obj['tileSize'] = tilegrid.getTileSize(tilegrid.getMinZoom());
     return JSON.stringify(obj);
   }
 
   /**
    * @param {string} serialization .
-   * @return {OlTilegridTileGrid} tilegrid
+   * @return {ol.tilegrid.TileGrid} tilegrid
    */
   deserializeTilegrid(serialization) {
-    /**
-     * @type {import ("ol/tilegrid/WMTS").Options}
-     */
-    const options = JSON.parse(serialization);
-    return new OlTilegridTileGrid(options);
+    const options = /** @type {olx.tilegrid.TileGridOptions} */ (JSON.parse(serialization));
+    return new olTilegridTileGrid(options);
   }
 
   /**
-   * @param {OlTilegridWMTS} tilegrid .
+   * @param {ol.tilegrid.WMTS} tilegrid .
    * @return {string|undefined} .
    */
   serializeTilegridWMTS(tilegrid) {
     if (!tilegrid) {
       return undefined;
     }
-    /**
-     * @type {Object<string, any>}
-     */
     const obj = {};
     const resolutions = tilegrid.getResolutions();
-    obj.extent = tilegrid.getExtent();
-    obj.minZoom = tilegrid.getMinZoom();
-    obj.matrixIds = tilegrid.getMatrixIds();
-    obj.resolutions = resolutions;
+    obj['extent'] = tilegrid.getExtent();
+    obj['minZoom'] = tilegrid.getMinZoom();
+    obj['matrixIds'] = tilegrid.getMatrixIds();
+    obj['resolutions'] = resolutions;
 
-    obj.origins = [];
+    obj['origins'] = [];
     for (let z = 0; z < resolutions.length; ++z) {
-      obj.origins.push(tilegrid.getOrigin(z));
+      obj['origins'].push(tilegrid.getOrigin(z));
     }
     return JSON.stringify(obj);
   }
 
   /**
    * @param {string} serialization .
-   * @return {OlTilegridWMTS} tilegrid .
+   * @return {ol.tilegrid.WMTS} tilegrid .
    */
   deserializeTilegridWMTS(serialization) {
-    /**
-     * @type {import ("ol/tilegrid/WMTS").Options}
-     */
-    const options = JSON.parse(serialization);
-    return new OlTilegridWMTS(options);
+    const options = /** @type {olx.tilegrid.WMTSOptions} */ (JSON.parse(serialization));
+    return new olTilegridWMTS(options);
   }
 
+
   /**
-   * @param {OlSourceTileWMS} source .
+   * @param {ol.source.TileWMS} source .
    * @return {string} .
    */
   serializeSourceTileWMS(source) {
     const obj = this.createBaseObject_(source);
-    obj.params = source.getParams();
-    obj.urls = source.getUrls();
-    obj.tileGrid = this.serializeTilegrid(source.getTileGrid());
+    obj['params'] = source.getParams();
+    obj['urls'] = source.getUrls();
+    obj['tileGrid'] = this.serializeTilegrid(source.getTileGrid());
     const projection = source.getProjection();
     if (projection) {
-      obj.projection = olProj.get(source.getProjection()).getCode();
+      obj['projection'] = olProj.get(source.getProjection()).getCode();
     }
 
     return JSON.stringify(obj);
@@ -143,43 +112,39 @@ const SerDes = class {
 
   /**
    * @param {string} serialization .
-   * @param {function(import("ol/ImageTile.js").default, string)=} tileLoadFunction .
-   * @return {OlSourceTileWMS} source .
+   * @param {function(ol.ImageTile, string)=} tileLoadFunction .
+   * @return {ol.source.TileWMS} source .
    */
   deserializeSourceTileWMS(serialization, tileLoadFunction) {
-    /**
-     * @type {import ("ol/source/TileWMS").Options}
-     */
-    const options = JSON.parse(serialization);
-    // @ts-ignore
-    options.tileLoadFunction = tileLoadFunction;
-    if (options.tileGrid) {
-      options.tileGrid = this.deserializeTilegrid(/** @type {any} */ (options).tileGrid);
+    const options = /** @type {olx.source.TileWMSOptions} */ (JSON.parse(serialization));
+    options['tileLoadFunction'] = tileLoadFunction;
+    if (options['tileGrid']) {
+      options['tileGrid'] = this.deserializeTilegrid(options['tileGrid']);
     }
-    options.gutter = this.gutter_;
-    return new OlSourceTileWMS(options);
+    options['gutter'] = this.gutter_;
+    return new olSourceTileWMS(options);
   }
 
   /**
-   * @param {OlSourceWMTS} source .
+   * @param {ol.source.WMTS} source .
    * @return {string} .
    */
   serializeSourceWMTS(source) {
     const obj = this.createBaseObject_(source);
-    obj.dimensions = source.getDimensions();
-    obj.format = source.getFormat();
-    obj.urls = source.getUrls();
-    obj.version = source.getVersion();
-    obj.layer = source.getLayer();
-    obj.style = source.getStyle();
-    obj.matrixSet = source.getMatrixSet();
+    obj['dimensions'] = source.getDimensions();
+    obj['format'] = source.getFormat();
+    obj['urls'] = source.getUrls();
+    obj['version'] = source.getVersion();
+    obj['layer'] = source.getLayer();
+    obj['style'] = source.getStyle();
+    obj['matrixSet'] = source.getMatrixSet();
     // The OL getTileGrid method is expected to return a WMTS tilegrid so it is OK to cast here.
-    const tileGridWMTS = /** @type {OlTilegridWMTS} */ (source.getTileGrid());
-    obj.tileGrid = this.serializeTilegridWMTS(tileGridWMTS);
-    obj.requestEncoding = source.getRequestEncoding();
+    const tileGridWMTS = /** @type {ol.tilegrid.WMTS} */ (source.getTileGrid());
+    obj['tileGrid'] = this.serializeTilegridWMTS(tileGridWMTS);
+    obj['requestEncoding'] = source.getRequestEncoding();
     const projection = source.getProjection();
     if (projection) {
-      obj.projection = olProj.get(source.getProjection()).getCode();
+      obj['projection'] = olProj.get(source.getProjection()).getCode();
     }
 
     return JSON.stringify(obj);
@@ -187,20 +152,16 @@ const SerDes = class {
 
   /**
    * @param {string} serialization .
-   * @param {function(import("ol/ImageTile.js").default, string)=} tileLoadFunction .
-   * @return {OlSourceWMTS} .
+   * @param {function(ol.ImageTile, string)=} tileLoadFunction .
+   * @return {ol.source.WMTS} .
    */
   deserializeSourceWMTS(serialization, tileLoadFunction) {
-    /**
-     * @type {import("ol/source/WMTS").Options}
-     */
-    const options = JSON.parse(serialization);
-    // @ts-ignore
-    options.tileLoadFunction = tileLoadFunction;
-    if (options.tileGrid) {
-      options.tileGrid = this.deserializeTilegridWMTS(/** @type {any} */ (options).tileGrid);
+    const options = /** @type {olx.source.WMTSOptions} */ (JSON.parse(serialization));
+    options['tileLoadFunction'] = tileLoadFunction;
+    if (options['tileGrid']) {
+      options['tileGrid'] = this.deserializeTilegridWMTS(options['tileGrid']);
     }
-    return new OlSourceWMTS(options);
+    return new olSourceWMTS(options);
   }
 
   /**
@@ -216,49 +177,46 @@ const SerDes = class {
   }
 
   /**
-   * @param {!import("ol/layer/Tile.js").default|import("ol/layer/Image").default} layer .
-   * @param {import("ol/source/Source.js").default=} source .
+   * @param {ol.layer.Tile|ol.layer.Image} layer .
+   * @param {ol.source.Source=} source .
    * @return {string} .
    */
   serializeTileLayer(layer, source) {
     const obj = this.createBaseObject_(layer);
-    obj.opacity = layer.getOpacity();
-    obj.visible = layer.getVisible();
-    obj.minResolution = layer.getMinResolution();
-    obj.maxResolution = this.makeInfinitySerializable_(layer.getMaxResolution());
-    obj.zIndex = layer.getZIndex();
+    obj['opacity'] = layer.getOpacity();
+    obj['visible'] = layer.getVisible();
+    obj['minResolution'] = layer.getMinResolution();
+    obj['maxResolution'] = this.makeInfinitySerializable_(layer.getMaxResolution());
+    obj['zIndex'] = layer.getZIndex();
     source = source || layer.getSource();
-    if (source instanceof OlSourceTileWMS) {
-      obj.source = this.serializeSourceTileWMS(source);
-      obj.sourceType = 'tileWMS';
-    } else if (source instanceof OlSourceWMTS) {
-      obj.source = this.serializeSourceWMTS(source);
-      obj.sourceType = 'WMTS';
+    if (source instanceof olSourceTileWMS) {
+      obj['source'] = this.serializeSourceTileWMS(source);
+      obj['sourceType'] = 'tileWMS';
+    } else if (source instanceof olSourceWMTS) {
+      obj['source'] = this.serializeSourceWMTS(source);
+      obj['sourceType'] = 'WMTS';
     }
     return JSON.stringify(obj);
   }
 
   /**
    * @param {string} serialization .
-   * @param {function(import("ol/ImageTile.js").default, string)=} tileLoadFunction .
-   * @return {!import("ol/layer/Tile.js").default} .
+   * @param {function(ol.ImageTile, string)=} tileLoadFunction .
+   * @return {ol.layer.Tile} .
    */
   deserializeTileLayer(serialization, tileLoadFunction) {
-    /**
-     * @type {import('ol/layer/BaseTile.js').Options}
-     */
-    const options = JSON.parse(serialization);
-    // @ts-ignore
-    const sourceType = options.sourceType;
+    const options = /** @type {olx.layer.TileOptions} */ (JSON.parse(serialization));
+    const sourceType = options['sourceType'];
     if (sourceType === 'tileWMS') {
-      options.source = this.deserializeSourceTileWMS(/** @type {any} */ (options).source, tileLoadFunction);
+      options['source'] = this.deserializeSourceTileWMS(options['source'], tileLoadFunction);
     } else if (sourceType === 'WMTS') {
-      options.source = this.deserializeSourceWMTS(/** @type {any} */ (options).source, tileLoadFunction);
+      options['source'] = this.deserializeSourceWMTS(options['source'], tileLoadFunction);
     }
-    return new OlLayerTile(options);
+    return new olLayerTile(options);
   }
 };
 
 const exports = SerDes;
+
 
 export default exports;

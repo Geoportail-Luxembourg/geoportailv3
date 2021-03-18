@@ -1,225 +1,231 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 const path = require('path');
 const webpack = require('webpack');
-const SassPlugin = require('./webpack.plugin.js');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const LessPluginCleanCSS = require('less-plugin-clean-css');
+const LessPluginAutoprefix = require('less-plugin-autoprefix');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
-const devMode = process.env.NODE_ENV !== 'production';
+const devMode = process.env.NODE_ENV !== 'production'
 
-module.exports = function (config) {
-  config = config || {};
+const themes = {
+  'mobile': '"~gmf/controllers/mobile-theme.less"',
+  'desktop': '"~gmf/controllers/desktop-theme.less"',
+  'desktop_alt': '"' + path.resolve('contribs/gmf/apps/desktop_alt/less/theme.less') + '"',
+}
 
-  const dllPlugin = new webpack.DllReferencePlugin(
-    Object.assign(
-      {
-        manifest: path.resolve(__dirname, '../dist/vendor-manifest.json'),
-      },
-      config.DllReferencePluginOptions || {}
-    )
-  );
+const theme = process.env.THEME
 
-  const providePlugin = new webpack.ProvidePlugin({
-    // Make sure that Angular finds jQuery and does not fall back to jqLite
-    // See https://github.com/webpack/webpack/issues/582
-    'window.jQuery': 'jquery',
-    // For Bootstrap
-    'jQuery': 'jquery',
-    // For own scripts
-    $: 'jquery',
-  });
 
-  const babelPresets = [
-    [
-      require.resolve('@babel/preset-env'),
-      {
-        'targets': {
-          // See browser list on: https://browserl.ist/
-          'browsers': ['> 0.5% in CH', '> 0.5% in FR', 'Firefox ESR', 'ie 11'],
-        },
-        'modules': false,
-        'loose': true,
-      },
-    ],
-  ];
+const providePlugin = new webpack.ProvidePlugin({
+  // Make sure that Angular finds jQuery and does not fall back to jqLite
+  // See https://github.com/webpack/webpack/issues/582
+  'window.jQuery': 'jquery',
+  // For Bootstrap
+  'jQuery': 'jquery',
+  // For own scripts
+  $: 'jquery',
+});
 
-  const angularRule = {
-    test: require.resolve('angular'),
-    use: {
-      loader: 'expose-loader',
-      options: 'angular',
-    },
-  };
+const babelPresets = [['env', {
+  'targets': {
+    'browsers': ['last 2 versions', 'Firefox ESR', 'ie 11'],
+  },
+  'modules': false,
+  'loose': true,
+}]];
 
-  // Expose corejs-typeahead as window.Bloodhound
-  const typeaheadRule = {
-    test: require.resolve('corejs-typeahead'),
-    use: {
-      loader: 'expose-loader',
-      options: 'Bloodhound',
-    },
-  };
-
-  const cssRule = {
-    test: /\.css$/,
-    use: ['./buildtools/webpack.scss-loader', 'extract-loader', 'css-loader'],
-  };
-
-  const sassRule = {
-    test: /\.scss$/,
-    use: [
-      {
-        loader: './buildtools/webpack.scss-loader',
-      },
-    ],
-  };
-
-  const htmlRule = {
-    test: /\.html$/,
-    use: 'ejs-loader',
-  };
-
-  function get_comp(firsts, lasts) {
-    return (f1, f2) => {
-      for (const pattern of firsts) {
-        if (f1.indexOf(pattern) >= 0) {
-          return -1;
-        }
-        if (f2.indexOf(pattern) >= 0) {
-          return 1;
-        }
-      }
-      for (const pattern of lasts) {
-        if (f1.indexOf(pattern) >= 0) {
-          return 1;
-        }
-        if (f2.indexOf(pattern) >= 0) {
-          return -1;
-        }
-      }
-      return 0;
-    };
+const angularRule = {
+  test: require.resolve('angular'),
+  use: {
+    loader: 'expose-loader',
+    options: 'angular'
   }
+};
+
+// Expose corejs-typeahead as window.Bloodhound
+const typeaheadRule = {
+  test: require.resolve('corejs-typeahead'),
+  use: {
+    loader: 'expose-loader',
+    options: 'Bloodhound'
+  }
+};
+
+const cssRule = {
+  test: /\.css$/,
+  use: ExtractTextPlugin.extract({
+    use: 'css-loader'
+  })
+};
+
+const cssLessLoaderConfigs = [
+  {
+    loader: 'css-loader',
+    options: {
+      importLoaders: 1
+    }
+  },
+  {
+    loader: 'less-loader',
+    options: {
+      lessPlugins: [
+        new LessPluginCleanCSS(),
+        new LessPluginAutoprefix()
+      ],
+      modifyVars: {
+        'THEME': themes[theme] ? themes[theme] : theme,
+      }
+    }
+  }
+];
+
+const lessRule = {
+  test: /\.less$/,
+  use: ExtractTextPlugin.extract({
+    use: cssLessLoaderConfigs
+  })
+};
+
+const htmlRule = {
+  test: /\.html$/,
+  use: [{
+    loader: 'html-loader',
+    options: {
+      minimize: true
+    }
+  }]
+};
+
+const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
+  const babelAnnotateUse = {
+    loader: 'babel-loader',
+    options: {
+      comments: false,
+      cacheDirectory: babelLoaderCacheDirectory,
+      presets: babelPresets,
+      plugins: ['@camptocamp/babel-plugin-angularjs-annotate'],
+    }
+  };
 
   const ngeoRule = {
-    test: /\/ngeo\/(?!node_modules\/).*\.js$/,
+    test: /ngeo\/src\/.*\.js$/,
+    use: babelAnnotateUse,
+  };
+
+  const ngeoExamplesRule = {
+    test: /ngeo\/examples\/.*\.js$/,
+    use: babelAnnotateUse,
+  };
+
+  const gmfAppsRule = {
+    test: /ngeo\/contribs\/gmf\/apps\/.*\.js$/,
+    use: babelAnnotateUse,
+  };
+
+  const gmfRule = {
+    test: /ngeo\/contribs\/gmf\/src\/.*\.js$/,
+    use: babelAnnotateUse,
+  };
+
+  const gmfExamplesRule = {
+    test: /ngeo\/contribs\/gmf\/examples\/.*\.js$/,
+    use: babelAnnotateUse,
+  };
+
+  const olRule = {
+    test: /openlayers\/src\/.*\.js$/,
     use: {
       loader: 'babel-loader',
       options: {
         babelrc: false,
         comments: false,
+        cacheDirectory: babelLoaderCacheDirectory,
         presets: babelPresets,
-        plugins: [require.resolve('@camptocamp/babel-plugin-angularjs-annotate')],
-      },
-    },
+      }
+    }
   };
-  const otherRule = {
-    test: /\/node_modules\/(?!ngeo\/|angular\/).*\.js$/,
+
+  const olcsRule = {
+    test: /olcs\/.*\.js$/,
     use: {
       loader: 'babel-loader',
       options: {
         babelrc: false,
         comments: false,
+        cacheDirectory: babelLoaderCacheDirectory,
         presets: babelPresets,
-        plugins: [
-          require.resolve('@babel/plugin-syntax-object-rest-spread'),
-          require.resolve('@babel/plugin-transform-spread'),
-        ],
-      },
-    },
+      }
+    }
   };
-  const plugins = [
-    providePlugin,
-    new SassPlugin({
-      filename: devMode ? '[name].css' : '[name].[hash:6].css',
-      assetname: '[name].[hash:6].[ext]',
-      //tempfile: '/tmp/t.scss',
-      blacklistedChunks: ['commons'],
-      filesOrder: (chunk, chunksFiles) => {
-        const files = chunksFiles.commons
-          ? chunksFiles[chunk.name].concat(chunksFiles.commons)
-          : chunksFiles[chunk.name];
-        files.sort(
-          get_comp(
-            config.fist_scss || [
-              // ngeo default apps
-              '/apps/desktop/sass/vars_desktop.scss',
-              '/apps/desktop_alt/sass/vars_desktop_alt.scss',
-              '/apps/iframe_api/sass/vars_iframe_api.scss',
-              '/apps/mobile/sass/vars_mobile.scss',
-              '/apps/mobile_alt/sass/vars_mobile_alt.scss',
-              '/apps/oeedit/sass/vars_oeedit.scss',
-              // GeoMapFish project sass vars files
-              '/apps/sass/vars_',
-              '/controllers/vars_',
-              // For the tests
-              'sass/vars.scss',
-            ],
-            config.last_scss || [
-              // project and ngeo default apps other sass files
-              '/apps/',
-              '/controllers/',
-            ]
-          )
-        );
-        console.log();
-        console.log('SCSS files order:');
-        for (const file of files) {
-          console.log(file);
-        }
-        console.log();
-        return files;
-      },
-    }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /node_modules\/moment\/src\/lib\/locale$/),
-  ];
-  if (config.nodll != true) {
-    plugins.push(dllPlugin);
-  }
+
+  const jstsRule = {
+    test: /jsts\/.*\.js$/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        babelrc: false,
+        comments: false,
+        cacheDirectory: babelLoaderCacheDirectory,
+        presets: babelPresets,
+      }
+    }
+  };
 
   return {
     context: path.resolve(__dirname, '../'),
+    devtool: 'source-map',
     output: {
-      path: path.resolve(__dirname, '../dist/'),
+      path: path.resolve(__dirname, '../dist/')
     },
     module: {
-      rules: [angularRule, typeaheadRule, cssRule, sassRule, htmlRule, ngeoRule, otherRule],
+      rules: [
+        olRule,
+        olcsRule,
+        jstsRule,
+        angularRule,
+        typeaheadRule,
+        cssRule,
+        lessRule,
+        htmlRule,
+        ngeoRule,
+        ngeoExamplesRule,
+        gmfAppsRule,
+        gmfRule,
+        gmfExamplesRule,
+      ]
     },
-    plugins: plugins,
+    plugins: [
+      providePlugin,
+      new ExtractTextPlugin({
+          ignoreOrder: true,
+          filename: devMode ? '[name].css' : '[name].[hash:6].css'
+      }),
+      new webpack.IgnorePlugin(/^\.\/locale$/, /node_modules\/moment\/src\/lib\/locale$/),
+      new HardSourceWebpackPlugin(hardSourceConfig || {}),
+    ],
     resolve: {
-      modules: ['../node_modules', '../node_modules/d3/node_modules'],
-      mainFields: ['geoblocks_src', 'module', 'jsnext:main', 'main'],
+      modules: [
+        '../node_modules'
+      ],
+      mainFields: ['jsnext:main', 'main'],
       alias: {
         'ngeo/test': path.resolve(__dirname, '../test/spec'),
         'gmf/test': path.resolve(__dirname, '../contribs/gmf/test/spec'),
         'ngeo': path.resolve(__dirname, '../src'),
         'gmf': path.resolve(__dirname, '../contribs/gmf/src'),
+        'goog/asserts': path.resolve(__dirname, '../src/goog.asserts.js'),
+        'goog/asserts.js': path.resolve(__dirname, '../src/goog.asserts.js'),
         'jsts': 'jsts/org/locationtech/jts',
+        'ol/ol.css': 'openlayers/css/ol.css',
+        'ol': 'openlayers/src/ol',
         'olcs': 'ol-cesium/src/olcs',
         'jquery-ui/datepicker': 'jquery-ui/ui/widgets/datepicker', // For angular-ui-date
         'proj4': 'proj4/lib',
-      },
-    },
-    optimization: {
-      sideEffects: false,
-    },
-  };
+      }
+    }
+  }
+};
+
+module.exports = {
+  config: config,
 };

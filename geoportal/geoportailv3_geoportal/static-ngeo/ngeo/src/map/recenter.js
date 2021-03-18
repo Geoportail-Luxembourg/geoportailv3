@@ -1,31 +1,10 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * @type {angular.IModule}
- * @hidden
+ * @module ngeo.map.recenter
  */
-const module = angular.module('ngeoRecenter', []);
+/**
+ * @type {!angular.Module}
+ */
+const exports = angular.module('ngeoRecenter', []);
 
 /**
  * Provides the "ngeoRecenter" directive, a widget for recentering a map
@@ -49,31 +28,22 @@ const module = angular.module('ngeoRecenter', []);
  *
  * See our live example: [../examples/recenter.html](../examples/recenter.html)
  *
- * @htmlAttribute {import("ol/Map.js").default} ngeo-recenter-map The map.
- * @return {angular.IDirective} Directive Definition Object.
+ * @htmlAttribute {ol.Map} ngeo-recenter-map The map.
+ * @return {angular.Directive} Directive Definition Object.
  * @ngdoc directive
  * @ngname ngeoRecenter
  */
-function mapResenterComponent() {
+exports.directive_ = function() {
   return {
     restrict: 'A',
     link: ($scope, $element, $attrs) => {
-      const mapExpr = $attrs.ngeoRecenterMap;
-      /**
-       * @type {import("ol/Map.js").default}
-       */
-      const map = $scope.$eval(mapExpr);
+      const mapExpr = $attrs['ngeoRecenterMap'];
+      const map = /** @type {ol.Map} */ ($scope.$eval(mapExpr));
 
-      /**
-       * @param {JQuery} element
-       */
       function recenter(element) {
         const extent = element.attr('ngeo-extent');
         if (extent !== undefined) {
-          const size = map.getSize();
-          if (size === undefined) {
-            throw new Error('Missing size');
-          }
+          const size = /** @type {ol.Size} */ (map.getSize());
           map.getView().fit($scope.$eval(extent), {size});
         }
         const zoom = element.attr('ngeo-zoom');
@@ -83,24 +53,22 @@ function mapResenterComponent() {
       }
 
       // if the children is a link or button
-      $element.on('click', '*', function (event) {
+      $element.on('click', '*', function(event) {
         recenter(angular.element($(this)));
       });
 
       // if the children is an option inside a select
-      /**
-       * @param {JQuery.ChangeEvent<any, any, any, HTMLSelectElement>} event The event
-       */
-      const ce = (event) => {
+      $element.on('change', (event) => {
         const selected = event.target.options[event.target.selectedIndex];
         recenter(angular.element(selected));
-      };
-      $element.on({change: ce});
-    },
+      });
+
+    }
   };
-}
+};
 
 // Register the directive in the module
-module.directive('ngeoRecenter', mapResenterComponent);
+exports.directive('ngeoRecenter', exports.directive_);
 
-export default module;
+
+export default exports;

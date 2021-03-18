@@ -1,34 +1,15 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.misc.datetimepickerComponent
+ */
 import DateFormatter from 'ngeo/misc/php-date-formatter.js';
 import 'jquery-datetimepicker/jquery.datetimepicker.js';
 import 'jquery-datetimepicker/jquery.datetimepicker.css';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoDateTimePicker', ['gettext']);
+const exports = angular.module('ngeoDateTimePicker', ['gettext']);
 
 /**
  * A directive used to display a date or time picker
@@ -40,43 +21,44 @@ const module = angular.module('ngeoDateTimePicker', ['gettext']);
  *
  * @htmlAttribute {Object} ngeo-datetimepicker-options The options.
  *
- * @return {angular.IDirective} The directive specs.
+ * @return {angular.Directive} The directive specs.
  * @ngdoc directive
  * @ngname ngeoDatetimepicker
  */
-function dateTimeComponent() {
+exports.component_ = function() {
   return {
     restrict: 'A',
-    controller: Controller,
+    controller: exports.Controller_,
     bindToController: true,
     scope: {
-      'options': '<ngeoDatetimepickerOptions',
-    },
+      'options': '<ngeoDatetimepickerOptions'
+    }
   };
-}
+};
 
-module.directive('ngeoDatetimepicker', dateTimeComponent);
+exports.directive('ngeoDatetimepicker', exports.component_);
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.gettext.gettextCatalog} gettextCatalog service.
+ * @param {!jQuery} $element Element.
+ * @param {!angularGettext.Catalog} gettextCatalog service.
  * @constructor
  * @private
- * @hidden
+ * @struct
  * @ngInject
  * @ngdoc controller
  * @ngname ngeoDatetimepickerController
  */
-function Controller($element, gettextCatalog) {
+exports.Controller_ = function($element, gettextCatalog) {
   /**
-   * @const {JQuery}
+   * @const {!jQuery}
    * @private
    */
   this.element_ = $element;
 
   /**
    * The gettext catalog
-   * @type {angular.gettext.gettextCatalog}
+   * @type {!angularGettext.Catalog}
    * @private
    */
   this.gettextCatalog_ = gettextCatalog;
@@ -87,16 +69,15 @@ function Controller($element, gettextCatalog) {
    * @private
    */
   this.options;
-}
+};
+
 
 /**
  * Initialize the directive.
  */
-Controller.prototype.$onInit = function () {
+exports.Controller_.prototype.$onInit = function() {
   const lang = this.gettextCatalog_.getCurrentLanguage();
-  // @ts-ignore: Missing in DefinitelyTyped
   $.datetimepicker.setLocale(lang);
-  // @ts-ignore: Missing in DefinitelyTyped
   $.datetimepicker.setDateFormatter(new DateFormatter());
   if (typeof this.options === 'string') {
     this.options = angular.fromJson(this.options);
@@ -104,6 +85,8 @@ Controller.prototype.$onInit = function () {
   this.element_.datetimepicker(this.options);
 };
 
-module.controller('ngeoDateTimePickerController', Controller);
+exports.controller('ngeoDateTimePickerController',
+  exports.Controller_);
 
-export default module;
+
+export default exports;

@@ -1,68 +1,42 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * @type {angular.IModule}
- * @hidden
+ * @module gmf.lidarprofile.component
  */
-const module = angular.module('gmfLidarprofile', []);
 
-module.value(
-  'gmfLidarprofileTemplateUrl',
-  /**
-   * @param {JQuery} $element Element.
-   * @param {angular.IAttributes} $attrs Attributes.
-   * @return {string} Template.
-   */
-  ($element, $attrs) => {
-    const templateUrl = $attrs.gmfLidarprofileTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/lidarprofile';
-  }
-);
-
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/lidarprofile', require('./component.html'));
-  }
-);
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(JQuery, angular.IAttributes): string} gmfLidarprofileTemplateUrl Template function.
+ * @type {!angular.Module}
+ */
+const exports = angular.module('gmfLidarprofile', []);
+
+
+exports.value('gmfLidarprofileTemplateUrl',
+  /**
+     * @param {!angular.JQLite} $element Element.
+     * @param {!angular.Attributes} $attrs Attributes.
+     * @return {string} Template.
+     */
+  ($element, $attrs) => {
+    const templateUrl = $attrs['gmfLidarprofileTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/lidarprofile';
+  });
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/lidarprofile', require('./component.html'));
+});
+
+
+/**
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.JQLite, !angular.Attributes): string} gmfLidarprofileTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfLidarprofileTemplateUrl($element, $attrs, gmfLidarprofileTemplateUrl) {
   return gmfLidarprofileTemplateUrl($element, $attrs);
 }
+
 
 /**
  * Provide a component that display a lidar profile panel.
@@ -78,39 +52,43 @@ function gmfLidarprofileTemplateUrl($element, $attrs, gmfLidarprofileTemplateUrl
  * @ngdoc component
  * @ngname gmfLidarprofile
  */
-const lidarprofileComponent = {
+exports.component_ = {
   controller: 'GmfLidarprofileController',
   bindings: {
     'active': '=gmfLidarprofileActive',
-    'line': '=gmfLidarprofileLine',
+    'line': '=gmfLidarprofileLine'
   },
-  templateUrl: gmfLidarprofileTemplateUrl,
+  templateUrl: gmfLidarprofileTemplateUrl
 };
 
-module.component('gmfLidarprofile', lidarprofileComponent);
+exports.component('gmfLidarprofile', exports.component_);
+
 
 /**
  * @private
- * @hidden
  */
-class Controller {
+exports.Controller_ = class {
+
   /**
-   * @param {angular.IScope} $scope Angular scope.
+   * @param {angular.Scope} $scope Angular scope.
    * @private
    * @ngInject
    * @ngdo controller
    * @ngname GmfLidarprofileController
-   */
+  */
   constructor($scope) {
+
     /**
      * The Openlayer LineStringt that defines the profile
-     * @type {?import("ol/geom/LineString.js").default}
+     * @type {ol.geom.LineString}
+     * @export
      */
-    this.line = null;
+    this.line;
 
     /**
      * The profile active state
      * @type {boolean}
+     * @export
      */
     this.active = false;
 
@@ -121,11 +99,12 @@ class Controller {
         if (oldLine !== newLine) {
           this.active = !!this.line;
         }
-      }
-    );
+      });
   }
-}
+};
 
-module.controller('GmfLidarprofileController', Controller);
 
-export default module;
+exports.controller('GmfLidarprofileController', exports.Controller_);
+
+
+export default exports;

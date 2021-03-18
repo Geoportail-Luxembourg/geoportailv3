@@ -1,62 +1,46 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.message.popoverComponent
+ */
 import 'bootstrap/js/tooltip.js';
 import 'bootstrap/js/popover.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {angular.Module}
  */
-const module = angular.module('ngeoPopover', []);
+const exports = angular.module('ngeoPopover', []);
+
 
 /**
  * Provides a directive used to display a Bootstrap popover.
  *
- *    <div ngeo-popover>
- *      <a ngeo-popover-anchor class="btn btn-info">anchor 1</a>
- *      <div ngeo-popover-body>
- *        <ul>
- *          <li>action 1:
- *            <input type="range"/>
- *          </li>
- *        </ul>
- *      </div>
- *    </div>
- *
+ *<div ngeo-popover>
+ *  <a ngeo-popover-anchor class="btn btn-info">anchor 1</a>
+ *  <div ngeo-popover-content>
+ *    <ul>
+ *      <li>action 1:
+ *        <input type="range"/>
+ *      </li>
+ *    </ul>
+ *  </div>
+ *</div>
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopover
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  */
-function messagePopoverComponent() {
+exports.component_ = function() {
   return {
     restrict: 'A',
     scope: true,
     controller: 'NgeoPopoverController as popoverCtrl',
     link: (scope, elem, attrs, ngeoPopoverCtrl) => {
-      if (!ngeoPopoverCtrl) {
-        throw new Error('Missing ngeoPopoverCtrl');
-      }
+      ngeoPopoverCtrl.anchorElm.on('hidden.bs.popover', () => {
+        /**
+         * @type {{inState : Object}}
+         */
+        const popover = ngeoPopoverCtrl.anchorElm.data('bs.popover');
+        popover['inState'].click = false;
+      });
 
       ngeoPopoverCtrl.anchorElm.on('inserted.bs.popover', () => {
         ngeoPopoverCtrl.bodyElm.show();
@@ -67,8 +51,7 @@ function messagePopoverComponent() {
         container: 'body',
         html: true,
         content: ngeoPopoverCtrl.bodyElm,
-        boundary: 'viewport',
-        placement: attrs['ngeoPopoverPlacement'] || 'right',
+        placement: attrs['ngeoPopoverPlacement'] || 'right'
       });
 
       if (attrs['ngeoPopoverDismiss']) {
@@ -78,121 +61,107 @@ function messagePopoverComponent() {
       }
 
       scope.$on('$destroy', () => {
-        ngeoPopoverCtrl.anchorElm.popover('dispose');
+        ngeoPopoverCtrl.anchorElm.popover('destroy');
         ngeoPopoverCtrl.anchorElm.unbind('inserted.bs.popover');
         ngeoPopoverCtrl.anchorElm.unbind('hidden.bs.popover');
       });
-    },
+    }
   };
-}
+};
 
 /**
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopoverAnchor
- * @return {angular.IDirective} The Directive Definition Object
+ * @return {angular.Directive} The Directive Definition Object
  */
-function messagePopoverAnchorComponent() {
+exports.anchorComponent = function() {
   return {
     restrict: 'A',
     require: '^^ngeoPopover',
     link: (scope, elem, attrs, ngeoPopoverCtrl) => {
-      if (!ngeoPopoverCtrl) {
-        throw new Error('Missing ngeoPopoverCtrl');
-      }
       ngeoPopoverCtrl.anchorElm = elem;
-    },
+    }
   };
-}
+};
 
 /**
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopoverContent
- * @return {angular.IDirective} The Directive Definition Object
+ * @return {angular.Directive} The Directive Definition Object
  */
-function messagePopoverContentComponent() {
+exports.contentComponent = function() {
   return {
     restrict: 'A',
     require: '^^ngeoPopover',
     link: (scope, elem, attrs, ngeoPopoverCtrl) => {
-      if (!ngeoPopoverCtrl) {
-        throw new Error('Missing ngeoPopoverCtrl');
-      }
       ngeoPopoverCtrl.bodyElm = elem;
       elem.hide();
-    },
+    }
   };
-}
+};
 
 /**
  * The controller for the 'popover' directive.
  * @constructor
+ * @private
+ * @struct
  * @ngInject
  * @ngdoc controller
  * @ngname NgeoPopoverController
- * @param {angular.IScope} $scope Scope.
- * @private
- * @hidden
+ * @param {angular.Scope} $scope Scope.
  */
-function PopoverController($scope) {
+exports.PopoverController_ = function($scope) {
   /**
    * The state of the popover (displayed or not)
    * @type {boolean}
+   * @export
    */
   this.shown = false;
 
   /**
-   * @type {?JQuery}
+   * @type {angular.JQLite|undefined}
+   * @export
    */
-  this.anchorElm = null;
+  this.anchorElm = undefined;
 
   /**
-   * @type {?JQuery}
+   * @type {angular.JQLite|undefined}
+   * @export
    */
-  this.bodyElm = null;
+  this.bodyElm = undefined;
 
-  /**
-   * @param {Event} clickEvent
-   */
-  const clickHandler = (clickEvent) => {
-    if (!this.anchorElm) {
-      throw new Error('Missing anchorElm');
-    }
-    if (!this.bodyElm) {
-      throw new Error('Missing bodyElm');
-    }
-    if (
-      this.anchorElm[0] !== clickEvent.target &&
-      this.bodyElm.parent()[0] !== clickEvent.target &&
-      this.bodyElm.parent().find(clickEvent.target).length === 0 &&
-      this.shown
-    ) {
+  function onMouseDown(clickEvent) {
+    if (this.anchorElm[0] !== clickEvent.target &&
+      this.bodyElm.parent()[0] !== clickEvent.target &
+      this.bodyElm.parent().find(clickEvent.target).length === 0 && this.shown) {
       this.dismissPopover();
     }
-  };
+  }
 
-  document.body.addEventListener('click', clickHandler);
+  angular.element('body').on('mousedown', onMouseDown.bind(this));
 
   $scope.$on('$destroy', () => {
-    document.body.removeEventListener('click', clickHandler);
+    angular.element('body').off('mousedown', onMouseDown);
   });
-}
+};
+
 
 /**
  * Dissmiss popover function
+ * @export
  */
-PopoverController.prototype.dismissPopover = function () {
-  if (!this.anchorElm) {
-    throw new Error('Missing anchorElm');
-  }
+exports.PopoverController_.prototype.dismissPopover = function() {
   this.shown = false;
   this.anchorElm.popover('hide');
 };
 
-module.controller('NgeoPopoverController', PopoverController);
-module.directive('ngeoPopover', messagePopoverComponent);
-module.directive('ngeoPopoverAnchor', messagePopoverAnchorComponent);
-module.directive('ngeoPopoverContent', messagePopoverContentComponent);
 
-export default module;
+exports.controller('NgeoPopoverController', exports.PopoverController_);
+exports.directive('ngeoPopover', exports.component_);
+exports.directive('ngeoPopoverAnchor', exports.anchorComponent);
+exports.directive('ngeoPopoverContent', exports.contentComponent);
+
+
+export default exports;

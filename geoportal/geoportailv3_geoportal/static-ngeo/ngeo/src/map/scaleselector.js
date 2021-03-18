@@ -1,66 +1,34 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import {numberSafeCompareFunction} from 'ol/array.js';
+/**
+ * @module ngeo.map.scaleselector
+ */
+import googAsserts from 'goog/asserts.js';
+import * as olArray from 'ol/array.js';
 import olMap from 'ol/Map.js';
-import {listen, unlistenByKey} from 'ol/events.js';
+import * as olEvents from 'ol/events.js';
 import 'bootstrap/js/dropdown.js';
 
 /**
- * Options to configure the scale selector.
- *
- * @typedef {Object} ScaleselectorOptions
- * @property {boolean} [dropup] True to get a drop menu that opens imself to the top, instead of the bottom.
+ * @type {!angular.Module}
  */
+const exports = angular.module('ngeoScaleselector', []);
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoScaleselector', []);
 
-module.value(
-  'ngeoScaleselectorTemplateUrl',
+exports.value('ngeoScaleselectorTemplateUrl',
   /**
-   * @param {JQuery} element Element.
-   * @param {angular.IAttributes} attrs Attributes.
+   * @param {angular.JQLite} element Element.
+   * @param {angular.Attributes} attrs Attributes.
    * @return {string} Template URL.
    */
   (element, attrs) => {
-    const templateUrl = attrs.ngeoScaleselectorTemplateurl;
-    return templateUrl !== undefined ? templateUrl : 'ngeo/map/scaleselector';
-  }
-);
+    const templateUrl = attrs['ngeoScaleselectorTemplateurl'];
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/map/scaleselector';
+  });
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/map/scaleselector', require('./scaleselector.html'));
-  }
-);
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/map/scaleselector', require('./scaleselector.html'));
+});
+
 
 /**
  * Provides the "ngeoScaleselector" directive, a widget for
@@ -81,7 +49,7 @@ module.run(
  * Bootstrap's "dropdown" jQuery plugin.
  *
  * You can pass options to configure the behaviors of this element. Options is
- * a {@link ScaleselectorOptions} object.
+ * a {@link ngeox.ScaleselectorOptions} object.
  *
  * Example:
  *
@@ -102,236 +70,205 @@ module.run(
  *
  * See our live example: [../examples/scaleselector.html](../examples/scaleselector.html)
  *
- * @htmlAttribute {number[]} ngeo-scaleselector The available scales.
- * @htmlAttribute {import("ol/Map.js").default} ngeo-scaleselector-map The map.
- * @htmlAttribute {ScaleselectorOptions} ngeo-scaleselector-options
- *    Optional. The configuration options.
- * @param {string|function(JQuery=, angular.IAttributes=): string} ngeoScaleselectorTemplateUrl Template URL
- *    for the directive.
- * @return {angular.IDirective} Directive Definition Object.
+ * @htmlAttribute {!Array.<number>} ngeo-scaleselector The available scales.
+ * @htmlAttribute {ol.Map} ngeo-scaleselector-map The map.
+ * @htmlAttribute {ngeox.ScaleselectorOptions} ngeo-scaleselector-options
+ *     Optional. The configuration options.
+ * @param {string|function(!angular.JQLite=, !angular.Attributes=)}
+ *     ngeoScaleselectorTemplateUrl Template URL for the directive.
+ * @return {angular.Directive} Directive Definition Object.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoScaleselector
  */
-const mapScaleselectorComponent = function (ngeoScaleselectorTemplateUrl) {
+const directive = function(ngeoScaleselectorTemplateUrl) {
   return {
     restrict: 'A',
     scope: true,
     controller: 'NgeoScaleselectorController',
-    templateUrl: ngeoScaleselectorTemplateUrl,
+    templateUrl: ngeoScaleselectorTemplateUrl
   };
 };
 
-module.directive('ngeoScaleselector', mapScaleselectorComponent);
+
+exports.directive('ngeoScaleselector', directive);
+
 
 /**
+ * @constructor
  * @private
- * @hidden
+ * @struct
+ * @param {angular.Scope} $scope Directive scope.
+ * @param {angular.JQLite} $element Element.
+ * @param {angular.Attributes} $attrs Attributes.
+ * @ngInject
+ * @ngdoc controller
+ * @ngname NgeoScaleselectorController
  */
-class ScaleselectorController {
+const ScaleselectorController = function($scope, $element, $attrs) {
+
+  const scalesExpr = $attrs['ngeoScaleselector'];
+
   /**
-   * @param {angular.IScope} $scope Directive scope.
-   * @param {JQuery} $element Element.
-   * @param {angular.IAttributes} $attrs Attributes.
-   * @ngInject
+   * The zoom level/scale map object.
+   * @type {!Array.<number>}
+   * @export
    */
-  constructor($scope, $element, $attrs) {
-    const scalesExpr = $attrs.ngeoScaleselector;
+  this.scales = /** @type {!Array.<number>} */
+    ($scope.$eval(scalesExpr));
+  googAsserts.assert(this.scales !== undefined);
 
-    /**
-     * The zoom level/scale map object.
-     * @type {number[]}
-     */
-    this.scales = /** @type {number[]} */ ($scope.$eval(scalesExpr));
+  /**
+   * @type {Array.<number>}
+   * @export
+   */
+  this.zoomLevels;
 
-    /**
-     * @type {number[]}
-     */
-    this.zoomLevels = [];
+  $scope.$watch(() => Object.keys(this.scales).length, (newLength) => {
+    this.zoomLevels = Object.keys(this.scales).map(Number);
+    this.zoomLevels.sort(olArray.numberSafeCompareFunction);
+  });
 
-    $scope.$watch(
-      () => Object.keys(this.scales).length,
-      /**
-       * @param {number} newLength
-       */
-      (newLength) => {
-        this.zoomLevels = Object.keys(this.scales).map(Number);
-        this.zoomLevels.sort(numberSafeCompareFunction);
-      }
-    );
+  const mapExpr = $attrs['ngeoScaleselectorMap'];
 
-    const mapExpr = $attrs.ngeoScaleselectorMap;
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = /** @type {ol.Map} */ ($scope.$eval(mapExpr));
+  googAsserts.assertInstanceof(this.map_, olMap);
 
-    /**
-     * @type {import("ol/Map.js").default}
-     * @private
-     */
-    this.map_ = /** @type {import("ol/Map.js").default} */ ($scope.$eval(mapExpr));
-    console.assert(this.map_ instanceof olMap);
+  const optionsExpr = $attrs['ngeoScaleselectorOptions'];
+  const options = $scope.$eval(optionsExpr);
 
-    const optionsExpr = $attrs.ngeoScaleselectorOptions;
-    const options = $scope.$eval(optionsExpr);
+  /**
+   * @type {!ngeox.ScaleselectorOptions}
+   * @export
+   */
+  this.options = ScaleselectorController.getOptions_(options);
 
-    /**
-     * @type {ScaleselectorOptions}
-     */
-    this.options = getOptions_(options);
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.$scope_ = $scope;
 
-    /**
-     * @type {angular.IScope}
-     * @private
-     */
-    this.$scope_ = $scope;
+  /**
+   * @type {?ol.EventsKey}
+   * @private
+   */
+  this.resolutionChangeKey_ = null;
 
-    /**
-     * @type {?import("ol/events.js").EventsKey}
-     * @private
-     */
-    this.resolutionChangeKey_ = null;
+  /**
+   * @type {number|undefined}
+   * @export
+   */
+  this.currentScale = undefined;
 
-    /**
-     * @type {number|undefined}
-     */
-    this.currentScale = undefined;
-
-    const view = this.map_.getView();
-
-    // See: https://www.w3.org/TR/CSS21/syndata.html#length-units
-    const dpi = 96;
-    const inchesPerMeter = 39.37;
-    const warningRatio = 1.5;
-
-    if (this.scales) {
-      for (let zoom = view.getMinZoom(); zoom <= view.getMaxZoom(); zoom++) {
-        const calculatedScale = Math.round(view.getResolutionForZoom(zoom) * inchesPerMeter * dpi);
-        // If zoom is an index of scales, return the matching scale.
-        const scale = this.scales[zoom];
-        if (scale == undefined) {
-          console.warn(
-            `Missing scale for zoom '${zoom}', set it to real calculated scale '${calculatedScale}'.`
-          );
-          this.scales[zoom] = calculatedScale;
-        } else {
-          if (Math.exp(Math.abs(Math.log(calculatedScale / scale))) > warningRatio) {
-            console.warn(
-              `Big deferance between configured scale '${scale}' ` +
-                `for zoom '${zoom}' and real calculated scale '${calculatedScale}'.`
-            );
-          }
-        }
-      }
-    } else {
-      this.scales = [];
-      for (let zoom = view.getMinZoom(); zoom <= view.getMaxZoom(); zoom++) {
-        this.scales[zoom] = Math.round(view.getResolutionForZoom(zoom) * inchesPerMeter * dpi);
-      }
-    }
-
+  const view = this.map_.getView();
+  if (view !== null) {
     const currentZoom = this.map_.getView().getZoom();
     if (currentZoom !== undefined) {
       this.currentScale = this.getScale(currentZoom);
     }
-
-    listen(this.map_, 'change:view', this.handleViewChange_, this);
-
-    this.registerResolutionChangeListener_();
-
-    // @ts-ignore
-    $scope.scaleselectorCtrl = this;
   }
 
-  /**
-   * @param {number} zoom Zoom level.
-   * @return {number} Scale.
-   */
-  getScale(zoom) {
-    if (zoom === undefined) {
-      return undefined;
-    }
+  olEvents.listen(this.map_, 'change:view', this.handleViewChange_, this);
 
-    // if zoom is an index of scales, return the matching scale.
-    let scale = this.scales[zoom];
-    if (scale !== undefined) {
-      return scale;
-    }
+  this.registerResolutionChangeListener_();
 
-    // If zoom is not an exact index of scales, try to determine the current scales from the zoom value.
-    const flooredZoom = Math.floor(zoom);
-    const lowerScale = this.scales[flooredZoom];
-    const upperScale = this.scales[flooredZoom + 1];
-    scale = lowerScale - (lowerScale - upperScale) * (zoom - flooredZoom);
-    return isNaN(scale) ? undefined : Math.round(scale);
-  }
+  $scope['scaleselectorCtrl'] = this;
 
-  /**
-   * @param {number} zoom Zoom level.
-   */
-  changeZoom(zoom) {
-    this.map_.getView().setZoom(zoom);
-  }
+};
 
-  /**
-   * @param {?Event|import("ol/events/Event.js").default} e OpenLayers object event.
-   * @private
-   */
-  handleResolutionChange_(e) {
-    const view = this.map_.getView();
-    const currentScale = this.getScale(view.getZoom());
-
-    // handleResolutionChange_ is a change:resolution listener. The listener
-    // may be executed outside the Angular context, for example when the user
-    // double-clicks to zoom on the map.
-    //
-    // But it may also be executed inside the Angular context, when a function
-    // in Angular context calls setZoom or setResolution on the view, which
-    // is for example what happens when this controller's changeZoom function
-    // is called.
-    //
-    // For that reason we use $applyAsync instead of $apply here.
-
-    if (currentScale !== undefined) {
-      this.$scope_.$applyAsync(() => {
-        this.currentScale = currentScale;
-      });
-    }
-  }
-
-  /**
-   * @param {Event|import("ol/events/Event.js").default} e OpenLayers object event.
-   * @private
-   */
-  handleViewChange_(e) {
-    this.registerResolutionChangeListener_();
-    this.handleResolutionChange_(null);
-  }
-
-  /**
-   * @private
-   */
-  registerResolutionChangeListener_() {
-    if (this.resolutionChangeKey_ !== null) {
-      unlistenByKey(this.resolutionChangeKey_);
-    }
-    const view = this.map_.getView();
-    this.resolutionChangeKey_ = listen(view, 'change:resolution', this.handleResolutionChange_, this);
-  }
-}
 
 /**
  * @param {?} options Options after expression evaluation.
- * @return {ScaleselectorOptions} Options object.
+ * @return {!ngeox.ScaleselectorOptions} Options object.
  * @private
  */
-function getOptions_(options) {
+ScaleselectorController.getOptions_ = function(options) {
   let dropup = false;
   if (options !== undefined) {
-    dropup = options.dropup == true;
+    dropup = options['dropup'] == true;
   }
-  return /** @type {ScaleselectorOptions} */ ({
-    dropup: dropup,
+  return /** @type {ngeox.ScaleselectorOptions} */ ({
+    dropup: dropup
   });
-}
+};
 
-module.controller('NgeoScaleselectorController', ScaleselectorController);
 
-export default module;
+/**
+ * @param {number} zoom Zoom level.
+ * @return {number} Scale.
+ * @export
+ */
+ScaleselectorController.prototype.getScale = function(zoom) {
+  return this.scales[zoom];
+};
+
+
+/**
+ * @param {number} zoom Zoom level.
+ * @export
+ */
+ScaleselectorController.prototype.changeZoom = function(zoom) {
+  this.map_.getView().setZoom(zoom);
+};
+
+
+/**
+ * @param {ol.Object.Event} e OpenLayers object event.
+ * @private
+ */
+ScaleselectorController.prototype.handleResolutionChange_ = function(e) {
+  const view = this.map_.getView();
+  const currentScale = this.scales[/** @type {number} */ (view.getZoom())];
+
+  // handleResolutionChange_ is a change:resolution listener. The listener
+  // may be executed outside the Angular context, for example when the user
+  // double-clicks to zoom on the map.
+  //
+  // But it may also be executed inside the Angular context, when a function
+  // in Angular context calls setZoom or setResolution on the view, which
+  // is for example what happens when this controller's changeZoom function
+  // is called.
+  //
+  // For that reason we use $applyAsync instead of $apply here.
+
+  if (currentScale !== undefined) {
+    this.$scope_.$applyAsync(() => {
+      this.currentScale = currentScale;
+    });
+  }
+};
+
+
+/**
+ * @param {ol.Object.Event} e OpenLayers object event.
+ * @private
+ */
+ScaleselectorController.prototype.handleViewChange_ = function(e) {
+  this.registerResolutionChangeListener_();
+  this.handleResolutionChange_(null);
+};
+
+
+/**
+ * @private
+ */
+ScaleselectorController.prototype.registerResolutionChangeListener_ = function() {
+  if (this.resolutionChangeKey_ !== null) {
+    olEvents.unlistenByKey(this.resolutionChangeKey_);
+  }
+  const view = this.map_.getView();
+  this.resolutionChangeKey_ = olEvents.listen(view,
+    'change:resolution', this.handleResolutionChange_,
+    this);
+};
+
+
+exports.controller('NgeoScaleselectorController', ScaleselectorController);
+
+
+export default exports;

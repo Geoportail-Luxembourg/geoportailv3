@@ -1,40 +1,31 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
+/**
+ * @module ngeo.draw.component
+ */
 import ngeoDrawController from 'ngeo/draw/Controller.js';
+
+/** @suppress {extraRequire} */
 import ngeoDrawPoint from 'ngeo/draw/point.js';
+
+/** @suppress {extraRequire} */
 import ngeoDrawRectangle from 'ngeo/draw/rectangle.js';
+
+/** @suppress {extraRequire} */
 import ngeoDrawText from 'ngeo/draw/text.js';
+
+/** @suppress {extraRequire} */
 import ngeoMeasureArea from 'ngeo/measure/area.js';
+
+/** @suppress {extraRequire} */
 import ngeoMeasureAzimut from 'ngeo/measure/azimut.js';
+
+/** @suppress {extraRequire} */
 import ngeoMeasureLength from 'ngeo/measure/length.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoDrawfeature', [
-  ngeoDrawController.name,
+const exports = angular.module('ngeoDrawfeature', [
+  ngeoDrawController.module.name,
   ngeoDrawPoint.name,
   ngeoDrawRectangle.name,
   ngeoDrawText.name,
@@ -42,6 +33,7 @@ const module = angular.module('ngeoDrawfeature', [
   ngeoMeasureAzimut.name,
   ngeoMeasureLength.name,
 ]);
+
 
 /**
  * Directive used to draw vector features on a map.
@@ -104,23 +96,19 @@ const module = angular.module('ngeoDrawfeature', [
  *
  * @htmlAttribute {boolean} ngeo-drawfeature-active Whether the directive is
  *     active or not.
- * @htmlAttribute {import("ol/Collection.js").default=} ngeo-drawfeature-features The features
+ * @htmlAttribute {!ol.Collection=} ngeo-drawfeature-features The features
  *     collection in which to push the drawn features. If none is provided,
  *     then the `ngeoFeatures` collection is used.
- * @htmlAttribute {import("ol/Map.js").default} ngeo-drawfeature-map The map.
+ * @htmlAttribute {ol.Map} ngeo-drawfeature-map The map.
  * @htmlAttribute {boolean} ngeo-drawfeature-showmeasure. Checks the
  *      checkbox in order to display the feature measurements as a label.
  *      Default to false.
- * @htmlAttribute {string=} ngeo-drawfeature-uid A prefix to use to
- *      create unique ids for each created draw interaction as
- *      property. Used to find those draw interactions later on from the
- *      map, using the property set.
- * @return {angular.IDirective} The directive specs.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoDrawfeature
  */
-function drawComponent() {
+exports.directive_ = function() {
   return {
     controller: 'ngeoDrawfeatureController as dfCtrl',
     scope: true,
@@ -128,12 +116,12 @@ function drawComponent() {
       'active': '=ngeoDrawfeatureActive',
       'features': '=?ngeoDrawfeatureFeatures',
       'map': '=ngeoDrawfeatureMap',
-      'showMeasure': '=?ngeoDrawfeatureShowmeasure',
-      'uid': '<?ngeoDrawfeatureUid',
-    },
+      'showMeasure': '=?ngeoDrawfeatureShowmeasure'
+    }
   };
-}
+};
 
-module.directive('ngeoDrawfeature', drawComponent);
+exports.directive('ngeoDrawfeature', exports.directive_);
 
-export default module;
+
+export default exports;

@@ -1,41 +1,15 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.misc.sortableComponent
+ */
 import 'jquery-ui/ui/widgets/sortable.js';
-import 'ngeo/sass/jquery-ui.scss';
 import 'jquery-ui-touch-punch';
+import googAsserts from 'goog/asserts.js';
 
 /**
- * @typedef {Object} miscSortableOptions
- * @property {string} [handleClassName]
- * @property {string} [draggerClassName]
- * @property {string} [placeholderClassName]
+ * @type {!angular.Module}
  */
+const exports = angular.module('ngeoSortable', []);
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoSortable', []);
 
 /**
  * Provides a directive that allows drag-and-dropping DOM items between them.
@@ -66,43 +40,42 @@ const module = angular.module('ngeoSortable', []);
  *
  * See our live example: [../examples/layerorder.html](../examples/layerorder.html)
  *
- * @htmlAttribute {Array<import("ol/layer/Base.js").default>} ngeo-sortable The layers to sort.
- * @htmlAttribute {miscSortableOptions} ngeo-sortable-options The options.
- * @htmlAttribute {Function(JQuery, Array)?} ngeo-sortable-callback
+ * @htmlAttribute {Array.<ol.layer.Base>} ngeo-sortable The layers to sort.
+ * @htmlAttribute {!ngeox.miscSortableOptions} ngeo-sortable-options The options.
+ * @htmlAttribute {Function(angular.JQLite, Array)?} ngeo-sortable-callback
  *     Callback function called after the move end. The Function will be called
  *     with the element and the sort array as arguments.
  * @htmlAttribute {Object?} ngeo-sortable-callback-ctx Context to apply at
  *     the call of the callback function.
- * @param {angular.ITimeoutService} $timeout Angular timeout service.
- * @return {angular.IDirective} The directive specs.
+ * @param {angular.$timeout} $timeout Angular timeout service.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoSortable
  */
-function sortableComponent($timeout) {
+exports.component_ = function($timeout) {
   return {
     restrict: 'A',
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
+     * @param {angular.Scope} scope Scope.
+     * @param {angular.JQLite} element Element.
+     * @param {angular.Attributes} attrs Attributes.
      */
     link: (scope, element, attrs) => {
-      const sortable = scope.$eval(attrs.ngeoSortable) || [];
-      console.assert(Array.isArray(sortable));
 
-      scope.$watchCollection(
-        () => sortable,
-        () => {
-          sortable.length && $timeout(resetUpDragDrop, 0);
-        }
-      );
+      const sortable = /** @type {Array} */
+              (scope.$eval(attrs['ngeoSortable'])) || [];
+      googAsserts.assert(Array.isArray(sortable));
 
-      const optionsObject = scope.$eval(attrs.ngeoSortableOptions);
+      scope.$watchCollection(() => sortable, () => {
+        sortable.length && $timeout(resetUpDragDrop, 0);
+      });
+
+      const optionsObject = scope.$eval(attrs['ngeoSortableOptions']);
       const options = getOptions(optionsObject);
 
-      const callbackFn = scope.$eval(attrs.ngeoSortableCallback);
-      const callbackCtx = scope.$eval(attrs.ngeoSortableCallbackCtx);
+      const callbackFn = scope.$eval(attrs['ngeoSortableCallback']);
+      const callbackCtx = scope.$eval(attrs['ngeoSortableCallbackCtx']);
 
       /**
        * This function resets drag&drop for the list. It is called each
@@ -124,24 +97,22 @@ function sortableComponent($timeout) {
           sortableElement.sortable('destroy');
         }
 
-        /** @type {JQueryUI.SortableOptions} */
         const sortableOptions = {
-          axis: 'y',
-          // @ts-ignore
-          classes: {
-            'ui-sortable-helper': options.draggerClassName,
-          },
+          'axis': 'y',
+          'classes': {
+            'ui-sortable-helper': options['draggerClassName']
+          }
         };
 
         // CSS class of the handle
-        if (options.handleClassName) {
-          sortableOptions.handle = `.${options.handleClassName}`;
+        if (options['handleClassName']) {
+          sortableOptions['handle'] = `.${options['handleClassName']}`;
         }
 
         // Placeholder for the item being dragged in the sortable list
-        if (options.placeholderClassName) {
-          sortableOptions.placeholder = options.placeholderClassName;
-          sortableOptions.forcePlaceholderSize = true;
+        if (options['placeholderClassName']) {
+          sortableOptions['placeholder'] = options['placeholderClassName'];
+          sortableOptions['forcePlaceholderSize'] = true;
         }
 
         sortableElement.sortable(sortableOptions);
@@ -169,7 +140,7 @@ function sortableComponent($timeout) {
 
       /**
        * @param {?} options Options after expression evaluation.
-       * @return {miscSortableOptions} Options object.
+       * @return {!ngeox.miscSortableOptions} Options object.
        * @private
        */
       function getOptions(options) {
@@ -178,17 +149,19 @@ function sortableComponent($timeout) {
         if (options === undefined) {
           ret = {'handleClassName': defaultHandleClassName};
         } else {
-          if (options.handleClassName === undefined) {
-            options.handleClassName = defaultHandleClassName;
+          if (options['handleClassName'] === undefined) {
+            options['handleClassName'] = defaultHandleClassName;
           }
-          ret = /** @type {miscSortableOptions} */ (options);
+          ret = /** @type {ngeox.miscSortableOptions} */ (options);
         }
         return ret;
       }
-    },
+
+    }
   };
-}
+};
 
-module.directive('ngeoSortable', sortableComponent);
+exports.directive('ngeoSortable', exports.component_);
 
-export default module;
+
+export default exports;

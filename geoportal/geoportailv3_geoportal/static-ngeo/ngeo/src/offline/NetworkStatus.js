@@ -1,28 +1,37 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.offline.NetworkStatus
+ */
 import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
-import angular from 'angular';
+
+
+/**
+ * @ngInject
+ * @param {angular.$q} $q The Angular $q service.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeo debounce service.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
+ * @return {angular.$http.Interceptor} the interceptor
+ */
+const httpInterceptor = function($q, ngeoDebounce, ngeoNetworkStatus) {
+  const debouncedCheck = ngeoDebounce(() => ngeoNetworkStatus.check(undefined), 2000, false);
+  return {
+    request(config) {
+      return config;
+    },
+    requestError(rejection) {
+      return $q.reject(rejection);
+    },
+    response(response) {
+      return response;
+    },
+    responseError(rejection) {
+      debouncedCheck();
+      return $q.reject(rejection);
+    }
+  };
+};
 
 const Service = class {
+
   /**
    * This service watches the status of network connection.
    *
@@ -39,12 +48,13 @@ const Service = class {
    *
    * @ngInject
    * @param {!jQuery} $document Angular document service.
-   * @param {angular.IWindowService} $window Angular window service.
-   * @param {angular.ITimeoutService} $timeout Angular timeout service.
-   * @param {angular.IScope} $rootScope The root scope.
+   * @param {angular.$window} $window Angular window service.
+   * @param {!angular.$timeout} $timeout Angular timeout service.
+   * @param {angular.Scope} $rootScope The root scope.
    * @param {string} ngeoOfflineTestUrl Url of the test page.
    */
   constructor($document, $window, $timeout, $rootScope, ngeoOfflineTestUrl) {
+
     /**
      * @private
      * @type {!jQuery}
@@ -59,13 +69,13 @@ const Service = class {
 
     /**
      * @private
-     * @type {!angular.ITimeoutService}
+     * @type {!angular.$timeout}
      */
     this.$timeout_ = $timeout;
 
     /**
      * @private
-     * @type {angular.IScope}
+     * @type {angular.Scope}
      */
     this.$rootScope_ = $rootScope;
 
@@ -89,11 +99,12 @@ const Service = class {
 
     /**
      * @private
-     * @type {angular.IPromise<void>|undefined}
+     * @type {angular.$q.Promise|undefined}
      */
     this.promise_;
 
     this.initialize_();
+
   }
 
   initialize_() {
@@ -111,23 +122,13 @@ const Service = class {
     });
 
     // We catch every $.ajax request errors or (canceled request).
-    // @ts-ignore
-    if (this.$document_.ajaxError) {
-      /**
-       * @param {any} evt
-       * @param {any} jqxhr
-       * @param {any} settings
-       * @param {any} thrownError
-       */
-      const onAjaxError = (evt, jqxhr, settings, thrownError) => {
-        // Filter out canceled requests
-        if (!/^(canceled|abort)$/.test(thrownError)) {
-          this.check(2000);
-        }
-      };
-      // @ts-ignore
-      this.$document_.ajaxError(onAjaxError);
-    }
+    this.$document_.ajaxError((evt, jqxhr, settings, thrownError) => {
+      // Filter out canceled requests
+      if (!/^(canceled|abort)$/.test(thrownError)) {
+        this.check(2000);
+      }
+    });
+
   }
 
   /**
@@ -161,8 +162,9 @@ const Service = class {
         if (this.count_ > 2 && !this.offline_) {
           this.triggerChangeStatusEvent_(true);
         }
-      },
+      }
     });
+
   }
 
   /**
@@ -186,42 +188,18 @@ const Service = class {
 
 const name = 'ngeoNetworkStatus';
 
-Service.module = angular.module(name, [ngeoMiscDebounce.name]);
+Service.module = angular.module(name, [
+  ngeoMiscDebounce.name
+]);
+Service.module.factory('httpInterceptor', httpInterceptor);
 Service.module.service(name, Service);
 
 /**
  * @ngInject
- * @param {angular.IQService} $q The Angular $q service.
- * @param {import("ngeo/misc/debounce.js").miscDebounce<function()>} ngeoDebounce ngeo debounce service.
- * @param {Service} ngeoNetworkStatus ngeo network status service.
- * @return {angular.IHttpInterceptor} the interceptor
- */
-const httpInterceptor = function ($q, ngeoDebounce, ngeoNetworkStatus) {
-  const debouncedCheck = ngeoDebounce(() => ngeoNetworkStatus.check(undefined), 2000, false);
-  return {
-    request(config) {
-      return config;
-    },
-    requestError(rejection) {
-      return $q.reject(rejection);
-    },
-    response(response) {
-      return response;
-    },
-    responseError(rejection) {
-      debouncedCheck();
-      return $q.reject(rejection);
-    },
-  };
-};
-Service.module.factory('httpInterceptor', httpInterceptor);
-
-/**
- * @ngInject
  * @private
- * @param {angular.IHttpProvider} $httpProvider .
+ * @param {angular.$HttpProvider} $httpProvider .
  */
-Service.module.configFunction_ = function ($httpProvider) {
+Service.module.configFunction_ = function($httpProvider) {
   $httpProvider.interceptors.push('httpInterceptor');
 };
 Service.module.config(Service.module.configFunction_);
@@ -229,5 +207,6 @@ Service.module.config(Service.module.configFunction_);
 Service.module.value('ngeoOfflineTestUrl', '');
 
 const exports = Service;
+
 
 export default exports;

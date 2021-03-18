@@ -1,13 +1,17 @@
 <div class="dropdown">
-  <button
+  <a
       class="btn btn-link dropdown-toggle ngeo-filter-condition-button"
       ng-class="{disabled: $ctrl.aRuleIsActive}"
       type="button"
       data-toggle="dropdown"
       ng-disabled="$ctrl.aRuleIsActive">
     <span class="fa fa-cog"></span>
-  </button>
+    <span class="caret"></span>
+  </a>
   <ul class="dropdown-menu">
+    <li
+        class="ngeo-filter-condition-criteria-header"
+        translate>Criteria taken into account</li>
     <li ng-repeat="condition in ::$ctrl.conditions">
       <a
           href
@@ -35,11 +39,11 @@
 
 <div ng-repeat="rule in $ctrl.customRules">
   <a
-      class="btn btn-sm btn-link ngeo-filter-rule-custom-rm-btn"
+      class="btn btn-xs btn-link ngeo-filter-rule-custom-rm-btn"
       ng-click="!$ctrl.aRuleIsActive && $ctrl.removeCustomRule(rule)"
       ng-disabled="$ctrl.aRuleIsActive"
       href>
-    <span class="fa fa-times"></span>
+    <span class="fa fa-remove"></span>
   </a>
   <ngeo-rule
       feature-overlay="::$ctrl.featureOverlay"
@@ -51,14 +55,15 @@
 </div>
 
 <div class="dropdown">
-  <button
+  <a
       class="btn btn-link dropdown-toggle"
       ng-class="{disabled: $ctrl.aRuleIsActive}"
       type="button"
       data-toggle="dropdown"
       ng-disabled="$ctrl.aRuleIsActive">
     <span translate>+ Add a new criteria</span>
-  </button>
+    <span class="caret"></span>
+  </a>
   <ul class="dropdown-menu">
     <li ng-repeat="attribute in ::$ctrl.geometryAttributes">
       <a
@@ -80,20 +85,20 @@
 
 <hr class="ngeo-filter-separator-criteria" />
 
-<button
+<a
     class="btn btn-link"
     type="button"
     ng-click="$ctrl.apply()"
-    ng-disabled="$ctrl.datasource.visible === false">
+    ng-disabled="$ctrl.hasARule() === false || $ctrl.datasource.visible === false">
   <span class="fa fa-check"></span>
   <span translate>Apply filter</span>
-</button>
+</a>
 
-<button
+<a
     class="btn btn-link"
     type="button"
     ng-click="$ctrl.getData()"
-    ng-disabled="$ctrl.datasource.visible === false">
+    ng-disabled="$ctrl.hasARule() === false || $ctrl.datasource.visible === false">
   <span class="fa fa-chevron-right"></span>
   <span translate>Get data</span>
-</button>
+</a>

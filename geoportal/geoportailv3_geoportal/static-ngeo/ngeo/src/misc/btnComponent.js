@@ -1,31 +1,11 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2014-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-
 /**
- * @type {angular.IModule}
- * @hidden
+ * @module ngeo.misc.btnComponent
  */
-const module = angular.module('ngeoBtnComponent', []);
+/**
+ * @type {!angular.Module}
+ */
+const exports = angular.module('ngeoBtnComponent', []);
+
 
 /**
  * Provides two directives: ngeo-btn-group and ngeo-btn.
@@ -54,96 +34,90 @@ const module = angular.module('ngeoBtnComponent', []);
  *
  * @htmlAttribute {*} ngeo-btn-group-active Any property of the scope.
  * Tells whether at least one button of the group is active.
- * @param {angular.IParseService} $parse Angular parse service.
- * @return {angular.IDirective} The directive specs.
+ * @param {angular.$parse} $parse Angular parse service.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoBtnGroup
  */
-function buttonGroupComponent($parse) {
+exports.btnGroupComponent_ = function($parse) {
   return {
     restrict: 'A',
     controller: 'ngeoBtnGroupController',
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController=} controller Controller.
+     * @param {!angular.Scope} scope Scope.
+     * @param {!angular.JQLite=} element Element.
+     * @param {!angular.Attributes=} attrs Attributes.
+     * @param {!ngeo.misc.btnComponent.BtnGroupController=} controller Controller.
      */
     link: (scope, element, attrs, controller) => {
-      if (!controller) {
-        throw new Error('Missing controller');
-      }
-      const setActive = $parse(attrs.ngeoBtnGroupActive).assign;
+      const setActive = $parse(attrs['ngeoBtnGroupActive']).assign;
 
       if (setActive) {
         scope.$watch(
           // return true if at least one button is active otherwise false
-          () =>
-            controller.buttons_.some(
-              /**
-               * @param {function(angular.IScope): boolean} buttonModel
-               */
-              (buttonModel) => buttonModel(scope) === true
-            ),
+          () => controller.buttons_.some(buttonModel => buttonModel(scope) === true),
           (newValue) => {
             setActive(scope, newValue);
           }
         );
       }
-    },
+    }
   };
-}
+};
 
-module.directive('ngeoBtnGroup', buttonGroupComponent);
+
+exports.directive('ngeoBtnGroup', exports.btnGroupComponent_);
+
 
 /**
- * @private
- * @hidden
- * @type {angular.IController}
+ * @param {!angular.Scope} $scope Scope.
+ * @constructor
+ * @struct
+ * @ngInject
+ * @ngdoc controller
+ * @ngname ngeoBtnGroupController
  */
-class BtnGroupController {
+exports.BtnGroupController = function($scope) {
   /**
-   * @param {angular.IScope} $scope Scope.
-   * @ngInject
-   * @hidden
+   * @type {!Array.<!angular.parse.Expression>}
+   * @private
    */
-  constructor($scope) {
-    /**
-     * @type {Array<angular.ICompiledExpression>}
-     * @private
-     */
-    this.buttons_ = [];
-
-    /**
-     * @type {angular.IScope}
-     * @private
-     */
-    this.scope_ = $scope;
-  }
+  this.buttons_ = [];
 
   /**
-   * @param {number} index Index of the button in buttons array.
+   * @type {!angular.Scope}
+   * @private
    */
-  activate(index) {
-    this.buttons_.forEach((expressionFn, i) => {
-      if (i != index) {
-        expressionFn.assign(this.scope_, false);
-      }
-    });
-  }
+  this.scope_ = $scope;
+};
 
-  /**
-   * @param {angular.ICompiledExpression} expressionFn Expression function.
-   * @return {number} Index of the pushed setter.
-   */
-  addButton(expressionFn) {
-    this.buttons_.push(expressionFn);
-    return this.buttons_.length - 1;
-  }
-}
 
-module.controller('ngeoBtnGroupController', BtnGroupController);
+/**
+ * @param {number} index Index of the button in buttons array.
+ */
+exports.BtnGroupController.prototype.activate = function(index) {
+  this.buttons_.forEach((expressionFn, i) => {
+    if (i != index) {
+      expressionFn.assign(this.scope_, false);
+    }
+  });
+};
+
+
+/**
+ * @param {angular.parse.Expression} expressionFn Expression function.
+ * @return {number} Index of the pushed setter.
+ */
+exports.BtnGroupController.prototype.addButton = function(expressionFn) {
+  this.buttons_.push(expressionFn);
+  return this.buttons_.length - 1;
+};
+
+
+exports.controller('ngeoBtnGroupController',
+  exports.BtnGroupController);
+
 
 /**
  * The ngeo-btn allows creating toggle buttons working with ng-model. It is
@@ -157,31 +131,28 @@ module.controller('ngeoBtnGroupController', BtnGroupController);
  * to activate/deactivate an OpenLayers interaction.
  *
  * @htmlAttribute {*} ng-model Any property on the scope. Ideally a boolean.
- * @param {angular.IParseService} $parse Angular parse service.
- * @return {angular.IDirective} The directive specs.
+ * @param {angular.$parse} $parse Angular parse service.
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoBtn
  */
-function buttonComponent($parse) {
+exports.btnComponent_ = function($parse) {
   return {
     require: ['?^ngeoBtnGroup', 'ngModel'],
     restrict: 'A',
     /**
-     * @param {angular.IScope} scope Scope.
-     * @param {JQuery} element Element.
-     * @param {angular.IAttributes} attrs Attributes.
-     * @param {angular.IController|undefined} ctrls Controller.
+     * @param {!angular.Scope} scope Scope.
+     * @param {!angular.JQLite=} element Element.
+     * @param {!angular.Attributes=} attrs Attributes.
+     * @param {!Array.<!Object>=} ctrls Controller.
      */
     link: (scope, element, attrs, ctrls) => {
-      if (!ctrls) {
-        throw new Error('Missing ctrls');
-      }
       const buttonsCtrl = ctrls[0];
       const ngModelCtrl = ctrls[1];
       let indexInGroup = -1;
 
-      const ngModelGet = $parse(attrs.ngModel);
+      const ngModelGet = $parse(attrs['ngModel']);
       const ngModelSet = ngModelGet.assign;
 
       // Set ng-model value to false if undefined
@@ -201,16 +172,18 @@ function buttonComponent($parse) {
       });
 
       // model -> UI
-      ngModelCtrl.$render = function () {
+      ngModelCtrl.$render = function() {
         if (ngModelCtrl.$viewValue && buttonsCtrl !== null) {
           buttonsCtrl.activate(indexInGroup);
         }
         element.toggleClass('active', ngModelCtrl.$viewValue);
       };
-    },
+    }
   };
-}
+};
 
-module.directive('ngeoBtn', buttonComponent);
 
-export default module;
+exports.directive('ngeoBtn', exports.btnComponent_);
+
+
+export default exports;
