@@ -14,53 +14,50 @@ import * as olXml from 'ol/xml.js';
  * @extends {ol.format.XML}
  * @api
  */
-const exports = function() {
-
-  olFormatXML.call(this);
-
-};
-
-olBase.inherits(exports, olFormatXML);
-
-
-/**
- * Read a WFS DescribeFeatureType document.
- *
- * @function
- * @param {Document|Node|string} source The XML source.
- * @return {Object} An object representing the WFS DescribeFeatureType.
- * @api
- */
-exports.prototype.read;
-
-
-/**
- * @inheritDoc
- */
-exports.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
+class WFSDescribeFeatureType extends olFormatXML {
+  constructor(){
+    super()
   }
-  return null;
-};
+
+  /**
+   * Read a WFS DescribeFeatureType document.
+   *
+   * @function
+   * @param {Document|Node|string} source The XML source.
+   * @return {Object} An object representing the WFS DescribeFeatureType.
+   * @api
+   */
+  //read() {}
 
 
-/**
- * @inheritDoc
- */
-exports.prototype.readFromNode = function(node) {
-  let result = {};
-  result = olXml.pushParseAndPop(
-    result,
-    exports.PARSERS_,
-    node,
-    []
-  );
-  return result;
-};
+  /**
+   * @inheritDoc
+   */
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
 
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    let result = {};
+    result = olXml.pushParseAndPop(
+      result,
+      WFSDescribeFeatureType.PARSERS_,
+      node,
+      []
+    );
+    return result;
+  }
+
+}
 
 /**
  * @private
@@ -68,7 +65,7 @@ exports.prototype.readFromNode = function(node) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {!Object.<string, string>} Attributes.
  */
-exports.readElement_ = function(node, objectStack) {
+WFSDescribeFeatureType.readElement_ = function(node, objectStack) {
   const attributes = {};
   for (let i = 0, len = node.attributes.length; i < len; i++) {
     const attribute = node.attributes.item(i);
@@ -88,11 +85,11 @@ exports.readElement_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {!Object.<string, string>} Object.
  */
-exports.readComplexType_ = function(node, objectStack) {
+WFSDescribeFeatureType.readComplexType_ = function(node, objectStack) {
   const name = node.getAttribute('name');
   const object = olXml.pushParseAndPop(
     {'name': name},
-    exports.COMPLEX_TYPE_PARSERS_,
+    WFSDescribeFeatureType.COMPLEX_TYPE_PARSERS_,
     node, objectStack
   );
   // flatten
@@ -108,12 +105,12 @@ exports.readComplexType_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {!Object.<string, string>} Object.
  */
-exports.readComplexContent_ = function(
+WFSDescribeFeatureType.readComplexContent_ = function(
   node, objectStack
 ) {
   return olXml.pushParseAndPop(
     {},
-    exports.COMPLEX_CONTENT_PARSERS_,
+    WFSDescribeFeatureType.COMPLEX_CONTENT_PARSERS_,
     node,
     objectStack
   );
@@ -126,10 +123,10 @@ exports.readComplexContent_ = function(
  * @param {Array.<*>} objectStack Object stack.
  * @return {!Object.<string, string>} Object.
  */
-exports.readExtension_ = function(node, objectStack) {
+WFSDescribeFeatureType.readExtension_ = function(node, objectStack) {
   return olXml.pushParseAndPop(
     {},
-    exports.EXTENSION_PARSERS_,
+    WFSDescribeFeatureType.EXTENSION_PARSERS_,
     node,
     objectStack
   );
@@ -142,10 +139,10 @@ exports.readExtension_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {!Object.<string, string>} Object.
  */
-exports.readSequence_ = function(node, objectStack) {
+WFSDescribeFeatureType.readSequence_ = function(node, objectStack) {
   return olXml.pushParseAndPop(
     {},
-    exports.SEQUENCE_PARSERS_,
+    WFSDescribeFeatureType.SEQUENCE_PARSERS_,
     node,
     objectStack
   );
@@ -157,7 +154,7 @@ exports.readSequence_ = function(node, objectStack) {
  * @private
  * @type {Array.<string>}
  */
-exports.NAMESPACE_URIS_ = [
+WFSDescribeFeatureType.NAMESPACE_URIS_ = [
   null,
   'http://www.w3.org/2001/XMLSchema'
 ];
@@ -168,13 +165,13 @@ exports.NAMESPACE_URIS_ = [
  * @type {!Object.<string, !Object.<string, !ol.XmlParser>>}
  * @private
  */
-exports.PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
-  exports.NAMESPACE_URIS_, {
+WFSDescribeFeatureType.PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
+  WFSDescribeFeatureType.NAMESPACE_URIS_, {
     'element': olXml.makeObjectPropertyPusher(
-      exports.readElement_
+      WFSDescribeFeatureType.readElement_
     ),
     'complexType': olXml.makeObjectPropertyPusher(
-      exports.readComplexType_
+      WFSDescribeFeatureType.readComplexType_
     )
   }));
 
@@ -184,10 +181,10 @@ exports.PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
  * @type {!Object.<string, !Object.<string, !ol.XmlParser>>}
  * @private
  */
-exports.COMPLEX_TYPE_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
-  exports.NAMESPACE_URIS_, {
+WFSDescribeFeatureType.COMPLEX_TYPE_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
+  WFSDescribeFeatureType.NAMESPACE_URIS_, {
     'complexContent': olXml.makeObjectPropertySetter(
-      exports.readComplexContent_
+      WFSDescribeFeatureType.readComplexContent_
     )
   }));
 
@@ -197,10 +194,10 @@ exports.COMPLEX_TYPE_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
  * @type {!Object.<string, !Object.<string, !ol.XmlParser>>}
  * @private
  */
-exports.COMPLEX_CONTENT_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
-  exports.NAMESPACE_URIS_, {
+WFSDescribeFeatureType.COMPLEX_CONTENT_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
+  WFSDescribeFeatureType.NAMESPACE_URIS_, {
     'extension': olXml.makeObjectPropertySetter(
-      exports.readExtension_
+      WFSDescribeFeatureType.readExtension_
     )
   }));
 
@@ -210,10 +207,10 @@ exports.COMPLEX_CONTENT_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
  * @type {!Object.<string, !Object.<string, !ol.XmlParser>>}
  * @private
  */
-exports.EXTENSION_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
-  exports.NAMESPACE_URIS_, {
+WFSDescribeFeatureType.EXTENSION_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
+  WFSDescribeFeatureType.NAMESPACE_URIS_, {
     'sequence': olXml.makeObjectPropertySetter(
-      exports.readSequence_
+      WFSDescribeFeatureType.readSequence_
     )
   }));
 
@@ -223,10 +220,10 @@ exports.EXTENSION_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
  * @type {!Object.<string, !Object.<string, !ol.XmlParser>>}
  * @private
  */
-exports.SEQUENCE_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
-  exports.NAMESPACE_URIS_, {
+WFSDescribeFeatureType.SEQUENCE_PARSERS_ = googAsserts.assert(olXml.makeStructureNS(
+  WFSDescribeFeatureType.NAMESPACE_URIS_, {
     'element': olXml.makeObjectPropertyPusher(
-      exports.readElement_
+      WFSDescribeFeatureType.readElement_
     )
   }));
 

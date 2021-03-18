@@ -29,6 +29,7 @@ const exports = function(manager, index) {
   this.index_ = index;
 };
 
+this.keys = []
 
 /**
  * Add a feature to the feature overlay.
@@ -71,15 +72,15 @@ exports.prototype.clear = function() {
 exports.prototype.setFeatures = function(features) {
   if (this.features_ !== null) {
     this.features_.clear();
-    olEvents.unlisten(this.features_, 'add', this.handleFeatureAdd_, this);
-    olEvents.unlisten(this.features_, 'remove', this.handleFeatureRemove_, this);
+    let key;
+    while (key = this.keys.pop()) { olEvents.unlistenByKey(key) }
   }
   if (features !== null) {
     features.forEach((feature) => {
       this.addFeature(feature);
     });
-    olEvents.listen(features, 'add', this.handleFeatureAdd_, this);
-    olEvents.listen(features, 'remove', this.handleFeatureRemove_, this);
+    this.keys.push(olEvents.listen(features, 'add', this.handleFeatureAdd_, this));
+    this.keys.push(olEvents.listen(features, 'remove', this.handleFeatureRemove_, this));
   }
   this.features_ = features;
 };
