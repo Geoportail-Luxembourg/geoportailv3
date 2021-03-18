@@ -1,92 +1,62 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.filter.component
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoQueryMapQuerent from 'ngeo/query/MapQuerent.js';
 import ngeoFilterCondition from 'ngeo/filter/Condition.js';
 
+/** @suppress {extraRequire} */
 import ngeoFilterRuleComponent from 'ngeo/filter/ruleComponent.js';
 
+/** @suppress {extraRequire} */
 import ngeoFilterRuleHelper from 'ngeo/filter/RuleHelper.js';
 
 import ngeoFormatAttributeType from 'ngeo/format/AttributeType.js';
 import ngeoRuleGeometry from 'ngeo/rule/Geometry.js';
 import ngeoMapFeatureOverlay from 'ngeo/map/FeatureOverlay.js';
-import {getUid as olUtilGetUid} from 'ol/util.js';
-import {remove as removeFromArray} from 'ol/array.js';
-import 'ngeo/sass/font.scss';
+import * as olBase from 'ol/index.js';
+import * as olArray from 'ol/array.js';
+import 'font-awesome/css/font-awesome.css';
 
 /**
- * @typedef {Object} FilterCondition
- * @property {string} text
- * @property {string} value
+ * @type {!angular.Module}
  */
-
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoFilter', [
-  ngeoFilterRuleHelper.name,
+const exports = angular.module('ngeoFilter', [
+  ngeoFilterRuleHelper.module.name,
   ngeoFilterRuleComponent.name,
-  ngeoMapFeatureOverlay.name,
-  ngeoQueryMapQuerent.name,
+  ngeoMapFeatureOverlay.module.name,
+  ngeoQueryMapQuerent.module.name,
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/filter', require('./component.html'));
-  }
-);
 
-module.value(
-  'ngeoFilterTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/filter', require('./component.html'));
+});
+
+
+exports.value('ngeoFilterTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} The template url.
    */
   ($attrs) => {
-    const templateUrl = $attrs.ngeoFilterTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'ngeo/filter';
-  }
-);
+    const templateUrl = $attrs['ngeoFilterTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/filter';
+  });
 
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} ngeoFilterTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} ngeoFilterTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function ngeoFilterTemplateUrl($attrs, ngeoFilterTemplateUrl) {
   return ngeoFilterTemplateUrl($attrs);
 }
 
-module.component('ngeoFilter', {
+
+exports.component('ngeoFilter', {
   bindings: {
     'aRuleIsActive': '=',
     'customRules': '<',
@@ -95,143 +65,153 @@ module.component('ngeoFilter', {
     'datasource': '<',
     'directedRules': '<',
     'featureOverlay': '<',
-    'filterIsApplied': '=',
     'map': '<',
-    'toolGroup': '<',
+    'toolGroup': '<'
   },
   controller: 'ngeoFilterController',
-  templateUrl: ngeoFilterTemplateUrl,
+  templateUrl: ngeoFilterTemplateUrl
 });
 
 /**
  * @private
- * @hidden
  */
-class FilterController {
+exports.FilterController_ = class {
+
   /**
-   * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext service.
-   * @param {angular.IScope} $scope Angular scope.
-   * @param {angular.ITimeoutService} $timeout Angular timeout service.
-   * @param {import("ngeo/query/MapQuerent.js").MapQuerent} ngeoMapQuerent The ngeo map querent service.
-   * @param {import("ngeo/filter/RuleHelper.js").RuleHelper} ngeoRuleHelper Ngeo rule helper service.
+   * @param {!angularGettext.Catalog} gettextCatalog Gettext service.
+   * @param {!angular.Scope} $scope Angular scope.
+   * @param {!angular.$timeout} $timeout Angular timeout service.
+   * @param {!ngeo.query.MapQuerent} ngeoMapQuerent The ngeo map querent service.
+   * @param {!ngeo.filter.RuleHelper} ngeoRuleHelper Ngeo rule helper service.
    * @private
+   * @struct
    * @ngInject
    * @ngdoc controller
    * @ngname NgeoFilterController
    */
-  constructor(gettextCatalog, $scope, $timeout, ngeoMapQuerent, ngeoRuleHelper) {
+  constructor(gettextCatalog, $scope, $timeout, ngeoMapQuerent,
+    ngeoRuleHelper) {
+
     // === Binding properties ===
 
     /**
      * @type {boolean}
+     * @export
      */
-    this.aRuleIsActive = false;
+    this.aRuleIsActive;
 
     /**
-     * @type {Array<import("ngeo/rule/Rule.js").default>}
+     * @type {Array.<!ngeo.rule.Rule>}
+     * @export
      */
-    this.customRules = [];
+    this.customRules;
 
     /**
-     * @type {?import("ngeo/datasource/OGC.js").default}
+     * @type {!ngeo.datasource.OGC}
+     * @export
      */
-    this.datasource = null;
+    this.datasource;
 
     /**
-     * @type {Array<import("ngeo/rule/Rule.js").default>}
+     * @type {Array.<!ngeo.rule.Rule>}
+     * @export
      */
-    this.directedRules = [];
+    this.directedRules;
 
     /**
-     * @type {?import("ngeo/map/FeatureOverlay.js").FeatureOverlay}
+     * @type {!ngeo.map.FeatureOverlay}
+     * @export
      */
-    this.featureOverlay = null;
+    this.featureOverlay;
 
     /**
-     * @type {?import("ol/Map.js").default}
+     * @type {!ol.Map}
+     * @export
      */
-    this.map = null;
+    this.map;
 
     /**
      * @type {string}
+     * @export
      */
-    this.toolGroup = '';
+    this.toolGroup;
 
-    /**
-     * @type {boolean}
-     */
-    this.filterIsApplied = false;
 
     // === Injected properties ===
 
     /**
-     * @type {angular.gettext.gettextCatalog}
+     * @type {!angularGettext.Catalog}
      * @private
      */
     this.gettextCatalog_ = gettextCatalog;
 
     /**
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      * @private
      */
     this.scope_ = $scope;
 
     /**
-     * @type {angular.ITimeoutService}
+     * @type {!angular.$timeout}
      * @private
      */
     this.timeout_ = $timeout;
 
     /**
-     * @type {import("ngeo/query/MapQuerent.js").MapQuerent}
+     * @type {!ngeo.query.MapQuerent}
      * @private
      */
     this.ngeoMapQuerent_ = ngeoMapQuerent;
 
     /**
-     * @type {import("ngeo/filter/RuleHelper.js").RuleHelper}
+     * @type {!ngeo.filter.RuleHelper}
      * @private
      */
     this.ngeoRuleHelper_ = ngeoRuleHelper;
 
+
     // === Inner properties ===
 
     /**
-     * @type {FilterCondition[]}
+     * @type {Array.<!ngeox.FilterCondition>}
+     * @export
      */
     this.conditions = [
       {
-        text: gettextCatalog.getString('Match all criteria'),
-        value: ngeoFilterCondition.AND,
+        text: gettextCatalog.getString('All'),
+        value: ngeoFilterCondition.AND
       },
       {
-        text: gettextCatalog.getString('Match at least one criterion'),
-        value: ngeoFilterCondition.OR,
+        text: gettextCatalog.getString('At least one'),
+        value: ngeoFilterCondition.OR
       },
       {
-        text: gettextCatalog.getString('Does not match any criterion'),
-        value: ngeoFilterCondition.NOT,
-      },
+        text: gettextCatalog.getString('None'),
+        value: ngeoFilterCondition.NOT
+      }
     ];
 
     /**
      * List of geometry attributes.
-     * @type {Array<import('ngeo/format/Attribute.js').Attribute>}
+     * @type {Array.<!ngeox.Attribute>}
+     * @export
      */
     this.geometryAttributes = [];
 
     /**
      * List of other attribute names.
-     * @type {Array<import('ngeo/format/Attribute.js').Attribute>}
+     * @type {Array.<!ngeox.Attribute>}
+     * @export
      */
     this.otherAttributes = [];
 
     /**
-     * @type {Object<string, Function>}
+     * @type {!Object.<number, Function>}
      * @private
      */
     this.ruleUnlisteners_ = {};
   }
+
 
   /**
    * Called on initialization of the controller.
@@ -240,21 +220,14 @@ class FilterController {
    * lists: geometry and the others. Then, apply the filters to the data source.
    */
   $onInit() {
-    if (!this.datasource) {
-      throw new Error('Missing datasource');
-    }
-
-    this.scope_.$watch(() => this.aRuleIsActive, this.handleARuleIsActiveChange_.bind(this));
 
     this.scope_.$watch(
-      () => this.datasource.filterRules,
-      () => {
-        this.filterIsApplied = this.hasARuleActive();
-      }
+      () => this.aRuleIsActive,
+      this.handleARuleIsActiveChange_.bind(this)
     );
 
     // (1) Separate the attributes in 2: geometry and the others.
-    const attributes = this.datasource.attributes;
+    const attributes = googAsserts.assert(this.datasource.attributes);
     for (const attribute of attributes) {
       if (attribute.type === ngeoFormatAttributeType.GEOMETRY) {
         this.geometryAttributes.push(attribute);
@@ -264,16 +237,15 @@ class FilterController {
     }
 
     // (2) All rules that have geometry are added in the featureOverlay
-    for (const rule of this.customRules) {
-      this.registerRule_(rule);
-    }
-    for (const rule of this.directedRules) {
+    const rules = [].concat(this.customRules, this.directedRules);
+    for (const rule of rules) {
       this.registerRule_(rule);
     }
 
     // (3) Apply the filters
     this.apply();
   }
+
 
   /**
    * Called on destruction of the controller.
@@ -282,45 +254,28 @@ class FilterController {
    * Clear the feature overlay.
    */
   $onDestroy() {
-    if (!this.datasource) {
-      throw new Error('Missing datasource');
-    }
-    if (!this.featureOverlay) {
-      throw new Error('Missing featureOverlay');
-    }
     if (this.datasource.filterRules !== null) {
       this.datasource.filterRules = null;
     }
     this.featureOverlay.clear();
   }
 
+
   /**
-   * @return {boolean} True if at least one rule is currently defined with an expression.
+   * @return {boolean} True if at least one rule is currently defined.
+   * @export
    */
-  hasARuleActive() {
-    let customRuleActive = false;
-    let directedRuleActive = false;
-    for (const rule of this.customRules) {
-      if (rule.expression) {
-        customRuleActive = true;
-      }
-    }
-    for (const rule of this.directedRules) {
-      if (rule.expression) {
-        directedRuleActive = true;
-      }
-    }
-    return customRuleActive || directedRuleActive;
+  hasARule() {
+    return [].concat(this.customRules, this.directedRules).length > 0;
   }
+
 
   /**
    * Loop in all directed and custom rules. Apply the rules that have a proper
    * value inside the data source, in the `filterRules` property.
+   * @export
    */
   apply() {
-    if (!this.datasource) {
-      throw new Error('Missing datasource');
-    }
     // (1) Reset
     this.datasource.filterRules = null;
 
@@ -328,9 +283,6 @@ class FilterController {
     this.timeout_(() => {
       const filterRules = this.getRulesWithValue_();
       if (filterRules.length) {
-        if (!this.datasource) {
-          throw new Error('Missing datasource');
-        }
         this.datasource.filterRules = filterRules;
         // The current query results are cleared when we apply a filter.
         this.ngeoMapQuerent_.clear();
@@ -338,17 +290,13 @@ class FilterController {
     });
   }
 
+
   /**
    * Loop in all directed and custom rules. Issue a request to obtain the data
    * and show the result.
+   * @export
    */
   getData() {
-    if (!this.datasource) {
-      throw new Error('Missing datasource');
-    }
-    if (!this.map) {
-      throw new Error('Missing map');
-    }
     const filterRules = this.getRulesWithValue_();
 
     // No need to do anything if there's no rules.
@@ -363,33 +311,28 @@ class FilterController {
     const filter = this.ngeoRuleHelper_.createFilter({
       dataSource: dataSource,
       filterRules: filterRules,
-      srsName: projCode,
+      srsName: projCode
     });
-    if (!filter) {
-      throw new Error('Missing filter');
-    }
+    googAsserts.assert(filter);
 
     this.ngeoMapQuerent_.issue({
       dataSources: [dataSource],
       filter: filter,
       limit: limit,
-      map: map,
+      map: map
     });
   }
 
+
   /**
    * Loop in all directed and custom rules and collect those with a value.
-   * @return {Array<import("ngeo/rule/Rule.js").default>} Rules with value.
+   * @return {Array.<!ngeo.rule.Rule>} Rules with value.
    * @private
    */
   getRulesWithValue_() {
     const filterRules = [];
-    for (const rule of this.customRules) {
-      if (rule.value) {
-        filterRules.push(rule);
-      }
-    }
-    for (const rule of this.directedRules) {
+    const rules = [].concat(this.customRules, this.directedRules);
+    for (const rule of rules) {
       if (rule.value) {
         filterRules.push(rule);
       }
@@ -397,11 +340,13 @@ class FilterController {
     return filterRules;
   }
 
+
   /**
    * Create and add a new custom rule using an attribute. The rule is activated
    * after being created.
-   * @param {import('ngeo/format/Attribute.js').Attribute} attribute Attribute to use to create the custom
+   * @param {!ngeox.Attribute} attribute Attribute to use to create the custom
    * rule.
+   * @export
    */
   createAndAddCustomRule(attribute) {
     const rule = this.ngeoRuleHelper_.createRuleFromAttribute(attribute, true);
@@ -414,13 +359,12 @@ class FilterController {
     }, 1);
   }
 
+
   /**
-   * @param {FilterCondition} condition Condition to set.
+   * @param {!ngeox.FilterCondition} condition Condition to set.
+   * @export
    */
   setCondition(condition) {
-    if (!this.datasource) {
-      throw new Error('Missing datasource');
-    }
     if (this.datasource.filterCondition !== condition.value) {
       this.datasource.filterCondition = condition.value;
     }
@@ -429,25 +373,24 @@ class FilterController {
   /**
    * Remove a custom rule. Deactivate it first, then give time to the
    * `ngeo-rule` directive to manage the deactivation of the rule.
-   * @param {import("ngeo/rule/Rule.js").default} rule Custom rule to remove.
+   * @param {!ngeo.rule.Rule} rule Custom rule to remove.
+   * @export
    */
   removeCustomRule(rule) {
     rule.active = false;
     this.timeout_(() => {
-      removeFromArray(this.customRules, rule);
+      olArray.remove(this.customRules, rule);
       this.unregisterRule_(rule);
       rule.destroy();
     });
   }
 
   /**
-   * @param {import("ngeo/rule/Rule.js").default} rule Rule.
+   * @param {!ngeo.rule.Rule} rule Rule.
+   * @export
    */
   registerRule_(rule) {
-    if (!this.featureOverlay) {
-      throw new Error('Missing featureOverlay');
-    }
-    const uid = olUtilGetUid(rule);
+    const uid = olBase.getUid(rule);
     this.ruleUnlisteners_[uid] = this.scope_.$watch(
       () => rule.active,
       this.handleRuleActiveChange_.bind(this)
@@ -459,15 +402,13 @@ class FilterController {
   }
 
   /**
-   * @param {import("ngeo/rule/Rule.js").default} rule Rule.
+   * @param {!ngeo.rule.Rule} rule Rule.
+   * @export
    */
   unregisterRule_(rule) {
-    if (!this.featureOverlay) {
-      throw new Error('Missing featureOverlay');
-    }
-    const uid = olUtilGetUid(rule);
+    const uid = olBase.getUid(rule);
     const unlistener = this.ruleUnlisteners_[uid];
-    console.assert(unlistener);
+    googAsserts.assert(unlistener);
     unlistener();
     delete this.ruleUnlisteners_[uid];
 
@@ -483,13 +424,8 @@ class FilterController {
    */
   handleRuleActiveChange_() {
     let aRuleIsActive = false;
-    for (const rule of this.customRules) {
-      if (rule.active) {
-        aRuleIsActive = true;
-        break;
-      }
-    }
-    for (const rule of this.directedRules) {
+    const rules = [].concat(this.customRules, this.directedRules);
+    for (const rule of rules) {
       if (rule.active) {
         aRuleIsActive = true;
         break;
@@ -507,21 +443,18 @@ class FilterController {
     if (this.aRuleIsActive) {
       return;
     }
-    for (const rule of this.customRules) {
-      if (rule.active) {
-        rule.active = false;
-        break;
-      }
-    }
-    for (const rule of this.directedRules) {
+    const rules = [].concat(this.customRules, this.directedRules);
+    for (const rule of rules) {
       if (rule.active) {
         rule.active = false;
         break;
       }
     }
   }
-}
 
-module.controller('ngeoFilterController', FilterController);
+};
 
-export default module;
+exports.controller('ngeoFilterController', exports.FilterController_);
+
+
+export default exports;

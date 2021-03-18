@@ -1,38 +1,22 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.profile.drawLineComponent
+ */
+import googAsserts from 'goog/asserts.js';
 import olCollection from 'ol/Collection.js';
 import olInteractionDraw from 'ol/interaction/Draw.js';
 import olMap from 'ol/Map.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import ngeoMapFeatureOverlayMgr from 'ngeo/map/FeatureOverlayMgr.js';
-import {interactionDecoration} from 'ngeo/misc/decorate.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfDrawProfileLine', [ngeoMapFeatureOverlayMgr.name]);
+const exports = angular.module('gmfDrawProfileLine', [
+  ngeoMapFeatureOverlayMgr.module.name,
+]);
+
 
 /**
  * Simple directive that can be put on any element. The directive listen on
@@ -48,17 +32,17 @@ const module = angular.module('gmfDrawProfileLine', [ngeoMapFeatureOverlayMgr.na
  *      </gmf-drawprofileline>
  *
  *
- * @htmlAttribute {import("ol/Map.js").default} gmf-drawprofileline-map The map.
- * @htmlAttribute {import("ol/geom/LineString.js").default} gmf-drawprofileline-line The variable to
- *     connect with the drawn line.
+ * @htmlAttribute {ol.Map} gmf-drawprofileline-map The map.
+ * @htmlAttribute {ol.geom.LineString} gmf-drawprofileline-line The variable to
+ *     connect with the drawed line.
  * @htmlAttribute {boolean=} gmf-drawprofileline-active Active the component.
- * @htmlAttribute {import("ol/style/Style.js").default=} gmf-drawprofileline-style Optional style
- *     for the drawn line.
- * @return {angular.IDirective} Directive Definition Object.
+ * @htmlAttribute {ol.style.Style=} gmf-drawprofileline-style Optional style
+ *     for the drawed line.
+ * @return {angular.Directive} Directive Definition Object.
  * @ngdoc directive
  * @ngname gmfDrawprofileline
  */
-function profileDarwLineComponent() {
+exports.directive_ = function() {
   return {
     scope: true,
     controller: 'GmfDrawprofilelineController as ctrl',
@@ -67,82 +51,89 @@ function profileDarwLineComponent() {
       'getMapFn': '&gmfDrawprofilelineMap',
       'line': '=gmfDrawprofilelineLine',
       'active': '=gmfDrawprofilelineActive',
-      'getStyleFn': '&?gmfDrawprofilelineStyle',
-    },
+      'getStyleFn': '&?gmfDrawprofilelineStyle'
+    }
   };
-}
+};
 
-module.directive('gmfDrawprofileline', profileDarwLineComponent);
+
+exports.directive('gmfDrawprofileline',
+  exports.directive_);
 
 /**
- * @param {angular.IScope} $scope Scope.
- * @param {angular.ITimeoutService} $timeout Angular timeout service.
- * @param {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- *    manager.
+ * @param {!angular.Scope} $scope Scope.
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.$timeout} $timeout Angular timeout service.
+ * @param {!ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ *     manager.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname gmfDrawprofilelineController
  */
-function Controller($scope, $timeout, ngeoFeatureOverlayMgr) {
-  /**
-   * @type {?import("ol/geom/LineString.js").default}
-   */
-  this.line = null;
+exports.Controller_ = function($scope, $element, $timeout,
+  ngeoFeatureOverlayMgr) {
 
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {?ol.geom.LineString}
+   * @export
+   */
+  this.line;
+
+  /**
+   * @type {?ol.Map}
    * @private
    */
   this.map_ = null;
 
-  /**
-   * @type {boolean}
-   */
-  this.active = false;
 
   /**
-   * @type {import("ol/Collection.js").default<import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>>}
+   * @type {boolean}
+   * @export
+   */
+  this.active;
+
+  /**
+   * @type {!ol.Collection}
    * @private
    */
   this.features_ = new olCollection();
 
-  /**
-   * @type {?() => olMap}
-   */
-  this.getMapFn = null;
-
-  /**
-   * @type {?() => olStyleStyle}
-   */
-  this.getStyleFn = null;
-
   const overlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   overlay.setFeatures(this.features_);
 
-  const style = new olStyleStyle({
-    stroke: new olStyleStroke({
-      color: '#ffcc33',
-      width: 2,
-    }),
-  });
+  let style;
+  const styleFn = this['getStyleFn'];
+  if (styleFn) {
+    style = styleFn();
+    googAsserts.assertInstanceof(style, olStyleStyle);
+  } else {
+    style = new olStyleStyle({
+      stroke: new olStyleStroke({
+        color: '#ffcc33',
+        width: 2
+      })
+    });
+  }
   overlay.setStyle(style);
 
   /**
-   * @type {import("ol/interaction/Draw.js").default}
+   * @type {!ol.interaction.Draw}
+   * @export
    */
   this.interaction = new olInteractionDraw({
-    type: 'LineString',
-    features: this.features_,
+    type: /** @type {ol.geom.GeometryType} */ ('LineString'),
+    features: this.features_
   });
 
-  interactionDecoration(this.interaction);
+  ngeoMiscDecorate.interaction(this.interaction);
 
-  // Clear the line as soon as a new drawing is started.
-  this.interaction.on('drawstart', (event) => {
-    this.features_.clear();
+  // Clear the line as soon as the interaction is activated.
+  this.interaction.on('change:active', () => {
+    if (this.interaction.getActive()) {
+      this.clear_();
+    }
   });
 
   // Update the profile with the new geometry.
@@ -162,8 +153,7 @@ function Controller($scope, $timeout, ngeoFeatureOverlayMgr) {
       if (newLine === null) {
         this.clear_();
       }
-    }
-  );
+    });
 
   $scope.$watch(
     () => this.active,
@@ -175,32 +165,32 @@ function Controller($scope, $timeout, ngeoFeatureOverlayMgr) {
       this.interaction.setActive(this.active);
     }
   );
-}
+};
+
 
 /**
  * Initialise the controller.
  */
-Controller.prototype.$onInit = function () {
-  if (!this.getMapFn) {
-    throw new Error('Missing getMapFn');
-  }
-  const map = this.getMapFn();
-  if (!(map instanceof olMap)) {
-    throw 'Wrong map';
-  }
+exports.Controller_.prototype.$onInit = function() {
+  const map = this['getMapFn']();
+  googAsserts.assertInstanceof(map, olMap);
   this.map_ = map;
   this.map_.addInteraction(this.interaction);
 };
+
 
 /**
  * Clear the overlay and profile line.
  * @private
  */
-Controller.prototype.clear_ = function () {
+exports.Controller_.prototype.clear_ = function() {
   this.features_.clear();
   this.line = null;
 };
 
-module.controller('GmfDrawprofilelineController', Controller);
 
-export default module;
+exports.controller('GmfDrawprofilelineController',
+  exports.Controller_);
+
+
+export default exports;

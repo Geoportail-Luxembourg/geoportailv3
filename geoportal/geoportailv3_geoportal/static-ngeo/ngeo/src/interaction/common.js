@@ -1,56 +1,30 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.interaction.common
+ */
+const exports = {};
 import {createEditingStyle} from 'ol/style/Style.js';
 
-/**
- * @typedef {Object} DrawEventItem
- * @property {import("ol/Feature.js").default} feature
- */
 
 /**
- * @typedef {import("ngeo/CustomEvent.js").default<DrawEventItem>} DrawEvent
+ * @return {ol.StyleFunction} Styles.
  */
-
-/**
- * @return {import('ol/style/Style.js').StyleFunction} Styles.
- * @hidden
- */
-export function getDefaultDrawStyleFunction() {
+exports.getDefaultDrawStyleFunction = function() {
   const style = createEditingStyle();
-  return function (feature, resolution) {
-    const geometry = feature.getGeometry();
-    if (geometry) {
-      return style[geometry.getType()];
-    }
+  return function(feature, resolution) {
+    return style[feature.getGeometry().getType()];
   };
-}
+};
+
 
 /**
- * @return {import('ol/style/Style.js').StyleFunction} Styles.
- * @hidden
+ * @return {ol.StyleFunction} Styles.
  */
-export function getDefaultModifyStyleFunction() {
+exports.getDefaultModifyStyleFunction = function() {
   const style = createEditingStyle();
-  return function (feature, resolution) {
-    return style.Point;
+  return function(feature, resolution) {
+    return style[/**@type {ol.geom.GeometryType} */ ('Point')];
   };
-}
+};
+
+
+export default exports;

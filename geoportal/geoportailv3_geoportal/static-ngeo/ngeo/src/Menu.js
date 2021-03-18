@@ -1,227 +1,227 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.Menu
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoCustomEvent from 'ngeo/CustomEvent.js';
-import {listen, unlistenByKey} from 'ol/events.js';
+import * as olBase from 'ol/index.js';
+import * as olEvents from 'ol/events.js';
 import olOverlay from 'ol/Overlay.js';
 import olOverlayPositioning from 'ol/OverlayPositioning.js';
 
 /**
- * The options for an action item for the contextual menu overlay.
- *
- * @typedef {Object} MenuActionOptions
- * @property {string} [cls] CSS class name(s) to use for the icon of the action item.
- * @property {string} [label] The label to display for the action item. If not defined, the name is used.
- * @property {string} name unique name for the menu action, which is used in the event fired when
- * the action is clicked.
- */
-
-/**
- * The options for the contextual menu overlay.
- *
- * @typedef {Object} MenuOptions
- * @property {MenuActionOptions[]} actions A list of menu actions.
- * @property {boolean} [autoClose=true] Whether to automatically close the contextual menu when an action is
- * clicked or not.
- * @property {string} [title] A title to display as header of the contextual menu.
- */
-
-/**
+ * @classdesc
  * An OpenLayers overlay that shows a contextual menu with configurable actions
  * anchored from its top left to a specific location. An event is fired when
  * any of the action is clicked.
- * @hidden
+ *
+ * @constructor
+ * @extends {ol.Overlay}
+ * @param {ngeox.MenuOptions=} menuOptions Menu options.
+ * @param {olx.OverlayOptions=} opt_overlayOptions Overlay options.
  */
-export default class extends olOverlay {
+const exports = function(menuOptions, opt_overlayOptions) {
+
+  const options = opt_overlayOptions !== undefined ? opt_overlayOptions : {};
+
+  options.positioning = olOverlayPositioning.TOP_LEFT;
+
   /**
-   * @param {MenuOptions=} menuOptions Menu options.
-   * @param {import('ol/Overlay.js').Options=} options Overlay options.
+   * @type {Array.<ol.EventsKey>}
+   * @private
    */
-  constructor(menuOptions, options = {}) {
-    options.positioning = olOverlayPositioning.TOP_LEFT;
-    if (!menuOptions) {
-      throw new Error('Missing menuOptions');
-    }
+  this.listenerKeys_ = [];
 
-    super(options);
+  /**
+   * @type {?ol.EventsKey}
+   * @private
+   */
+  this.clickOutListenerKey_ = null;
 
-    /**
-     * @type {Array<import("ol/events.js").EventsKey>}
-     * @private
-     */
-    this.listenerKeys_ = [];
+  const contentEl = $('<div/>', {
+    'class': 'panel panel-default'
+  });
 
-    /**
-     * @type {?import("ol/events.js").EventsKey}
-     * @private
-     */
-    this.clickOutListenerKey_ = null;
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.autoClose_ = menuOptions.autoClose !== undefined ?
+    menuOptions.autoClose : true;
 
-    const contentEl = $('<div/>', {
-      'class': 'panel panel-default',
-    });
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.autoClose_ = menuOptions.autoClose !== undefined ? menuOptions.autoClose : true;
-
-    // titleEl
-    if (menuOptions.title) {
-      const headerEl = $('<div>', {
-        'class': 'panel-heading',
-      }).appendTo(contentEl);
-
-      $('<span>', {
-        text: menuOptions.title,
-      }).appendTo(headerEl);
-    }
-
-    // actionsEl
-    const actionsEl = $('<div>', {
-      'class': 'list-group',
+  // titleEl
+  if (menuOptions.title) {
+    const headerEl = $('<div>', {
+      'class': 'panel-heading'
     }).appendTo(contentEl);
 
-    /**
-     * @type {JQuery[]}
-     * @private
-     */
-    this.actions_ = [];
+    $('<span>', {
+      text: menuOptions.title
+    }).appendTo(headerEl);
+  }
 
-    menuOptions.actions.forEach((action) => {
-      this.actions_.push(
-        $('<button>', {
-          'class': 'list-group-item btn',
-          'data-name': action.name,
-          'text': [' ', action.label !== undefined ? action.label : action.name].join(''),
-        })
-          .appendTo(actionsEl)
-          .prepend(
-            $('<span>', {
-              'class': action.cls !== undefined ? action.cls : '',
-            })
-          )
+  // actionsEl
+  const actionsEl = $('<div>', {
+    'class': 'list-group'
+  }).appendTo(contentEl);
+
+  /**
+   * @type {Array.<jQuery>}
+   * @private
+   */
+  this.actions_ = [];
+
+  menuOptions.actions.forEach((action) => {
+    this.actions_.push(
+      $('<button>', {
+        'class': 'list-group-item',
+        'data-name': action.name,
+        'text': [
+          ' ',
+          (action.label) !== undefined ? action.label : action.name
+        ].join('')
+      })
+        .appendTo(actionsEl)
+        .prepend($('<span>', {
+          'class': action.cls !== undefined ? action.cls : ''
+        }))
+    );
+  });
+
+  options.element = contentEl[0];
+
+  olOverlay.call(this, options);
+
+};
+
+olBase.inherits(exports, olOverlay);
+
+
+/**
+ * @param {ol.PluggableMap|undefined} map Map.
+ * @export
+ * @override
+ */
+exports.prototype.setMap = function(map) {
+
+  const currentMap = this.getMap();
+  if (currentMap) {
+    this.listenerKeys_.forEach(olEvents.unlistenByKey);
+    this.listenerKeys_.length = 0;
+  }
+
+  olOverlay.prototype.setMap.call(this, map);
+
+  if (map) {
+    this.actions_.forEach((action) => {
+      const data = action.data();
+      this.listenerKeys_.push(
+        olEvents.listen(
+          action[0],
+          'click',
+          this.handleActionClick_.bind(this, data.name)
+        )
       );
     });
 
-    this.setElement(contentEl[0]);
-  }
-
-  /**
-   * @param {import("ol/PluggableMap.js").default|undefined} map Map.
-   * @override
-   */
-  setMap(map) {
-    const currentMap = this.getMap();
-    if (currentMap) {
-      this.listenerKeys_.forEach(unlistenByKey);
-      this.listenerKeys_.length = 0;
-    }
-
-    olOverlay.prototype.setMap.call(this, map);
-
-    if (map) {
-      this.actions_.forEach((action) => {
-        const data = action.data();
-        this.listenerKeys_.push(listen(action[0], 'click', this.handleActionClick_.bind(this, data.name)));
-      });
-
-      // Autoclose the menu when clicking anywhere else than the menu
-      this.listenerKeys_.push(listen(map, 'pointermove', this.handleMapPointerMove_, this));
-    }
-  }
-
-  /**
-   * Opens the menu at the desited coordinate. Also starts listening for the
-   * clickout if autoClose is enabled.
-   * @param {import("ol/coordinate.js").Coordinate} coordinate Where to open the menu.
-   */
-  open(coordinate) {
-    this.setPosition(coordinate);
-    if (!(document.documentElement instanceof EventTarget)) {
-      throw new Error('Wrong document element type');
-    }
-    if (this.autoClose_) {
-      this.clickOutListenerKey_ = listen(document.documentElement, 'mousedown', this.handleClickOut_, this);
-    }
-  }
-
-  /**
-   */
-  close() {
-    this.setPosition(undefined);
-
-    if (this.clickOutListenerKey_ !== null) {
-      unlistenByKey(this.clickOutListenerKey_);
-    }
-  }
-
-  /**
-   * @param {string} action The action name that was clicked.
-   * @param {Event|import("ol/events/Event.js").default} evt Event.
-   * @private
-   */
-  handleActionClick_(action, evt) {
-    this.dispatchEvent(
-      new ngeoCustomEvent('actionclick', {
-        action: action,
-      })
+    // Autoclose the menu when clicking anywhere else than the menu
+    this.listenerKeys_.push(
+      olEvents.listen(
+        map,
+        'pointermove',
+        this.handleMapPointerMove_,
+        this
+      )
     );
-
-    if (this.autoClose_) {
-      this.close();
-    }
-
-    evt.stopPropagation();
   }
 
-  /**
-   * Handles clicks out of the menu. If the menu is visible, close it.
-   * @param {Event|import("ol/events/Event.js").default} evt Event.
-   * @private
-   */
-  handleClickOut_(evt) {
-    const element = this.getElement();
-    if (element && $(evt.target).closest(element).length === 0) {
-      this.close();
-    }
+};
+
+
+/**
+ * Opens the menu at the desited coordinate. Also starts listening for the
+ * clickout if autoClose is enabled.
+ * @param {ol.Coordinate} coordinate Where to open the menu.
+ * @export
+ */
+exports.prototype.open = function(coordinate) {
+  this.setPosition(coordinate);
+  if (this.autoClose_) {
+    this.clickOutListenerKey_ = olEvents.listen(
+      document.documentElement,
+      'mousedown',
+      this.handleClickOut_,
+      this
+    );
   }
 
-  /**
-   * When the mouse is hovering the menu, set the event coordinate and pixel
-   * values to Infinity to do as if the mouse had been move out of range of the
-   * map. This prevents behaviours such as vertex still appearing while mouse
-   * hovering edges of features bound to an active modify control while the
-   * cursor is on top of the menu.
-   * @param {Event|import("ol/events/Event.js").default} evt Event.
-   * @private
-   */
-  handleMapPointerMove_(evt) {
-    const myEvent = /** @type {import("ol/MapBrowserEvent.js").default} */ (evt);
-    const target = myEvent.originalEvent.target;
-    const element = this.getElement();
-    if (target instanceof Element && element instanceof Element && element.contains(target)) {
-      myEvent.coordinate = [Infinity, Infinity];
-      myEvent.pixel = [Infinity, Infinity];
-    }
+};
+
+
+/**
+ * @export
+ */
+exports.prototype.close = function() {
+  this.setPosition(undefined);
+
+  if (this.clickOutListenerKey_ !== null) {
+    olEvents.unlistenByKey(this.clickOutListenerKey_);
   }
-}
+};
+
+
+/**
+ * @param {string} action The action name that was clicked.
+ * @param {Event} evt Event.
+ * @private
+ */
+exports.prototype.handleActionClick_ = function(action, evt) {
+
+  this.dispatchEvent(new ngeoCustomEvent('actionclick', {
+    action: action
+  }));
+
+  if (this.autoClose_) {
+    this.close();
+  }
+
+  evt.stopPropagation();
+};
+
+
+/**
+ * Handles clicks out of the menu. If the menu is visible, close it.
+ * @param {Event} evt Event.
+ * @private
+ */
+exports.prototype.handleClickOut_ = function(evt) {
+  const element = this.getElement();
+  if (element && $(evt.target).closest(element).length === 0) {
+    this.close();
+  }
+};
+
+
+/**
+ * When the mouse is hovering the menu, set the event coordinate and pixel
+ * values to Infinity to do as if the mouse had been move out of range of the
+ * map. This prevents behaviours such as vertex still appearing while mouse
+ * hovering edges of features bound to an active modify control while the
+ * cursor is on top of the menu.
+ * @param {ol.MapBrowserEvent} evt Event.
+ * @private
+ */
+exports.prototype.handleMapPointerMove_ = function(evt) {
+  const target = evt.originalEvent.target;
+  googAsserts.assertInstanceof(target, Element);
+
+  const element = this.getElement();
+  googAsserts.assertInstanceof(element, Element);
+
+  if (element.contains(target)) {
+    evt.coordinate = [Infinity, Infinity];
+    evt.pixel = [Infinity, Infinity];
+  }
+};
+
+
+export default exports;

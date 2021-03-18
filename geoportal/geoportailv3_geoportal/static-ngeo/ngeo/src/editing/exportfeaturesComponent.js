@@ -1,33 +1,14 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import ngeoMiscFeatureHelper, {FeatureFormatType} from 'ngeo/misc/FeatureHelper.js';
-import {getUid as olUtilGetUid} from 'ol/util.js';
-
 /**
- * @type {angular.IModule}
- * @hidden
+ * @module ngeo.editing.exportfeaturesComponent
  */
-const module = angular.module('ngeoExportfeatures', [ngeoMiscFeatureHelper.name]);
+import ngeoMiscFeatureHelper from 'ngeo/misc/FeatureHelper.js';
+import * as olBase from 'ol/index.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+
+const exports = angular.module('ngeoExportfeatures', [
+  ngeoMiscFeatureHelper.module.name
+]);
 
 /**
  * Directive used to export vector features in different types of format.
@@ -46,51 +27,55 @@ const module = angular.module('ngeoExportfeatures', [ngeoMiscFeatureHelper.name]
  *       ngeo-exportfeatures-features="ctrl.features"
  *       class="btn btn-link">Export</button>
  *
- * @htmlAttribute {import("ol/Collection.js").default<import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>>}
- *    ngeo-exportfeatures-features The features to export
- * @return {angular.IDirective} The directive specs.
+ * @htmlAttribute {ol.Collection.<ol.Feature>} ngeo-exportfeatures-features The
+ *     features to export
+ * @return {angular.Directive} The directive specs.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoExportfeatures
  */
-function editingExportFeaturesComponent() {
+exports.directive_ = function() {
   return {
     controller: 'ngeoExportfeaturesController as efCtrl',
     scope: true,
     bindToController: {
-      'features': '=ngeoExportfeaturesFeatures',
-    },
+      'features': '=ngeoExportfeaturesFeatures'
+    }
   };
-}
+};
 
-module.directive('ngeoExportfeatures', editingExportFeaturesComponent);
+
+exports.directive('ngeoExportfeatures', exports.directive_);
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.auto.IInjectorService} $injector Main injector.
- * @param {angular.IScope} $scope Angular scope.
- * @param {import("ngeo/misc/FeatureHelper.js").FeatureHelper} ngeoFeatureHelper Ngeo feature helper service.
+ * @param {angular.JQLite} $element Element.
+ * @param {angular.$injector} $injector Main injector.
+ * @param {!angular.Scope} $scope Angular scope.
+ * @param {ngeo.misc.FeatureHelper} ngeoFeatureHelper Ngeo feature helper service.
  * @constructor
  * @private
- * @hidden
+ * @struct
  * @ngInject
  * @ngdoc controller
  * @ngname ngeoExportfeaturesController
  */
-function Controller($element, $injector, $scope, ngeoFeatureHelper) {
-  /**
-   * @type {?import("ol/Collection.js").default<import('ol/Feature.js').default<import("ol/geom/Geometry.js").default>>}
-   * @private
-   */
-  this.features = null;
+exports.Controller_ = function($element, $injector, $scope,
+  ngeoFeatureHelper) {
 
   /**
-   * @type {JQuery}
+   * @type {ol.Collection.<ol.Feature>}
+   * @private
+   */
+  this.features;
+
+  /**
+   * @type {angular.JQLite}
    * @private
    */
   this.element_ = $element;
 
-  const uid = olUtilGetUid(this);
+  const uid = olBase.getUid(this);
   const id = ['ngeo-exportfeature', uid].join('-');
 
   /**
@@ -100,27 +85,26 @@ function Controller($element, $injector, $scope, ngeoFeatureHelper) {
   this.id_ = id;
 
   /**
-   * @type {import("ngeo/misc/FeatureHelper.js").FeatureHelper}
+   * @type {ngeo.misc.FeatureHelper}
    * @private
    */
   this.featureHelper_ = ngeoFeatureHelper;
 
-  /** @type {string[]} */
   let formats;
   if ($injector.has('ngeoExportFeatureFormats')) {
     formats = $injector.get('ngeoExportFeatureFormats');
   } else {
-    formats = [FeatureFormatType.KML];
+    formats = [ngeoMiscFeatureHelper.FormatType.KML];
   }
 
   /**
-   * @type {?JQuery}
+   * @type {?jQuery}
    * @private
    */
   this.menu_ = null;
 
   /**
-   * @type {JQuery[]}
+   * @type {Array.<jQuery>}
    * @private
    */
   this.items_ = [];
@@ -128,27 +112,32 @@ function Controller($element, $injector, $scope, ngeoFeatureHelper) {
   // build the drop-down menu and items if there's more than one format
   if (formats.length > 1) {
     $element.attr('id', id);
-    const $menu = $('<div />', {
+    const $menu = $('<ul />', {
       'class': 'dropdown-menu',
-      'aria-labelledby': id,
+      'aria-labelledby': id
     }).appendTo($element.parent()[0]);
 
     this.menu_ = $menu;
+    let $item;
 
     formats.forEach((format) => {
-      const item = $('<a />', {
-        'href': '#',
-        'class': 'dropdown-item',
-        'text': format,
-      });
-      item.appendTo($menu);
-      item.on(`click.${id}`, this.handleMenuItemClick_.bind(this, format));
-      this.items_.push(item);
+      $item = $('<li />')
+        .appendTo($menu)
+        .append($('<a />', {
+          'href': '#',
+          'text': format
+        })
+          .on(
+            ['click', id].join('.'),
+            this.handleMenuItemClick_.bind(this, format)
+          )
+        );
+      this.items_.push($item);
     });
   }
 
   /**
-   * @type {string[]}
+   * @type {Array.<string>}
    * @private
    */
   this.formats_ = formats;
@@ -156,7 +145,8 @@ function Controller($element, $injector, $scope, ngeoFeatureHelper) {
   $element.on(['click', id].join('.'), this.handleElementClick_.bind(this));
 
   $scope.$on('$destroy', this.handleDestroy_.bind(this));
-}
+};
+
 
 /**
  * Called when the element bound to this directive is clicked. Use the feature
@@ -169,10 +159,7 @@ function Controller($element, $injector, $scope, ngeoFeatureHelper) {
  * that doesn't support the type of geometry.
  * @private
  */
-Controller.prototype.handleElementClick_ = function () {
-  if (!this.features) {
-    throw new Error('Missing features');
-  }
+exports.Controller_.prototype.handleElementClick_ = function() {
 
   const features = this.features.getArray();
 
@@ -180,16 +167,13 @@ Controller.prototype.handleElementClick_ = function () {
     this.featureHelper_.export(features, this.formats_[0]);
   } else if (features.length === 1) {
     const feature = features[0];
-    const geometry = feature.getGeometry();
-    if (!geometry) {
-      throw new Error('Missing geometry');
-    }
-    const geometryType = geometry.getType();
+    const geom = feature.getGeometry();
     let $item;
     this.formats_.forEach((format, i) => {
       $item = this.items_[i];
-      if (format === FeatureFormatType.GPX) {
-        if (geometryType === 'Point' || geometryType === 'LineString') {
+      if (format === ngeoMiscFeatureHelper.FormatType.GPX) {
+        if (geom instanceof olGeomPoint ||
+            geom instanceof olGeomLineString) {
           $item.removeClass('disabled');
         } else {
           $item.addClass('disabled');
@@ -199,31 +183,27 @@ Controller.prototype.handleElementClick_ = function () {
   }
 };
 
+
 /**
  * Called when a menu item is clicked. Export the features to the selected
  * format.
  * @param {string} format Format.
- * @param {JQueryEventObject} event Event.
+ * @param {jQuery.Event} event Event.
  * @private
  */
-Controller.prototype.handleMenuItemClick_ = function (format, event) {
-  if (!this.features) {
-    throw new Error('Missing features');
-  }
-  if (!event.target.parentElement) {
-    throw new Error('Missing event.target.parentElement');
-  }
+exports.Controller_.prototype.handleMenuItemClick_ = function(format, event) {
   if (!$(event.target.parentElement).hasClass('disabled')) {
     const features = this.features.getArray();
     this.featureHelper_.export(features, format);
   }
 };
 
+
 /**
  * Cleanup event listeners and remove the menu from DOM, if any.
  * @private
  */
-Controller.prototype.handleDestroy_ = function () {
+exports.Controller_.prototype.handleDestroy_ = function() {
   const id = this.id_;
 
   this.element_.off(['click', id].join('.'));
@@ -238,6 +218,9 @@ Controller.prototype.handleDestroy_ = function () {
   }
 };
 
-module.controller('ngeoExportfeaturesController', Controller);
 
-export default module;
+exports.controller(
+  'ngeoExportfeaturesController', exports.Controller_);
+
+
+export default exports;

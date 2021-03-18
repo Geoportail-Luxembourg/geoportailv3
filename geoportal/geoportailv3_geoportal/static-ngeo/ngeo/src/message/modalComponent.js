@@ -1,34 +1,16 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.message.modalComponent
+ */
+import 'jquery';
+import 'jquery-ui';
 import 'jquery-ui/ui/widgets/draggable.js';
-import 'ngeo/sass/jquery-ui.scss';
 import 'bootstrap/js/modal.js';
+import googAsserts from 'goog/asserts.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {angular.Module}
  */
-const module = angular.module('ngeoModal', []);
+const exports = angular.module('ngeoModal', []);
 
 /**
  * Provides the "ngeoModal" component.
@@ -44,7 +26,7 @@ const module = angular.module('ngeoModal', []);
  * jQuery plugin.
  *
  *     <ngeo-modal ng-model="modalShown">
- *       <div class="modal-header ui-draggable-handle">
+ *       <div class="modal-header">
  *         <button type="button" class="close" data-dismiss="modal"
  *                 aria-hidden="true">&times;</button>
  *         <h4 class="modal-title">The Title</h4>
@@ -57,17 +39,15 @@ const module = angular.module('ngeoModal', []);
  *
  * See our live example: [../examples/modal.html](../examples/modal.html)
  *
- * @htmlAttribute {string} ngeo-draggable-handle The jquery selector that define the element
- *     that can starts the dragging sequence. Defaults to `.ui-draggable-handle`.
  * @htmlAttribute {boolean} ngeo-modal-resizable Whether the modal can be
  *     resized or not. Defaults to `false`.
  * @htmlAttribute {boolean} ngeo-modal-closable Whether the modal can be
  *     closed by clicking outside it or by hiting the `escape` keyboard key. Defaults to `true`.
  * @ngdoc component
  * @ngname ngeoModal
- * @type {angular.IComponentOptions}
+ * @type {!angular.Component}
  */
-const messageModalComponent = {
+exports.component_ = {
   template: `<div class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -76,122 +56,95 @@ const messageModalComponent = {
     </div>
   </div>`,
   require: {
-    'ngModel': 'ngModel',
+    'ngModel': 'ngModel'
   },
   transclude: true,
   controller: 'ngeoModalController',
   bindings: {
-    'draggableHandle': '=?ngeodraggableHandle',
     'resizable': '<ngeoModalResizable',
-    'closable': '<ngeoModalClosable',
-  },
+    'closable': '<ngeoModalClosable'
+  }
 };
 
-module.component('ngeoModal', messageModalComponent);
+exports.component('ngeoModal', exports.component_);
 
-/**
- * @private
- * @hidden
- */
-class Controller {
+exports.Controller_ = class {
   /**
    * @ngInject
-   * @param {angular.IScope} $scope Scope.
-   * @param {JQuery} $element Element.
+   * @param {!angular.Scope} $scope Scope.
+   * @param {!jQuery} $element Element.
    */
   constructor($scope, $element) {
     /**
      * @private
-     * @type {JQuery}
+     * @type {!jQuery}
      */
     this.$element_ = $element;
 
     /**
      * @private
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      */
     this.$scope_ = $scope;
 
     /**
      * @private
-     * @type {?JQuery}
+     * @type {jQuery}
      */
-    this.modal_ = null;
+    this.modal_;
 
     /**
-     * @type {string}
-     */
-    this.draggableHandle = '';
-
-    /**
+     * @export
      * @type {boolean}
      */
-    this.closable = false;
+    this.closable;
 
     /**
+     * @export
      * @type {boolean}
      */
-    this.resizable = false;
+    this.resizable;
 
     /**
-     * @type {?angular.INgModelController}
+     * @export
+     * @type {angular.NgModelController|null}
      */
-    this.ngModel = null;
-  }
-
-  $onInit() {
-    this.closable = this.closable !== false;
-
-    this.resizable = !!this.resizable;
-
-    this.draggableHandle = this.draggableHandle || '.ui-draggable-handle';
+    this.ngModel;
   }
 
   $postLink() {
     this.modal_ = this.$element_.children();
 
     if (!this.closable) {
-      this.modal_.attr('data-keyboard', 'false');
+      this.modal_.attr('data-keyboard', false);
       this.modal_.attr('data-backdrop', 'static');
     }
 
+    this.resizable = !!this.resizable;
+
     const dialog = this.modal_.find('.modal-dialog');
     dialog.draggable({
-      handle: this.draggableHandle,
+      'handle': '.modal-header'
     });
     if (this.resizable) {
       dialog.resizable();
     }
 
-    if (!this.ngModel) {
-      throw new Error('Missing model');
-    }
     this.ngModel.$render = () => {
-      if (!this.ngModel) {
-        throw new Error('Missing model');
-      }
-      if (!this.modal_) {
-        throw new Error('Missing modal');
-      }
       this.modal_.modal(this.ngModel.$viewValue ? 'show' : 'hide');
     };
 
     this.modal_.on('shown.bs.modal hidden.bs.modal', (e) => {
-      if (!this.ngModel) {
-        throw new Error('Missing model');
-      }
       const type = e.type;
-      console.assert(type == 'shown' || type == 'hidden');
+      googAsserts.assert(type == 'shown' || type == 'hidden');
       this.ngModel.$setViewValue(type == 'shown');
     });
   }
 
   $onDestroy() {
-    if (!this.modal_) {
-      throw new Error('Missing modal');
-    }
     // Force close the modal.
     this.modal_.modal('hide');
+    this.modal_.modal('removeBackdrop');
     // Destroy the children's plugins.
     const dialog = this.modal_.find('.modal-dialog');
     dialog.draggable('destroy');
@@ -199,8 +152,9 @@ class Controller {
       dialog.resizable('destroy');
     }
   }
-}
+};
 
-module.controller('ngeoModalController', Controller);
+exports.controller('ngeoModalController', exports.Controller_);
 
-export default module;
+
+export default exports;

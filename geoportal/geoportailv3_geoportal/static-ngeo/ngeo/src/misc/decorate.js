@@ -1,30 +1,15 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2014-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.misc.decorate
+ */
+const exports = {};
+import googAsserts from 'goog/asserts.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
 import olLayerBase from 'ol/layer/Base.js';
 import olLayerGroup from 'ol/layer/Group.js';
 import olLayerLayer from 'ol/layer/Layer.js';
 import olSourceImage from 'ol/source/Image.js';
 import olSourceTile from 'ol/source/Tile.js';
+
 
 /**
  * Provides a function that adds an "active" property (using
@@ -35,18 +20,19 @@ import olSourceTile from 'ol/source/Tile.js';
  *
  *      <input type="checkbox" ngModel="interaction.active" />
  *
- * @param {import("ol/interaction/Interaction.js").default} interaction Interaction to decorate.
+ * @param {ol.interaction.Interaction} interaction Interaction to decorate.
  */
-export function interactionDecoration(interaction) {
-  console.assert(interaction instanceof olInteractionInteraction);
+exports.interaction = function(interaction) {
+  googAsserts.assertInstanceof(interaction, olInteractionInteraction);
 
   Object.defineProperty(interaction, 'active', {
     get: () => interaction.getActive(),
     set: (val) => {
       interaction.setActive(val);
-    },
+    }
   });
-}
+};
+
 
 /**
  * Provides a function that adds properties (using
@@ -57,10 +43,10 @@ export function interactionDecoration(interaction) {
  *
  *      <input type="checkbox" ngModel="layer.visible" />
  *
- * @param {import("ol/layer/Base.js").default} layer Layer to decorate.
+ * @param {ol.layer.Base} layer Layer to decorate.
  */
-export function layerDecoration(layer) {
-  console.assert(layer instanceof olLayerBase);
+exports.layer = function(layer) {
+  googAsserts.assertInstanceof(layer, olLayerBase);
 
   Object.defineProperty(layer, 'visible', {
     configurable: true,
@@ -73,7 +59,7 @@ export function layerDecoration(layer) {
      */
     set: (val) => {
       layer.setVisible(val);
-    },
+    }
   });
 
   Object.defineProperty(layer, 'opacity', {
@@ -87,9 +73,10 @@ export function layerDecoration(layer) {
      */
     set: (val) => {
       layer.setOpacity(val);
-    },
+    }
   });
-}
+};
+
 
 /**
  * Provides a function that adds a 'loading 'property (using
@@ -101,21 +88,22 @@ export function layerDecoration(layer) {
  *
  *      <span ng-if="layer.loading">please wait</span>
  *
- * @param {import("ol/layer/Base.js").default} layer layer.
- * @param {angular.IScope} $scope Scope.
+ * @param {ol.layer.Base} layer layer.
+ * @param {angular.Scope} $scope Scope.
  */
-export function layerLoading(layer, $scope) {
+exports.layerLoading = function(layer, $scope) {
+
   let source;
 
   /**
-   * @type {string[]}
+   * @type {Array<string>|null}
    */
-  let incrementEvents = [];
+  let incrementEvents = null;
 
   /**
-   * @type {string[]}
+   * @type {Array<string>|null}
    */
-  let decrementEvents = [];
+  let decrementEvents = null;
 
   /**
    * @function
@@ -149,7 +137,7 @@ export function layerLoading(layer, $scope) {
       incrementEvents = ['imageloadstart'];
       decrementEvents = ['imageloadend', 'imageloaderror'];
     } else {
-      console.assert(false, 'unsupported source type');
+      googAsserts.fail('unsupported source type');
     }
 
     source.on(incrementEvents, () => {
@@ -165,20 +153,17 @@ export function layerLoading(layer, $scope) {
 
   Object.defineProperty(layer, 'loading', {
     configurable: true,
-    get: () => /** @type {number} */ (layer.get('load_count')) > 0,
+    get: () => /** @type {number} */ (layer.get('load_count')) > 0
   });
 
   /**
    * @function
-   * @param {import("ol/layer/Base.js").default} layer Layer
+   * @param {ol.layer.Base} layer Layer
    * @private
    */
   function increment_(layer) {
     let load_count = /** @type {number} */ (layer.get('load_count'));
-    /**
-     * @type {import("ol/layer/Base.js").default}
-     */
-    const parent = layer.get('parent_group');
+    const parent = /** @type {ol.layer.Base} */ (layer.get('parent_group'));
     layer.set('load_count', ++load_count, true);
     if (parent) {
       increment_(parent);
@@ -187,18 +172,18 @@ export function layerLoading(layer, $scope) {
 
   /**
    * @function
-   * @param {import("ol/layer/Base.js").default} layer Layer
+   * @param {ol.layer.Base} layer Layer
    * @private
    */
   function decrement_(layer) {
     let load_count = /** @type {number} */ (layer.get('load_count'));
-    /**
-     * @type {import("ol/layer/Base.js").default}
-     */
-    const parent = layer.get('parent_group');
+    const parent = /** @type {ol.layer.Base} */ (layer.get('parent_group'));
     layer.set('load_count', --load_count, true);
     if (parent) {
       decrement_(parent);
     }
   }
-}
+};
+
+
+export default exports;

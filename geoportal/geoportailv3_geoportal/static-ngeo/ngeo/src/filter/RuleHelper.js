@@ -1,112 +1,64 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module ngeo.filter.RuleHelper
+ */
+import googAsserts from 'goog/asserts.js';
 import ngeoFilterCondition from 'ngeo/filter/Condition.js';
 import ngeoFormatAttributeType from 'ngeo/format/AttributeType.js';
-import * as ngeoFormatFilter from 'ngeo/format/filter.js';
 import ngeoMiscFeatureHelper from 'ngeo/misc/FeatureHelper.js';
 import ngeoMiscWMSTime from 'ngeo/misc/WMSTime.js';
 import ngeoRuleDate from 'ngeo/rule/Date.js';
 import ngeoRuleGeometry from 'ngeo/rule/Geometry.js';
-import ngeoRuleRule, {
-  RuleOperatorType,
-  RuleSpatialOperatorType,
-  RuleTemporalOperatorType,
-} from 'ngeo/rule/Rule.js';
+import ngeoRuleRule from 'ngeo/rule/Rule.js';
 import ngeoRuleSelect from 'ngeo/rule/Select.js';
 import ngeoRuleText from 'ngeo/rule/Text.js';
 import {writeFilter} from 'ol/format/WFS.js';
 import * as olFormatFilter from 'ol/format/filter.js';
+import * as olArray from 'ol/array.js';
 
 import moment from 'moment';
 
-/**
- * @typedef {import('ngeo/rule/Rule.js').RuleOptions|import('ngeo/rule/Geometry.js').GeometryOptions|import('ngeo/rule/Select.js').SelectOptions|import('ngeo/rule/Text.js').TextOptions} AnyOptions
- */
 
-/**
- * The options to use when creating a filter using the `ngeo.RuleHelper`
- * service.
- *
- * @typedef {Object} CreateFilterOptions
- * @property {import('ngeo/datasource/OGC.js').default} dataSource The data source from which to get
- *    the filterRules that will be used to create the OL filter object.
- * @property {boolean} [incDimensions] Whether to include the dimensions related filters. Default to `true`.
- * @property {boolean} [incTime] Whether to include the data source's time values in the filter created. The
- *    property that contains those values is `timeRangeValue`. Defaults to `false`.
- *    When building a filter for WMS, it should not be included as it is given as
- *    the TIME parameter of the query instead. When used for a WFS request, it
- *    should be included in the filter.
- * @property {import("ol/format/filter/Filter.js").default} [filter] A filter that is directly given the
- *    method instead of creating one.
- *    Useful to automatically combine the time values.
- * @property {Array<import('ngeo/rule/Rule.js').default>} [filterRules] An alternative list of filter rules
- *    to use instead of those that are defined within the data source. Useful when one wants to get the data
- *    of a given filter without applying it to the data source.
- * @property {string} [projCode] Projection code.
- * @property {string} [srsName] The SRS name used with the spatial filters created by the method.
- */
+const exports = class {
 
-/**
- * @hidden
- */
-export class RuleHelper {
   /**
-   * A service that provides utility methods to create `import('ngeo/rule/Rule.js').default`
+   * A service that provides utility methods to create `ngeo.rule.Rule`
    * objects.
    *
-   * @param {angular.gettext.gettextCatalog} gettextCatalog Gettext service.
-   * @param {import("ngeo/misc/FeatureHelper.js").FeatureHelper} ngeoFeatureHelper Ngeo feature helper
-   *    service.
-   * @param {import("ngeo/misc/WMSTime.js").WMSTime} ngeoWMSTime wms time service.
+   * @param {!angularGettext.Catalog} gettextCatalog Gettext service.
+   * @param {!ngeo.misc.FeatureHelper} ngeoFeatureHelper Ngeo feature helper service.
+   * @param {!ngeo.misc.WMSTime} ngeoWMSTime wms time service.
+   * @struct
    * @ngdoc service
    * @ngname ngeoRuleHelper
    * @ngInject
    */
   constructor(gettextCatalog, ngeoFeatureHelper, ngeoWMSTime) {
+
     /**
-     * @type {angular.gettext.gettextCatalog}
+     * @type {!angularGettext.Catalog}
      * @private
      */
     this.gettextCatalog_ = gettextCatalog;
 
     /**
-     * @type {import("ngeo/misc/FeatureHelper.js").FeatureHelper}
+     * @type {!ngeo.misc.FeatureHelper}
      * @private
      */
     this.ngeoFeatureHelper_ = ngeoFeatureHelper;
 
     /**
-     * @type {import("ngeo/misc/WMSTime.js").WMSTime}
+     * @type {!ngeo.misc.WMSTime}
      * @private
      */
     this.ngeoWMSTime_ = ngeoWMSTime;
   }
 
   /**
-   * @param {Array<import('ngeo/format/Attribute.js').Attribute>} attributes Attributes.
+   * @param {!Array.<!ngeox.Attribute>} attributes Attributes.
    * @param {boolean=} opt_isCustom Whether the created rules should be marked
    *     as custom or not. Defaults to `false`.
-   * @return {Array<import("ngeo/rule/Rule.js").default>} Rules.
+   * @return {Array.<!ngeo.rule.Rule>} Rules.
+   * @export
    */
   createRulesFromAttributes(attributes, opt_isCustom) {
     const rules = [];
@@ -117,12 +69,14 @@ export class RuleHelper {
   }
 
   /**
-   * @param {import('ngeo/format/Attribute.js').Attribute} attribute Attribute.
+   * @param {!ngeox.Attribute} attribute Attribute.
    * @param {boolean=} opt_isCustom Whether the created rule should be marked
    *     as custom or not. Defaults to `false`.
-   * @return {import("ngeo/rule/Rule.js").default} Rule.
+   * @return {!ngeo.rule.Rule} Rule.
+   * @export
    */
   createRuleFromAttribute(attribute, opt_isCustom) {
+
     let rule;
     const isCustom = opt_isCustom === true;
 
@@ -139,84 +93,86 @@ export class RuleHelper {
         if (isCustom) {
           rule = new ngeoRuleDate({
             name: name,
-            operator: RuleTemporalOperatorType.EQUALS,
+            operator: ngeoRuleRule.TemporalOperatorType.EQUALS,
             operators: [
-              RuleTemporalOperatorType.EQUALS,
-              RuleTemporalOperatorType.BEGINS,
-              RuleTemporalOperatorType.ENDS,
+              ngeoRuleRule.TemporalOperatorType.EQUALS,
+              ngeoRuleRule.TemporalOperatorType.BEGINS,
+              ngeoRuleRule.TemporalOperatorType.ENDS
             ],
             propertyName: attribute.name,
-            type: attribute.type,
+            type: attribute.type
           });
         } else {
           rule = new ngeoRuleDate({
             name: name,
-            operator: RuleTemporalOperatorType.DURING,
+            operator: ngeoRuleRule.TemporalOperatorType.DURING,
             propertyName: attribute.name,
-            type: attribute.type,
+            type: attribute.type
           });
         }
         break;
       case ngeoFormatAttributeType.GEOMETRY:
         rule = new ngeoRuleGeometry({
           name: name,
-          operator: RuleSpatialOperatorType.INTERSECTS,
+          operator: ngeoRuleRule.SpatialOperatorType.WITHIN,
           operators: [
-            RuleSpatialOperatorType.CONTAINS,
-            RuleSpatialOperatorType.INTERSECTS,
-            RuleSpatialOperatorType.WITHIN,
+            ngeoRuleRule.SpatialOperatorType.CONTAINS,
+            ngeoRuleRule.SpatialOperatorType.INTERSECTS,
+            ngeoRuleRule.SpatialOperatorType.WITHIN
           ],
           propertyName: attribute.name,
-          type: attribute.type,
+          type: attribute.type
         });
         break;
       case ngeoFormatAttributeType.NUMBER:
         if (isCustom) {
           rule = new ngeoRuleRule({
             name: name,
-            operator: RuleOperatorType.EQUAL_TO,
+            operator: ngeoRuleRule.OperatorType.EQUAL_TO,
             operators: [
-              RuleOperatorType.EQUAL_TO,
-              RuleOperatorType.GREATER_THAN,
-              RuleOperatorType.GREATER_THAN_OR_EQUAL_TO,
-              RuleOperatorType.LESSER_THAN,
-              RuleOperatorType.LESSER_THAN_OR_EQUAL_TO,
-              RuleOperatorType.NOT_EQUAL_TO,
+              ngeoRuleRule.OperatorType.EQUAL_TO,
+              ngeoRuleRule.OperatorType.GREATER_THAN,
+              ngeoRuleRule.OperatorType.GREATER_THAN_OR_EQUAL_TO,
+              ngeoRuleRule.OperatorType.LESSER_THAN,
+              ngeoRuleRule.OperatorType.LESSER_THAN_OR_EQUAL_TO,
+              ngeoRuleRule.OperatorType.NOT_EQUAL_TO
             ],
             propertyName: attribute.name,
-            type: ngeoFormatAttributeType.NUMBER,
+            type: ngeoFormatAttributeType.NUMBER
           });
         } else {
           rule = new ngeoRuleRule({
             name: name,
-            operator: RuleOperatorType.BETWEEN,
+            operator: ngeoRuleRule.OperatorType.BETWEEN,
             propertyName: attribute.name,
-            type: ngeoFormatAttributeType.NUMBER,
+            type: ngeoFormatAttributeType.NUMBER
           });
         }
         break;
       case ngeoFormatAttributeType.SELECT:
         rule = new ngeoRuleSelect({
-          choices: attribute.choices,
+          choices: googAsserts.assert(attribute.choices),
           name: name,
-          propertyName: attribute.name,
+          propertyName: attribute.name
         });
         break;
       default:
         if (isCustom) {
           rule = new ngeoRuleText({
-            text: '',
             name: name,
-            operator: RuleOperatorType.LIKE,
-            operators: [RuleOperatorType.LIKE, RuleOperatorType.EQUAL_TO, RuleOperatorType.NOT_EQUAL_TO],
-            propertyName: attribute.name,
+            operator: ngeoRuleRule.OperatorType.LIKE,
+            operators: [
+              ngeoRuleRule.OperatorType.LIKE,
+              ngeoRuleRule.OperatorType.EQUAL_TO,
+              ngeoRuleRule.OperatorType.NOT_EQUAL_TO
+            ],
+            propertyName: attribute.name
           });
         } else {
           rule = new ngeoRuleText({
-            text: '',
             name: name,
-            operator: RuleOperatorType.LIKE,
-            propertyName: attribute.name,
+            operator: ngeoRuleRule.OperatorType.LIKE,
+            propertyName: attribute.name
           });
         }
         break;
@@ -226,9 +182,9 @@ export class RuleHelper {
   }
 
   /**
-   * @param {Array<import('ngeo/rule/Rule.js').RuleOptions|import('ngeo/rule/Select.js').SelectOptions>} optionsList
-   *    List of options
-   * @return {Array<import("ngeo/rule/Rule.js").default>} Rules.
+   * @param {!Array.<!ngeox.rule.RuleOptions|!ngeox.rule.SelectOptions>} optionsList List of options
+   * @return {Array.<!ngeo.rule.Rule>} Rules.
+   * @export
    */
   createRules(optionsList) {
     const rules = [];
@@ -239,9 +195,9 @@ export class RuleHelper {
   }
 
   /**
-   * @param {import('ngeo/rule/Rule.js').RuleOptions|import('ngeo/rule/Select.js').SelectOptions} options
-   *    Options
-   * @return {import("ngeo/rule/Rule.js").default} Rule.
+   * @param {!ngeox.rule.RuleOptions|!ngeox.rule.SelectOptions} options Options
+   * @return {!ngeo.rule.Rule} Rule.
+   * @export
    */
   createRule(options) {
     let rule;
@@ -254,61 +210,68 @@ export class RuleHelper {
         rule = new ngeoRuleGeometry(options);
         break;
       case ngeoFormatAttributeType.SELECT:
-        const selectOptions = /** @type {import('ngeo/rule/Select.js').SelectOptions} */ (options);
-        console.assert(selectOptions.choices);
+        const selectOptions = /** @type {!ngeox.rule.SelectOptions} */ (
+          options);
+        googAsserts.assert(selectOptions.choices);
         rule = new ngeoRuleSelect(selectOptions);
         break;
       default:
-        rule = new ngeoRuleText(/** @type {import('ngeo/rule/Text').TextOptions} */ (options));
+        rule = new ngeoRuleText(options);
         break;
     }
     return rule;
   }
 
   /**
-   * Create a new `import('ngeo/rule/Rule.js').default` object using an other given rule.
+   * Create a new `ngeo.rule.Rule` object using an other given rule.
    *
-   * @param {import("ngeo/rule/Rule.js").default} rule Original rule to clone.
-   * @return {import("ngeo/rule/Rule.js").default} A clone rule.
+   * @param {!ngeo.rule.Rule} rule Original rule to clone.
+   * @return {!ngeo.rule.Rule} A clone rule.
+   * @export
    */
   cloneRule(rule) {
-    /** @type {AnyOptions} */
-    const options = {
-      isCustom: rule.isCustom,
-      name: rule.name,
-      propertyName: rule.propertyName,
-      type: rule.type,
-    };
-    const expression = rule.getExpression();
-    if (expression !== null) {
-      options.expression = expression;
-    }
-    if (rule.lowerBoundary !== null) {
-      options.lowerBoundary = rule.lowerBoundary;
-    }
-    if (rule.operator) {
-      options.operator = rule.operator;
-    }
-    if (rule.operators) {
-      options.operators = rule.operators.slice(0);
-    }
-    if (rule.upperBoundary !== null) {
-      options.upperBoundary = rule.upperBoundary;
-    }
 
     let clone;
+
+    let expression = rule.getExpression();
+    if (expression === null) {
+      expression = undefined;
+    }
+    const isCustom = rule.isCustom;
+    const lowerBoundary = rule.lowerBoundary !== null ? rule.lowerBoundary :
+      undefined;
+    const name = rule.name;
+    const operator = rule.operator !== null ? rule.operator : undefined;
+    const operators = rule.operators ? rule.operators.slice(0) : undefined;
+    const propertyName = rule.propertyName;
+    const type = rule.type !== null ? rule.type : undefined;
+    const upperBoundary = rule.upperBoundary !== null ? rule.upperBoundary :
+      undefined;
+
+    const options = {
+      expression,
+      isCustom,
+      lowerBoundary,
+      name,
+      operator,
+      operators,
+      propertyName,
+      type,
+      upperBoundary
+    };
+
     if (rule instanceof ngeoRuleDate) {
       clone = new ngeoRuleDate(options);
     } else if (rule instanceof ngeoRuleGeometry) {
       clone = new ngeoRuleGeometry(options);
-      clone.feature.setProperties(this.ngeoFeatureHelper_.getNonSpatialProperties(rule.feature));
+      clone.feature.setProperties(
+        this.ngeoFeatureHelper_.getNonSpatialProperties(rule.feature)
+      );
     } else if (rule instanceof ngeoRuleSelect) {
-      const opt = /** @type {import('ngeo/rule/Select.js').SelectOptions} */ (options);
-      opt.choices = rule.choices.slice(0);
-      clone = new ngeoRuleSelect(opt);
+      options.choices = rule.choices.slice(0);
+      clone = new ngeoRuleSelect(options);
     } else if (rule instanceof ngeoRuleText) {
-      const opt = /** @type {import('ngeo/rule/Text').TextOptions} */ (options);
-      clone = new ngeoRuleText(opt);
+      clone = new ngeoRuleText(options);
     } else {
       clone = new ngeoRuleRule(options);
     }
@@ -320,12 +283,14 @@ export class RuleHelper {
    * Extend the dynamic properties from a source rule to destination rule.
    * The source rule remains unchanged, while the destination rule changes.
    *
-   * @param {import("ngeo/rule/Rule.js").default} sourceRule Source rule to collect the dynamic
+   * @param {!ngeo.rule.Rule} sourceRule Source rule to collect the dynamic
    *     properties from.
-   * @param {import("ngeo/rule/Rule.js").default} destRule Destination rule where the dynamic
+   * @param {!ngeo.rule.Rule} destRule Destination rule where the dynamic
    *     properties are set.
+   * @export
    */
   extendRule(sourceRule, destRule) {
+
     if (destRule.getExpression() !== sourceRule.getExpression()) {
       destRule.setExpression(sourceRule.getExpression());
     }
@@ -342,15 +307,20 @@ export class RuleHelper {
       destRule.upperBoundary = sourceRule.upperBoundary;
     }
 
-    if (sourceRule instanceof ngeoRuleGeometry && destRule instanceof ngeoRuleGeometry) {
+    if (sourceRule instanceof ngeoRuleGeometry &&
+       destRule instanceof ngeoRuleGeometry
+    ) {
       this.ngeoFeatureHelper_.clearNonSpatialProperties(destRule.feature);
-      destRule.feature.setProperties(this.ngeoFeatureHelper_.getNonSpatialProperties(sourceRule.feature));
+      destRule.feature.setProperties(
+        this.ngeoFeatureHelper_.getNonSpatialProperties(sourceRule.feature)
+      );
     }
   }
 
   /**
-   * @param {Array<import("ngeo/rule/Rule.js").default>} rules Rules
-   * @return {AnyOptions[]} List of serialized rule options.
+   * @param {!Array.<!ngeo.rule.Rule>} rules Rules
+   * @return {!Array.<!ngeox.rule.AnyOptions>} List of serialized rule options.
+   * @export
    */
   serializeRules(rules) {
     return rules.map((rule) => {
@@ -361,15 +331,15 @@ export class RuleHelper {
 
   /**
    * Selialize a rule into options to re-create it later.
-   * @param {import("ngeo/rule/Rule.js").default} rule Rule to serialize.
-   * @return {AnyOptions} Serialized rule options.
+   * @param {!ngeo.rule.Rule} rule Rule to serialize.
+   * @return {!ngeox.rule.AnyOptions} Serialized rule options.
+   * @export
    */
   serializeRule(rule) {
-    /** @type {AnyOptions} */
     const obj = {
       name: rule.name,
       propertyName: rule.propertyName,
-      type: rule.type,
+      type: rule.type
     };
 
     if (rule.expression !== null) {
@@ -393,16 +363,12 @@ export class RuleHelper {
     }
 
     if (rule instanceof ngeoRuleGeometry) {
-      /**
-       * @type {import('ngeo/rule/Geometry.js').GeometryOptions}
-       */
-      const opt = obj;
-      opt.featureProperties = this.ngeoFeatureHelper_.getNonSpatialProperties(rule.feature);
+      obj.featureProperties = this.ngeoFeatureHelper_.getNonSpatialProperties(
+        rule.feature);
     }
 
     if (rule instanceof ngeoRuleSelect) {
-      const opt = /** @type {import('ngeo/rule/Select.js').SelectOptions} */ (obj);
-      opt.choices = rule.choices;
+      obj.choices = rule.choices;
     }
 
     return obj;
@@ -410,13 +376,15 @@ export class RuleHelper {
 
   /**
    * Create a `ol.format.filter.Filter` object for a given data source.
-   * See the `CreateFilterOptions` to learn more.
+   * See the `ngeox.CreateFilterOptions` to learn more.
    *
-   * @param {CreateFilterOptions} options Options.
-   * @return {?import("ol/format/filter/Filter.js").default} Filter.
+   * @param {ngeox.CreateFilterOptions} options Options.
+   * @return {?ol.format.filter.Filter} Filter.
+   * @export
    */
   createFilter(options) {
-    const dataSource = options.dataSource;
+
+    const dataSource = /** @type {ngeo.datasource.OGC} */ (options.dataSource);
     let mainFilter = null;
 
     if (options.filter) {
@@ -427,7 +395,11 @@ export class RuleHelper {
 
       if (rules && rules.length) {
         for (const rule of rules) {
-          const filter = this.createFilterFromRule_(rule, dataSource, options.srsName);
+          const filter = this.createFilterFromRule_(
+            rule,
+            dataSource,
+            options.srsName
+          );
           if (filter) {
             conditions.push(filter);
           }
@@ -440,7 +412,9 @@ export class RuleHelper {
       } else if (conditions.length >= 2) {
         if (condition === ngeoFilterCondition.AND) {
           mainFilter = olFormatFilter.and.apply(null, conditions);
-        } else if (condition === ngeoFilterCondition.OR || condition === ngeoFilterCondition.NOT) {
+        } else if (condition === ngeoFilterCondition.OR ||
+                   condition === ngeoFilterCondition.NOT
+        ) {
           mainFilter = olFormatFilter.or.apply(null, conditions);
         }
       }
@@ -451,20 +425,39 @@ export class RuleHelper {
 
     if (options.incTime) {
       const timeFilter = this.createTimeFilterFromDataSource_(dataSource);
-      mainFilter = this.joinFilters(mainFilter, timeFilter);
+      if (timeFilter) {
+        if (mainFilter) {
+          mainFilter = olFormatFilter.and.apply(
+            null,
+            [
+              mainFilter,
+              timeFilter
+            ]
+          );
+        } else {
+          mainFilter = timeFilter;
+        }
+      }
     }
 
     if (options.incDimensions) {
       const dimensionsFilter = this.createDimensionsFilterFromDataSource_(dataSource);
-      mainFilter = this.joinFilters(mainFilter, dimensionsFilter);
+      if (dimensionsFilter) {
+        if (mainFilter) {
+          mainFilter = olFormatFilter.and.apply(null, [mainFilter, dimensionsFilter]);
+        } else {
+          mainFilter = dimensionsFilter;
+        }
+      }
     }
 
     return mainFilter;
   }
 
   /**
-   * @param {CreateFilterOptions} options Options.
+   * @param {ngeox.CreateFilterOptions} options Options.
    * @return {?string} Filter string.
+   * @export
    */
   createFilterString(options) {
     let filterString = null;
@@ -478,41 +471,15 @@ export class RuleHelper {
   }
 
   /**
-   * Join 2 filters together in an "And" filter, if both are set.
-   *
-   * If only one is set, then no need to create an "And"
-   * filter. Simply return the one that is set.
-   *
-   * If none are set, return null.
-   *
-   * @param {?import("ol/format/filter/Filter.js").default} filterA
-   *     First filter.
-   * @param {?import("ol/format/filter/Filter.js").default} filterB
-   *     Second filter.
-   * @return {?import("ol/format/filter/Filter.js").default} Filters
-   *     joined together.
-   */
-  joinFilters(filterA, filterB) {
-    let filter = null;
-    if (filterA && filterB) {
-      filter = olFormatFilter.and.apply(null, [filterA, filterB]);
-    } else if (filterA) {
-      filter = filterA;
-    } else if (filterB) {
-      filter = filterB;
-    }
-    return filter;
-  }
-
-  /**
-   * @param {import("ngeo/rule/Rule.js").default} rule Rule.
-   * @param {import("ngeo/datasource/OGC.js").default} dataSource Data source.
+   * @param {ngeo.rule.Rule} rule Rule.
+   * @param {ngeo.datasource.OGC} dataSource Data source.
    * @param {string=} opt_srsName SRS name. No srsName attribute will be
    *     set on geometries when this is not provided.
-   * @return {?import("ol/format/filter/Filter.js").default} filter Filter;
+   * @return {?ol.format.filter.Filter} filter Filter;
    * @private
    */
   createFilterFromRule_(rule, dataSource, opt_srsName) {
+
     let filter = null;
 
     const value = rule.value;
@@ -520,23 +487,27 @@ export class RuleHelper {
       return null;
     }
 
-    const expression = /** @type {import("ngeo/rule/Rule.js").RuleOptions} */ (value).expression;
-    const lowerBoundary = /** @type {import("ngeo/rule/Rule.js").RuleOptions} */ (value).lowerBoundary;
+    const expression = value.expression;
+    const lowerBoundary = value.lowerBoundary;
     const operator = value.operator;
     const propertyName = value.propertyName;
-    const upperBoundary = /** @type {import("ngeo/rule/Rule.js").RuleOptions} */ (value).upperBoundary;
+    const upperBoundary = value.upperBoundary;
 
-    const rot = RuleOperatorType;
-    const rsot = RuleSpatialOperatorType;
-    const rtot = RuleTemporalOperatorType;
+    const rot =  ngeoRuleRule.OperatorType;
+    const rsot = ngeoRuleRule.SpatialOperatorType;
+    const rtot = ngeoRuleRule.TemporalOperatorType;
 
-    const spatialTypes = [rsot.CONTAINS, rsot.INTERSECTS, rsot.WITHIN];
+    const spatialTypes = [
+      rsot.CONTAINS,
+      rsot.INTERSECTS,
+      rsot.WITHIN
+    ];
 
     const numericTypes = [
       rot.GREATER_THAN,
       rot.GREATER_THAN_OR_EQUAL_TO,
       rot.LESSER_THAN,
-      rot.LESSER_THAN_OR_EQUAL_TO,
+      rot.LESSER_THAN_OR_EQUAL_TO
     ];
 
     if (rule instanceof ngeoRuleDate) {
@@ -547,71 +518,105 @@ export class RuleHelper {
         beginValue = moment(lowerBoundary).format('YYYY-MM-DD');
         endValue = moment(upperBoundary).format('YYYY-MM-DD');
       } else if (operator === rtot.EQUALS) {
-        beginValue = moment(expression).format('YYYY-MM-DD');
+        beginValue = moment(expression)
+          .format('YYYY-MM-DD');
         endValue = beginValue;
       } else if (operator === rtot.BEGINS) {
-        beginValue = moment(expression).format('YYYY-MM-DD');
+        beginValue = moment(expression)
+          .format('YYYY-MM-DD');
         // NOTE: end value is CURRENT + 30 years
-        endValue = moment(expression).add(30, 'years').format('YYYY-MM-DD');
+        endValue = moment(expression)
+          .add(30, 'years')
+          .format('YYYY-MM-DD');
       } else if (operator === rtot.ENDS) {
         // NOTE: begin value is hardcoded to 1970-01-01
         beginValue = '1970-01-01';
-        endValue = moment(expression).format('YYYY-MM-DD');
+        endValue = moment(expression)
+          .format('YYYY-MM-DD');
       }
       if (beginValue && endValue) {
-        if (dataSource.ogcServerType == 'qgisserver') {
-          filter = ngeoFormatFilter.dateBetween(propertyName, beginValue, endValue);
-        } else {
-          filter = olFormatFilter.during(propertyName, beginValue, endValue);
-        }
+        filter = olFormatFilter.during(
+          propertyName,
+          beginValue,
+          endValue
+        );
       }
     } else if (rule instanceof ngeoRuleSelect) {
       const selectedChoices = rule.selectedChoices;
       if (selectedChoices.length === 1) {
-        filter = olFormatFilter.equalTo(propertyName, selectedChoices[0]);
+        filter = olFormatFilter.equalTo(
+          propertyName,
+          selectedChoices[0]
+        );
       } else if (selectedChoices.length >= 2) {
         const conditions = [];
         for (const selectedChoice of selectedChoices) {
-          conditions.push(olFormatFilter.equalTo(propertyName, selectedChoice));
+          conditions.push(
+            olFormatFilter.equalTo(
+              propertyName,
+              selectedChoice
+            )
+          );
         }
         filter = olFormatFilter.or.apply(null, conditions);
       }
-    } else if (spatialTypes.includes(operator)) {
-      const featureNames = dataSource.getFiltrableWFSLayerName();
-      const geometryName = dataSource.geometryName(featureNames ? featureNames[0] : null);
-      if (rule instanceof ngeoRuleGeometry) {
-        const geometry = rule.geometry;
-        if (!geometry) {
-          throw new Error('Missing geometry');
-        }
-        if (geometryName === null) {
-          throw new Error('Missing geometryName');
-        }
-        if (operator === rsot.CONTAINS) {
-          filter = olFormatFilter.contains(geometryName, geometry, opt_srsName);
-        } else if (operator === rsot.INTERSECTS) {
-          filter = olFormatFilter.intersects(geometryName, geometry, opt_srsName);
-        } else if (operator === rsot.WITHIN) {
-          filter = olFormatFilter.within(geometryName, geometry, opt_srsName);
-        }
+    } else if (olArray.includes(spatialTypes, operator)) {
+      const geometryName = dataSource.geometryName;
+      googAsserts.assertInstanceof(rule, ngeoRuleGeometry);
+      const geometry = googAsserts.assert(rule.geometry);
+      if (operator === rsot.CONTAINS) {
+        filter = olFormatFilter.contains(
+          geometryName,
+          geometry,
+          opt_srsName
+        );
+      } else if (operator === rsot.INTERSECTS) {
+        filter = olFormatFilter.intersects(
+          geometryName,
+          geometry,
+          opt_srsName
+        );
+      } else if (operator === rsot.WITHIN) {
+        filter = olFormatFilter.within(
+          geometryName,
+          geometry,
+          opt_srsName
+        );
       }
-    } else if (numericTypes.includes(operator)) {
-      if (typeof expression !== 'number') {
-        throw new Error('Wrong expression type');
-      }
+    } else if (olArray.includes(numericTypes, operator)) {
+      const numericExpression = googAsserts.assertNumber(expression);
       if (operator === rot.GREATER_THAN) {
-        filter = olFormatFilter.greaterThan(propertyName, expression);
+        filter = olFormatFilter.greaterThan(
+          propertyName,
+          numericExpression
+        );
       } else if (operator === rot.GREATER_THAN_OR_EQUAL_TO) {
-        filter = olFormatFilter.greaterThanOrEqualTo(propertyName, expression);
+        filter = olFormatFilter.greaterThanOrEqualTo(
+          propertyName,
+          numericExpression
+        );
       } else if (operator === rot.LESSER_THAN) {
-        filter = olFormatFilter.lessThan(propertyName, expression);
+        filter = olFormatFilter.lessThan(
+          propertyName,
+          numericExpression
+        );
       } else if (operator === rot.LESSER_THAN_OR_EQUAL_TO) {
-        filter = olFormatFilter.lessThanOrEqualTo(propertyName, expression);
+        filter = olFormatFilter.lessThanOrEqualTo(
+          propertyName,
+          numericExpression
+        );
       }
     } else if (operator === rot.BETWEEN) {
-      filter = olFormatFilter.between(propertyName, lowerBoundary, upperBoundary);
+      filter = olFormatFilter.between(
+        propertyName,
+        lowerBoundary,
+        upperBoundary
+      );
     } else if (operator === rot.EQUAL_TO) {
-      filter = olFormatFilter.equalTo(propertyName, expression);
+      filter = olFormatFilter.equalTo(
+        propertyName,
+        expression
+      );
     } else if (operator === rot.LIKE) {
       const stringExpression = String(expression)
         .replace(/!/g, '!!')
@@ -620,13 +625,16 @@ export class RuleHelper {
       filter = olFormatFilter.like(
         propertyName,
         `*${stringExpression}*`,
-        '*' /* wildCard */,
-        '.' /* singleChar */,
-        '!' /* escapeChar */,
+        '*', /* wildCard */
+        '.', /* singleChar */
+        '!', /* escapeChar */
         false /* matchCase */
       );
     } else if (operator === rot.NOT_EQUAL_TO) {
-      filter = olFormatFilter.notEqualTo(propertyName, expression);
+      filter = olFormatFilter.notEqualTo(
+        propertyName,
+        expression
+      );
     }
 
     return filter;
@@ -635,25 +643,21 @@ export class RuleHelper {
   /**
    * Create and return an OpenLayers filter object using the available
    * dimensions filters configuration within the data source.
-   * @param {import("ngeo/datasource/OGC.js").default} dataSource Data source from which to create the
+   * @param {ngeo.DataSource} dataSource Data source from which to create the
    *     filter.
-   * @return {?import("ol/format/filter/Filter.js").default} Filter
+   * @return {?ol.format.filter.Filter} Filter
    * @private
    */
   createDimensionsFilterFromDataSource_(dataSource) {
-    const config = dataSource.dimensionsFiltersConfig || {};
+    const config = dataSource.dimensionsFiltersConfig;
     const dimensions = dataSource.dimensions;
-    if (!dimensions) {
-      throw new Error('Missing dimensions');
-    }
 
     const conditions = [];
     for (const key in config) {
       let value = config[key].value;
       if (value === null) {
-        const dimensionValue = dimensions[key];
-        if (dimensionValue !== undefined && dimensionValue !== null) {
-          value = dimensionValue;
+        if (dimensions[key] !== undefined && dimensions[key] !== null) {
+          value = dimensions[key];
         }
       }
       if (value !== null) {
@@ -671,9 +675,9 @@ export class RuleHelper {
   /**
    * Create and return an OpenLayers filter object using the available
    * time properties within the data source.
-   * @param {import("ngeo/datasource/OGC.js").default} dataSource Data source from which to
+   * @param {ngeo.datasource.OGC} dataSource Data source from which to
    *     create the filter.
-   * @return {?import("ol/format/filter/Filter.js").default} Filter
+   * @return {?ol.format.filter.Filter} Filter
    * @private
    */
   createTimeFilterFromDataSource_(dataSource) {
@@ -683,19 +687,27 @@ export class RuleHelper {
     const name = dataSource.timeAttributeName;
 
     if (range && timeProperty && name) {
+
       if (range.end !== undefined) {
         // Case 1: the range has both 'start' and 'end' values.  Use them to
         //         create a During filter.
 
-        const values = this.ngeoWMSTime_.formatWMSTimeParam(timeProperty, range).split('/');
+        const values = this.ngeoWMSTime_.formatWMSTimeParam(
+          timeProperty,
+          range
+        ).split('/');
 
         filter = olFormatFilter.during(name, values[0], values[1]);
       } else {
+
         // Case 2: we only have a 'start' value. We need to calculate the 'end'
         //         using the resolution of the time property.
 
         const resolution = timeProperty.resolution || 'seconds';
-        const value = this.ngeoWMSTime_.formatWMSTimeParam(timeProperty, range);
+        const value = this.ngeoWMSTime_.formatWMSTimeParam(
+          timeProperty,
+          range
+        );
         let momentEnd;
 
         switch (resolution) {
@@ -709,9 +721,9 @@ export class RuleHelper {
             momentEnd = moment(value).add(1, 'days').subtract(1, 'seconds');
             break;
           default:
-          //case "second":
-          // This would require a TContains filter, which neither OpenLayers
-          // and MapServer support. Skip...
+            //case "second":
+            // This would require a TContains filter, which neither OpenLayers
+            // and MapServer support. Skip...
         }
 
         if (momentEnd) {
@@ -724,13 +736,17 @@ export class RuleHelper {
 
     return filter;
   }
-}
+};
+
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoRuleHelper', [ngeoMiscFeatureHelper.name, ngeoMiscWMSTime.name]);
-module.service('ngeoRuleHelper', RuleHelper);
+exports.module = angular.module('ngeoRuleHelper', [
+  ngeoMiscFeatureHelper.module.name,
+  ngeoMiscWMSTime.module.name,
+]);
+exports.module.service('ngeoRuleHelper', exports);
 
-export default module;
+
+export default exports;

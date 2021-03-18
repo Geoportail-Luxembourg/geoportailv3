@@ -1,51 +1,26 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2015-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.map.component
+ */
 import gmfPermalinkModule from 'gmf/permalink/module.js';
 import gmfEditingSnapping from 'gmf/editing/Snapping.js';
 import ngeoMapModule from 'ngeo/map/module.js';
 import ngeoMapFeatureOverlayMgr from 'ngeo/map/FeatureOverlayMgr.js';
 
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfMapComponent', [
+const exports = angular.module('gmfMapComponent', [
   gmfPermalinkModule.name,
-  gmfEditingSnapping.name,
+  gmfEditingSnapping.module.name,
   ngeoMapModule.name,
-  ngeoMapFeatureOverlayMgr.name,
+  ngeoMapFeatureOverlayMgr.module.name,
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/map', require('./component.html'));
-  }
-);
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/map', require('./component.html'));
+});
+
 
 /**
  * A "map" directive for a GeoMapFish application.
@@ -54,95 +29,100 @@ module.run(
  *
  *      <gmf-map gmf-map-map="mainCtrl.map"></gmf-map>
  *
- * @htmlAttribute {import("ol/Map.js").default} gmf-map-map The map.
+ * @htmlAttribute {ol.Map} gmf-map-map The map.
  * @htmlAttribute {boolean|undefined} gmf-map-manage-resize Whether to update
  *     the size of the map on browser window resize.
  * @htmlAttribute {boolean|undefined} gmf-map-resize-transition The duration
  *     (milliseconds) of the animation that may occur on the div containing
  *     the map. Used to smoothly resize the map while the animation is in
  *     progress.
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  * @ngdoc directive
  * @ngname gmfMap
  */
-function gmfMapComponent() {
+exports.directive_ = function() {
   return {
     scope: {
       'map': '<gmfMapMap',
       'manageResize': '<gmfMapManageResize',
-      'resizeTransition': '<gmfMapResizeTransition',
+      'resizeTransition': '<gmfMapResizeTransition'
     },
     controller: 'GmfMapController as ctrl',
     bindToController: true,
-    templateUrl: 'gmf/map',
+    templateUrl: 'gmf/map'
   };
-}
+};
 
-module.directive('gmfMap', gmfMapComponent);
+exports.directive('gmfMap', exports.directive_);
+
 
 /**
- * @param {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr} ngeoFeatureOverlayMgr The ngeo feature
- * @param {import("gmf/permalink/Permalink.js").PermalinkService} gmfPermalink The gmf permalink service.
- * @param {import("gmf/editing/Snapping.js").EditingSnappingService} gmfSnapping The gmf snapping service.
+ * @param {!ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr The ngeo feature
+ * @param {!gmf.permalink.Permalink} gmfPermalink The gmf permalink service.
+ * @param {!gmf.editing.Snapping} gmfSnapping The gmf snapping service.
  * @constructor
  * @private
- * @hidden
  * @ngInject
  * @ngdoc controller
  * @ngname GmfMapController
  */
-function Controller(ngeoFeatureOverlayMgr, gmfPermalink, gmfSnapping) {
+exports.Controller_ = function(ngeoFeatureOverlayMgr, gmfPermalink, gmfSnapping) {
+
   // Scope properties
 
   /**
-   * @type {?import("ol/Map.js").default}
+   * @type {!ol.Map}
+   * @export
    */
-  this.map = null;
+  this.map;
 
   /**
-   * @type {?boolean}
+   * @type {boolean|undefined}
+   * @export
    */
-  this.manageResize = null;
+  this.manageResize;
 
   /**
-   * @type {?boolean}
+   * @type {boolean|undefined}
+   * @export
    */
-  this.resizeTransition = null;
+  this.resizeTransition;
+
 
   // Injected properties
 
   /**
-   * @type {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr}
+   * @type {!ngeo.map.FeatureOverlayMgr}
    * @private
    */
   this.ngeoFeatureOverlayMgr_ = ngeoFeatureOverlayMgr;
 
   /**
-   * @type {import("gmf/permalink/Permalink.js").PermalinkService}
+   * @type {!gmf.permalink.Permalink}
    * @private
    */
   this.gmfPermalink_ = gmfPermalink;
 
   /**
-   * @type {import("gmf/editing/Snapping.js").EditingSnappingService}
+   * @type {!gmf.editing.Snapping}
    * @private
    */
   this.gmfSnapping_ = gmfSnapping;
-}
+};
+
 
 /**
  * Called on initialization of the controller.
  */
-Controller.prototype.$onInit = function () {
-  if (!this.map) {
-    throw new Error('Missing map');
-  }
+exports.Controller_.prototype.$onInit = function() {
   this.ngeoFeatureOverlayMgr_.init(this.map);
   this.gmfPermalink_.setMap(this.map);
   this.gmfSnapping_.setMap(this.map);
 };
 
-module.controller('GmfMapController', Controller);
 
-export default module;
+exports.controller('GmfMapController', exports.Controller_);
+
+
+export default exports;

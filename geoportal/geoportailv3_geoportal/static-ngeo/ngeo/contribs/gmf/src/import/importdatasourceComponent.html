@@ -15,15 +15,31 @@
     ng-show="$ctrl.mode === 'Local'">
     <div class="form-group">
       <div class="input-group">
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" required>
-          <label class="custom-file-label" translate>No file</label>
-        </div>
+        <input
+          name="file"
+          type="file"
+          required
+        />
+        <input
+          class="form-control"
+          placeholder="{{'No file' | translate}}"
+          readonly
+          type="text"
+          value="{{$ctrl.fileNameAndSize}}"
+          ng-click="$ctrl.browse()"
+        />
+        <span class="input-group-btn">
+          <button
+            class="btn btn-default"
+            type="button"
+            ng-click="$ctrl.browse()"
+            translate>Browse</button>
+        </span>
       </div>
     </div>
     <div class="form-group">
       <button
-        class="btn prime form-control"
+        class="btn btn-sm btn-default form-control"
         ng-class="{'has-error': $ctrl.hasError}"
         title="{{'Load a file from local' | translate}}"
         type="submit"
@@ -54,7 +70,7 @@
     </div>
     <div class="form-group">
       <button
-        class="btn prime form-control gmf-importdatasource-connect-btn"
+        class="btn btn-sm btn-default form-control gmf-importdatasource-connect-btn"
         ng-class="{'has-error': $ctrl.hasError}"
         title="{{'Connect to online resource' | translate}}"
         type="submit"
@@ -76,24 +92,10 @@
 
 </div>
 
-<div ng-if="$ctrl.isLoading">
-  <i class="fa custom-spinner-importkml fa-spin">
-    <%=require('gmf/icons/spinner.svg?viewbox&height=1em')%>
-  </i>
-</div>
-
 <div
   class="gmf-importdatasource-layers"
-  ng-if="($ctrl.wmsCapabilities !== null || $ctrl.wmtsCapabilities !== null) && $ctrl.mode === 'Online'">
+  ng-if="$ctrl.wmsCapabilities !== null || $ctrl.wmtsCapabilities !== null">
   <hr />
-  <input
-    class="form-control"
-    placeholder="{{'Search' | translate}}"
-    ng-disabled="$ctrl.pending"
-    ng-model="$ctrl.searchText"
-    ng-model-options="{ debounce: 250 }"
-    ng-change="$ctrl.search()"
-  />
   <gmf-wmscapabilitylayertreenode
     capabilities="::$ctrl.wmsCapabilities"
     layer="::$ctrl.wmsCapabilities.Capability.Layer"

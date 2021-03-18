@@ -15,14 +15,15 @@
     <hr class="gmf-filterselector-separator" />
 
     <div class="dropdown gmf-filterselector-savedfilters">
-      <button
+      <a
           class="btn btn-link dropdown-toggle ngeo-filter-condition-button"
           ng-class="{disabled: $ctrl.aRuleIsActive || $ctrl.gmfSavedFilters.currentDataSourceItems.length === 0}"
           type="button"
           data-toggle="dropdown"
           ng-disabled="$ctrl.aRuleIsActive || $ctrl.gmfSavedFilters.currentDataSourceItems.length === 0">
         <span translate>Saved</span>
-      </button>
+        <span class="caret"></span>
+      </a>
       <ul class="dropdown-menu">
         <li ng-repeat="item in $ctrl.gmfSavedFilters.currentDataSourceItems">
           <a
@@ -48,26 +49,25 @@
         datasource="$ctrl.readyDataSource"
         directed-rules="$ctrl.directedRules"
         feature-overlay="$ctrl.featureOverlay"
-        filter-is-applied="$ctrl.filterIsApplied"
         map="$ctrl.map"
         tool-group="$ctrl.toolGroup">
     </ngeo-filter>
 
     <div>
-      <button
+      <a
           class="btn btn-link gmf-filterselector-savebtn"
           type="button"
+          data-toggle="dropdown"
           ng-click="!$ctrl.aRuleIsActive && $ctrl.saveFilterShowModal()"
           ng-disabled="$ctrl.aRuleIsActive">
         <span class="fa fa-save"></span>
         <span translate>Save</span>
-      </button>
+      </a>
     </div>
   </div>
 
   <ngeo-modal ng-model="$ctrl.saveFilterSaveModalShown">
-    <div class="modal-header ui-draggable-handle">
-      <h4 class="modal-title">{{'Save filter' | translate}}</h4>
+    <div class="modal-header">
       <button
           type="button"
           class="close"
@@ -75,6 +75,7 @@
           aria-label="{{'Close' | translate}}">
         <span aria-hidden="true">&times;</span>
       </button>
+      <h4 class="modal-title">{{'Save filter' | translate}}</h4>
     </div>
     <div class="modal-body">
       <p class="gmf-filterselector-savefilter-desc" translate>
@@ -96,14 +97,13 @@
           type="button"
           ng-click="$ctrl.saveFilterSave()"
           ng-disabled="$ctrl.saveFilterName === ''"
-          class="btn prime">{{'Save' | translate}}</button>
+          class="btn btn-primary">{{'Save' | translate}}</button>
     </div>
   </ngeo-modal>
 
   <ngeo-modal ng-model="$ctrl.saveFilterManageModalShown">
     <div class="gmf-filterselector-managefilter-modal">
-      <div class="modal-header ui-draggable-handle">
-        <h4 class="modal-title">{{'Manage filters' | translate}}</h4>
+      <div class="modal-header">
         <button
             type="button"
             class="close"
@@ -111,6 +111,7 @@
             aria-label="{{'Close' | translate}}">
           <span aria-hidden="true">&times;</span>
         </button>
+        <h4 class="modal-title">{{'Manage filters' | translate}}</h4>
       </div>
       <div class="modal-body">
         <ul>

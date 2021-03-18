@@ -1,6 +1,6 @@
 <div class="gmf-print">
   <div ng-show="$ctrl.isState('CAPABILITIES_NOT_LOADED') !== true && $ctrl.isState('ERROR_ON_GETCAPABILITIES') !== true">
-    <div class="gmf-print-layout-selector"><ng-transclude /></div>
+    <div class="gmf-print-layout-selector form-horizontal"><ng-transclude /></div>
     <div
       ng-repeat="attribute in $ctrl.layoutInfo.simpleAttributes"
       class="gmf-print-layoutinfo form-group">
@@ -28,10 +28,9 @@
 
         <div
           ng-if="attribute.type === 'checkbox'"
-          class="form-check">
-          <label class="form-check-label">
+          class="checkbox">
+          <label>
             <input
-              class="form-check-input"
               ng-model="attribute.value"
               type="checkbox">
             <span>{{attribute.name | translate}}</span>
@@ -51,22 +50,23 @@
       </label>
     </div>
 
-    <div class="gmf-print-layout-selector">
+    <div class="gmf-print-layout-selector form-horizontal">
       <div
         ng-show="$ctrl.layoutInfo.layouts.length !== 1"
-        class="form-group row">
+        class="form-group">
 
         <label
-          class="col-form-label col-md-5"
+          class="control-label col-md-5"
           translate>Layout</label>
 
         <div class="col-md-7">
           <div class="btn-group btn-block">
             <button
               type="button"
-              class="btn btn-default form-control dropdown-toggle"
+              class="btn btn-default form-control"
               data-toggle="dropdown">
               <span>{{$ctrl.layoutInfo.layout | translate}}&nbsp;</span>
+              <i class="fa fa-caret-down"></i>
             </button>
             <ul
               class="dropdown-menu dropdown-menu-right btn-block"
@@ -83,20 +83,21 @@
 
       <div
         ng-show="$ctrl.layoutInfo.scales.length !== 1"
-        class="gmf-print-scale-selector form-group row">
+        class="gmf-print-scale-selector form-group">
 
         <label
-          class="col-form-label col-md-5"
+          class="control-label col-md-5"
           translate>Scale</label>
 
         <div class="col-md-7">
           <div class="btn-group btn-block">
             <button
               type="button"
-              class="btn btn-default form-control dropdown-toggle"
+              class="btn btn-default form-control"
               data-toggle="dropdown"
               aria-expanded="false">
               <span>{{$ctrl.layoutInfo.scale | ngeoScalify}}&nbsp;</span>
+              <i class="fa fa-caret-down"></i>
             </button>
             <ul
               class="dropdown-menu dropdown-menu-right btn-block"
@@ -121,20 +122,21 @@
 
       <div
         ng-show="$ctrl.layoutInfo.dpis.length !== 1"
-        class="gmf-print-dpi-selector form-group row">
+        class="gmf-print-dpi-selector form-group">
 
         <label
-          class="col-form-label col-md-3"
+          class="control-label col-md-3"
           translate>DPI</label>
 
         <div class="col-md-5">
           <div class="btn-group btn-block">
             <button
               type="button"
-              class="btn btn-default form-control dropdown-toggle"
+              class="btn btn-default form-control"
               data-toggle="dropdown"
               aria-expanded="false">
               <span>{{$ctrl.layoutInfo.dpi}}&nbsp;</span>
+              <i class="fa fa-caret-down"></i>
             </button>
             <ul
               class="dropdown-menu dropdown-menu-right btn-block"
@@ -147,9 +149,9 @@
         </div>
       </div>
 
-      <div class="gmf-print-rotation-selector form-group row">
+      <div class="gmf-print-rotation-selector form-group">
         <label
-          class="col-form-label col-md-3"
+          class="control-label col-md-3"
           translate>Rotation</label>
 
         <div class="col-md-5">
@@ -175,23 +177,9 @@
 
     </div>
 
-    <div
-      ng-show="$ctrl.smtpSupported && $ctrl.smtpEmail"
-      class="gmf-print-smtp checkbox">
-      <label>
-        <input
-          ng-disabled="$ctrl.isState('PRINTING')"
-          ng-model="$ctrl.smtpEnabled"
-          type="checkbox">
-        <span translate>Send file by email</span>
-      </label>
-    </div>
-
     <div class="gmf-print-actions form-group pull-right">
       <span ng-show="$ctrl.isState('PRINTING')">
-        <i class="fa custom-spinner-generic fa-spin">
-            <%=require('gmf/icons/spinner.svg?viewbox&height=1rem')%>
-        </i>
+        <i class="fa fa-refresh fa-spin"></i>
       </span>
 
       <a
@@ -203,13 +191,13 @@
 
       <button
         ng-show="$ctrl.layoutInfo.formats.png"
-        class="gmf-print-image btn prime"
+        class="gmf-print-image btn btn-primary"
         ng-disabled="$ctrl.isState('PRINTING')"
         ng-click="$ctrl.print('png')" translate>Image</button>
 
       <button
         ng-show="$ctrl.layoutInfo.formats.pdf"
-        class="gmf-print-pdf btn prime"
+        class="gmf-print-pdf btn btn-primary"
         ng-disabled="$ctrl.isState('PRINTING')"
         ng-click="$ctrl.print('pdf')" translate>PDF</button>
     </div>
@@ -231,14 +219,5 @@
     ng-show="$ctrl.isState('ERROR_ON_GETCAPABILITIES')"
     class="gmf-print-error-capabilities form-group pull-left text-danger">
     <p>{{'The print server is unavailable. Please, try later.' | translate}}</p>
-  </div>
-
-  <div
-    ng-show="$ctrl.smtpMessage"
-    class="gmf-print-smtp-message form-group pull-left">
-    <button
-      class="btn prime"
-      ng-click="$ctrl.closeSmtpMessage()" translate>Close</button>
-    <p>{{'The file will be sent to your email when ready.' | translate}}</p>
   </div>
 </div>

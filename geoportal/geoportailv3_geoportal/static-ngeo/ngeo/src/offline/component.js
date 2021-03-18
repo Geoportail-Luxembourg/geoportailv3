@@ -1,74 +1,51 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2021 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.offline.component
+ */
 import ngeoMapFeatureOverlayMgr from 'ngeo/map/FeatureOverlayMgr.js';
 import ngeoMessageModalComponent from 'ngeo/message/modalComponent.js';
 import {extentToRectangle} from 'ngeo/utils.js';
 import olCollection from 'ol/Collection.js';
-import Feature from 'ol/Feature.js';
-import Polygon from 'ol/geom/Polygon.js';
+import {unByKey} from 'ol/Observable.js';
+import olFeature from 'ol/Feature.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import {DEVICE_PIXEL_RATIO} from 'ol/has.js';
-import angular from 'angular';
-import MaskLayer from './Mask.js';
 
 /**
- * @type {!angular.IModule}
+ * @type {!angular.Module}
  */
-const module = angular.module('ngeoOffline', [ngeoMapFeatureOverlayMgr.name, ngeoMessageModalComponent.name]);
+const exports = angular.module('ngeoOffline', [
+  ngeoMapFeatureOverlayMgr.module.name,
+  ngeoMessageModalComponent.name
+]);
 
-module.value(
-  'ngeoOfflineTemplateUrl',
+exports.value('ngeoOfflineTemplateUrl',
   /**
-   * @param {JQuery} element Element.
-   * @param {angular.IAttributes} attrs Attributes.
+   * @param {angular.JQLite} element Element.
+   * @param {angular.Attributes} attrs Attributes.
    * @return {string} Template URL.
    */
   (element, attrs) => {
     const templateUrl = attrs['ngeoOfflineTemplateurl'];
-    return templateUrl !== undefined ? templateUrl : 'ngeo/offline/component.html';
-  }
-);
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/offline/component.html';
+  });
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/offline/component.html', require('./component.html'));
-  }
-);
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/offline/component.html', require('./component.html'));
+});
 
 /**
- * @param {!JQuery} $element Element.
- * @param {!angular.IAttributes} $attrs Attributes.
- * @param {!function(!JQuery, !angular.IAttributes): string} ngeoOfflineTemplateUrl Template function.
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.JQLite, !angular.Attributes): string} ngeoOfflineTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
  */
 function ngeoOfflineTemplateUrl($element, $attrs, ngeoOfflineTemplateUrl) {
   return ngeoOfflineTemplateUrl($element, $attrs);
 }
+
 
 /**
  * Provides the "offline" component.
@@ -85,13 +62,13 @@ function ngeoOfflineTemplateUrl($element, $attrs, ngeoOfflineTemplateUrl) {
  *
  * See our live example: [../examples/offline.html](../examples/offline.html)
  *
- * @htmlAttribute {import("ol/Map.js").default} ngeo-offline-map The map.
+ * @htmlAttribute {ol.Map} ngeo-offline-map The map.
  * @htmlAttribute {number} ngeo-offline-extentsize The size, in map units, of a side of the extent.
  * @private
  * @ngdoc component
  * @ngname ngeoOffline
  */
-const component = {
+exports.component_ = {
   bindings: {
     'map': '<ngeoOfflineMap',
     'extentSize': '<?ngeoOfflineExtentsize',
@@ -100,76 +77,67 @@ const component = {
     'maxZoom': '<?ngeoOfflineMaxZoom',
   },
   controller: 'ngeoOfflineController',
-  templateUrl: ngeoOfflineTemplateUrl,
+  templateUrl: ngeoOfflineTemplateUrl
 };
 
-module.component('ngeoOffline', component);
 
-export const Controller = class {
+exports.component('ngeoOffline', exports.component_);
+
+
+/**
+ * @private
+ */
+exports.Controller = class {
+
   /**
    * @private
-   * @param {angular.ITimeoutService} $timeout Angular timeout service.
-   * @param {import("ngeo/map/FeatureOverlayMgr.js").FeatureOverlayMgr} ngeoFeatureOverlayMgr
-   * ngeo feature overlay manager service.
-   * @param {import("ngeo/offline/ServiceManager.js").default} ngeoOfflineServiceManager
-   * ngeo offline service Manager.
-   * @param {import("ngeo/offline/Configuration.js").default} ngeoOfflineConfiguration
-   * ngeo offline configuration service.
-   * @param {import("ngeo/offline/Mode.js").default} ngeoOfflineMode Offline mode manager.
-   * @param {import("ngeo/offline/NetworkStatus.js").default} ngeoNetworkStatus ngeo network status service.
+   * @param {angular.$timeout} $timeout Angular timeout service.
+   * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr ngeo feature overlay manager service.
+   * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager ngeo offline service Manager.
+   * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo offline configuration service.
+   * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
+   * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
    * @ngInject
    * @ngdoc controller
    * @ngname ngeoOfflineController
    */
-  constructor(
-    $timeout,
-    ngeoFeatureOverlayMgr,
-    ngeoOfflineServiceManager,
-    ngeoOfflineConfiguration,
-    ngeoOfflineMode,
-    ngeoNetworkStatus
-  ) {
+  constructor($timeout, ngeoFeatureOverlayMgr, ngeoOfflineServiceManager, ngeoOfflineConfiguration, ngeoOfflineMode, ngeoNetworkStatus) {
+
     /**
-     * @type {angular.ITimeoutService}
+     * @type {angular.$timeout}
      * @private
      */
     this.$timeout_ = $timeout;
 
     /**
-     * @private
-     */
-    this.maskLayer_ = undefined;
-
-    /**
-     * @type {import("ngeo/offline/ServiceManager.js").default}
+     * @type {ngeo.offline.ServiceManager}
      * @private
      */
     this.ngeoOfflineServiceManager_ = ngeoOfflineServiceManager;
 
     /**
      * @private
-     * @type {import("ngeo/offline/Configuration.js").default}
+     * @type {ngeo.offline.Configuration}
      */
     this.ngeoOfflineConfiguration_ = ngeoOfflineConfiguration;
 
     /**
-     * @type {import("ngeo/offline/Mode.js").default}
+     * @type {ngeo.offline.Mode}
      * @export
      */
     this.offlineMode = ngeoOfflineMode;
 
     /**
-     * @type {import("ngeo/offline/NetworkStatus.js").default}
+     * @type {ngeo.offline.NetworkStatus}
      * @export
      */
     this.networkStatus = ngeoNetworkStatus;
 
     /**
      * The map.
-     * @type {!import("ol/Map").default}
+     * @type {!ol.Map}
      * @export
      */
-    // @ts-ignore
     this.map;
 
     /**
@@ -177,16 +145,16 @@ export const Controller = class {
      * @type {number}
      * @export
      */
-    this.extentSize = 0;
+    this.extentSize;
 
     /**
-     * @type {import("ngeo/map/FeatureOverlay.js").FeatureOverlay}
+     * @type {ngeo.map.FeatureOverlay}
      * @private
      */
     this.featuresOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
     /**
-     * @type {!olCollection<Feature<import('ol/geom/Geometry.js').default>>}
+     * @type {!ol.Collection}
      * @private
      */
     this.overlayCollection_ = new olCollection();
@@ -194,7 +162,19 @@ export const Controller = class {
     this.featuresOverlay_.setFeatures(this.overlayCollection_);
 
     /**
-     * @type {?Polygon}
+     * @type {function(ol.render.Event)}
+     */
+    this.postcomposeListener_;
+
+    /**
+     * @type {ol.EventsKey|Array.<ol.EventsKey>}
+     * @private
+     */
+    this.postComposeListenerKey_ = null;
+
+
+    /**
+     * @type {ol.geom.Polygon}
      * @private
      */
     this.dataPolygon_ = null;
@@ -253,7 +233,7 @@ export const Controller = class {
      * @type {number}
      * @export
      */
-    this.maskMargin = 0;
+    this.maskMargin;
 
     /**
      * Minimum zoom where offline is enable.
@@ -287,16 +267,11 @@ export const Controller = class {
      * @type {number}
      * @export
      */
-    this.estimatedLoadDataSize = 0;
-
-    /**
-     * @type {boolean}
-     */
-    this.rotateMask = false;
+    this.estimatedLoadDataSize;
 
     /**
      * @private
-     * @param {import("ngeo/CustomEvent").default<any>} event the progress event.
+     * @param {ngeo.CustomEvent} event the progress event.
      */
     this.progressCallback_ = (event) => {
       const progress = event.detail['progress'];
@@ -310,11 +285,11 @@ export const Controller = class {
 
   $onInit() {
     this.offlineMode.registerComponent(this);
+    this.postcomposeListener_ = this.createMaskPostcompose_();
     this.ngeoOfflineConfiguration_.on('progress', this.progressCallback_);
     this.maskMargin = this.maskMargin || 100;
     this.minZoom = this.minZoom || 10;
     this.maxZoom = this.maxZoom || 15;
-    this.maskLayer_ = new MaskLayer({margin: this.maskMargin, extentInMeters: this.extentSize});
   }
 
   $onDestroy() {
@@ -349,12 +324,14 @@ export const Controller = class {
     this.menuDisplayed = false;
     this.selectingExtent = !this.selectingExtent;
 
-    this.map.removeLayer(this.maskLayer_);
-    this.removeZoomConstraints_();
-
-    if (this.selectingExtent && !this.map.getLayers().getArray().includes(this.maskLayer_)) {
+    if (this.postComposeListenerKey_) {
+      unByKey(this.postComposeListenerKey_);
+      this.postComposeListenerKey_ = null;
+      this.removeZoomConstraints_();
+    }
+    if (this.selectingExtent && !this.postComposeListenerKey_) {
       this.addZoomConstraints_();
-      this.map.addLayer(this.maskLayer_);
+      this.postComposeListenerKey_ = this.map.on('postcompose', this.postcomposeListener_);
     }
     this.map.render();
   }
@@ -369,6 +346,7 @@ export const Controller = class {
     this.downloading = true;
     this.ngeoOfflineServiceManager_.save(extent, this.map);
   }
+
 
   /**
    * @private
@@ -412,10 +390,7 @@ export const Controller = class {
   activateOfflineMode() {
     this.ngeoOfflineServiceManager_.restore(this.map).then((extent) => {
       this.dataPolygon_ = this.createPolygonFromExtent_(extent);
-      const size = this.map.getSize();
-      if (size === undefined) {
-        throw new Error('Missing size');
-      }
+      const size = /** @type {ol.Size} */ (this.map.getSize());
       this.map.getView().fit(extent, {size});
       this.menuDisplayed = false;
       this.displayExtent_();
@@ -476,8 +451,8 @@ export const Controller = class {
    * @private
    */
   displayExtent_() {
-    if (!this.isExtentVisible() && this.dataPolygon_) {
-      const feature = new Feature(this.dataPolygon_);
+    if (!this.isExtentVisible()) {
+      const feature = new olFeature(this.dataPolygon_);
       this.overlayCollection_.push(feature);
     }
   }
@@ -489,7 +464,7 @@ export const Controller = class {
    */
   addZoomConstraints_() {
     const view = this.map.getView();
-    const zoom = view.getZoom() || 0;
+    const zoom = view.getZoom();
 
     this.originalMinZoom = view.getMinZoom();
     this.originalMaxZoom = view.getMaxZoom();
@@ -508,42 +483,105 @@ export const Controller = class {
    */
   removeZoomConstraints_() {
     const view = this.map.getView();
-    if (this.originalMaxZoom !== undefined && this.originalMinZoom !== undefined) {
-      view.setMaxZoom(this.originalMaxZoom);
-      view.setMinZoom(this.originalMinZoom);
-    }
+    view.setMaxZoom(this.originalMaxZoom);
+    view.setMinZoom(this.originalMinZoom);
+  }
+
+  /**
+   * @return {function(ol.render.Event)} Function to use as a map postcompose listener.
+   * @private
+   */
+  createMaskPostcompose_() {
+    return (evt) => {
+      const context = evt.context;
+      const frameState = evt.frameState;
+      const resolution = frameState.viewState.resolution;
+
+      const viewportWidth = frameState.size[0] * frameState.pixelRatio;
+      const viewportHeight = frameState.size[1] * frameState.pixelRatio;
+
+      const center = [viewportWidth / 2, viewportHeight / 2];
+
+      const extentLength = this.extentSize ?
+        this.extentSize / resolution * DEVICE_PIXEL_RATIO :
+        Math.min(viewportWidth, viewportHeight) - this.maskMargin * 2;
+
+      const extentHalfLength = Math.ceil(extentLength / 2);
+
+      // Draw a mask on the whole map.
+      context.beginPath();
+      context.moveTo(0, 0);
+      context.lineTo(viewportWidth, 0);
+      context.lineTo(viewportWidth, viewportHeight);
+      context.lineTo(0, viewportHeight);
+      context.lineTo(0, 0);
+      context.closePath();
+
+      // Draw the get data zone
+      const extent = this.createExtent_(center, extentHalfLength);
+
+      context.moveTo(extent[0], extent[1]);
+      context.lineTo(extent[0], extent[3]);
+      context.lineTo(extent[2], extent[3]);
+      context.lineTo(extent[2], extent[1]);
+      context.lineTo(extent[0], extent[1]);
+      context.closePath();
+
+      // Fill the mask
+      context.fillStyle = 'rgba(0, 5, 25, 0.5)';
+      context.fill();
+    };
   }
 
   /**
    * A polygon on the whole extent of the projection, with a hole for the offline extent.
-   * @param {import("ol/extent.js").Extent} extent An extent
-   * @return {Polygon} Polygon to save, based on the projection extent, the center of the map and
+   * @param {ol.Extent} extent An extent
+   * @return {ol.geom.Polygon} Polygon to save, based on the projection extent, the center of the map and
    *     the extentSize property.
    * @private
    */
   createPolygonFromExtent_(extent) {
     const projExtent = this.map.getView().getProjection().getExtent();
-    return new Polygon([extentToRectangle(projExtent), extentToRectangle(extent)], olGeomGeometryLayout.XY);
+    return new olGeomPolygon([
+      extentToRectangle(projExtent),
+      extentToRectangle(extent),
+    ], olGeomGeometryLayout.XY);
   }
 
   /**
-   * @return {import("ol/extent.js").Extent} the download extent.
+   * @param {ol.Coordinate} center, a xy point.
+   * @param {number} halfLength a half length of a square's side.
+   * @return {Array.<number>} an extent.
+   * @private
+   */
+  createExtent_(center, halfLength) {
+    const minx = center[0] - halfLength;
+    const miny = center[1] - halfLength;
+    const maxx = center[0] + halfLength;
+    const maxy = center[1] + halfLength;
+    return [minx, miny, maxx, maxy];
+  }
+
+  /**
+   * @return {Array.<number>} the download extent.
    * @private
    */
   getDowloadExtent_() {
-    const center = /** @type {import("ol/coordinate.js").Coordinate}*/ (this.map.getView().getCenter());
+    const center = /** @type {ol.Coordinate}*/(this.map.getView().getCenter());
     const halfLength = Math.ceil(this.extentSize || this.getExtentSize_()) / 2;
-    return this.maskLayer_.createExtent(center, halfLength);
+    return this.createExtent_(center, halfLength);
   }
 
   getExtentSize_() {
-    const mapSize = this.map.getSize() || [150, 150];
+    const mapSize = this.map.getSize();
     const maskSizePixel = DEVICE_PIXEL_RATIO * Math.min(mapSize[0], mapSize[1]) - this.maskMargin * 2;
-    const maskSizeMeter = (maskSizePixel * (this.map.getView().getResolution() || 1)) / DEVICE_PIXEL_RATIO;
+    const maskSizeMeter = maskSizePixel * this.map.getView().getResolution() / DEVICE_PIXEL_RATIO;
     return maskSizeMeter;
   }
 };
 
-module.controller('ngeoOfflineController', Controller);
 
-export default module;
+exports.controller('ngeoOfflineController', exports.Controller);
+
+
+export default exports;

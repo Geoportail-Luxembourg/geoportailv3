@@ -1,274 +1,254 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/**
+ * @module gmf.import.importdatasourceComponent
+ */
 
-/* global Bloodhound */
-
-import angular from 'angular';
-
+/** @suppress {extraRequire} */
 import gmfDatasourceExternalDataSourcesManager from 'gmf/datasource/ExternalDataSourcesManager.js';
 
+/** @suppress {extraRequire} */
 import gmfImportWmsCapabilityLayertreeComponent from 'gmf/import/wmsCapabilityLayertreeComponent.js';
 
+/** @suppress {extraRequire} */
 import gmfImportWmtsCapabilityLayertreeComponent from 'gmf/import/wmtsCapabilityLayertreeComponent.js';
 
+import googAsserts from 'goog/asserts.js';
 import ngeoQueryQuerent from 'ngeo/query/Querent.js';
-import {guessServiceTypeByUrl, Type} from 'ngeo/datasource/OGC.js';
+import ngeoDatasourceOGC from 'ngeo/datasource/OGC.js';
 
-/**
- * The definition of an external OGC server
- * @typedef {Object} ExternalOGCServer
- * @property {string} name
- * @property {string} type
- * @property {string} url
- */
-
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('gmfImportdatasource', [
-  gmfDatasourceExternalDataSourcesManager.name,
+const exports = angular.module('gmfImportdatasource', [
+  gmfDatasourceExternalDataSourcesManager.module.name,
   gmfImportWmsCapabilityLayertreeComponent.name,
   gmfImportWmtsCapabilityLayertreeComponent.name,
-  ngeoQueryQuerent.name,
+  ngeoQueryQuerent.module.name,
 ]);
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/import/importdatasourceComponent', require('./importdatasourceComponent.html'));
-  }
-);
 
-module.value(
-  'gmfImportdatasourceTemplateUrl',
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/import/importdatasourceComponent', require('./importdatasourceComponent.html'));
+});
+
+
+exports.value('gmfImportdatasourceTemplateUrl',
   /**
-   * @param {angular.IAttributes} $attrs Attributes.
+   * @param {!angular.Attributes} $attrs Attributes.
    * @return {string} The template url.
    */
   ($attrs) => {
-    const templateUrl = $attrs.gmfImportdatasourceTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/import/importdatasourceComponent';
-  }
-);
+    const templateUrl = $attrs['gmfImportdatasourceTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/import/importdatasourceComponent';
+  });
+
 
 /**
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(angular.IAttributes): string} gmfImportdatasourceTemplateUrl Template function.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.Attributes): string} gmfImportdatasourceTemplateUrl Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfImportdatasourceTemplateUrl($attrs, gmfImportdatasourceTemplateUrl) {
   return gmfImportdatasourceTemplateUrl($attrs);
 }
 
-/**
- * @enum {string}
- * @hidden
- */
-const Mode = {
-  LOCAL: 'Local',
-  ONLINE: 'Online',
-};
 
 /**
  * @private
- * @hidden
  */
-class Controller {
+exports.Controller_ = class {
+
   /**
-   * @param {JQuery} $element Element.
-   * @param {angular.IFilterService} $filter Angular filter.
-   * @param {angular.auto.IInjectorService} $injector Main injector.
-   * @param {angular.IScope} $scope Angular scope.
-   * @param {angular.ITimeoutService} $timeout Angular timeout service.
-   * @param {import("gmf/datasource/ExternalDataSourcesManager.js").ExternalDatSourcesManager}
+   * @param {!jQuery} $element Element.
+   * @param {!angular.$filter} $filter Angular filter.
+   * @param {!angular.$injector} $injector Main injector.
+   * @param {!angular.Scope} $scope Angular scope.
+   * @param {!angular.$timeout} $timeout Angular timeout service.
+   * @param {!gmf.datasource.ExternalDataSourcesManager}
    *     gmfExternalDataSourcesManager GMF service responsible of managing
    *     external data sources.
-   * @param {import("ngeo/query/Querent.js").Querent} ngeoQuerent Ngeo querent service.
+   * @param {!ngeo.query.Querent} ngeoQuerent Ngeo querent service.
    * @private
+   * @struct
    * @ngInject
    * @ngdoc controller
    * @ngname GmfImportdatasourceController
    */
-  constructor($element, $filter, $injector, $scope, $timeout, gmfExternalDataSourcesManager, ngeoQuerent) {
+  constructor($element, $filter, $injector, $scope, $timeout,
+    gmfExternalDataSourcesManager, ngeoQuerent) {
+
     // Binding properties
 
     /**
-     * @type {?import("ol/Map.js").default}
+     * @type {!ol.Map}
+     * @export
      */
-    this.map = null;
+    this.map;
+
 
     // Injected properties
 
     /**
-     * @type {JQuery}
+     * @type {!jQuery}
      * @private
      */
     this.element_ = $element;
 
     /**
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      * @private
      */
     this.scope_ = $scope;
 
     /**
-     * @type {angular.ITimeoutService}
+     * @type {!angular.$timeout}
      * @private
      */
     this.timeout_ = $timeout;
 
     /**
-     * @type {import("gmf/datasource/ExternalDataSourcesManager.js").ExternalDatSourcesManager}
+     * @type {!gmf.datasource.ExternalDataSourcesManager}
      * @private
      */
     this.gmfExternalDataSourcesManager_ = gmfExternalDataSourcesManager;
 
     /**
-     * @type {import("ngeo/query/Querent.js").Querent}
+     * @type {!ngeo.query.Querent}
      * @private
      */
     this.ngeoQuerent_ = ngeoQuerent;
 
+
     // Model properties
 
     /**
-     * @type {?File}
+     * @type {File|undefined}
+     * @export
      */
-    this.file = null;
+    this.file;
 
     /**
-     * @type {?string}
+     * @type {string|undefined}
+     * @export
      */
-    this.searchText = null;
+    this.url;
 
-    /**
-     * @type {?string}
-     */
-    this.url = null;
 
     // Inner properties
 
     /**
-     * @type {JQuery}
+     * @type {!jQuery}
      * @private
      */
     this.fileInput_ = $element.find('input[type=file]');
 
     /**
      * @type {boolean}
+     * @export
      */
     this.hasError = false;
 
     /**
-     * @type {?angular.IPromise<void>}
+     * @type {?angular.$q.Promise}
      * @private
      */
     this.hasErrorPromise_ = null;
 
     /**
      * @type {string}
+     * @export
      */
-    this.mode = Mode.ONLINE;
+    this.mode = exports.Controller_.Mode.ONLINE;
 
     /**
-     * @type {string[]}
+     * @type {!Array.<string>}
+     * @export
      */
-    this.modes = [Mode.LOCAL, Mode.ONLINE];
-
-    /**
-     * @type {angular.gettext.gettextCatalog}
-     */
-    const gettextCatalog = $injector.get('gettextCatalog');
-    gettextCatalog.getString('Local');
-    gettextCatalog.getString('Online');
+    this.modes = [
+      exports.Controller_.Mode.LOCAL,
+      exports.Controller_.Mode.ONLINE
+    ];
 
     /**
      * @type {boolean}
+     * @export
      */
     this.pending = false;
 
     /**
-     * @type {import('ngeo/misc/filters.js').unitPrefix}
+     * @type {!ngeox.unitPrefix}
      * @private
      */
-    this.unitPrefixFormat_ = /** @type {import('ngeo/misc/filters.js').unitPrefix} */ ($filter(
-      'ngeoUnitPrefix'
-    ));
+    this.unitPrefixFormat_ = /** @type {ngeox.unitPrefix} */ (
+      $filter('ngeoUnitPrefix'));
 
     /**
      * Current WMS Capabilities that were connected.
      * @type {?Object}
+     * @export
      */
     this.wmsCapabilities = null;
 
     /**
      * Current WTMS Capabilities that were connected.
      * @type {?Object}
+     * @export
      */
     this.wmtsCapabilities = null;
 
     /**
-     * @type {?Bloodhound<ExternalOGCServer>}
+     * @type {Bloodhound|undefined}
      * @private
      */
-    this.serversEngine_ = null;
+    this.serversEngine_;
 
-    /**
-     * @type {boolean}
-     */
-    this.isLoading = false;
-
-    /** @type {?ExternalOGCServer[]} */
-    const servers = $injector.has('gmfExternalOGCServers') ? $injector.get('gmfExternalOGCServers') : null;
+    const servers = $injector.has('gmfExternalOGCServers') ?
+      /** @type {Array.<!gmfx.ExternalOGCServer>|undefined} */ (
+        $injector.get('gmfExternalOGCServers')
+      ) : undefined;
 
     if (servers) {
+      const serverUrls = servers.map(server => server['url']);
       this.serversEngine_ = new Bloodhound({
+        /**
+         * Allows search queries to match from string from anywhere within
+         * the url, and not only from the beginning of the string (which is
+         * the default, non-configurable behaviour of bloodhound).
+         *
+         * Borrowed from:
+         * https://stackoverflow.com/questions/22059933/twitter-typeahead-js-how-to-return-all-matched-elements-within-a-string
+         *
+         * @param {BloodhoundDatum} datum Datum.
+         * @return {Array.<string>} List of datum tokenizers.
+         */
         datumTokenizer: (datum) => {
-          return Bloodhound.tokenizers.whitespace('name');
+          googAsserts.assertString(datum);
+          const originalDatumTokenizers = Bloodhound.tokenizers.whitespace(
+            datum);
+          googAsserts.assert(originalDatumTokenizers);
+          const datumTokenizers = [];
+          for (const originalDatumTokenizer of originalDatumTokenizers) {
+            let i = 0;
+            while ((i + 1) < originalDatumTokenizer.length) {
+              datumTokenizers.push(
+                originalDatumTokenizer.substr(
+                  i,
+                  originalDatumTokenizer.length
+                )
+              );
+              i++;
+            }
+          }
+          return datumTokenizers;
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: servers,
+        identify: false,
+        local: serverUrls
       });
     }
 
     // Register input[type=file] onchange event, use HTML5 File api
     this.fileInput_.on('change', () => {
-      const fileInput = /** @type {HTMLInputElement} */ (this.fileInput_[0]);
-      const files = fileInput.files;
-      this.file = files && files[0] ? files[0] : null;
-
-      if (this.file) {
-        this.hasError = false;
-        // update the label
-        $(fileInput).next('.custom-file-label').html(this.fileNameAndSize);
-      }
-
+      this.file = this.fileInput_[0].files && this.fileInput_[0].files[0] ?
+        this.fileInput_[0].files[0] : undefined;
       this.scope_.$apply();
     });
   }
@@ -279,87 +259,68 @@ class Controller {
   $onInit() {
     this.gmfExternalDataSourcesManager_.map = this.map;
 
+
     if (this.serversEngine_) {
-      /**
-       * @param {string} query Query string.
-       * @param {function(Array<ExternalOGCServer>):void} sync
-       */
-      const serversEngineWithDefaults = (query, sync) => {
-        if (!this.serversEngine_) {
-          throw new Error('Missing serversEngine');
-        }
-        sync(this.serversEngine_.all());
-      };
       // Timeout to let Angular render the placeholder of the input properly,
       // otherwise typeahead would copy the string with {{}} in it...
       this.timeout_(() => {
+        googAsserts.assert(this.serversEngine_);
         const $urlInput = this.element_.find('input[name=url]');
         const $connectBtn = this.element_.find('button.gmf-importdatasource-connect-btn');
-        $urlInput
-          .typeahead(
-            {
-              hint: true,
-              highlight: true,
-              minLength: 0,
-            },
-            {
-              name: 'url',
-              source: serversEngineWithDefaults,
-              displayKey: 'url',
-              templates: {
-                suggestion: function (item) {
-                  return `<div>${item.name}</div>`;
-                },
-              },
-            }
-          )
-          .on('typeahead:select', (ev, suggestion) => {
-            this.timeout_(() => {
-              this.url = suggestion.url;
-              this.scope_.$apply();
-              $connectBtn.focus();
-            });
+        $urlInput.typeahead({
+          hint: true,
+          highlight: true,
+          minLength: 1
+        }, {
+          name: 'url',
+          source: this.serversEngine_.ttAdapter()
+        }).bind('typeahead:select', (ev, suggestion) => {
+          this.timeout_(() => {
+            this.url = suggestion;
+            this.scope_.$apply();
+            $connectBtn.focus();
           });
+        });
       });
     }
   }
 
   /**
+   * Triggers a 'click' on the "Browse" button.
+   * @export
+   */
+  browse() {
+    this.hasError = false;
+    this.element_.find('input[type=file][name=file]').click();
+  }
+
+  /**
    * Connect to given online resource URL.
+   * @export
    */
   connect() {
-    if (!this.url) {
-      throw new Error('Missing url');
-    }
-    const url = this.url;
-    const serviceType = guessServiceTypeByUrl(url);
+    const url = googAsserts.assertString(this.url);
+    const serviceType = ngeoDatasourceOGC.guessServiceTypeByUrl(url);
 
-    this.isLoading = true;
     this.startWorking_();
-    if (serviceType === Type.WMS) {
+    if (serviceType === ngeoDatasourceOGC.Type.WMS) {
       this.ngeoQuerent_.wmsGetCapabilities(url).then(
         (wmsCapabilities) => {
           this.wmsCapabilities = wmsCapabilities;
-          this.isLoading = false;
           this.stopWorking_();
-          this.search();
         },
         () => {
-          this.isLoading = false;
           // Something went wrong...
           this.stopWorking_(true);
         }
       );
-    } else if (serviceType === Type.WMTS) {
+    } else if (serviceType === ngeoDatasourceOGC.Type.WMTS) {
       this.ngeoQuerent_.wmtsGetCapabilities(url).then(
         (wmtsCapabilities) => {
           this.wmtsCapabilities = wmtsCapabilities;
-          this.isLoading = false;
           this.stopWorking_();
-          this.search();
         },
         () => {
-          this.isLoading = false;
           // Something went wrong...
           this.stopWorking_(true);
         }
@@ -367,7 +328,6 @@ class Controller {
     } else {
       // Could not determine the type of url
       this.timeout_(() => {
-        this.isLoading = false;
         this.stopWorking_(true);
       });
     }
@@ -375,12 +335,10 @@ class Controller {
 
   /**
    * Create data source from file.
+   * @export
    */
   load() {
-    if (!this.file) {
-      throw new Error('Missing file');
-    }
-    const file = this.file;
+    const file = googAsserts.assert(this.file);
     this.gmfExternalDataSourcesManager_.createAndAddDataSourceFromFile(file, (success) => {
       if (!success) {
         this.hasError = true;
@@ -390,11 +348,9 @@ class Controller {
 
   /**
    * @return {string} The name of the file and human-readable size.
+   * @export
    */
   get fileNameAndSize() {
-    if (!this.file) {
-      return '';
-    }
     let nameAndSize = '';
 
     const file = this.file;
@@ -406,67 +362,6 @@ class Controller {
     return nameAndSize;
   }
 
-  /**
-   * Apply search on current tree.
-   */
-  search() {
-    if (this.wmsCapabilities !== null) {
-      this.filterLayer(this.wmsCapabilities.Capability.Layer);
-    }
-    if (this.wmtsCapabilities !== null) {
-      for (const layer of this.wmtsCapabilities.Contents.Layer) {
-        this.filterLayer(layer);
-      }
-    }
-  }
-
-  /**
-   * Recursively apply filter on layer, setting some custom properties:
-   * - _visible: true if searchText is empty or searchText is found in
-   * layer.Title or in any of its ancestors or in any of its descendants.
-   * - _expanded: true if searchText is found in any of its descendants.
-   * - _searchPrefix: substring before searchText in layer.Title.
-   * - _searchMatch: substring matching searchText in layer.Title.
-   * - _searchSuffix: substring after searchText in layer.Title.
-   * @param {Object} layer WMS Capability Layer object.
-   * @param {boolean} visible Force layer to be visible.
-   */
-  filterLayer(layer, visible = false) {
-    layer._visible = visible;
-    layer._searchMatch = null;
-    layer._expanded = false;
-
-    if (!this.searchText) {
-      layer._visible = true;
-    } else {
-      // Search for searchText in layer.Title
-      /** @type {number} */
-      const index = layer.Title.toLowerCase().indexOf(this.searchText.toLowerCase());
-      if (index >= 0) {
-        layer._searchPrefix = layer.Title.substring(0, index);
-        layer._searchMatch = layer.Title.substring(index, index + this.searchText.length);
-        layer._searchSuffix = layer.Title.substring(index + this.searchText.length);
-        layer._visible = true;
-      }
-    }
-
-    // Process children
-    let childVisible = false;
-    if (layer.Layer !== undefined) {
-      for (const child of layer.Layer) {
-        this.filterLayer(child, layer._visible);
-        if (child._visible) {
-          childVisible = true;
-        }
-        if (child._expanded || child._searchMatch) {
-          layer._expanded = true;
-        }
-      }
-    }
-    if (childVisible) {
-      layer._visible = true;
-    }
-  }
 
   // === Private methods ===
 
@@ -500,14 +395,25 @@ class Controller {
       }, 3000);
     }
   }
-}
+};
 
-module.component('gmfImportdatasource', {
+
+/**
+ * @enum {string}
+ */
+exports.Controller_.Mode = {
+  LOCAL: 'Local',
+  ONLINE: 'Online'
+};
+
+
+exports.component('gmfImportdatasource', {
   bindings: {
-    'map': '<',
+    'map': '<'
   },
-  controller: Controller,
-  templateUrl: gmfImportdatasourceTemplateUrl,
+  controller: exports.Controller_,
+  templateUrl: gmfImportdatasourceTemplateUrl
 });
 
-export default module;
+
+export default exports;

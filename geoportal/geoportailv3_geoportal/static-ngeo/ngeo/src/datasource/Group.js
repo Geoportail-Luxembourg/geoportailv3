@@ -1,69 +1,30 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module ngeo.datasource.Group
+ */
+import googAsserts from 'goog/asserts.js';
 import olCollection from 'ol/Collection.js';
 
-/**
- * The options required to create a `Group`.
- *
- * @typedef {Object} GroupOptions
- * @property {Array<import('ngeo/datasource/DataSource.js').default>} dataSources List of data source
- *    combined in the group.
- *    At least one must be defined upon the cration of the group.
- * @property {string} title A human-readable title for the group. Usually, the WMS Server title is
- * used for this property.
- */
+const exports = class {
 
-/**
- * @enum {string}
- * @private
- * @hidden
- */
-const VisibilityState = {
-  INDETERMINATE: 'indeterminate',
-  OFF: 'off',
-  ON: 'on',
-};
-
-/**
- * @private
- * @hidden
- */
-class Group {
   /**
    * A Group data source combines multiple `ngeo.datasource.DataSource` objects.
    * Its main purpose is to provide a calculated `visibilityState` property
    * that can be used to determine if all its data source are all visible, all
    * hidden or some are hidden and other visible.
    *
-   * @param {GroupOptions} options Options.
+   * @struct
+   * @param {ngeox.datasource.GroupOptions} options Options.
    */
   constructor(options) {
+
     // === DYNAMIC properties (i.e. that can change / be watched ===
 
     /**
-     * @type {import("ol/Collection.js").default<import("ngeo/datasource/DataSource.js").default>}
+     * @type {!ol.Collection.<!ngeo.datasource.DataSource>}
      * @protected
      */
     this.dataSourcesCollection_ = new olCollection(options.dataSources);
+
 
     // === STATIC properties (i.e. that never change) ===
 
@@ -74,6 +35,9 @@ class Group {
     this.title_ = options.title;
   }
 
+  /**
+   * @export
+   */
   destroy() {
     this.dataSourcesCollection_.clear();
   }
@@ -83,19 +47,22 @@ class Group {
   // ========================================
 
   /**
-   * @return {Array<import("ngeo/datasource/DataSource.js").default>} Data sources
+   * @return {!Array.<!ngeo.datasource.DataSource>} Data sources
+   * @export
    */
   get dataSources() {
     return this.dataSourcesCollection_.getArray();
   }
 
+
   /**
-   * @return {import("ol/Collection.js").default<import("ngeo/datasource/DataSource.js").default>}
-   *    Data sources
+   * @return {!ol.Collection.<!ngeo.datasource.DataSource>} Data sources
+   * @export
    */
   get dataSourcesCollection() {
     return this.dataSourcesCollection_;
   }
+
 
   // =======================================
   // === Static property getters/setters ===
@@ -103,10 +70,12 @@ class Group {
 
   /**
    * @return {string} Title
+   * @export
    */
   get title() {
     return this.title_;
   }
+
 
   // ===================================
   // === Calculated property getters ===
@@ -114,6 +83,7 @@ class Group {
 
   /**
    * @return {string} Visibility state
+   * @export
    */
   get visibilityState() {
     let state;
@@ -124,41 +94,46 @@ class Group {
       } else {
         const otherState = this.getDataSourceState(dataSource);
         if (otherState !== state) {
-          state = VisibilityState.INDETERMINATE;
+          state = exports.VisibilityState.INDETERMINATE;
         }
       }
-      if (state === VisibilityState.INDETERMINATE) {
+      if (state === exports.VisibilityState.INDETERMINATE) {
         break;
       }
     }
 
-    if (typeof state != 'string') {
-      throw new Error('missing state');
-    }
+    googAsserts.assertString(state);
+
     return state;
   }
+
 
   // =======================
   // === Utility Methods ===
   // =======================
 
   /**
-   * @param {import("ngeo/datasource/DataSource.js").default} dataSource Data source.
+   * @param {!ngeo.datasource.DataSource} dataSource Data source.
    * @return {string} Visible state of a data source
+   * @export
    */
   getDataSourceState(dataSource) {
-    return dataSource.visible ? VisibilityState.ON : VisibilityState.OFF;
+    return dataSource.visible ?
+      exports.VisibilityState.ON :
+      exports.VisibilityState.OFF;
   }
 
   /**
-   * @param {import("ngeo/datasource/DataSource.js").default} dataSource Data source to add.
+   * @param {!ngeo.datasource.DataSource} dataSource Data source to add.
+   * @export
    */
   addDataSource(dataSource) {
     this.dataSourcesCollection_.push(dataSource);
   }
 
   /**
-   * @param {import("ngeo/datasource/DataSource.js").default} dataSource Data source to remove.
+   * @param {!ngeo.datasource.DataSource} dataSource Data source to remove.
+   * @export
    */
   removeDataSource(dataSource) {
     this.dataSourcesCollection_.remove(dataSource);
@@ -172,15 +147,28 @@ class Group {
    * - state OFF --> visible true
    * - state IND. --> visible true
    *
+   * @export
    */
   toggleVisibilityState() {
-    const visibleToSet = this.visibilityState !== VisibilityState.ON;
+    const visibleToSet =
+        this.visibilityState !== exports.VisibilityState.ON;
     for (const dataSource of this.dataSources) {
       if (dataSource.visible !== visibleToSet) {
         dataSource.visible = visibleToSet;
       }
     }
   }
-}
+};
 
-export default Group;
+
+/**
+ * @enum {string}
+ */
+exports.VisibilityState = {
+  INDETERMINATE: 'indeterminate',
+  OFF: 'off',
+  ON: 'on'
+};
+
+
+export default exports;

@@ -1,58 +1,35 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2014-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
-import ngeoLayertreeController, {LayertreeController} from 'ngeo/layertree/Controller.js';
+/**
+ * @module ngeo.layertree.component
+ */
+import ngeoLayertreeController from 'ngeo/layertree/Controller.js';
 
 import 'bootstrap/js/collapse.js'; // needed to collapse a layertree
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('ngeoLayertree', [ngeoLayertreeController.name]);
 
-module.value(
-  'ngeoLayertreeTemplateUrl',
+/**
+ * @type {!angular.Module}
+ */
+const exports = angular.module('ngeoLayertree', [
+  ngeoLayertreeController.module.name
+]);
+
+
+exports.value('ngeoLayertreeTemplateUrl',
   /**
-   * @param {JQuery} element Element.
-   * @param {angular.IAttributes} attrs Attributes.
+   * @param {angular.JQLite} element Element.
+   * @param {angular.Attributes} attrs Attributes.
    * @return {string} Template URL.
    */
   (element, attrs) => {
     const templateUrl = attrs['ngeoLayertreeTemplateurl'];
-    return templateUrl !== undefined ? templateUrl : 'ngeo/layertree';
-  }
-);
+    return templateUrl !== undefined ? templateUrl :
+      'ngeo/layertree';
+  });
 
-module.run(
-  /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('ngeo/layertree', require('./component.html'));
-  }
-);
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('ngeo/layertree', require('./component.html'));
+});
+
 
 /**
  * Provides the "ngeoLayertree" directive, a directive for
@@ -116,9 +93,9 @@ module.run(
  *
  * @htmlAttribute {Object} ngeo-layertree One theme (JSON).
  * @htmlAttribute {string} ngeo-layertree-templateurl The template URL.
- * @htmlAttribute {import("ol/Map.js").default} ngeo-layertree-map The map.
+ * @htmlAttribute {ol.Map} ngeo-layertree-map The map.
  * @htmlAttribute {string} ngeo-layertree-nodelayer Expression that will be parsed
- *      to be a {@link Function} that return a {@link import("ol/layer/Layer.js").default}
+ *      to be a {@link Function} that return a {@link ol.layer.Layer}
  *      with the argument:
  *      {
  *          'node': {@link Object}|undefined,
@@ -129,27 +106,29 @@ module.run(
  * @htmlAttribute {string} ngeo-layertree-listeners Expression that will be parsed
  *      to be a {@link Function} with the argument:
  *      {
- *          'treeScope': !{@link angular.IScope},
- *          'treeCtrl': {@link import("ngeo/layertree/Controller.js").LayertreeController}
+ *          'treeScope': !{@link angular.Scope},
+ *          'treeCtrl': {@link ngeo.layertree.Controller}
  *      }
  * @htmlAttribute {string} ngeo-layertree-listenersexpr Expression that will be parsed
  *      to be a {@link ngeo-layertree-listeners}.
- * @param {string|function(JQuery=, angular.IAttributes=): string}
+ * @param {string|function(!angular.JQLite=, !angular.Attributes=)}
  *     ngeoLayertreeTemplateUrl Template URL for the directive.
- * @return {angular.IDirective} The Directive Definition Object.
+ * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoLayertree
  */
-function gmfLayertreeComponent(ngeoLayertreeTemplateUrl) {
+exports.directive_ = function(ngeoLayertreeTemplateUrl) {
   return {
     restrict: 'A',
     scope: true,
     templateUrl: ngeoLayertreeTemplateUrl,
-    controller: LayertreeController,
+    controller: ngeoLayertreeController
   };
-}
+};
 
-module.directive('ngeoLayertree', gmfLayertreeComponent);
 
-export default module;
+exports.directive('ngeoLayertree', exports.directive_);
+
+
+export default exports;

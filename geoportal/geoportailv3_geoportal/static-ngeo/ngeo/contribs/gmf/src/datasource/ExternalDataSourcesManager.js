@@ -1,88 +1,64 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2017-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+/**
+ * @module gmf.datasource.ExternalDataSourcesManager
+ */
 // TODO - MaxScaleDenominator
 // TODO - MinScaleDenominator
 
-import angular from 'angular';
-import {EXTERNALLAYERGROUP_NAME} from 'gmf/index.js';
+import gmfBase from 'gmf/index.js';
+import googAsserts from 'goog/asserts.js';
 import ngeoMapLayerHelper from 'ngeo/map/LayerHelper.js';
 import ngeoMiscFile from 'ngeo/misc/File.js';
 import ngeoDatasourceDataSources from 'ngeo/datasource/DataSources.js';
 import ngeoDatasourceFile from 'ngeo/datasource/File.js';
 import ngeoDatasourceFileGroup from 'ngeo/datasource/FileGroup.js';
-import ngeoDatasourceOGC, {Type, WMSInfoFormat} from 'ngeo/datasource/OGC.js';
+import ngeoDatasourceOGC from 'ngeo/datasource/OGC.js';
 import ngeoDatasourceOGCGroup from 'ngeo/datasource/OGCGroup.js';
 import ngeoDatasourceWMSGroup from 'ngeo/datasource/WMSGroup.js';
-import {getUid as olUtilGetUid} from 'ol/util.js';
+import * as olBase from 'ol/index.js';
 import {isEmpty} from 'ol/extent.js';
-import {listen} from 'ol/events.js';
+import * as olEvents from 'ol/events.js';
 import olCollection from 'ol/Collection.js';
 import olFormatGPX from 'ol/format/GPX.js';
 import olFormatKML from 'ol/format/KML.js';
-import {CollectionEvent} from 'ol/Collection.js';
 
-/**
- * @typedef {Object} ExternalDataSourcesManagerWMTSCacheItem
- * @property {import("ol/layer/Tile.js").default} layerObj
- * @property {Function} unregister
- */
+const exports = class {
 
-/**
- * @hidden
- */
-export class ExternalDatSourcesManager {
   /**
    * External data sources come remote online resources, such as WMS/WMTS
    * servers, and also files such as KML/GPX. This service is responsible of
    * creating, storing and managing them.
    *
-   * @param {angular.gettext.gettextCatalog} gettextCatalog service.
-   * @param {angular.auto.IInjectorService} $injector Main injector.
-   * @param {angular.IQService} $q The Angular $q service.
-   * @param {angular.IScope} $rootScope The rootScope provider.
-   * @param {import("ngeo/datasource/DataSources.js").DataSource} ngeoDataSources Ngeo data sources service.
-   * @param {import("ngeo/misc/File.js").FileService} ngeoFile Ngeo file.
-   * @param {import("ngeo/map/LayerHelper.js").LayerHelper} ngeoLayerHelper Ngeo layer helper service
+   * @param {!angularGettext.Catalog} gettextCatalog service.
+   * @param {!angular.$injector} $injector Main injector.
+   * @param {!angular.$q} $q The Angular $q service.
+   * @param {!angular.Scope} $rootScope The rootScope provider.
+   * @param {!ngeo.datasource.DataSources} ngeoDataSources Ngeo data sources service.
+   * @param {!ngeo.misc.File} ngeoFile Ngeo file.
+   * @param {!ngeo.map.LayerHelper} ngeoLayerHelper Ngeo layer helper service
+   * @struct
    * @ngInject
    * @ngdoc service
    * @ngname gmfExternalDataSourcesManager
    */
-  constructor(gettextCatalog, $injector, $q, $rootScope, ngeoDataSources, ngeoFile, ngeoLayerHelper) {
+  constructor(gettextCatalog, $injector, $q, $rootScope, ngeoDataSources,
+    ngeoFile, ngeoLayerHelper) {
+
     // === Injected properties ===
 
     /**
-     * @type {angular.auto.IInjectorService}
+     * @type {!angular.$injector}
      * @private
      */
     this.injector_ = $injector;
 
     /**
-     * @type {angular.IQService}
+     * @type {!angular.$q}
      * @private
      */
     this.q_ = $q;
 
     /**
-     * @type {angular.IScope}
+     * @type {!angular.Scope}
      * @private
      */
     this.rootScope_ = $rootScope;
@@ -90,22 +66,23 @@ export class ExternalDatSourcesManager {
     /**
      * The collection of DataSources from ngeo. When this service creates
      * a data source, its gets added to that collection.
-     * @type {import('ngeo/datasource/DataSource.js').DataSources}
+     * @type {!ngeox.datasource.DataSources}
      * @private
      */
     this.dataSources_ = ngeoDataSources.collection;
 
     /**
-     * @type {import("ngeo/misc/File.js").FileService}
+     * @type {!ngeo.misc.File}
      * @private
      */
     this.ngeoFile_ = ngeoFile;
 
     /**
-     * @type {import("ngeo/map/LayerHelper.js").LayerHelper}
+     * @type {!ngeo.map.LayerHelper}
      * @private
      */
     this.ngeoLayerHelper_ = ngeoLayerHelper;
+
 
     // === Inner properties ===
 
@@ -117,45 +94,45 @@ export class ExternalDatSourcesManager {
      * If a data source with an id already exists in this cache, it is used
      * instead of being re-created.
      *
-     * @type {Object<number, import("ngeo/datasource/OGC.js").default|import("ngeo/datasource/File.js").default>}
+     * @type {Object.<number, !ngeo.datasource.OGC|!ngeo.datasource.File>}
      * @private
      */
     this.extDataSources_ = {};
 
     /**
      * File external data sources, with the key being the file name.
-     * @type {Object<string, import("ngeo/datasource/File.js").default>}
+     * @type {Object.<string, !ngeo.datasource.File>}
      * @private
      */
     this.files_ = {};
 
     /**
-     * @type {?import("ol/Map.js").default}
+     * @type {?ol.Map}
      * @private
      */
     this.map_ = null;
 
     /**
      * Group that contains file data sources.
-     * @type {import("ngeo/datasource/FileGroup.js").default}
+     * @type {!ngeo.datasource.FileGroup}
      * @private
      */
     this.fileGroup_ = new ngeoDatasourceFileGroup({
       dataSources: [],
       injector: this.injector_,
-      title: gettextCatalog.getString('Local files'),
+      title: gettextCatalog.getString('Local files')
     });
 
     /**
      * Collection of WMS groups.
-     * @type {import("ol/Collection.js").default<import("ngeo/datasource/WMSGroup.js").default>}
+     * @type {!ol.Collection.<!ngeo.datasource.WMSGroup>}
      * @private
      */
     this.wmsGroupsCollection_ = new olCollection();
 
     /**
      * Collection of groups for WMTS data sources.
-     * @type {import("ol/Collection.js").default<import("ngeo/datasource/OGCGroup.js").default>}
+     * @type {!ol.Collection.<!ngeo.datasource.OGCGroup>}
      * @private
      */
     this.wmtsGroupsCollection_ = new olCollection();
@@ -163,27 +140,30 @@ export class ExternalDatSourcesManager {
     /**
      * Cache that stores the information of a WMTS data source. The key is the
      * data source id.
-     * @type {Object<number, ExternalDataSourcesManagerWMTSCacheItem>}
+     * @type {!Object.<number, gmfx.datasource.ExternalDataSourcesManagerWMTSCacheItem>}
      * @private
      */
     this.wmtsCache_ = {};
 
-    listen(this.dataSources_, 'remove', this.handleDataSourcesRemove_, this);
+    olEvents.listen(this.dataSources_, 'remove', this.handleDataSourcesRemove_, this);
   }
+
 
   // === File Group ===
 
   /**
-   * @return {import("ngeo/datasource/FileGroup.js").default} File group.
+   * @return {!ngeo.datasource.FileGroup} File group.
+   * @export
    */
   get fileGroup() {
     return this.fileGroup_;
   }
 
+
   // === WMS Groups ===
 
   /**
-   * @param {import("ngeo/datasource/WMSGroup.js").default} wmsGroup WMS group.
+   * @param {!ngeo.datasource.WMSGroup} wmsGroup WMS group.
    * @private
    */
   addWMSGroup_(wmsGroup) {
@@ -191,7 +171,7 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {import("ngeo/datasource/WMSGroup.js").default} wmsGroup WMS group.
+   * @param {!ngeo.datasource.WMSGroup} wmsGroup WMS group.
    * @private
    */
   removeWMSGroup_(wmsGroup) {
@@ -200,7 +180,7 @@ export class ExternalDatSourcesManager {
 
   /**
    * @param {string} url Online resource url
-   * @return {?import("ngeo/datasource/WMSGroup.js").default} WMS group.
+   * @return {?ngeo.datasource.WMSGroup} WMS group.
    */
   getWMSGroup(url) {
     let found = null;
@@ -214,24 +194,27 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @return {Array<import("ngeo/datasource/WMSGroup.js").default>} List of WMS groups.
+   * @return {!Array.<!ngeo.datasource.WMSGroup>} List of WMS groups.
+   * @export
    */
   get wmsGroups() {
     return this.wmsGroupsCollection_.getArray();
   }
 
   /**
-   * @return {import("ol/Collection.js").default<import("ngeo/datasource/WMSGroup.js").default>}
-   *    Collection of WMS groups.
+   * @return {!ol.Collection.<!ngeo.datasource.WMSGroup>} Collection of WMS
+   *     groups.
+   * @export
    */
   get wmsGroupsCollection() {
     return this.wmsGroupsCollection_;
   }
 
+
   // === WMTS Groups ===
 
   /**
-   * @param {import("ngeo/datasource/OGCGroup.js").default} wmtsGroup Group for WMTS data sources.
+   * @param {!ngeo.datasource.OGCGroup} wmtsGroup Group for WMTS data sources.
    * @private
    */
   addWMTSGroup_(wmtsGroup) {
@@ -239,7 +222,7 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {import("ngeo/datasource/OGCGroup.js").default} wmtsGroup Group for WMTS data sources.
+   * @param {!ngeo.datasource.OGCGroup} wmtsGroup Group for WMTS data sources.
    * @private
    */
   removeWMTSGroup_(wmtsGroup) {
@@ -248,7 +231,7 @@ export class ExternalDatSourcesManager {
 
   /**
    * @param {string} url Online resource url
-   * @return {?import("ngeo/datasource/OGCGroup.js").default} WMTS group.
+   * @return {?ngeo.datasource.OGCGroup} WMTS group.
    */
   getWMTSGroup(url) {
     let found = null;
@@ -262,24 +245,28 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @return {Array<import("ngeo/datasource/OGCGroup.js").default>} List of groups for WMTS data sources.
+   * @return {!Array.<!ngeo.datasource.OGCGroup>} List of groups for WMTS data
+   *     sources.
+   * @export
    */
   get wmtsGroups() {
     return this.wmtsGroupsCollection_.getArray();
   }
 
   /**
-   * @return {import("ol/Collection.js").default<import("ngeo/datasource/OGCGroup.js").default>}
-   *    Collection of groups for WMTS data sources.
+   * @return {!ol.Collection.<!ngeo.datasource.OGCGroup>} Collection of groups
+   *     for WMTS data sources.
+   * @export
    */
   get wmtsGroupsCollection() {
     return this.wmtsGroupsCollection_;
   }
 
+
   // === Other methods ===
 
   /**
-   * @param {import("ngeo/datasource/DataSource.js").default} dataSource Data source
+   * @param {!ngeo.datasource.DataSource} dataSource Data source
    * @return {boolean} Whether the given data source is external or not. To
    *     be considered external, it needs to be in the external data source
    *     hash (cache).
@@ -289,25 +276,27 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @return {import("ol/layer/Group.js").default} Layer group where to push layers created by
+   * @return {ol.layer.Group} Layer group where to push layers created by
    *     this service.
    */
   get layerGroup() {
-    if (!this.map_) {
-      throw new Error('Missing map');
-    }
-    return this.ngeoLayerHelper_.getGroupFromMap(this.map_, EXTERNALLAYERGROUP_NAME);
+    const map = this.map_;
+    googAsserts.assert(map);
+    return this.ngeoLayerHelper_.getGroupFromMap(
+      map,
+      gmfBase.EXTERNALLAYERGROUP_NAME
+    );
   }
 
   /**
-   * @param {?import("ol/Map.js").default} map Map
+   * @param {?ol.Map} map Map
    */
   set map(map) {
     this.map_ = map;
   }
 
   /**
-   * @param {import("ol/layer/Layer.js").default<import('ol/source/Source.js').default>} layer Layer.
+   * @param {ol.layer.Layer} layer Layer.
    * @private
    */
   addLayer_(layer) {
@@ -315,7 +304,7 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {import("ol/layer/Layer.js").default<import('ol/source/Source.js').default>} layer Layer.
+   * @param {ol.layer.Layer} layer Layer.
    * @private
    */
   removeLayer_(layer) {
@@ -323,15 +312,17 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {Object} layer WMS Capability Layer object.
-   * @param {Object} capabilities  WMS Capabilities definition
-   * @param {?string} url The WMS service url.
+   * @param {!Object} layer WMS Capability Layer object.
+   * @param {!Object} capabilities  WMS Capabilities definition
+   * @param {string} url The WMS service url.
+   * @export
    */
   createAndAddDataSourceFromWMSCapability(layer, capabilities, url) {
-    const id = getId(layer);
-    const service = capabilities.Service;
 
-    url = service.OnlineResource || url;
+    const id = exports.getId(layer);
+    const service = capabilities['Service'];
+
+    url = service['OnlineResource'] || url;
 
     let dataSource;
 
@@ -339,49 +330,47 @@ export class ExternalDatSourcesManager {
     if (this.extDataSources_[id]) {
       dataSource = this.extDataSources_[id];
     } else {
-      const req = capabilities.Capability.Request;
+      const req = capabilities['Capability']['Request'];
 
       // ogcImageType
-      const formats = req.GetMap.Format;
+      const formats = req['GetMap']['Format'];
       const imagePngType = 'image/png';
-      const ogcImageType = formats.includes(imagePngType) ? imagePngType : formats[0];
+      const ogcImageType = formats.includes(imagePngType) ?
+        imagePngType : formats[0];
 
       // wmsInfoFormat
-      const infoFormats = req.GetFeatureInfo.Format;
-      const wmsInfoFormat = infoFormats.includes(WMSInfoFormat.GML) ? WMSInfoFormat.GML : undefined;
+      const infoFormats = req['GetFeatureInfo']['Format'];
+      const wmsInfoFormat = infoFormats.includes(
+        ngeoDatasourceOGC.WMSInfoFormat.GML
+      ) ? ngeoDatasourceOGC.WMSInfoFormat.GML : undefined;
 
       // queryable
-      const queryable = layer.queryable === true && wmsInfoFormat !== undefined;
+      const queryable = layer['queryable'] === true &&
+          wmsInfoFormat !== undefined;
 
       // TODO - MaxScaleDenominator
       // TODO - MinScaleDenominator
-      /** @type {import('ngeo/datasource/OGC').OGCOptions} */
-      const options = {
+      dataSource = new ngeoDatasourceOGC({
         id: id,
-        name: layer.Title,
+        name: layer['Title'],
         ogcImageType: ogcImageType,
-        wmsLayers: [
-          {
-            name: layer.Name,
-            queryable: queryable,
-          },
-        ],
-        ogcType: Type.WMS,
+        ogcLayers: [{
+          name: layer['Name'],
+          queryable: queryable
+        }],
+        ogcType: ngeoDatasourceOGC.Type.WMS,
         visible: true,
-        wmsUrl: url,
-      };
-      if (wmsInfoFormat) {
-        options.wmsInfoFormat = wmsInfoFormat;
-      }
-      dataSource = new ngeoDatasourceOGC(options);
+        wmsInfoFormat: wmsInfoFormat,
+        wmsUrl: url
+      });
 
       // Keep a reference to the external data source in the cache
       this.extDataSources_[id] = dataSource;
     }
 
+
     // (2) Add data source in WMS group, unless it's already in there.
-    //     Will also add the data source to the `import('ngeo/datasource/DataSource.js').DataSources`
-    //     collection.
+    //     Will also add the data source to the `ngeo.DataSources` collection.
     //     If the group is created, its inner OL layer is also added to the map.
     let wmsGroup = this.getWMSGroup(url);
     if (wmsGroup) {
@@ -390,15 +379,12 @@ export class ExternalDatSourcesManager {
         this.dataSources_.push(dataSource);
       }
     } else {
-      wmsGroup = new ngeoDatasourceWMSGroup(
-        {
-          dataSources: [dataSource],
-          injector: this.injector_,
-          title: service.Title,
-          url: url,
-        },
-        this.ngeoLayerHelper_
-      );
+      wmsGroup = new ngeoDatasourceWMSGroup({
+        dataSources: [dataSource],
+        injector: this.injector_,
+        title: service['Title'],
+        url: url
+      }, this.ngeoLayerHelper_);
       this.addLayer_(wmsGroup.layer);
       this.addWMSGroup_(wmsGroup);
       this.dataSources_.push(dataSource);
@@ -406,12 +392,13 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {Object} layer WTMS Capability Layer object.
-   * @param {Object} capabilities  WMTS Capabilities definition
+   * @param {!Object} layer WTMS Capability Layer object.
+   * @param {!Object} capabilities  WMTS Capabilities definition
    * @param {string} wmtsUrl The WMTS capabilities url
+   * @export
    */
   createAndAddDataSourceFromWMTSCapability(layer, capabilities, wmtsUrl) {
-    const id = getId(layer);
+    const id = exports.getId(layer);
 
     // (1) No need to do anything if there's already a WMTS data source (and its
     // layer in the map)
@@ -419,25 +406,25 @@ export class ExternalDatSourcesManager {
       return;
     }
 
-    /** @type {ngeoDatasourceOGC|ngeoDatasourceFile} */
     let dataSource;
 
     // (2) Get data source from cache if it exists, otherwise create it
     if (this.extDataSources_[id]) {
       dataSource = this.extDataSources_[id];
     } else {
-      const name = layer.Title;
-      const wmtsLayer = layer.Identifier;
+
+      const name = googAsserts.assertString(layer['Title']);
+      const wmtsLayer = googAsserts.assertString(layer['Identifier']);
 
       // TODO - MaxScaleDenominator
       // TODO - MinScaleDenominator
       dataSource = new ngeoDatasourceOGC({
         id: id,
         name: name,
-        ogcType: Type.WMTS,
+        ogcType: ngeoDatasourceOGC.Type.WMTS,
         visible: true,
         wmtsLayer: wmtsLayer,
-        wmtsUrl: wmtsUrl,
+        wmtsUrl: wmtsUrl
       });
 
       // Keep a reference to the external data source in the cache
@@ -449,15 +436,18 @@ export class ExternalDatSourcesManager {
     if (!wmtsGroup) {
       wmtsGroup = new ngeoDatasourceOGCGroup({
         dataSources: [],
-        title: capabilities.ServiceIdentification.Title,
-        url: wmtsUrl,
+        title: capabilities['ServiceIdentification']['Title'],
+        url: wmtsUrl
       });
       this.addWMTSGroup_(wmtsGroup);
     }
     wmtsGroup.addDataSource(dataSource);
 
     // (4) Create and add the OL layer
-    const layerObj = this.ngeoLayerHelper_.createWMTSLayerFromCapabilititesObj(capabilities, layer);
+    const layerObj = this.ngeoLayerHelper_.createWMTSLayerFromCapabilititesObj(
+      capabilities,
+      layer
+    );
     this.addLayer_(layerObj);
 
     // (5) Add data source to ngeo collection
@@ -471,14 +461,15 @@ export class ExternalDatSourcesManager {
       unregister: this.rootScope_.$watch(
         () => dataSource.visible,
         this.handleWMTSDataSourceVisibleChange_.bind(this, layerObj)
-      ),
+      )
     };
   }
 
   /**
-   * @param {File} file File.
+   * @param {!File} file File.
    * @param {function(boolean):*?} opt_callback Callback called with true if the file is loaded and added.
    *     Otherwise with false.
+   * @export
    */
   createAndAddDataSourceFromFile(file, opt_callback) {
     this.getFileDataSource_(file).then(
@@ -489,10 +480,8 @@ export class ExternalDatSourcesManager {
         // Look if the extent is valid (and so at least one geometry)
         if (isEmpty(dataSource.extent)) {
           success = false;
+
         } else {
-          if (!this.map_) {
-            throw new Error('Missing map');
-          }
           // (1) No need to do anything if the file has already been added...
           if (fileGroup.dataSources.includes(dataSource)) {
             return;
@@ -504,8 +493,7 @@ export class ExternalDatSourcesManager {
           // (3) Add it to the file group
           fileGroup.addDataSource(dataSource);
 
-          // (4) Recenter the map view onto its extent if there is at least one geometry (and so a valid
-          // extent)
+          // (4) Recenter the map view onto its extent if there is at least one geometry (and so a valid extent)
           this.map_.getView().fit(dataSource.extent);
 
           // (5) Finally, add it to the ngeo collection
@@ -527,11 +515,12 @@ export class ExternalDatSourcesManager {
 
   /**
    * Get file data source from cache, else create, store and return a new one.
-   * @param {File} file File.
-   * @return {angular.IPromise<ngeoDatasourceFile>} Promise
+   * @param {!File} file File.
+   * @return {!angular.$q.Promise} Promise
    * @private
    */
   getFileDataSource_(file) {
+
     const defer = this.q_.defer();
 
     if (this.files_[file.name]) {
@@ -539,28 +528,25 @@ export class ExternalDatSourcesManager {
     } else {
       const ngeoFile = this.ngeoFile_;
       ngeoFile.read(file).then((content) => {
-        if (!this.map_) {
-          throw new Error('Missing map');
-        }
         let features;
         const readOptions = {
-          featureProjection: this.map_.getView().getProjection(),
+          featureProjection: this.map_.getView().getProjection()
         };
 
         if (ngeoFile.isKml(content)) {
-          features = new olFormatKML().readFeatures(content, readOptions);
+          features = new olFormatKML({extractStyles: false}).readFeatures(content, readOptions);
         } else if (ngeoFile.isGpx(content)) {
           features = new olFormatGPX().readFeatures(content, readOptions);
         }
 
         if (features) {
-          const id = getId(file);
+          const id = exports.getId(file);
 
           const dataSource = new ngeoDatasourceFile({
             features: new olCollection(features),
             id: id,
             name: file.name,
-            visible: true,
+            visible: true
           });
 
           // Keep a reference if both caches
@@ -578,7 +564,7 @@ export class ExternalDatSourcesManager {
   }
 
   /**
-   * @param {import("ol/layer/Tile.js").default} layer WMTS layer
+   * @param {!ol.layer.Tile} layer WMTS layer
    * @param {boolean|undefined} value Current visible property of the DS
    * @param {boolean|undefined} oldValue Old visible property of the DS
    * @private
@@ -593,18 +579,16 @@ export class ExternalDatSourcesManager {
    * Called when a data source is removed from the collection of ngeo data
    * sources. If it's an external data source, remove it from its WMS Group
    *
-   * @param {Event|import('ol/events/Event.js').default} evt Collection event.
+   * @param {ol.Collection.Event} evt Collection event.
    * @private
    */
   handleDataSourcesRemove_(evt) {
-    if (evt instanceof CollectionEvent) {
-      const dataSource = evt.element;
-      if (this.extDataSources_[dataSource.id] === dataSource) {
-        if (dataSource instanceof ngeoDatasourceFile) {
-          this.removeFileDataSource_(dataSource);
-        } else if (dataSource instanceof ngeoDatasourceOGC) {
-          this.removeOGCDataSource_(dataSource);
-        }
+    const dataSource = evt.element;
+    if (this.extDataSources_[dataSource.id] === dataSource) {
+      if (dataSource instanceof ngeoDatasourceFile) {
+        this.removeFileDataSource_(dataSource);
+      } else if (dataSource instanceof ngeoDatasourceOGC) {
+        this.removeOGCDataSource_(dataSource);
       }
     }
   }
@@ -615,7 +599,7 @@ export class ExternalDatSourcesManager {
    * Note: it is expected that the data source has already been removed
    * from the ngeo collection.
    *
-   * @param {import("ngeo/datasource/File.js").default} dataSource External File data source.
+   * @param {!ngeo.datasource.File} dataSource External File data source.
    * @private
    */
   removeFileDataSource_(dataSource) {
@@ -631,17 +615,16 @@ export class ExternalDatSourcesManager {
    * Note: it is expected that the data source has already been removed
    * from the ngeo collection.
    *
-   * @param {import("ngeo/datasource/OGC.js").default} dataSource External OGC data source.
+   * @param {!ngeo.datasource.OGC} dataSource External OGC data source.
    * @private
    */
   removeOGCDataSource_(dataSource) {
-    if (dataSource.ogcType === Type.WMS) {
+    if (dataSource.ogcType === ngeoDatasourceOGC.Type.WMS) {
       // WMS data source
-      if (!dataSource.wmsUrl) {
-        throw new Error('Missing dataSource.wmsUrl');
-      }
+      const url = dataSource.wmsUrl;
+      googAsserts.assert(url);
 
-      const wmsGroup = this.getWMSGroup(dataSource.wmsUrl);
+      const wmsGroup = this.getWMSGroup(url);
       if (wmsGroup && wmsGroup.dataSources.includes(dataSource)) {
         // Remove from group
         wmsGroup.removeDataSource(dataSource);
@@ -654,13 +637,12 @@ export class ExternalDatSourcesManager {
           this.removeWMSGroup_(wmsGroup);
         }
       }
-    } else if (dataSource.ogcType === Type.WMTS) {
+    } else if (dataSource.ogcType === ngeoDatasourceOGC.Type.WMTS) {
       // WMTS data source
-      if (!dataSource.wmtsUrl) {
-        throw new Error('Missing dataSource.wmsUrl');
-      }
+      const url = dataSource.wmtsUrl;
+      googAsserts.assert(url);
 
-      const wmtsGroup = this.getWMTSGroup(dataSource.wmtsUrl);
+      const wmtsGroup = this.getWMTSGroup(url);
       if (wmtsGroup && wmtsGroup.dataSources.includes(dataSource)) {
         // Remove from group
         wmtsGroup.removeDataSource(dataSource);
@@ -681,33 +663,8 @@ export class ExternalDatSourcesManager {
       }
     }
   }
+};
 
-  /**
-   * @return {boolean} is empty.
-   */
-  isEmpty() {
-    return (
-      this.wmsGroupsCollection_.getLength() == 0 &&
-      this.wmtsGroupsCollection_.getLength() == 0 &&
-      this.fileGroup_.dataSourcesCollection.getLength() == 0
-    );
-  }
-
-  /**
-   * Remove all groups.
-   */
-  removeAll() {
-    for (const dataSource of this.dataSources_.getArray()) {
-      if (this.extDataSources_[dataSource.id] === dataSource) {
-        if (dataSource instanceof ngeoDatasourceFile) {
-          this.removeFileDataSource_(dataSource);
-        } else if (dataSource instanceof ngeoDatasourceOGC) {
-          this.removeOGCDataSource_(dataSource);
-        }
-      }
-    }
-  }
-}
 
 /**
  * Get the data source id from a WMS or WMTS Capability Layer object, or
@@ -718,24 +675,22 @@ export class ExternalDatSourcesManager {
  * natively contains an id by themselves, then it is programmatically generated
  * using the `ol.getUid` method, plus a million.
  *
- * @param {Object} layer WMS/WMTS Capability Layer object.
+ * @param {!Object} layer WMS/WMTS Capability Layer object.
  * @return {number} Data source id.
- * @private
- * @hidden
+ * @export
  */
-function getId(layer) {
-  return Number(olUtilGetUid(layer)) + 1000000;
-}
+exports.getId = function(layer) {
+  return olBase.getUid(layer) + 1000000;
+};
 
-/**
- * @type {angular.IModule}
- * @hidden
- */
-const module = angular.module('gmfExternalDataSourcesManager', [
-  ngeoMapLayerHelper.name,
-  ngeoMiscFile.name,
-  ngeoDatasourceDataSources.name,
+
+exports.module = angular.module('gmfExternalDataSourcesManager', [
+  ngeoMapLayerHelper.module.name,
+  ngeoMiscFile.module.name,
+  ngeoDatasourceDataSources.module.name,
 ]);
-module.service('gmfExternalDataSourcesManager', ExternalDatSourcesManager);
+exports.module.service('gmfExternalDataSourcesManager',
+  exports);
 
-export default module;
+
+export default exports;

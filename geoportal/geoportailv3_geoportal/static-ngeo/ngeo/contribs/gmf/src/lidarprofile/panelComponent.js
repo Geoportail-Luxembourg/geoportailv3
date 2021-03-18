@@ -1,25 +1,6 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2018-2020 Camptocamp SA
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import angular from 'angular';
+/**
+ * @module gmf.lidarprofile.panelComponent
+ */
 import gmfLidarprofileConfig from 'gmf/lidarprofile/Config.js';
 import gmfLidarprofileManager from 'gmf/lidarprofile/Manager.js';
 import gmfProfileDrawLineComponent from 'gmf/profile/drawLineComponent.js';
@@ -28,56 +9,49 @@ import ngeoDownloadCsv from 'ngeo/download/Csv.js';
 import ngeoMiscToolActivate from 'ngeo/misc/ToolActivate.js';
 import ngeoMiscToolActivateMgr from 'ngeo/misc/ToolActivateMgr.js';
 
+
 /**
- * @type {angular.IModule}
- * @hidden
+ * @type {!angular.Module}
  */
-const module = angular.module('gmfLidarprofilePanel', [
-  gmfLidarprofileConfig.name,
-  gmfLidarprofileManager.name,
+const exports = angular.module('gmfLidarprofilePanel', [
+  gmfLidarprofileConfig.module.name,
+  gmfLidarprofileManager.module.name,
   gmfProfileDrawLineComponent.name,
   ngeoMiscBtnComponent.name,
-  ngeoDownloadCsv.name,
-  ngeoMiscToolActivateMgr.name,
+  ngeoDownloadCsv.module.name,
+  ngeoMiscToolActivateMgr.module.name,
 ]);
 
-module.value(
-  'gmfLidarprofilePanelTemplateUrl',
-  /**
-   * @param {JQuery} $element Element.
-   * @param {angular.IAttributes} $attrs Attributes.
-   * @return {string} Template.
-   */
-  ($element, $attrs) => {
-    const templateUrl = $attrs.gmfLidarprofilePanelTemplateUrl;
-    return templateUrl !== undefined ? templateUrl : 'gmf/lidarprofilePanel';
-  }
-);
 
-module.run(
+exports.value('gmfLidarprofilePanelTemplateUrl',
   /**
-   * @ngInject
-   * @param {angular.ITemplateCacheService} $templateCache
-   */
-  ($templateCache) => {
-    // @ts-ignore: webpack
-    $templateCache.put('gmf/lidarprofilePanel', require('./panelComponent.html'));
-  }
-);
+     * @param {!angular.JQLite} $element Element.
+     * @param {!angular.Attributes} $attrs Attributes.
+     * @return {string} Template.
+     */
+  ($element, $attrs) => {
+    const templateUrl = $attrs['gmfLidarprofilePanelTemplateUrl'];
+    return templateUrl !== undefined ? templateUrl :
+      'gmf/lidarprofilePanel';
+  });
+
+exports.run(/* @ngInject */ ($templateCache) => {
+  $templateCache.put('gmf/lidarprofilePanel', require('./panelComponent.html'));
+});
+
 
 /**
- * @param {JQuery} $element Element.
- * @param {angular.IAttributes} $attrs Attributes.
- * @param {function(JQuery, angular.IAttributes): string} gmfLidarprofilePanelTemplateUrl
+ * @param {!angular.JQLite} $element Element.
+ * @param {!angular.Attributes} $attrs Attributes.
+ * @param {!function(!angular.JQLite, !angular.Attributes): string} gmfLidarprofilePanelTemplateUrl
  *     Template function.
  * @return {string} Template URL.
  * @ngInject
- * @private
- * @hidden
  */
 function gmfLidarprofilePanelTemplateUrl($element, $attrs, gmfLidarprofilePanelTemplateUrl) {
   return gmfLidarprofilePanelTemplateUrl($element, $attrs);
 }
+
 
 /**
  * Provide a component that display a lidar profile panel.
@@ -97,84 +71,90 @@ function gmfLidarprofilePanelTemplateUrl($element, $attrs, gmfLidarprofilePanelT
  * @ngdoc component
  * @ngname gmfLidarprofilePanel
  */
-const lidarprofilePanelComponent = {
+exports.component_ = {
   controller: 'gmfLidarprofilePanelController',
   bindings: {
     'active': '=gmfLidarprofilePanelActive',
     'map': '<gmfLidarprofilePanelMap',
-    'line': '=gmfLidarprofilePanelLine',
+    'line': '=gmfLidarprofilePanelLine'
   },
-  templateUrl: gmfLidarprofilePanelTemplateUrl,
+  templateUrl: gmfLidarprofilePanelTemplateUrl
 };
 
-module.component('gmfLidarprofilePanel', lidarprofilePanelComponent);
+
+exports.component('gmfLidarprofilePanel', exports.component_);
+
 
 /**
  * @private
- * @hidden
  */
-class Controller {
+exports.Controller_ = class {
+
   /**
-   * @param {angular.IScope} $scope Angular scope.
-   * @param {import("gmf/lidarprofile/Manager.js").LidarprofileManager} gmfLidarprofileManager gmf
-   *    gmfLidarprofileManager.
-   * @param {import("gmf/lidarprofile/Config.js").LidarprofileConfigService} gmfLidarprofileConfig gmf Lidar
-   *    profile config.
-   * @param {import("ngeo/misc/ToolActivateMgr.js").ToolActivateMgr} ngeoToolActivateMgr Ngeo ToolActivate
-   *    manager service
-   * @param {import("ngeo/download/Csv.js").DownloadCsvService} ngeoCsvDownload CSV Download service.
+   * @param {angular.Scope} $scope Angular scope.
+   * @param {gmf.lidarprofile.Manager} gmfLidarprofileManager gmf gmfLidarprofileManager.
+   * @param {gmf.lidarprofile.Config} gmfLidarprofileConfig gmf Lidar profile config.
+   * @param {ngeo.misc.ToolActivateMgr} ngeoToolActivateMgr Ngeo ToolActivate manager service
+   * @param {ngeo.download.Csv} ngeoCsvDownload CSV Download service.
    * @private
    * @ngInject
    * @ngdoc controller
    * @ngname gmfLidarprofilePanelController
    */
-  constructor($scope, gmfLidarprofileManager, gmfLidarprofileConfig, ngeoToolActivateMgr, ngeoCsvDownload) {
+  constructor($scope, gmfLidarprofileManager, gmfLidarprofileConfig, ngeoToolActivateMgr,
+    ngeoCsvDownload) {
+
     /**
      * @type {boolean}
+     * @export
      */
     this.ready = false;
 
     /**
-     * @type {import("gmf/lidarprofile/Config.js").LidarprofileConfigService}
+     * @type {gmf.lidarprofile.Config}
      * @private
      */
     this.profileConfig_ = gmfLidarprofileConfig;
 
     /**
-     * @type {import("gmf/lidarprofile/Manager.js").LidarprofileManager}
+     * @type {gmf.lidarprofile.Manager}
      */
     this.profile = gmfLidarprofileManager;
 
     /**
      * @type {boolean}
+     * @export
      */
     this.active = false;
 
     /**
-     * @type {?import("ol/Map.js").default}
+     * @type {ol.Map}
+     * @export
      */
     this.map = null;
 
     /**
      * The Openlayers LineString geometry of the profle
-     * @type {?import("ol/geom/LineString.js").default}
+     * @type {ol.geom.LineString}
+     * @export
      */
-    this.line = null;
+    this.line;
 
     /**
      * State of the measure tool
      * @type {boolean}
+     * @export
      */
     this.measureActive = false;
 
     /**
-     * @type {import("ngeo/download/Csv.js").DownloadCsvService}
+     * @type {ngeo.download.Csv}
      * @private
      */
     this.ngeoCsvDownload_ = ngeoCsvDownload;
 
     /**
-     * @type {import("ngeo/misc/ToolActivateMgr.js").ToolActivateMgr}
+     * @type {ngeo.misc.ToolActivateMgr}
      * @private
      */
     this.ngeoToolActivateMgr_ = ngeoToolActivateMgr;
@@ -190,8 +170,7 @@ class Controller {
         if (oldValue !== newValue) {
           this.updateEventsListening_(newValue);
         }
-      }
-    );
+      });
 
     // Watch the line to update the profileData (data for the chart).
     $scope.$watch(
@@ -200,19 +179,17 @@ class Controller {
         if (oldLine !== newLine) {
           this.update_();
         }
-      }
-    );
+      });
   }
+
 
   /**
    * @private
    */
   $onInit() {
-    if (!this.map) {
-      throw new Error('Missing map');
-    }
     this.profile.init(this.profileConfig_, this.map);
   }
+
 
   /**
    * @private
@@ -223,6 +200,7 @@ class Controller {
       this.ngeoToolActivateMgr_.activateTool(this.tool);
     });
   }
+
 
   /**
    * @param {boolean} activate Activation state of the plugin
@@ -241,15 +219,13 @@ class Controller {
     }
   }
 
+
   /**
    * @private
    */
   update_() {
     this.profile.clearBuffer();
     if (this.line) {
-      if (!this.profileConfig_.serverConfig) {
-        throw new Error('Missing profileConfig_.serverConfig');
-      }
       this.profile.setLine(this.line);
       this.profile.getProfileByLOD([], 0, true, this.profileConfig_.serverConfig.minLOD);
     } else {
@@ -259,6 +235,7 @@ class Controller {
 
   /**
    * Clear the LIDAR profile tool.
+   * @export
    */
   clearAll() {
     this.line = null;
@@ -268,31 +245,31 @@ class Controller {
     this.resetPlot();
   }
 
+
   /**
    * Activate the measure tool
+   * @export
    */
   setMeasureActive() {
-    if (!this.profile.measure) {
-      throw new Error('Missing profile.measure');
-    }
     this.measureActive = true;
     this.profile.measure.clearMeasure();
     this.profile.measure.setMeasureActive();
   }
 
+
   /**
    * Clear the current measure
+   * @export
    */
   clearMeasure() {
-    if (!this.profile.measure) {
-      throw new Error('Missing profile.measure');
-    }
     this.measureActive = false;
     this.profile.measure.clearMeasure();
   }
 
+
   /**
    * Reload and reset the plot for the current profile (reloads data)
+   * @export
    */
   resetPlot() {
     this.profile.clearBuffer();
@@ -301,26 +278,24 @@ class Controller {
     }
   }
 
+
   /**
    * Get all available point attributes.
-   * @return {Array<import("gmf/lidarprofile/Config.js").LidarprofileServerConfigPointAttributes>|undefined}
-   *    Available point attributes.
+   * @return {Array.<lidarprofileServer.ConfigPointAttributes>|undefined} available point attributes.
+   * @export
    */
   getAvailablePointAttributes() {
     return this.profileConfig_.clientConfig.pointAttributes.availableOptions;
   }
 
+
   /**
    * Get / Set the selected point attribute
-   * @param {import("gmf/lidarprofile/Config.js").LidarprofileServerConfigPointAttribute=} opt_selectedOption
-   *    The new selected point attribute.
-   * @return {import("gmf/lidarprofile/Config.js").LidarprofileServerConfigPointAttribute|undefined}
-   *    Selected point attribute
+   * @param {lidarprofileServer.ConfigPointAttributes=} opt_selectedOption the new selected point attribute.
+   * @return {lidarprofileServer.ConfigPointAttributes|undefined} Selected point attribute
+   * @export
    */
   getSetSelectedPointAttribute(opt_selectedOption) {
-    if (!this.profile.plot) {
-      throw new Error('Missing profile.plot');
-    }
     if (opt_selectedOption !== undefined) {
       this.profileConfig_.clientConfig.pointAttributes.selectedOption = opt_selectedOption;
       this.profile.plot.changeStyle(opt_selectedOption.value);
@@ -328,65 +303,62 @@ class Controller {
     return this.profileConfig_.clientConfig.pointAttributes.selectedOption;
   }
 
+
   /**
    * Get the available classifications for this dataset
-   * @return {import("gmf/lidarprofile/Config.js").LidarprofileServerConfigClassifications}
-   *    classification list
+   * @export
+   * @return {lidarprofileServer.ConfigClassifications} classification list
    */
   getClassification() {
-    if (!this.profileConfig_.serverConfig) {
-      throw new Error('Missing profileConfig_.serverConfig');
-    }
     return this.profileConfig_.serverConfig.classification_colors;
   }
 
+
   /**
    * Sets the visible classification in the profile
-   * @param {import("gmf/lidarprofile/Config.js").LidarprofileServerConfigClassification} classification
-   *    selected value
+   * @export
+   * @param {lidarprofileServer.ConfigClassification} classification selected value
    * @param {number} key of the classification code
    */
   setClassification(classification, key) {
-    if (!this.profile.plot) {
-      throw new Error('Missing profile.plot');
-    }
-    if (!this.profileConfig_.serverConfig) {
-      throw new Error('Missing profileConfig_.serverConfig');
-    }
     this.profileConfig_.serverConfig.classification_colors[key].visible = classification.visible;
     if (this.line) {
-      this.profile.plot.setClassActive(
-        this.profileConfig_.serverConfig.classification_colors,
-        this.profileConfig_.serverConfig.default_attribute
-      );
+      this.profile.plot.setClassActive(this.profileConfig_.serverConfig.classification_colors,
+        this.profileConfig_.serverConfig.default_attribute);
     }
   }
 
+
   /**
    * Export the profile data to CSV file
+   * @export
    */
   csvExport() {
     if (this.line) {
-      const points = this.profile.utils.getFlatPointsByDistance(this.profile.profilePoints) || [];
+      const points = this.profile.utils.getFlatPointsByDistance(this.profile.profilePoints) || {};
       const csvData = this.profile.utils.getCSVData(points);
-      const headerColumnNames = Object.keys(points[0]);
-      const headerColumns = headerColumnNames.map((columnName) => {
-        return {'name': columnName};
+      let headerColumns = Object.keys(points[0]);
+      headerColumns = headerColumns.map((column) => {
+        return {'name': column};
       });
       this.ngeoCsvDownload_.startDownload(csvData, headerColumns, 'LIDAR_profile.csv');
     }
   }
 
+
   /**
    * Export the current d3 chart to PNG file
+   * @export
    */
   pngExport() {
     if (this.line) {
       this.profile.utils.downloadProfileAsImageFile(this.profileConfig_.clientConfig);
     }
   }
-}
+};
 
-module.controller('gmfLidarprofilePanelController', Controller);
 
-export default module;
+exports.controller('gmfLidarprofilePanelController', exports.Controller_);
+
+
+export default exports;
