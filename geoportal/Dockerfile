@@ -16,6 +16,8 @@ RUN npm set progress=false && \
 
 COPY webpack.*.js Makefile CONST_Makefile /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
+RUN rm -rf /usr/lib/node_modules/ngeo
+RUN mv /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
 
 COPY . /app
 
