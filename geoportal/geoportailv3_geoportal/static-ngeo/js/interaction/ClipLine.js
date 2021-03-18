@@ -17,245 +17,327 @@ import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/intera
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
-import {inherits} from 'ol/index.js';
 import ViewHint from 'ol/ViewHint.js';
 
+class ClipLine extends olInteractionPointer {
+  /**
+   * @classdesc
+   * Interaction for modifying feature geometries.
+   *
+   * @constructor
+   * @extends {ol.interaction.Pointer}
+   * @param {olx.interaction.ModifyOptions} options Options.
+   * @fires app.interaction.ModifyCircleEvent
+   * @api
+   */
+  constructor(options) {
 
-/**
- * @classdesc
- * Interaction for modifying feature geometries.
- *
- * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.ModifyOptions} options Options.
- * @fires app.interaction.ModifyCircleEvent
- * @api
- */
-const exports = function(options) {
+    super({
+      handleDownEvent: exports.handleDownEvent_,
+      handleEvent: exports.handleEvent,
+      handleUpEvent: exports.handleUpEvent_
+    });
 
-  olInteractionPointer.call(this, {
-    handleDownEvent: exports.handleDownEvent_,
-    handleEvent: exports.handleEvent,
-    handleUpEvent: exports.handleUpEvent_
-  });
+    /**
+     * Editing vertex.
+     * @type {ol.Feature}
+     * @private
+     */
+    this.vertexFeature_ = null;
+
+    /**
+     * @type {ol.Pixel}
+     * @private
+     */
+    this.lastPixel_ = [0, 0];
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.modified_ = false;
+
+    /**
+     * Segment RTree for each layer
+     * @type {ol.structs.RBush.<Object>}
+     * @private
+     */
+    this.rBush_ = new olStructsRBush();
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.pixelTolerance_ = options.pixelTolerance !== undefined ?
+        options.pixelTolerance : 10;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.snappedToVertex_ = false;
+
+    /**
+     * @type {Array}
+     * @private
+     */
+    this.dragSegments_ = null;
+
+    /**
+     * Draw overlay where sketch features are drawn.
+     * @type {ol.layer.Vector}
+     * @private
+     */
+    this.overlay_ = new olLayerVector({
+      source: new olSourceVector({
+        useSpatialIndex: false,
+        wrapX: !!options.wrapX
+      }),
+      style: options.style ? options.style :
+        getDefaultStyleFunction(),
+      updateWhileAnimating: true,
+      updateWhileInteracting: true
+    });
+
+    console.assert(options.features !== undefined);
+    /**
+     * @type {ol.Collection.<ol.Feature>}
+     * @private
+     */
+    this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
+
+    this.features_.forEach(this.addFeature_, this);
+    listen(this.features_, 'add', this.handleFeatureAdd_, this);
+    listen(this.features_, 'remove', this.handleFeatureRemove_, this);
+
+  };
+
 
   /**
-   * Editing vertex.
-   * @type {ol.Feature}
+   * @param {ol.Feature} feature Feature.
    * @private
    */
-  this.vertexFeature_ = null;
+  addFeature_(feature) {
+    if (feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING) {
+      var geometry = /** @type {ol.geom.LineString}*/ (feature.getGeometry());
+      this.writeLineStringGeometry_(feature, geometry);
+
+      var map = this.getMap();
+      if (map) {
+        if (this.lastPixel_[0] !== 0 && this.lastPixel_[1] !== 0) {
+          this.handlePointerAtPixel_(this.lastPixel_, map);
+        }
+      }
+      listen(feature, 'change',
+          this.handleFeatureChange_, this);
+    }
+  };
+
 
   /**
-   * @type {ol.Pixel}
+   * @param {ol.Feature} feature Feature.
    * @private
    */
-  this.lastPixel_ = [0, 0];
+  removeFeature_(feature) {
+    this.removeFeatureSegmentData_(feature);
+    // Remove the vertex feature if the collection of canditate features
+    // is empty.
+    if (this.vertexFeature_ && this.features_.getLength() === 0) {
+      this.overlay_.getSource().removeFeature(this.vertexFeature_);
+      this.vertexFeature_ = null;
+    }
+    unlisten(feature, 'change',
+        this.handleFeatureChange_, this);
+  };
+
 
   /**
-   * @type {boolean}
+   * @param {ol.Feature} feature Feature.
    * @private
    */
-  this.modified_ = false;
+  removeFeatureSegmentData_(feature) {
+    var rBush = this.rBush_;
+    var /** @type {Array.<Object>} */ nodesToRemove = [];
+    rBush.forEach(
+        /**
+         * @param {Object} node RTree node.
+         */
+        function(node) {
+          if (feature === node.feature) {
+            nodesToRemove.push(node);
+          }
+        });
+    for (var i = nodesToRemove.length - 1; i >= 0; --i) {
+      rBush.remove(nodesToRemove[i]);
+    }
+  };
+
 
   /**
-   * Segment RTree for each layer
-   * @type {ol.structs.RBush.<Object>}
-   * @private
+   * @inheritDoc
    */
-  this.rBush_ = new olStructsRBush();
+  setMap(map) {
+    this.overlay_.setMap(map);
+    olInteractionInteraction.prototype.setMap.call(this, map);
+  };
+
 
   /**
-   * @type {number}
+   * @param {ol.Collection.Event} evt Event.
    * @private
    */
-  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-      options.pixelTolerance : 10;
+  handleFeatureAdd_(evt) {
+    var feature = evt.element;
+    console.assert(feature instanceof olFeature,
+        'feature should be an ol.Feature');
+    this.addFeature_(/** @type {ol.Feature} */ (feature));
+  };
+
 
   /**
-   * @type {boolean}
+   * @param {ol.events.Event} evt Event.
    * @private
    */
-  this.snappedToVertex_ = false;
+  handleFeatureChange_(evt) {
+    var feature = /** @type {ol.Feature} */ (evt.target);
+    this.removeFeature_(feature);
+    this.addFeature_(feature);
+  };
+
 
   /**
-   * @type {Array}
+   * @param {ol.Collection.Event} evt Event.
    * @private
    */
-  this.dragSegments_ = null;
+  handleFeatureRemove_(evt) {
+    var feature = /** @type {ol.Feature} */ (evt.element);
+    this.removeFeature_(feature);
+  };
+
 
   /**
-   * Draw overlay where sketch features are drawn.
-   * @type {ol.layer.Vector}
+   * @param {ol.Feature} feature Feature
+   * @param {ol.geom.LineString} geometry Geometry.
    * @private
    */
-  this.overlay_ = new olLayerVector({
-    source: new olSourceVector({
-      useSpatialIndex: false,
-      wrapX: !!options.wrapX
-    }),
-    style: options.style ? options.style :
-        exports.getDefaultStyleFunction(),
-    updateWhileAnimating: true,
-    updateWhileInteracting: true
-  });
+  writeLineStringGeometry_(feature, geometry) {
+    var coordinates = geometry.getCoordinates();
+    var i, ii, segment, segmentData;
+    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = /** @type {Object} */ ({
+        feature: feature,
+        geometry: geometry,
+        index: i,
+        segment: segment
+      });
+      this.rBush_.insert(boundingExtent(segment), segmentData);
+    }
+  };
 
-  console.assert(options.features !== undefined);
+
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @param {ol.Coordinate} coordinates Coordinates.
+   * @return {ol.Feature} Vertex feature.
    * @private
    */
-  this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
+  createOrUpdateVertexFeature_(coordinates) {
+    var vertexFeature = this.vertexFeature_;
+    if (!vertexFeature) {
+      vertexFeature = new olFeature(new olGeomPoint(coordinates));
+      this.vertexFeature_ = vertexFeature;
+      this.overlay_.getSource().addFeature(vertexFeature);
+    } else {
+      var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+      geometry.setCoordinates(coordinates);
+    }
+    return vertexFeature;
+  };
 
-  this.features_.forEach(this.addFeature_, this);
-  listen(this.features_, 'add', this.handleFeatureAdd_, this);
-  listen(this.features_, 'remove', this.handleFeatureRemove_, this);
-
-};
-
-inherits(exports, olInteractionPointer);
 
 
-/**
- * @param {ol.Feature} feature Feature.
- * @private
- */
-exports.prototype.addFeature_ = function(feature) {
-  if (feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING) {
-    var geometry = /** @type {ol.geom.LineString}*/ (feature.getGeometry());
-    this.writeLineStringGeometry_(feature, geometry);
-
-    var map = this.getMap();
-    if (map) {
-      if (this.lastPixel_[0] !== 0 && this.lastPixel_[1] !== 0) {
-        this.handlePointerAtPixel_(this.lastPixel_, map);
+  /**
+   * @inheritDoc
+   */
+  setActive(active) {
+    this.handlingDownUpSequence = false;
+    if (this.overlay_ !== undefined) {
+      if (this.vertexFeature_) {
+        this.overlay_.getSource().removeFeature(this.vertexFeature_);
+        this.vertexFeature_ = null;
       }
     }
-    listen(feature, 'change',
-        this.handleFeatureChange_, this);
-  }
-};
+    var map = this.getMap();
+    if (map) {
+      if (active) {
+        map.getTargetElement().style.cursor = 'crosshair';
+      } else {
+        map.getTargetElement().style.cursor = '';
+      }
+    }
+    olInteractionInteraction.prototype.setActive.call(this, active);
+  };
 
+  /**
+   * @param {ol.MapBrowserEvent} evt Event.
+   * @private
+   */
+  handlePointerMove_(evt) {
+    this.lastPixel_ = evt.pixel;
+    this.handlePointerAtPixel_(evt.pixel, evt.map);
+  };
 
-/**
- * @param {ol.Feature} feature Feature.
- * @private
- */
-exports.prototype.removeFeature_ = function(feature) {
-  this.removeFeatureSegmentData_(feature);
-  // Remove the vertex feature if the collection of canditate features
-  // is empty.
-  if (this.vertexFeature_ && this.features_.getLength() === 0) {
-    this.overlay_.getSource().removeFeature(this.vertexFeature_);
-    this.vertexFeature_ = null;
-  }
-  unlisten(feature, 'change',
-      this.handleFeatureChange_, this);
-};
+  /**
+   * @param {ol.Pixel} pixel Pixel
+   * @param {ol.PluggableMap} map Map.
+   * @private
+   */
+  handlePointerAtPixel_(pixel, map) {
+    if (!this.getActive()) {
+      return;
+    }
+    var pixelCoordinate = map.getCoordinateFromPixel(pixel);
+    var sortByDistance = function(a, b) {
+      return squaredDistanceToSegment(pixelCoordinate, a.segment) -
+          squaredDistanceToSegment(pixelCoordinate, b.segment);
+    };
 
+    var box = buffer(
+        createOrUpdateFromCoordinate(pixelCoordinate),
+        map.getView().getResolution() * this.pixelTolerance_);
 
-/**
- * @param {ol.Feature} feature Feature.
- * @private
- */
-exports.prototype.removeFeatureSegmentData_ = function(feature) {
-  var rBush = this.rBush_;
-  var /** @type {Array.<Object>} */ nodesToRemove = [];
-  rBush.forEach(
-      /**
-       * @param {Object} node RTree node.
-       */
-      function(node) {
-        if (feature === node.feature) {
-          nodesToRemove.push(node);
+    var rBush = this.rBush_;
+    var nodes = rBush.getInExtent(box);
+    if (nodes.length > 0) {
+      nodes.sort(sortByDistance);
+      var node = nodes[0];
+      var closestSegment = node.segment;
+      var vertex = (closestOnSegment(pixelCoordinate,
+          closestSegment));
+      var vertexPixel = map.getPixelFromCoordinate(vertex);
+      if (Math.sqrt(squaredDistance(pixel, vertexPixel)) <=
+          this.pixelTolerance_) {
+        var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+        var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+        var squaredDist1 = squaredDistance(vertexPixel, pixel1);
+        var squaredDist2 = squaredDistance(vertexPixel, pixel2);
+        var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+        this.snappedToVertex_ = dist <= this.pixelTolerance_;
+        if (this.snappedToVertex_) {
+          vertex = squaredDist1 > squaredDist2 ?
+              closestSegment[1] : closestSegment[0];
         }
-      });
-  for (var i = nodesToRemove.length - 1; i >= 0; --i) {
-    rBush.remove(nodesToRemove[i]);
-  }
-};
+        this.createOrUpdateVertexFeature_(vertex);
 
-
-/**
- * @inheritDoc
- */
-exports.prototype.setMap = function(map) {
-  this.overlay_.setMap(map);
-  olInteractionInteraction.prototype.setMap.call(this, map);
-};
-
-
-/**
- * @param {ol.Collection.Event} evt Event.
- * @private
- */
-exports.prototype.handleFeatureAdd_ = function(evt) {
-  var feature = evt.element;
-  console.assert(feature instanceof olFeature,
-      'feature should be an ol.Feature');
-  this.addFeature_(/** @type {ol.Feature} */ (feature));
-};
-
-
-/**
- * @param {ol.events.Event} evt Event.
- * @private
- */
-exports.prototype.handleFeatureChange_ = function(evt) {
-  var feature = /** @type {ol.Feature} */ (evt.target);
-  this.removeFeature_(feature);
-  this.addFeature_(feature);
-};
-
-
-/**
- * @param {ol.Collection.Event} evt Event.
- * @private
- */
-exports.prototype.handleFeatureRemove_ = function(evt) {
-  var feature = /** @type {ol.Feature} */ (evt.element);
-  this.removeFeature_(feature);
-};
-
-
-/**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.LineString} geometry Geometry.
- * @private
- */
-exports.prototype.writeLineStringGeometry_ = function(feature, geometry) {
-  var coordinates = geometry.getCoordinates();
-  var i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {Object} */ ({
-      feature: feature,
-      geometry: geometry,
-      index: i,
-      segment: segment
-    });
-    this.rBush_.insert(boundingExtent(segment), segmentData);
-  }
-};
-
-
-/**
- * @param {ol.Coordinate} coordinates Coordinates.
- * @return {ol.Feature} Vertex feature.
- * @private
- */
-exports.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
-  var vertexFeature = this.vertexFeature_;
-  if (!vertexFeature) {
-    vertexFeature = new olFeature(new olGeomPoint(coordinates));
-    this.vertexFeature_ = vertexFeature;
-    this.overlay_.getSource().addFeature(vertexFeature);
-  } else {
-    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
-    geometry.setCoordinates(coordinates);
-  }
-  return vertexFeature;
-};
+        return;
+      }
+    }
+    if (this.vertexFeature_) {
+      this.overlay_.getSource().removeFeature(this.vertexFeature_);
+      this.vertexFeature_ = null;
+    }
+  };
+}
 
 
 /**
@@ -264,7 +346,7 @@ exports.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
  * @return {number} The difference in indexes.
  * @private
  */
-exports.compareIndexes_ = function(a, b) {
+function compareIndexes_(a, b) {
   return a.index - b.index;
 };
 
@@ -275,7 +357,7 @@ exports.compareIndexes_ = function(a, b) {
  * @this {app.interaction.ClipLine}
  * @private
  */
-exports.handleUpEvent_ = function(evt) {
+export function handleUpEvent_(evt) {
   this.handlingDownUpSequence = false;
   return false;
 };
@@ -287,7 +369,7 @@ exports.handleUpEvent_ = function(evt) {
  * @this {app.interaction.ClipLine}
  * @private
  */
-exports.handleDownEvent_ = function(evt) {
+export function handleDownEvent_(evt) {
   this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   this.modified_ = false;
@@ -341,7 +423,7 @@ exports.handleDownEvent_ = function(evt) {
  * @this {app.interaction.ClipLine}
  * @api
  */
-exports.handleEvent = function(mapBrowserEvent) {
+export function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof olMapBrowserEvent)) {
     return true;
   }
@@ -355,94 +437,10 @@ exports.handleEvent = function(mapBrowserEvent) {
   return pointerHandleEvent.call(this, mapBrowserEvent);
 };
 
-
-/**
- * @inheritDoc
- */
-exports.prototype.setActive = function(active) {
-  this.handlingDownUpSequence = false;
-  if (this.overlay_ !== undefined) {
-    if (this.vertexFeature_) {
-      this.overlay_.getSource().removeFeature(this.vertexFeature_);
-      this.vertexFeature_ = null;
-    }
-  }
-  var map = this.getMap();
-  if (map) {
-    if (active) {
-      map.getTargetElement().style.cursor = 'crosshair';
-    } else {
-      map.getTargetElement().style.cursor = '';
-    }
-  }
-  olInteractionInteraction.prototype.setActive.call(this, active);
-};
-
-/**
- * @param {ol.MapBrowserEvent} evt Event.
- * @private
- */
-exports.prototype.handlePointerMove_ = function(evt) {
-  this.lastPixel_ = evt.pixel;
-  this.handlePointerAtPixel_(evt.pixel, evt.map);
-};
-
-/**
- * @param {ol.Pixel} pixel Pixel
- * @param {ol.PluggableMap} map Map.
- * @private
- */
-exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
-  if (!this.getActive()) {
-    return;
-  }
-  var pixelCoordinate = map.getCoordinateFromPixel(pixel);
-  var sortByDistance = function(a, b) {
-    return squaredDistanceToSegment(pixelCoordinate, a.segment) -
-        squaredDistanceToSegment(pixelCoordinate, b.segment);
-  };
-
-  var box = buffer(
-      createOrUpdateFromCoordinate(pixelCoordinate),
-      map.getView().getResolution() * this.pixelTolerance_);
-
-  var rBush = this.rBush_;
-  var nodes = rBush.getInExtent(box);
-  if (nodes.length > 0) {
-    nodes.sort(sortByDistance);
-    var node = nodes[0];
-    var closestSegment = node.segment;
-    var vertex = (closestOnSegment(pixelCoordinate,
-        closestSegment));
-    var vertexPixel = map.getPixelFromCoordinate(vertex);
-    if (Math.sqrt(squaredDistance(pixel, vertexPixel)) <=
-        this.pixelTolerance_) {
-      var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-      var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = squaredDistance(vertexPixel, pixel2);
-      var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      this.snappedToVertex_ = dist <= this.pixelTolerance_;
-      if (this.snappedToVertex_) {
-        vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
-      }
-      this.createOrUpdateVertexFeature_(vertex);
-
-      return;
-    }
-  }
-  if (this.vertexFeature_) {
-    this.overlay_.getSource().removeFeature(this.vertexFeature_);
-    this.vertexFeature_ = null;
-  }
-};
-
-
 /**
  * @return {ol.StyleFunction} Styles.
  */
-exports.getDefaultStyleFunction = function() {
+export function getDefaultStyleFunction() {
   var style = ngeoInteractionCommon.getDefaultModifyStyleFunction();
   return function(feature, resolution) {
     return style[olGeomGeometryType.POINT];
@@ -450,4 +448,4 @@ exports.getDefaultStyleFunction = function() {
 };
 
 
-export default exports;
+export default ClipLine;
