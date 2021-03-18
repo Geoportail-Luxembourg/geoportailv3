@@ -11,18 +11,20 @@ import olEventsEvent from 'ol/events/Event.js';
  * @param {T} detail Event Detail.
  * @template T
  */
-const exports = function(type, detail = {}) {
+class CustomEvent extends olEventsEvent{
 
-  olEventsEvent.call(this, type);
+  constructor(type, detail = {}) {
 
-  /**
-   * @type {T}
-   */
-  this.detail = detail;
+    super()
 
-};
+    /**
+     * @type {T}
+     */
+    this.detail = detail;
 
-olBase.inherits(exports, olEventsEvent);
+  };
+
+}
 
 
-export default exports;
+export default CustomEvent;
