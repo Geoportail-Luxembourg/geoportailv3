@@ -216,12 +216,14 @@ class BackgroundLayerMgr extends olObservable {
 module = angular.module('ngeoBackgroundLayerMgr', [
   ngeoLayerHelper.module.name
 ]);
-module.service('ngeoBackgroundLayerMgr', BackgroundLayerMgr);
+module.service('ngeoBackgroundLayerMgr', (ngeoLayerHelper) => new BackgroundLayerMgr(ngeoLayerHelper));
+
+BackgroundLayerMgr.module = module;
 
 /**
  * @const
  */
-BACKGROUNDLAYERGROUP_NAME = 'background';
+ BackgroundLayerMgr.BACKGROUNDLAYERGROUP_NAME = 'background';
 
 
-export default module;
+export default BackgroundLayerMgr;

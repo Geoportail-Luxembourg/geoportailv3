@@ -113,5 +113,6 @@ module = angular.module('ngeoWMSTime', [
 ]);
 module.service('ngeoWMSTime', WMSTime);
 
+WMSTime.module = module;
 
-export default module;
+export default WMSTime;
