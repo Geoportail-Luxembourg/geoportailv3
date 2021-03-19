@@ -15,7 +15,7 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
+import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import {transform} from 'ol/proj.js';
@@ -334,7 +334,7 @@ class DrawRoute extends olInteractionPointer {
     } else if (event.type === olMapBrowserEventType.DBLCLICK) {
       pass = false;
     }
-    return pointerHandleEvent.call(this, event) && pass;
+    return super.handleEvent(event) && pass;
   };
 
 
