@@ -427,7 +427,7 @@ class ModifyRectangle extends olInteractionPointer {
  *     corners: Array.<ol.Feature>
  * }}
  */
-CacheItem;
+//CacheItem;
 
 
 /**
@@ -440,7 +440,7 @@ CacheItem;
  *     vectorY: Array.<number>
  * }}
  */
-ModifyParams;
+//ModifyParams;
 
 
 export default ModifyRectangle;

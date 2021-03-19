@@ -9,7 +9,7 @@ import ngeoMessageMessage from 'ngeo/message/Message.js';
 import * as olBase from 'ol/index.js';
 import 'font-awesome/css/font-awesome.css';
 
-export class Disclaimer extends ngeoMessageMessage {
+class Disclaimer extends ngeoMessageMessage {
   /**
    * Provides methods to display any sort of messages, disclaimers, errors,
    * etc. Requires Bootstrap library (both CSS and JS) to display the alerts
@@ -228,6 +228,8 @@ module = angular.module('ngeoDisclaimer', [
   ngeoMessagePopup.module.name,
 ]);
 
-module.service('ngeoDisclaimer', exports);
+module.service('ngeoDisclaimer', Disclaimer);
 
-export default module;
+Disclaimer.module = module;
+
+export default Disclaimer;
