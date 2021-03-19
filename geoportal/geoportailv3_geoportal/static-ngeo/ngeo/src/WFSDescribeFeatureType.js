@@ -228,4 +228,4 @@ WFSDescribeFeatureType.SEQUENCE_PARSERS_ = googAsserts.assert(olXml.makeStructur
   }));
 
 
-export default exports;
+export default WFSDescribeFeatureType;

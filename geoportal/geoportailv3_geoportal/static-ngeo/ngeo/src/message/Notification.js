@@ -7,6 +7,8 @@ import googAsserts from 'goog/asserts.js';
 import ngeoMessageMessage from 'ngeo/message/Message.js';
 import * as olBase from 'ol/index.js';
 
+
+const DEFAULT_DELAY = 7000
 class Notification extends ngeoMessageMessage {
   /**
    * Provides methods to display any sort of messages, notifications, errors,
@@ -114,7 +116,7 @@ class Notification extends ngeoMessageMessage {
     el.html(message.msg).addClass('in');
 
     const delay = message.delay !== undefined ? message.delay :
-      exports.DEFAULT_DELAY_;
+      DEFAULT_DELAY;
 
     const item = /** @type {ngeo.message.Notification.CacheItem} */ ({
       el
@@ -159,7 +161,7 @@ class Notification extends ngeoMessageMessage {
  * @type {number}
  * @private
  */
-DEFAULT_DELAY_ = 7000;
+ Notification.DEFAULT_DELAY_ = DEFAULT_DELAY;
   
 /**
  * @typedef {{
@@ -167,7 +169,7 @@ DEFAULT_DELAY_ = 7000;
  *     promise: angular.$q.Promise
  * }}
  */
-CacheItem;
+//CacheItem;
 
 
 /**
@@ -176,7 +178,11 @@ CacheItem;
 module = angular.module('ngeoNotification', [
 ]);
 
-module.service('ngeoNotification', exports);
+module.service('ngeoNotification', Notification);
+
+Notification.module = module;
 
 
-export default module;
+
+
+export default Notification;
