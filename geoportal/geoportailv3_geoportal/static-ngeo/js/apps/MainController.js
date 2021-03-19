@@ -1176,7 +1176,7 @@ const MainController = function(
   $scope.$on('authenticated', () => {
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    if (bgLayer && bgLayer.getMapBoxMap()) {
+    if (bgLayer && bgLayer.getMapBoxMap) {
       this.appMvtStylingService.getBgStyle().then(configs => {
         const config = configs.find(config => config.label === bgLayer.get('label'));
         if (config) {
