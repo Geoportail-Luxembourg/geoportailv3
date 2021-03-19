@@ -63,6 +63,10 @@ class Controller {
 
             if (previous) {
                 previous.setVisible(false);
+            } else {
+              this.bgLayers.forEach(function(layer) {
+                layer.setVisible(false);
+              });
             }
             current.setVisible(true);
             this.bgLayer = current;
@@ -74,7 +78,7 @@ class Controller {
             const piwik = /** @type {Piwik} */ (window['_paq']);
             piwik.push(['setDocumentTitle', 'BackgroundAdded/' + this.bgLayer.get('label')]);
             piwik.push(['trackPageView']);
-        });
+        }, this);
       };
 
     /**
