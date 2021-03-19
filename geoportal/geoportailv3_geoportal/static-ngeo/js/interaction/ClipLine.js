@@ -7,13 +7,13 @@ import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEvent from 'ol/MapBrowserEvent.js';
 import {closestOnSegment, equals, squaredDistance, squaredDistanceToSegment} from 'ol/coordinate.js';
-import {listen, unlisten} from 'ol/events.js';
+import {listen, unlistenByKey} from 'ol/events.js';
 import {buffer, boundingExtent, createOrUpdateFromCoordinate} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
 import {ModifyEvent} from 'ol/interaction/Modify.js';
-import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
+import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
@@ -33,9 +33,9 @@ class ClipLine extends olInteractionPointer {
   constructor(options) {
 
     super({
-      handleDownEvent: exports.handleDownEvent_,
-      handleEvent: exports.handleEvent,
-      handleUpEvent: exports.handleUpEvent_
+      handleDownEvent: handleDownEvent_,
+      handleEvent: handleEvent,
+      handleUpEvent: handleUpEvent_
     });
 
     /**
@@ -128,7 +128,7 @@ class ClipLine extends olInteractionPointer {
           this.handlePointerAtPixel_(this.lastPixel_, map);
         }
       }
-      listen(feature, 'change',
+      this.listener = listen(feature, 'change',
           this.handleFeatureChange_, this);
     }
   };
@@ -146,8 +146,7 @@ class ClipLine extends olInteractionPointer {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
-    unlisten(feature, 'change',
-        this.handleFeatureChange_, this);
+    if (this.listener) { unlistenByKey(this.listener) }
   };
 
 
@@ -434,7 +433,7 @@ export function handleEvent(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return pointerHandleEvent.call(this, mapBrowserEvent);
+  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
 };
 
 /**

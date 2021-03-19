@@ -339,7 +339,7 @@ Themes.findTheme_ = function(themes, themeName) {
 };
 
 
-appModule.service('appThemes', exports);
+appModule.service('appThemes', Themes);
 
 
-export default exports;
+export default Themes;

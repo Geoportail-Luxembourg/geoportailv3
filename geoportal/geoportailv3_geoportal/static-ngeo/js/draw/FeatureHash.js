@@ -8,7 +8,7 @@ import olFeature from 'ol/Feature.js';
 import {includes as arrayIncludes} from 'ol/array.js';
 import {asArray as colorAsArray} from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
-import {transformWithOptions} from 'ol/format/Feature.js';
+import {transformGeometryWithOptions} from 'ol/format/Feature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -457,7 +457,7 @@ class FeatureHash extends olFormatTextFeature {
         geometry.getType()];
     console.assert(geometryWriter !== undefined);
     var transformedGeometry = /** @type {ol.geom.Geometry} */
-        (transformWithOptions(geometry, true, opt_options));
+        (transformGeometryWithOptions(geometry, true, opt_options));
     this.prevX_ = 0;
     this.prevY_ = 0;
     return geometryWriter.call(this, transformedGeometry);
@@ -473,7 +473,7 @@ class FeatureHash extends olFormatTextFeature {
  * @const
  * @private
  */
-  CHAR64_ =
+const CHAR64_ =
   '.-_!*ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghjkmnpqrstuvwxyz';
 
 
@@ -481,7 +481,7 @@ class FeatureHash extends olFormatTextFeature {
 * @const
 * @private
 */
-ACCURACY_ = 1;
+const ACCURACY_ = 1;
 
 
 /**
@@ -1208,7 +1208,7 @@ function writeMultiPolygonGeometry_(geometry) {
 * @private
 * @type {Object.<string, function(string):ol.geom.Geometry>}
 */
-GEOMETRY_READERS_ = {
+const GEOMETRY_READERS_ = {
  'P': readMultiPointGeometry_,
  'L': readMultiLineStringGeometry_,
  'A': readMultiPolygonGeometry_,
@@ -1223,7 +1223,7 @@ GEOMETRY_READERS_ = {
 * @private
 * @type {Object.<string, function(ol.geom.Geometry):string>}
 */
-GEOMETRY_WRITERS_ = {
+const GEOMETRY_WRITERS_ = {
  'MultiLineString': writeMultiLineStringGeometry_,
  'MultiPoint': writeMultiPointGeometry_,
  'MultiPolygon': writeMultiPolygonGeometry_,
