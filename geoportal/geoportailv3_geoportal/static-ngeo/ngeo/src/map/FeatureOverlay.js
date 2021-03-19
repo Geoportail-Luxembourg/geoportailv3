@@ -27,9 +27,14 @@ const exports = function(manager, index) {
    * @private
    */
   this.index_ = index;
+
+  /**
+   * @type {string[]}
+   * @private
+   */
+   this.keys = []
 };
 
-this.keys = []
 
 /**
  * Add a feature to the feature overlay.
