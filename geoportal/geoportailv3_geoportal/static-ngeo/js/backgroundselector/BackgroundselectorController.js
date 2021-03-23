@@ -78,6 +78,12 @@ class Controller {
             const piwik = /** @type {Piwik} */ (window['_paq']);
             piwik.push(['setDocumentTitle', 'BackgroundAdded/' + this.bgLayer.get('label')]);
             piwik.push(['trackPageView']);
+            this.map.updateSize();
+            this.map.renderSync();
+            if (current.getMapBoxMap) {
+              const mbm = current.getMapBoxMap();
+              mbm.resize();
+            }
         }, this);
       };
 
