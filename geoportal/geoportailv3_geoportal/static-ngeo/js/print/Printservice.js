@@ -7,7 +7,7 @@ import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
 
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
-import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
