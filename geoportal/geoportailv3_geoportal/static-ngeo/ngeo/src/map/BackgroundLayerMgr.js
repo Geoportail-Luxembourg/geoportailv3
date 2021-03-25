@@ -12,7 +12,9 @@ import olSourceTileWMS from 'ol/source/TileWMS.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import ngeoLayerHelper from 'ngeo/map/LayerHelper.js';
 
-class BackgroundLayerMgr extends olObservable {
+const BACKGROUNDLAYERGROUP_NAME = 'background';
+
+export default class BackgroundLayerMgr extends olObservable {
   /**
    * Provides a service for setting/unsetting background layers
    * in maps.
@@ -60,7 +62,6 @@ class BackgroundLayerMgr extends olObservable {
    * @ngname ngeoBackgroundLayerMgr
    */
   constructor(ngeoLayerHelper) {
-
     super();
 
     /**
@@ -89,7 +90,7 @@ class BackgroundLayerMgr extends olObservable {
   get(map) {
     const mapUid = olBase.getUid(map).toString();
     return mapUid in this.mapUids_ ? this.ngeoLayerHelper_.getGroupFromMap(map,
-      exports.BACKGROUNDLAYERGROUP_NAME).getLayers().item(0) : null;
+      BACKGROUNDLAYERGROUP_NAME).getLayers().item(0) : null;
   };
 
 
@@ -110,7 +111,7 @@ class BackgroundLayerMgr extends olObservable {
       this.ngeoLayerHelper_.setZIndexToFirstLevelChildren(layer, ZIndex);
     }
 
-    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, exports.BACKGROUNDLAYERGROUP_NAME);
+    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, BACKGROUNDLAYERGROUP_NAME);
 
     if (previous !== null) {
       googAsserts.assert(mapUid in this.mapUids_);
@@ -144,7 +145,7 @@ class BackgroundLayerMgr extends olObservable {
   getOpacityBgLayer(map) {
     const mapUid = olBase.getUid(map).toString();
     return mapUid in this.mapUids_ ? this.ngeoLayerHelper_.getGroupFromMap(map,
-      exports.BACKGROUNDLAYERGROUP_NAME).getLayers().item(1) : null;
+      BACKGROUNDLAYERGROUP_NAME).getLayers().item(1) : null;
   };
 
   /**
@@ -154,7 +155,7 @@ class BackgroundLayerMgr extends olObservable {
    * @export
    */
   setOpacityBgLayer(map, layer) {
-    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, exports.BACKGROUNDLAYERGROUP_NAME);
+    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, BACKGROUNDLAYERGROUP_NAME);
     const previous = bgGroup.getLayers().remove(this.getOpacityBgLayer(map));
     const ZIndex = -100;
     layer.setOpacity(previous ? previous.getOpacity() : 0);
@@ -216,14 +217,14 @@ class BackgroundLayerMgr extends olObservable {
 module = angular.module('ngeoBackgroundLayerMgr', [
   ngeoLayerHelper.module.name
 ]);
-module.service('ngeoBackgroundLayerMgr', (ngeoLayerHelper) => new BackgroundLayerMgr(ngeoLayerHelper));
+module.service('ngeoBackgroundLayerMgr', ['ngeoLayerHelper', (ngeoLayerHelper) => {
+  return new BackgroundLayerMgr(ngeoLayerHelper)
+}]);
+// module.service('ngeoBackgroundLayerMgr', BackgroundLayerMgr);
 
 BackgroundLayerMgr.module = module;
 
 /**
  * @const
  */
- BackgroundLayerMgr.BACKGROUNDLAYERGROUP_NAME = 'background';
-
-
-export default BackgroundLayerMgr;
+ BackgroundLayerMgr.BACKGROUNDLAYERGROUP_NAME = BACKGROUNDLAYERGROUP_NAME;
