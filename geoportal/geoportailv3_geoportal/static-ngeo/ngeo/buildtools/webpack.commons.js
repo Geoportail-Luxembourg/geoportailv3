@@ -133,7 +133,7 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
   };
 
   const olRule = {
-    test: /openlayers\/src\/.*\.js$/,
+    test: /ol\/src\/.*\.js$/,
     use: {
       loader: 'babel-loader',
       options: {
