@@ -40,7 +40,28 @@ class LocationControl extends olControlControl {
    * @ngInject
    */
   constructor(options) {
-    super();
+    var label = (options.label !== undefined) ? options.label : 'L';
+    var tipLabel = (options.tipLabel !== undefined) ?
+        options.tipLabel : 'Location';
+
+    var button = document.createElement('BUTTON');
+    button.appendChild(document.createTextNode(label));
+    button.setAttribute('type', 'button');
+    button.setAttribute('title', tipLabel);
+
+    var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' +
+        CLASS_CONTROL + ' ' + 'tracker-off';
+
+    /**
+     * @type {!Element}
+     */
+    var element = document.createElement('DIV');
+    element.setAttribute('class', cssClasses);
+    element.appendChild(button);
+    super({
+      element: element,
+      target: options.target
+    });
 
     var className = (options.className !== undefined) ? options.className :
         'location-button';
@@ -92,36 +113,12 @@ class LocationControl extends olControlControl {
      */
     this.featureOverlay_ = options.featureOverlayMgr.getFeatureOverlay();
 
-    var label = (options.label !== undefined) ? options.label : 'L';
-    var tipLabel = (options.tipLabel !== undefined) ?
-        options.tipLabel : 'Location';
-
-    var button = document.createElement('BUTTON');
-    button.appendChild(document.createTextNode(label));
-    button.setAttribute('type', 'button');
-    button.setAttribute('title', tipLabel);
-
-    var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' +
-        CLASS_CONTROL + ' ' + 'tracker-off';
-
-    /**
-     * @type {!Element}
-     */
-    this.element = document.createElement('DIV');
-    this.element.setAttribute('class', cssClasses);
-    this.element.appendChild(button);
-
     listen(button, 'click',
         this.handleClick_, this);
 
     listen(button, 'mouseout', function() {
       this.blur();
     });
-    super(this, {
-      element: this.element,
-      target: options.target
-    });
-
   };
 
 
