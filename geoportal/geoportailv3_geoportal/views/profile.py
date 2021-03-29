@@ -209,6 +209,11 @@ class Profile(Raster):
 
     def moving_average(self, coords, i , n, ref):
         cumulative_sum = 0
+        if i == 0 or i >= len(coords) - 1:
+            value = self.get_value(coords, i, ref)
+            if value == 0 or value is None:
+                return None
+            return value
         for index in range(i - n - 1, i + n, 1):
             if index > len(coords) - 1 or index < 0:
                 return None
@@ -216,7 +221,8 @@ class Profile(Raster):
             if value == 0 or value is None:
                 return None
             cumulative_sum = cumulative_sum + value
-        return cumulative_sum / ((n * 2) + 1)
+
+        return Decimal(str(cumulative_sum / ((n * 2) + 1))).quantize(Decimal("0.01"))
 
     def _compute_points(self):
         """Compute the alt=fct(dist) array"""
