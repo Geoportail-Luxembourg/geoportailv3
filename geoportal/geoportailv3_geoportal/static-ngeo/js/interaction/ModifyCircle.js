@@ -116,8 +116,8 @@ class ModifyCircle extends olInteractionPointer {
         useSpatialIndex: false,
         wrapX: !!options.wrapX
       }),
-      style: options.style ? options.style :
-          exports.getDefaultStyleFunction(),
+      style: options.style ? options.style : 
+        getDefaultStyleFunction(),
       updateWhileAnimating: true,
       updateWhileInteracting: true
     });
