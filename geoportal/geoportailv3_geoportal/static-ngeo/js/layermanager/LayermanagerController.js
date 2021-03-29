@@ -52,7 +52,7 @@ class Controller {
   get background() {
     let background = this.ngeoBackgroundLayerMgr_.get(this.map);
     if (background) {
-      this.activeMvt = background.getType() === 'GEOBLOCKS_MVT';
+      this.activeMvt = background.getType && background.getType() === 'GEOBLOCKS_MVT';
       this.backgroundInfo = background;
       return background.get('label');
     }
