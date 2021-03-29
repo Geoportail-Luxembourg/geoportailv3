@@ -47,9 +47,9 @@ class DrawRoute extends olInteractionPointer {
   constructor(options) {
 
     super({
-      handleDownEvent: exports.handleDownEvent_,
-      handleEvent: exports.handleEvent,
-      handleUpEvent: exports.handleUpEvent_
+      handleDownEvent: handleDownEvent_,
+      handleEvent: handleEvent,
+      handleUpEvent: handleUpEvent_
     });
     
     /**
@@ -312,97 +312,6 @@ class DrawRoute extends olInteractionPointer {
     this.updateState_();
   };
 
-
-  /**
-   * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
-   * draw or finish the drawing.
-   * @param {ol.MapBrowserEvent} event Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {app.interaction.DrawRoute}
-   * @api
-   */
-  handleEvent(event) {
-    this.freehand_ = this.mode_ !== Mode_.POINT && this.freehandCondition_(event);
-    var pass = !this.freehand_;
-    if (this.freehand_ &&
-        event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
-      this.addToDrawing_(event);
-      pass = false;
-    } else if (event.type ===
-        'pointermove') {
-      pass = this.handlePointerMove_(event);
-    } else if (event.type === olMapBrowserEventType.DBLCLICK) {
-      pass = false;
-    }
-    return super.handleEvent(event) && pass;
-  };
-
-
-  /**
-   * @param {ol.MapBrowserPointerEvent} event Event.
-   * @return {boolean} Start drag sequence?
-   * @this {app.interaction.DrawRoute}
-   * @private
-   */
-  handleDownEvent_(event) {
-    this.shouldHandle_ = !this.freehand_;
-
-    if (this.freehand_) {
-      this.downPx_ = event.pixel;
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-      }
-      return true;
-    } else if (this.condition_(event)) {
-      this.downPx_ = event.pixel;
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-
-  /**
-   * @param {ol.MapBrowserPointerEvent} event Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {app.interaction.DrawRoute}
-   * @private
-   */
-  handleUpEvent_(event) {
-    var pass = true;
-
-    this.handlePointerMove_(event);
-
-    var circleMode = this.mode_ === Mode_.CIRCLE;
-
-    if (this.shouldHandle_) {
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-        if (this.mode_ === Mode_.POINT) {
-          this.finishDrawing();
-        }
-      } else if (this.freehand_ || circleMode) {
-        this.finishDrawing();
-      } else if (this.atFinish_(event)) {
-        if (this.finishCondition_(event)) {
-          if (this.isRequestingRoute_) {
-            this.finishAfterRoute_ = true;
-          } else {
-            this.finishDrawing();
-          }
-        }
-      } else {
-        this.addToDrawing_(event);
-      }
-      pass = false;
-    } else if (this.freehand_) {
-      this.finishCoordinate_ = null;
-      this.abortDrawing_();
-    }
-    return pass;
-  };
-
-
   /**
    * Handle move events.
    * @param {ol.MapBrowserEvent} event A move event.
@@ -512,7 +421,7 @@ class DrawRoute extends olInteractionPointer {
     }
     this.sketchFeature_.setGeometry(geometry);
     this.updateSketchFeatures_();
-    this.dispatchEvent(new exports.Event(
+    this.dispatchEvent(new DrawRouteEvent(
         'drawstart', this.sketchFeature_));
   };
 
@@ -726,7 +635,7 @@ class DrawRoute extends olInteractionPointer {
     var sketchFeature = this.abortDrawing_();
 
     // First dispatch event to allow full set up of feature
-    this.dispatchEvent(new exports.Event('drawend', sketchFeature));
+    this.dispatchEvent(new DrawRouteEvent('drawend', sketchFeature));
 
     // Then insert feature
     if (this.features_) {
@@ -773,7 +682,7 @@ class DrawRoute extends olInteractionPointer {
     this.finishCoordinate_ = last.slice();
     this.sketchCoords_.push(last.slice());
     this.updateSketchFeatures_();
-    this.dispatchEvent(new exports.Event(
+    this.dispatchEvent(new DrawRouteEvent(
         'drawstart', this.sketchFeature_));
   };
 
@@ -815,6 +724,97 @@ class DrawRoute extends olInteractionPointer {
 
 };
 
+  /**
+   * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
+   * draw or finish the drawing.
+   * @param {ol.MapBrowserEvent} event Map browser event.
+   * @return {boolean} `false` to stop event propagation.
+   * @this {app.interaction.DrawRoute}
+   * @api
+   */
+   function handleEvent(event) {
+    this.freehand_ = this.mode_ !== Mode_.POINT && this.freehandCondition_(event);
+    var pass = !this.freehand_;
+    if (this.freehand_ &&
+        event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+      this.addToDrawing_(event);
+      pass = false;
+    } else if (event.type ===
+        'pointermove') {
+      pass = this.handlePointerMove_(event);
+    } else if (event.type === olMapBrowserEventType.DBLCLICK) {
+      pass = false;
+    }
+    return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
+  };
+
+
+  /**
+   * @param {ol.MapBrowserPointerEvent} event Event.
+   * @return {boolean} Start drag sequence?
+   * @this {app.interaction.DrawRoute}
+   * @private
+   */
+  function handleDownEvent_(event) {
+    this.shouldHandle_ = !this.freehand_;
+
+    if (this.freehand_) {
+      this.downPx_ = event.pixel;
+      if (!this.finishCoordinate_) {
+        this.startDrawing_(event);
+      }
+      return true;
+    } else if (this.condition_(event)) {
+      this.downPx_ = event.pixel;
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+
+  /**
+   * @param {ol.MapBrowserPointerEvent} event Event.
+   * @return {boolean} Stop drag sequence?
+   * @this {app.interaction.DrawRoute}
+   * @private
+   */
+  function handleUpEvent_(event) {
+    var pass = true;
+
+    this.handlePointerMove_(event);
+
+    var circleMode = this.mode_ === Mode_.CIRCLE;
+
+    if (this.shouldHandle_) {
+      if (!this.finishCoordinate_) {
+        this.startDrawing_(event);
+        if (this.mode_ === Mode_.POINT) {
+          this.finishDrawing();
+        }
+      } else if (this.freehand_ || circleMode) {
+        this.finishDrawing();
+      } else if (this.atFinish_(event)) {
+        if (this.finishCondition_(event)) {
+          if (this.isRequestingRoute_) {
+            this.finishAfterRoute_ = true;
+          } else {
+            this.finishDrawing();
+          }
+        }
+      } else {
+        this.addToDrawing_(event);
+      }
+      pass = false;
+    } else if (this.freehand_) {
+      this.finishCoordinate_ = null;
+      this.abortDrawing_();
+    }
+    return pass;
+  };
+
+
+
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
@@ -826,15 +826,15 @@ export const getMode_ = function(type) {
   var mode;
   if (type === olGeomGeometryType.POINT ||
       type === olGeomGeometryType.MULTI_POINT) {
-    mode = DrawRoute.Mode_.POINT;
+    mode = Mode_.POINT;
   } else if (type === olGeomGeometryType.LINE_STRING ||
       type === olGeomGeometryType.MULTI_LINE_STRING) {
-    mode = DrawRoute.Mode_.LINE_STRING;
+    mode = Mode_.LINE_STRING;
   } else if (type === olGeomGeometryType.POLYGON ||
       type === olGeomGeometryType.MULTI_POLYGON) {
-    mode = DrawRoute.Mode_.POLYGON;
+    mode = Mode_.POLYGON;
   } else if (type === olGeomGeometryType.CIRCLE) {
-    mode = DrawRoute.Mode_.CIRCLE;
+    mode = Mode_.CIRCLE;
   }
   return /** @type {!app.interaction.DrawRoute.Mode_} */ (mode);
 };
@@ -879,7 +879,7 @@ class DrawRouteEvent extends olEventsEvent {
 
 }
 
-DrawRoute.Event = Event
+DrawRoute.Event = DrawRouteEvent
 
 
 export default DrawRoute;
