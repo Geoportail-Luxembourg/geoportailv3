@@ -193,7 +193,7 @@ class Themes extends olEventsEventTarget {
          */
         function(data) {
           var themes = data['themes'];
-          return exports.findTheme_(themes, themeName);
+          return Themes.findTheme_(themes, themeName);
         });
   };
 

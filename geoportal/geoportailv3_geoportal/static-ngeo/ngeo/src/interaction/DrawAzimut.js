@@ -29,9 +29,9 @@ class DrawAzimut extends olInteractionPointer {
   constructor(options) {
     super();
 
-    this.handleDownEvent = handleDownEvent_,
-    this.handleEvent = handleEvent_,
-    this.handleUpEvent = handleUpEvent_
+    this.handleDownEvent = this.handleDownEvent_,
+    this.handleEvent = this.handleEvent_,
+    this.handleUpEvent = this.handleUpEvent_
     this.shouldStopEvent = olFunctions.FALSE;
     
     /**

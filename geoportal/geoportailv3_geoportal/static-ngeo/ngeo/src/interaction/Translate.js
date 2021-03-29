@@ -36,25 +36,25 @@ class Translate extends olInteractionTranslate {
      * @type {!Array.<ol.EventsKey>}
      * @private
      */
-     listenerKeys_ = [];
+     this.listenerKeys_ = [];
 
      /**
       * @type {!Object.<number, ol.EventsKey>}
       * @private
       */
-     featureListenerKeys_ = {};
+      this.featureListenerKeys_ = {};
  
      /**
       * @type {?ol.EventsKey}
       * @private
       */
-     keyPressListenerKey_ = null;
+      this.keyPressListenerKey_ = null;
  
      /**
       * @type {ol.Collection.<ol.Feature>}
       * @private
       */
-     myFeatures_ = options.features !== undefined ? options.features : null;
+      this.myFeatures_ = options.features !== undefined ? options.features : null;
 
      
     /**
