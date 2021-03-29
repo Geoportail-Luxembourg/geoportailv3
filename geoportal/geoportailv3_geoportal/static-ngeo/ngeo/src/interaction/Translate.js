@@ -29,8 +29,8 @@ import olSourceVector from 'ol/source/Vector.js';
  */
 class Translate extends olInteractionTranslate {
 
-  constructor() {
-    super();
+  constructor(options) {
+    super(options);
 
     /**
      * @type {!Array.<ol.EventsKey>}
@@ -156,6 +156,7 @@ class Translate extends olInteractionTranslate {
         const elem = map.getTargetElement();
         elem.style.cursor = 'default';
       }
+      if (!keys) return;
 
       keys.forEach(olEvents.unlistenByKey);
       keys.length = 0;
