@@ -745,7 +745,7 @@ class DrawRoute extends olInteractionPointer {
     } else if (event.type === olMapBrowserEventType.DBLCLICK) {
       pass = false;
     }
-    return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
+    return olInteractionPointer.prototype.handleEvent.call(this, event);
   };
 
 
