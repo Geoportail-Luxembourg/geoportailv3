@@ -218,7 +218,7 @@ class Measure extends olInteractionInteraction {
 
     olInteractionInteraction.prototype.setMap.call(this, map);
 
-    this.vectorLayer_.setMap(map);
+    // this.vectorLayer_.setMap(map);
 
     const prevMap = this.drawInteraction_.getMap();
     if (prevMap !== null) {
