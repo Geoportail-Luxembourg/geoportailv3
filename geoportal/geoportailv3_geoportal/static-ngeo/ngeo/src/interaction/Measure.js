@@ -413,73 +413,68 @@ class Measure extends olInteractionInteraction {
       this.setActive(this.drawInteraction_.getActive());
     }
   };
+
+  /**
+   * Calculate the area of the passed polygon and return a formatted string
+   * of the area.
+   * @param {!ol.geom.Polygon} polygon Polygon.
+   * @param {!ol.proj.Projection} projection Projection of the polygon coords.
+   * @param {number|undefined} precision Precision.
+   * @param {!ngeox.unitPrefix} format The format function.
+   * @return {string} Formatted string of the area.
+   * @this {ngeo.interaction.Measure}
+   */
+  getFormattedArea(polygon, projection, precision, format) {
+    const geom = /** @type {ol.geom.Polygon} */ (polygon.clone().transform(projection, 'EPSG:4326'));
+    const area = Math.abs(olSphere.getArea(geom, {'projection': 'EPSG:4326'}));
+    return format(area, 'm²', 'square', precision);
+  };
+
+  /**
+   * Calculate the area of the passed circle and return a formatted string
+   * of the area.
+   * @param {!ol.geom.Circle} circle Circle
+   * @param {number|undefined} precision Precision.
+   * @param {!ngeox.unitPrefix} format The format function.
+   * @return {string} Formatted string of the area.
+   */
+  getFormattedCircleArea(circle, precision, format) {
+    const area = Math.PI * Math.pow(circle.getRadius(), 2);
+    return format(area, 'm²', 'square', precision);
+  };
+
+  /**
+   * Calculate the length of the passed line string and return a formatted
+   * string of the length.
+   * @param {!ol.geom.LineString} lineString Line string.
+   * @param {!ol.proj.Projection} projection Projection of the line string coords.
+   * @param {number|undefined} precision Precision.
+   * @param {!ngeox.unitPrefix} format The format function.
+   * @return {string} Formatted string of length.
+   */
+  getFormattedLength(lineString, projection, precision, format) {
+    let length = 0;
+    const coordinates = lineString.getCoordinates();
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const c1 = olProj.transform(coordinates[i], projection, 'EPSG:4326');
+      const c2 = olProj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+      length += olSphere.getDistance(c1, c2);
+    }
+    return format(length, 'm', 'unit', precision);
+  };
+
+  /**
+   * Return a formatted string of the point.
+   * @param {!ol.geom.Point} point Point.
+   * @param {number|undefined} decimals Decimals.
+   * @param {!ngeox.numberCoordinates} format A function to format coordinate into text
+   * @param {string=} opt_template The template.
+   * @return {string} Formatted string of coordinate.
+   */
+  getFormattedPoint(point, decimals, format, opt_template) {
+    return format(point.getCoordinates(), decimals, opt_template);
+  };
 }
-
-
-/**
- * Calculate the area of the passed polygon and return a formatted string
- * of the area.
- * @param {!ol.geom.Polygon} polygon Polygon.
- * @param {!ol.proj.Projection} projection Projection of the polygon coords.
- * @param {number|undefined} precision Precision.
- * @param {!ngeox.unitPrefix} format The format function.
- * @return {string} Formatted string of the area.
- * @this {ngeo.interaction.Measure}
- */
-function getFormattedArea(polygon, projection, precision, format) {
-  const geom = /** @type {ol.geom.Polygon} */ (polygon.clone().transform(projection, 'EPSG:4326'));
-  const area = Math.abs(olSphere.getArea(geom, {'projection': 'EPSG:4326'}));
-  return format(area, 'm²', 'square', precision);
-};
-
-
-/**
- * Calculate the area of the passed circle and return a formatted string
- * of the area.
- * @param {!ol.geom.Circle} circle Circle
- * @param {number|undefined} precision Precision.
- * @param {!ngeox.unitPrefix} format The format function.
- * @return {string} Formatted string of the area.
- */
-function getFormattedCircleArea(circle, precision, format) {
-  const area = Math.PI * Math.pow(circle.getRadius(), 2);
-  return format(area, 'm²', 'square', precision);
-};
-
-
-/**
- * Calculate the length of the passed line string and return a formatted
- * string of the length.
- * @param {!ol.geom.LineString} lineString Line string.
- * @param {!ol.proj.Projection} projection Projection of the line string coords.
- * @param {number|undefined} precision Precision.
- * @param {!ngeox.unitPrefix} format The format function.
- * @return {string} Formatted string of length.
- */
-function getFormattedLength(lineString, projection, precision, format) {
-  let length = 0;
-  const coordinates = lineString.getCoordinates();
-  for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    const c1 = olProj.transform(coordinates[i], projection, 'EPSG:4326');
-    const c2 = olProj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-    length += olSphere.getDistance(c1, c2);
-  }
-  return format(length, 'm', 'unit', precision);
-};
-
-
-/**
- * Return a formatted string of the point.
- * @param {!ol.geom.Point} point Point.
- * @param {number|undefined} decimals Decimals.
- * @param {!ngeox.numberCoordinates} format A function to format coordinate into text
- * @param {string=} opt_template The template.
- * @return {string} Formatted string of coordinate.
- */
-function getFormattedPoint(point, decimals, format, opt_template) {
-  return format(point.getCoordinates(), decimals, opt_template);
-};
-
 
 /**
  * Handle map browser event.
