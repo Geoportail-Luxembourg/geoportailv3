@@ -2305,3 +2305,21 @@ lux.Map.prototype.destroyMap = function() {
   }
 };
 
+
+/**
+ * Transforms features into geojson
+ * @param {Array.<ol.Feature>} fArray features array.
+ * @param {olx.format.GeoJSONOptions=} opt_options Options.
+ * @return {string} The geojson string.
+ * @export
+ * @api
+ */
+lux.Map.prototype.exportGeoJSON = function(fArray, opt_options) {
+  let options = opt_options;
+  if (opt_options == undefined) {
+    options = {dataProjection: 'EPSG:4326', featureProjection: this.getView().getProjection()};
+  }
+
+  const writer = new ol.format.GeoJSON(options);
+  return writer.writeFeatures(fArray);
+}
