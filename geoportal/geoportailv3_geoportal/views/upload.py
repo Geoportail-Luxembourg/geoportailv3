@@ -2,7 +2,6 @@
 from pyramid.view import view_config
 import os
 import uuid
-import shutil
 import json
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadRequest
@@ -39,7 +38,6 @@ class Upload(object):
             data = json.loads(data)
             
             json.dump(data, output_file)
-            shutil.copyfileobj(input_file, output_file)
 
             return {"status":"OK", "id": str(id)}
 
