@@ -27,9 +27,18 @@ class Upload(object):
         with open(file_path, 'wb') as output_file:
             try:
                 data = json.load(input_file)
+
+                data["glyphs"] = data["glyphs"].replace("https://vectortiles.geoportail.lu/fonts/", "")
+
+                for source in data["sources"]:
+                    data["sources"][source]["url"] = data["sources"][source]["url"].replace("https://vectortiles.geoportail.lu/data/", "mbtiles://{").replace(".json", "}")
+           
             except:
                 return {"status":"KO"}
-            input_file.seek(0)
+            data = json.dumps(data).replace('&gt;', '>' ).replace('&lt;', '<' )
+            data = json.loads(data)
+            
+            json.dump(data, output_file)
             shutil.copyfileobj(input_file, output_file)
 
             return {"status":"OK", "id": str(id)}
