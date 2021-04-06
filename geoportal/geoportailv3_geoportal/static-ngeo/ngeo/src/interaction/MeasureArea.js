@@ -69,7 +69,7 @@ class MeasureArea extends ngeoInteractionMeasure{
     const geom = googAsserts.assertInstanceof(this.sketchFeature.getGeometry(), olGeomPolygon);
     const proj = this.getMap().getView().getProjection();
     googAsserts.assert(proj);
-    const output = ngeoInteractionMeasure.getFormattedArea(geom, proj, this.precision, this.format);
+    const output = ngeoInteractionMeasure.prototype.getFormattedArea(geom, proj, this.precision, this.format);
     const verticesCount = geom.getCoordinates()[0].length;
     let coord = null;
     if (verticesCount > 3) {
