@@ -102,7 +102,7 @@ export function getFormattedAzimutRadius(
 
   let output = exports.getFormattedAzimut(line, decimals, formatAzimut);
 
-  output += `, ${ngeoInteractionMeasure.getFormattedLength(
+  output += `, ${ngeoInteractionMeasure.prototype.getFormattedLength(
     line, projection, precision, formatLength)}`;
 
   return output;

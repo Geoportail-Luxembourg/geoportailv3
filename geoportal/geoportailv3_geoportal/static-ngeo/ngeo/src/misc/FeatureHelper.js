@@ -353,7 +353,7 @@ exports.prototype.getPolygonStyle_ = function(feature) {
     if (showMeasure && azimut !== undefined) {
       // Radius style:
       const line = this.getRadiusLine(feature, azimut);
-      const length = ngeoInteractionMeasure.getFormattedLength(
+      const length = ngeoInteractionMeasure.prototype.getFormattedLength(
         line, this.projection_, this.precision_, this.unitPrefixFormat_);
 
       styles.push(new olStyleStyle({
@@ -920,15 +920,15 @@ exports.prototype.getMeasure = function(feature) {
       measure = ngeoInteractionMeasureAzimut.getFormattedAzimutRadius(
         line, this.projection_, this.decimals_, this.precision_, this.unitPrefixFormat_, this.numberFormat_);
     } else {
-      measure = ngeoInteractionMeasure.getFormattedArea(
+      measure = ngeoInteractionMeasure.prototype.getFormattedArea(
         geometry, this.projection_, this.precision_, this.unitPrefixFormat_);
     }
   } else if (geometry instanceof olGeomLineString) {
-    measure = ngeoInteractionMeasure.getFormattedLength(
+    measure = ngeoInteractionMeasure.prototype.getFormattedLength(
       geometry, this.projection_, this.precision_, this.unitPrefixFormat_);
   } else if (geometry instanceof olGeomPoint) {
     if (this.pointFilterFn_ === null) {
-      measure = ngeoInteractionMeasure.getFormattedPoint(
+      measure = ngeoInteractionMeasure.prototype.getFormattedPoint(
         geometry, this.decimals_, this.ngeoNumberCoordinates_);
     } else {
       const coordinates = geometry.getCoordinates();
