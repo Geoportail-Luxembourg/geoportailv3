@@ -724,94 +724,94 @@ class DrawRoute extends olInteractionPointer {
 
 };
 
-  /**
-   * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
-   * draw or finish the drawing.
-   * @param {ol.MapBrowserEvent} event Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {app.interaction.DrawRoute}
-   * @api
-   */
-   function handleEvent(event) {
-    this.freehand_ = this.mode_ !== Mode_.POINT && this.freehandCondition_(event);
-    var pass = !this.freehand_;
-    if (this.freehand_ &&
-        event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
-      this.addToDrawing_(event);
-      pass = false;
-    } else if (event.type ===
-        'pointermove') {
-      pass = this.handlePointerMove_(event);
-    } else if (event.type === olMapBrowserEventType.DBLCLICK) {
-      pass = false;
+/**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
+ * draw or finish the drawing.
+ * @param {ol.MapBrowserEvent} event Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {app.interaction.DrawRoute}
+ * @api
+ */
+  function handleEvent(event) {
+  this.freehand_ = this.mode_ !== Mode_.POINT && this.freehandCondition_(event);
+  var pass = !this.freehand_;
+  if (this.freehand_ &&
+      event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+    this.addToDrawing_(event);
+    pass = false;
+  } else if (event.type ===
+      'pointermove') {
+    pass = this.handlePointerMove_(event);
+  } else if (event.type === olMapBrowserEventType.DBLCLICK) {
+    pass = false;
+  }
+  return olInteractionPointer.prototype.handleEvent.call(this, event);
+};
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} event Event.
+ * @return {boolean} Start drag sequence?
+ * @this {app.interaction.DrawRoute}
+ * @private
+ */
+function handleDownEvent_(event) {
+  this.shouldHandle_ = !this.freehand_;
+
+  if (this.freehand_) {
+    this.downPx_ = event.pixel;
+    if (!this.finishCoordinate_) {
+      this.startDrawing_(event);
     }
-    return olInteractionPointer.prototype.handleEvent.call(this, event);
-  };
+    return true;
+  } else if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
+    return true;
+  } else {
+    return false;
+  }
+};
 
 
-  /**
-   * @param {ol.MapBrowserPointerEvent} event Event.
-   * @return {boolean} Start drag sequence?
-   * @this {app.interaction.DrawRoute}
-   * @private
-   */
-  function handleDownEvent_(event) {
-    this.shouldHandle_ = !this.freehand_;
+/**
+ * @param {ol.MapBrowserPointerEvent} event Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {app.interaction.DrawRoute}
+ * @private
+ */
+function handleUpEvent_(event) {
+  var pass = true;
 
-    if (this.freehand_) {
-      this.downPx_ = event.pixel;
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
+  this.handlePointerMove_(event);
+
+  var circleMode = this.mode_ === Mode_.CIRCLE;
+
+  if (this.shouldHandle_) {
+    if (!this.finishCoordinate_) {
+      this.startDrawing_(event);
+      if (this.mode_ === Mode_.POINT) {
+        this.finishDrawing();
       }
-      return true;
-    } else if (this.condition_(event)) {
-      this.downPx_ = event.pixel;
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-
-  /**
-   * @param {ol.MapBrowserPointerEvent} event Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {app.interaction.DrawRoute}
-   * @private
-   */
-  function handleUpEvent_(event) {
-    var pass = true;
-
-    this.handlePointerMove_(event);
-
-    var circleMode = this.mode_ === Mode_.CIRCLE;
-
-    if (this.shouldHandle_) {
-      if (!this.finishCoordinate_) {
-        this.startDrawing_(event);
-        if (this.mode_ === Mode_.POINT) {
+    } else if (this.freehand_ || circleMode) {
+      this.finishDrawing();
+    } else if (this.atFinish_(event)) {
+      if (this.finishCondition_(event)) {
+        if (this.isRequestingRoute_) {
+          this.finishAfterRoute_ = true;
+        } else {
           this.finishDrawing();
         }
-      } else if (this.freehand_ || circleMode) {
-        this.finishDrawing();
-      } else if (this.atFinish_(event)) {
-        if (this.finishCondition_(event)) {
-          if (this.isRequestingRoute_) {
-            this.finishAfterRoute_ = true;
-          } else {
-            this.finishDrawing();
-          }
-        }
-      } else {
-        this.addToDrawing_(event);
       }
-      pass = false;
-    } else if (this.freehand_) {
-      this.finishCoordinate_ = null;
-      this.abortDrawing_();
+    } else {
+      this.addToDrawing_(event);
     }
-    return pass;
-  };
+    pass = false;
+  } else if (this.freehand_) {
+    this.finishCoordinate_ = null;
+    this.abortDrawing_();
+  }
+  return pass;
+};
 
 
 
