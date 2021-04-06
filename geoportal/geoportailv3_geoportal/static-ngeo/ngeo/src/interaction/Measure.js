@@ -27,8 +27,9 @@ class Measure extends olInteractionInteraction {
    * @param {ngeo.interaction.MeasureBaseOptions=} options Options
    */
   constructor(options = /** @type {ngeo.interaction.MeasureBaseOptions} */ ({})) {
-    super();
-    this.handleEvent = this.handleEvent_
+    super({
+      handleEvent: handleEvent_
+    });
 
     /**
      * The help tooltip element.
