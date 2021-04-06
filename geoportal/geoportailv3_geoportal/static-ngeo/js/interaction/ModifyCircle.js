@@ -47,11 +47,12 @@ class ModifyCircle extends olInteractionPointer {
    */
   constructor(options) {
 
-    super();
-    this.handleDownEvent = this.handleDownEvent_;
-    this.handleDragEvent = this.handleDragEvent_;
-    this.handleEvent = this.handleEvent_;
-    this.handleUpEvent = this.handleUpEvent_;
+    super({
+      handleDownEvent: handleDownEvent_,
+      handleEvent: handleEvent_,
+      handleDragEvent: handleDragEvent_,
+      handleUpEvent: handleUpEvent_
+    });
 
     /**
      * Editing vertex.
@@ -299,120 +300,6 @@ class ModifyCircle extends olInteractionPointer {
 
   /**
    * @param {ol.MapBrowserEvent} evt Event.
-   * @return {boolean} Start drag sequence?
-   * @this {app.interaction.ModifyCircle}
-   * @private
-   */
-   handleDownEvent_(evt) {
-    this.handlePointerAtPixel_(evt.pixel, evt.map);
-    this.dragSegments_ = [];
-    this.modified_ = false;
-    var vertexFeature = this.vertexFeature_;
-    if (vertexFeature) {
-      var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
-      var vertex = geometry.getCoordinates();
-      var vertexExtent = boundingExtent([vertex]);
-      var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
-      var componentSegments = {};
-      segmentDataMatches.sort(ModifyCircle.compareIndexes_);
-      for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
-        var segmentDataMatch = segmentDataMatches[i];
-        var segment = segmentDataMatch.segment;
-        var uid = getUid(segmentDataMatch.feature);
-        var depth = segmentDataMatch.depth;
-        if (depth) {
-          uid += '-' + depth.join('-'); // separate feature components
-        }
-        if (!componentSegments[uid]) {
-          componentSegments[uid] = new Array(2);
-        }
-        if (equals(segment[0], vertex) &&
-            !componentSegments[uid][0]) {
-          this.dragSegments_.push([segmentDataMatch, 0]);
-          componentSegments[uid][0] = segmentDataMatch;
-        } else if (equals(segment[1], vertex) &&
-            !componentSegments[uid][1]) {
-          this.dragSegments_.push([segmentDataMatch, 1]);
-          componentSegments[uid][1] = segmentDataMatch;
-        }
-      }
-    }
-    return !!this.vertexFeature_;
-  };
-
-
-  /**
-   * @param {ol.MapBrowserEvent} evt Event.
-   * @this {app.interaction.ModifyCircle}
-   * @private
-   */
-   handleDragEvent_(evt) {
-    this.willModifyFeatures_(evt);
-    var vertex = evt.coordinate;
-    var geometry =
-        /** @type {ol.geom.Polygon}*/ (this.dragSegments_[0][0].geometry);
-    var center = getCenter(geometry.getExtent());
-
-    var line = new olGeomLineString([center, vertex]);
-
-
-    /**
-     * @type {ol.geom.Circle}
-     */
-    var circle = new olGeomCircle(center, line.getLength());
-    var coordinates = fromCircle(circle, 64).getCoordinates();
-    this.setGeometryCoordinates_(geometry, coordinates);
-
-    this.createOrUpdateVertexFeature_(vertex);
-  };
-
-
-  /**
-   * @param {ol.MapBrowserEvent} evt Event.
-   * @return {boolean} Stop drag sequence?
-   * @this {app.interaction.ModifyCircle}
-   * @private
-   */
-  handleUpEvent_(evt) {
-    this.rBush_.clear();
-    this.writeCircleGeometry_(this.dragSegments_[0][0].feature,
-        this.dragSegments_[0][0].geometry);
-
-    if (this.modified_) {
-      this.dispatchEvent(new ModifyEvent(
-          'modifyend', this.features_, evt));
-      this.modified_ = false;
-    }
-    return false;
-  };
-
-
-  /**
-   * Handles the {@link ol.MapBrowserEvent map browser event} and may modify the
-   * geometry.
-   * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @this {app.interaction.ModifyCircle}
-   * @api
-   */
-   handleEvent_(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof olMapBrowserEvent)) {
-      return true;
-    }
-
-    var handled;
-    if (!mapBrowserEvent.map.getView().getHints()[ViewHint.INTERACTING] &&
-        mapBrowserEvent.type == 'pointermove' &&
-        !this.handlingDownUpSequence) {
-      this.handlePointerMove_(mapBrowserEvent);
-    }
-
-    return super.handleEvent(mapBrowserEvent) && !handled;
-  };
-
-
-  /**
-   * @param {ol.MapBrowserEvent} evt Event.
    * @private
    */
   handlePointerMove_(evt) {
@@ -496,6 +383,120 @@ class ModifyCircle extends olInteractionPointer {
   };
 
 }
+
+
+/**
+ * @param {ol.MapBrowserEvent} evt Event.
+ * @return {boolean} Start drag sequence?
+ * @this {app.interaction.ModifyCircle}
+ * @private
+ */
+function handleDownEvent_(evt) {
+  this.handlePointerAtPixel_(evt.pixel, evt.map);
+  this.dragSegments_ = [];
+  this.modified_ = false;
+  var vertexFeature = this.vertexFeature_;
+  if (vertexFeature) {
+    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    var vertex = geometry.getCoordinates();
+    var vertexExtent = boundingExtent([vertex]);
+    var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
+    var componentSegments = {};
+    segmentDataMatches.sort(ModifyCircle.compareIndexes_);
+    for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
+      var segmentDataMatch = segmentDataMatches[i];
+      var segment = segmentDataMatch.segment;
+      var uid = getUid(segmentDataMatch.feature);
+      var depth = segmentDataMatch.depth;
+      if (depth) {
+        uid += '-' + depth.join('-'); // separate feature components
+      }
+      if (!componentSegments[uid]) {
+        componentSegments[uid] = new Array(2);
+      }
+      if (equals(segment[0], vertex) &&
+          !componentSegments[uid][0]) {
+        this.dragSegments_.push([segmentDataMatch, 0]);
+        componentSegments[uid][0] = segmentDataMatch;
+      } else if (equals(segment[1], vertex) &&
+          !componentSegments[uid][1]) {
+        this.dragSegments_.push([segmentDataMatch, 1]);
+        componentSegments[uid][1] = segmentDataMatch;
+      }
+    }
+  }
+  return !!this.vertexFeature_;
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} evt Event.
+ * @this {app.interaction.ModifyCircle}
+ * @private
+ */
+function handleDragEvent_(evt) {
+  this.willModifyFeatures_(evt);
+  var vertex = evt.coordinate;
+  var geometry =
+      /** @type {ol.geom.Polygon}*/ (this.dragSegments_[0][0].geometry);
+  var center = getCenter(geometry.getExtent());
+
+  var line = new olGeomLineString([center, vertex]);
+
+
+  /**
+   * @type {ol.geom.Circle}
+   */
+  var circle = new olGeomCircle(center, line.getLength());
+  var coordinates = fromCircle(circle, 64).getCoordinates();
+  this.setGeometryCoordinates_(geometry, coordinates);
+
+  this.createOrUpdateVertexFeature_(vertex);
+};
+
+
+/**
+ * @param {ol.MapBrowserEvent} evt Event.
+ * @return {boolean} Stop drag sequence?
+ * @this {app.interaction.ModifyCircle}
+ * @private
+ */
+function handleUpEvent_(evt) {
+  this.rBush_.clear();
+  this.writeCircleGeometry_(this.dragSegments_[0][0].feature,
+      this.dragSegments_[0][0].geometry);
+
+  if (this.modified_) {
+    this.dispatchEvent(new ModifyEvent(
+        'modifyend', this.features_, evt));
+    this.modified_ = false;
+  }
+  return false;
+};
+
+
+/**
+ * Handles the {@link ol.MapBrowserEvent map browser event} and may modify the
+ * geometry.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @return {boolean} `false` to stop event propagation.
+ * @this {app.interaction.ModifyCircle}
+ * @api
+ */
+function handleEvent_(mapBrowserEvent) {
+  if (!(mapBrowserEvent instanceof olMapBrowserEvent)) {
+    return true;
+  }
+
+  var handled;
+  if (!mapBrowserEvent.map.getView().getHints()[ViewHint.INTERACTING] &&
+      mapBrowserEvent.type == 'pointermove' &&
+      !this.handlingDownUpSequence) {
+    this.handlePointerMove_(mapBrowserEvent);
+  }
+  return olInteractionPointer.prototype.handleEvent.call(this, mapBrowserEvent);
+};
+
 
 /**
  * @param {SegmentDataType} a The first segment data.
