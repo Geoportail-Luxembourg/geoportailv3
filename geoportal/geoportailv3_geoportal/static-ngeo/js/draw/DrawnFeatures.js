@@ -292,55 +292,56 @@ exports.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
         }
       }
     }
-    console.assert(remoteFeatures !== null);
-    remoteFeatures.forEach(function(feature) {
-      var properties = feature.getProperties();
-      for (var key in this.SHORT_PARAM_) {
-        if (properties[this.SHORT_PARAM_[key]]) {
-          feature.set(key, properties[this.SHORT_PARAM_[key]]);
-          feature.unset(this.SHORT_PARAM_[key]);
+    if (remoteFeatures !== null) {
+      remoteFeatures.forEach((feature) => {
+        var properties = feature.getProperties();
+        for (var key in this.SHORT_PARAM_) {
+          if (properties[this.SHORT_PARAM_[key]]) {
+            feature.set(key, properties[this.SHORT_PARAM_[key]]);
+            feature.unset(this.SHORT_PARAM_[key]);
+          }
         }
-      }
-      var order = /** @type {string} */ (feature.get('display_order'));
-      if (order === undefined) {
-        order = remoteFeatures.indexOf(feature);
-      }
+        var order = /** @type {string} */ (feature.get('display_order'));
+        if (order === undefined) {
+          order = remoteFeatures.indexOf(feature);
+        }
 
-      var opacity = /** @type {string} */ (feature.get('opacity'));
-      if (opacity === undefined) {
-        opacity = 0;
-      }
+        var opacity = /** @type {string} */ (feature.get('opacity'));
+        if (opacity === undefined) {
+          opacity = 0;
+        }
 
-      feature.set('opacity', +opacity);
-      var stroke = /** @type {string} */ (feature.get('stroke'));
-      if (isNaN(stroke)) {
-        stroke = 2;
-      }
-      feature.set('stroke', +stroke);
-      var size = /** @type {string} */ (feature.get('size'));
-      if (isNaN(size)) {
-        size = 10;
-      }
-      feature.set('size', +size);
+        feature.set('opacity', +opacity);
+        var stroke = /** @type {string} */ (feature.get('stroke'));
+        if (isNaN(stroke)) {
+          stroke = 2;
+        }
+        feature.set('stroke', +stroke);
+        var size = /** @type {string} */ (feature.get('size'));
+        if (isNaN(size)) {
+          size = 10;
+        }
+        feature.set('size', +size);
 
-      var angle = /** @type {string} */ (feature.get('angle'));
-      if (isNaN(angle)) {
-        angle = 0;
-      }
-      feature.set('angle', +angle);
-      var isLabel = /** @type {string} */ (feature.get('isLabel'));
-      feature.set('isLabel', isLabel === 'true');
-      var isCircle = /** @type {string} */ (feature.get('isCircle'));
-      feature.set('isCircle', isCircle === 'true');
-      var showOrientation = /** @type {string} */
-          (feature.get('showOrientation'));
-      feature.set('showOrientation', showOrientation === 'true');
+        var angle = /** @type {string} */ (feature.get('angle'));
+        if (isNaN(angle)) {
+          angle = 0;
+        }
+        feature.set('angle', +angle);
+        var isLabel = /** @type {string} */ (feature.get('isLabel'));
+        feature.set('isLabel', isLabel === 'true');
+        var isCircle = /** @type {string} */ (feature.get('isCircle'));
+        feature.set('isCircle', isCircle === 'true');
+        var showOrientation = /** @type {string} */
+            (feature.get('showOrientation'));
+        feature.set('showOrientation', showOrientation === 'true');
 
-      feature.set('__map_id__', undefined);
-      feature.setStyle(featureStyleFunction);
-    }.bind(this));
+        feature.set('__map_id__', undefined);
+        feature.setStyle(featureStyleFunction);
+      });
 
-    this.features.extend(remoteFeatures);
+      this.features.extend(remoteFeatures);
+    }
   }
 };
 
