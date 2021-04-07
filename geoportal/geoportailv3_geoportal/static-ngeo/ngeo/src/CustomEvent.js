@@ -15,7 +15,7 @@ class CustomEvent extends olEventsEvent{
 
   constructor(type, detail = {}) {
 
-    super()
+    super(type)
 
     /**
      * @type {T}
