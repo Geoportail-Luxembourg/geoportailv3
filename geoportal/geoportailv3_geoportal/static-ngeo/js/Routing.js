@@ -169,13 +169,13 @@ exports.prototype.reorderRoute = function() {
   this.routesOrder.splice(0, this.routesOrder.length);
 
   var idx = 1;
-  this.features.forEach(function(curFeature) {
+  this.features.forEach((curFeature) => {
     this.routesOrder.push(idx - 1);
     if (curFeature.getGeometry() !== undefined) {
       curFeature.set('name', '' + idx);
       idx++;
     }
-  }, this);
+  });
 };
 
 /**
