@@ -72,6 +72,12 @@ module.exports = {
     path: '/etc/static-ngeo/',
     publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '.__ENTRY_POINT__static-ngeo/'
   },
+  devServer: {
+    publicPath: '${VISIBLE_WEB_PROTOCOL}://${VISIBLE_WEB_HOST}${VISIBLE_ENTRY_POINT}dev/',
+    port: 8080,
+    host: 'webpack_dev_server',
+    hot: true,
+  },
   entry: entry,
   module: {
     rules
