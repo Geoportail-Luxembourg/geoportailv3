@@ -378,7 +378,7 @@ export function handleDownEvent_(evt) {
     var vertex = geometry.getCoordinates();
     var vertexExtent = boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
-    segmentDataMatches.sort(exports.compareIndexes_);
+    segmentDataMatches.sort(compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       if (segmentDataMatch.feature !== undefined &&
@@ -433,7 +433,7 @@ export function handleEvent(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
+  return olInteractionPointer.prototype.handleEvent.call(this, mapBrowserEvent);
 };
 
 /**
