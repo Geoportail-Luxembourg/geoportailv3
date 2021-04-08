@@ -77,7 +77,7 @@ class MeasureAzimut extends ngeoInteractionMeasure {
   handleMeasure(callback) {
     const geom = googAsserts.assertInstanceof(this.sketchFeature.getGeometry(), olGeomGeometryCollection);
     const line = googAsserts.assertInstanceof(geom.getGeometries()[0], olGeomLineString);
-    const output = exports.getFormattedAzimutRadius(
+    const output = getFormattedAzimutRadius(
       line, googAsserts.assertInstanceof(this.getMap().getView().getProjection(), olProjProjection),
       this.decimals, this.precision, this.unitPrefixFormat, this.numberFormat);
     callback(output, line.getLastCoordinate());
@@ -100,7 +100,7 @@ class MeasureAzimut extends ngeoInteractionMeasure {
 export function getFormattedAzimutRadius(
   line, projection, decimals, precision, formatLength, formatAzimut) {
 
-  let output = exports.getFormattedAzimut(line, decimals, formatAzimut);
+  let output = getFormattedAzimut(line, decimals, formatAzimut);
 
   output += `, ${ngeoInteractionMeasure.prototype.getFormattedLength(
     line, projection, precision, formatLength)}`;
@@ -116,7 +116,7 @@ export function getFormattedAzimutRadius(
  * @return {string} Formatted measure.
  */
 export function getFormattedAzimut(line, decimals, format) {
-  const azimut = exports.getAzimut(line);
+  const azimut = getAzimut(line);
   return `${format(azimut, decimals)}°`;
 };
 
