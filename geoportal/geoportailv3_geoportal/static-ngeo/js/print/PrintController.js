@@ -444,31 +444,6 @@ exports.prototype.$onInit = function() {
  */
 exports.prototype.changeScale = function(newScale) {
   this['scale'] = newScale;
-
-  var map = this.map_;
-
-  var mapSize = map.getSize();
-  console.assert(mapSize !== undefined && mapSize !== null);
-
-  var layoutIdx = this['layouts'].indexOf(this['layout']);
-  console.assert(layoutIdx >= 0);
-
-  var optimalResolution = this.printUtils_.getOptimalResolution(
-      /** @type {Array<number>} */ (mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
-
-  var view = map.getView();
-  var currentResolution = view.getResolution();
-
-  if (currentResolution < optimalResolution) {
-    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
-    console.assert(newResolution >= optimalResolution);
-    view.animate({
-      duration: 250,
-      easing: easeOut,
-      resolution: currentResolution
-    });
-  }
-
   map.render();
 };
 
