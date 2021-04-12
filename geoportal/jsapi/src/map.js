@@ -915,6 +915,16 @@ lux.Map.prototype.showLayerInfoPopup = function(show) {
 };
 
 /**
+ * Set the information callback function.
+ * @param {function()=|undefined} layerInfoCb The callback function.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setLayerInfoCb = function(layerInfoCb) {
+  this.layerInfoCb_ = layerInfoCb;
+};
+
+/**
  * Get the area of a geometry in square meters.
  * @param {ol.geom.Geometry} geometry The geometry the get the area.
  * @return {number} The spherical area (in square meters).
