@@ -23,7 +23,7 @@ class Upload(object):
         file_path = os.path.join(dir, '%s.json' %id)
 
         input_file.seek(0)
-        with open(file_path, 'wb') as output_file:
+        with open(file_path, 'w') as output_file:
             try:
                 data = json.load(input_file)
 
