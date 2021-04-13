@@ -2,7 +2,6 @@
 from pyramid.view import view_config
 import os
 import uuid
-import shutil
 import json
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadRequest
@@ -27,10 +26,18 @@ class Upload(object):
         with open(file_path, 'wb') as output_file:
             try:
                 data = json.load(input_file)
+
+                data["glyphs"] = data["glyphs"].replace("https://vectortiles.geoportail.lu/fonts/", "")
+
+                for source in data["sources"]:
+                    data["sources"][source]["url"] = data["sources"][source]["url"].replace("https://vectortiles.geoportail.lu/data/", "mbtiles://{").replace(".json", "}")
+           
             except:
                 return {"status":"KO"}
-            input_file.seek(0)
-            shutil.copyfileobj(input_file, output_file)
+            data = json.dumps(data).replace('&gt;', '>' ).replace('&lt;', '<' )
+            data = json.loads(data)
+            
+            json.dump(data, output_file)
 
             return {"status":"OK", "id": str(id)}
 
