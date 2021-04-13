@@ -265,6 +265,7 @@ class DrawRoute extends olInteractionPointer {
      * @private
      */
     this.overlay_ = new olLayerVector({
+      role: 'DrawRoute',
       source: new olSourceVector({
         useSpatialIndex: false,
         wrapX: options.wrapX ? options.wrapX : false

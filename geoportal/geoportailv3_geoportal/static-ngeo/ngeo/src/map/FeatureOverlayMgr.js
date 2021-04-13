@@ -60,6 +60,7 @@ const exports = function() {
    * @private
    */
   this.layer_ = new olLayerVector({
+    role: 'FeatureOverlayMgr',
     source: this.source_,
     style: this.styleFunction_.bind(this),
     updateWhileAnimating: true,
