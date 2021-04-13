@@ -89,6 +89,7 @@ class ClipLine extends olInteractionPointer {
      * @private
      */
     this.overlay_ = new olLayerVector({
+      role: 'ClipLine',
       source: new olSourceVector({
         useSpatialIndex: false,
         wrapX: !!options.wrapX
