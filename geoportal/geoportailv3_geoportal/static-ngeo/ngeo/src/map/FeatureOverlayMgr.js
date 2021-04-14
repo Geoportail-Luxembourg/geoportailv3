@@ -143,7 +143,9 @@ exports.prototype.getFeatureOverlay = function() {
  * @export
  */
 exports.prototype.init = function(map) {
-  this.layer_.setMap(map);
+  try {
+    this.layer_.setMap(map);
+  } catch (e) {}
 };
 
 
