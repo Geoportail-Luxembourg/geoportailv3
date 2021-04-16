@@ -197,6 +197,10 @@ class LuxPrintProxy(PrintProxy):
         spec = json.loads(self.request.body.decode("utf-8").replace(".app.geoportail", ".geoportail").replace("vectortiles.geoportail.lu", "vectortiles-print.geoportail.lu"))
 
         for map_layer in spec["attributes"]["map"]["layers"]:
+            if "type" in map_layer and "OSM" == map_layer["type"]:
+                if "baseURL" in map_layer:
+                    if map_layer["baseURL"].count("-") == 1:
+                        map_layer["baseURL"] = map_layer["baseURL"].replace("vectortiles-print.geoportail.lu", "vectortiles-print-fix.geoportail.lu")
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
                 if "customParams" in map_layer:
