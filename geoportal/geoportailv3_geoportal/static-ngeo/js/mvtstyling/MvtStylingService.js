@@ -185,18 +185,20 @@ class MvtStylingService {
             const interval = setInterval(() => {
                 try {
                     clearInterval(interval);
-                    this.publishStyle(bgLayer).then((result) => {
-                        // for OL-Cesium to refresh the background layer counterpart
-                        // and thus request tiles with custom style
-                        this.backgroundLayerMgr_.set(map, bgLayer);
+                    let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
+                    if (lsData !== null) {
+                      this.publishStyle(bgLayer).then((result) => {
+                          // for OL-Cesium to refresh the background layer counterpart
+                          // and thus request tiles with custom style
+                          this.backgroundLayerMgr_.set(map, bgLayer);
 
-                        // For deprovisionning, keep the id stored
-                        let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
-                        if (lsData !== null) {
-                          lsData.serial = result;
-                          window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
-                        }
-                    });
+                          // For deprovisionning, keep the id stored
+                          if (lsData !== null) {
+                            lsData.serial = result;
+                            window.localStorage.setItem(bgLayer.get('label'), JSON.stringify(lsData));
+                          }
+                      });
+                    }
                 } catch (error) {
                     console.log(error);
                     return;
