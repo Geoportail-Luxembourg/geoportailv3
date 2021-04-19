@@ -272,13 +272,12 @@ class Getfeatureinfo(object):
         coordinates_small_box = small_box.split(',')
         if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
             return HTTPBadRequest()
-
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box)
+            coordinates_small_box, results, layers, big_box, None)
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, geometry=None):
+                 results, layers, big_box, p_geometry=None):
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if (luxgetfeaturedefinition is not None and
@@ -304,7 +303,7 @@ class Getfeatureinfo(object):
                         % {'geom': luxgetfeaturedefinition.geometry_column} +\
                         query_1
                 if fid is None:
-                    if geometry is None:
+                    if p_geometry is None:
                         query_point = query_1 + "ST_Intersects( %(geom)s, "\
                             "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
                             "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
@@ -326,7 +325,7 @@ class Getfeatureinfo(object):
                     else:
                         geometry_srs = self.request.params.get('geometry_srs', '2169')
                         query = query_1 + "ST_Intersects( %(geom)s, 'SRID=%(geometry_srs)s;%(geometry)s'::geometry)"\
-                            % {'geometry': geometry,
+                            % {'geometry': p_geometry,
                                'geom': luxgetfeaturedefinition.geometry_column,
                                'geometry_srs': geometry_srs}
                     query_limit = 20
@@ -451,7 +450,7 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.rest_url is not None and
                     len(luxgetfeaturedefinition.rest_url) > 0):
                 if fid is None:
-                    if geometry is not None:
+                    if p_geometry is not None:
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
@@ -459,7 +458,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            geometry=geometry, srs_geometry=self.request.params.get('srs', '2169'))
+                            geometry=p_geometry, srs_geometry=self.request.params.get('srs', '2169'))
                     else :
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
