@@ -2295,8 +2295,7 @@ lux.Map.prototype.getFeatureInfoByGeometry = function(evt, callback) {
     'geometry': writer.writeGeometry(evt.feature.getGeometry(), options)
   };
   var url = document.createElement('A');
-
-  url.href = lux.queryUrl.replace("map.geoportail.lu", "devrm.geoportail.lu");
+  url.href = lux.queryUrl;
 
   Object.keys(params).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + params[key];
