@@ -103,7 +103,7 @@ def main(global_config, **settings):
     config.add_route(
         "lux_report_create_and_get",
         "/printproxy/report_create_and_get.{format}",
-        request_method="GET"
+        request_method= ("GET", "POST")
     )
     config.add_route(
         "lux_printproxy_status",
