@@ -90,6 +90,18 @@ lux.Map = function(options) {
     'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
     'mae.lu', 'gouvernement.lu']
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.queryOnClick_ = true;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.queryOnDrawEnd_ = false;
+
   this.mvtLayer_ = undefined;
   /**
    * @private
@@ -499,6 +511,28 @@ lux.Map = function(options) {
 ol.inherits(lux.Map, ol.Map);
 
 
+
+/**
+ * Enable query layer after clicking on the map.
+ * @param {boolean} queryOnClick.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableQueryOnClick = function(queryOnClick) {
+  this.queryOnClick_ = !!queryOnClick;
+}
+
+
+/**
+ * Enable query layer after finishing to draw on the map.
+ * @param {boolean} queryOnDrawEnd.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableQueryOnDrawEnd = function(queryOnDrawEnd) {
+  this.queryOnDrawEnd_ = !!queryOnDrawEnd;
+}
+
 /**
  * Draw a point on the map.
  * @param {function()=|undefined} onDrawEnd the callback function.
@@ -522,6 +556,7 @@ lux.Map.prototype.enableDrawPolygon = function(onDrawEnd) {
 /**
  * Draw a polygon on the map.
  * @param {function()=|undefined} onDrawEnd the callback function.
+ * @param {boolean|undefined} queryLayer.
  * @export
  * @api
  */
@@ -573,6 +608,8 @@ lux.Map.prototype.drawType_ = function(type, onDrawEnd) {
   if (onDrawEnd !== undefined) {
    ol.events.listen(this.curDrawInteraction_, 'drawend', onDrawEnd, this);
   }
+  ol.events.listen(this.curDrawInteraction_, 'drawend', this.handleDrawendEvent_, this);
+
   this.addInteraction(this.curDrawInteraction_);
 };
 
@@ -838,6 +875,16 @@ lux.Map.prototype.getShowLayer = function() {
 lux.Map.prototype.getDrawingLayer = function() {
   return this.drawingLayer_;
 };
+
+/**
+ * Remove the drawings.
+ * @export
+ * @api
+ */
+lux.Map.prototype.removeDrawings = function() {
+  return this.drawingLayer_.getSource().clear();
+};
+
 
 /**
  * @param {string} lang Set the new language.
@@ -2205,6 +2252,64 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
 };
 
 /**
+ * @param {Object} evt The drawend event.
+ * @param {function(?)} callback The function to call.
+ * @export
+ */
+lux.Map.prototype.getFeatureInfoByGeometry = function(evt, callback) {
+  var layers = this.getLayers().getArray();
+
+  // collect the queryable layers
+  var layersToQuery = [];
+  if (this.queryableLayers_ === undefined) {
+    layers.forEach(function(layer) {
+      var metadata = layer.get('metadata');
+      if (metadata && metadata['is_queryable'] === true &&
+          layer.getVisible() && layer.getOpacity() > 0) {
+        layersToQuery.push(layer.get('id'));
+      }
+    });
+  } else {
+    this.queryableLayers_.forEach(function(layer) {
+      var layerConf = this.findLayerConf_(layer);
+      if (layerConf !== null) {
+        layersToQuery.push(layerConf.id);
+      }
+    }.bind(this));
+  }
+
+  if (!layersToQuery.length) {
+    callback.call(this, []);
+    return;
+  }
+
+  
+  this.getViewport().style.cursor = 'wait';
+  var size = this.getSize();
+  var extent = this.getView().calculateExtent(size);
+  var writer = new ol.format.WKT();
+  let options = {dataProjection: 'EPSG:2169', featureProjection: 'EPSG:3857'};
+
+  var params = {
+    'layers': layersToQuery.join(),
+    'geometry': writer.writeGeometry(evt.feature.getGeometry(), options)
+  };
+  var url = document.createElement('A');
+
+  url.href = lux.queryUrl.replace("map.geoportail.lu", "devrm.geoportail.lu");
+
+  Object.keys(params).forEach(function(key) {
+    url.search = url.search + '&' + key + '=' + params[key];
+  });
+  fetch(url.toString()).then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    this.getViewport().style.cursor = '';
+    callback.call(this, json);
+  }.bind(this));
+};
+
+/**
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
  *      style The style of the show layer.
  * @export
@@ -2214,13 +2319,86 @@ lux.Map.prototype.setShowlayerStyle = function(style) {
   this.showLayer_.setStyle(style);
 };
 
+
+/**
+ * @param {Object} evt The event.
+ * @private
+ */
+lux.Map.prototype.handleDrawendEvent_ = function(evt) {
+  if (!this.queryOnDrawEnd_) {
+    return;
+  }
+  this.removeInfoPopup();
+
+  this.showLayer_.getSource().clear();
+
+  this.getFeatureInfoByGeometry(evt, function(json) {
+    if (!json || !json.length) {
+      this.showLayer_.getSource().clear();
+      return;
+    }
+    // each item in the result corresponds to a layer
+    var htmls = [];
+    json.forEach(function(resultLayer) {
+      var curHtml = undefined;
+      if ('tooltip' in resultLayer) {
+        if (this.popupTarget_ !== undefined && this.popupClass_ !== undefined) {
+          curHtml = '<div class="' + this.popupClass_ +
+            '_' + resultLayer['layer'] + '">' +
+            resultLayer['tooltip'] + '</div>';
+        } else{
+          curHtml = resultLayer['tooltip'];
+        }
+      }
+      var features = this.readJsonFeatures_(resultLayer);
+      if (this.layerInfoCb_ !== undefined) {
+        this.layerInfoCb_.call(this, features);
+      }
+
+      if (features.length != 0) {
+        this.showLayer_.getSource().addFeatures(features);
+        if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {
+          curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
+        }
+      }
+      if (curHtml !== undefined) {
+        htmls.push(curHtml);
+      }
+    }.bind(this));
+    if (this.showLayerInfoPopup_) {
+      if (this.popupTarget_) {
+        this.popupTarget_.innerHTML = htmls.join('');
+      } else {
+        var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+          this.removeOverlay(this.queryPopup_);
+        }.bind(this));
+        this.queryPopup_ = new ol.Overlay({
+          element: element,
+          position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+          positioning: 'bottom-center',
+          offset: [0, -20],
+          insertFirst: false,
+          autoPan: this.popupAutoPan_
+        });
+        this.addOverlay(this.queryPopup_);
+        this.renderSync();
+        this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+      }
+    }
+  }.bind(this));
+
+};
+
+
 /**
  * @param {Object} evt The event.
  * @private
  */
 lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   this.removeInfoPopup();
-
+  if (!this.queryOnClick_) {
+    return;
+  }
   if ((this.curDrawInteraction_ !== undefined) || (!this.showLayerInfoPopup_ && this.layerInfoCb_ === undefined)) {
     return;
   }
