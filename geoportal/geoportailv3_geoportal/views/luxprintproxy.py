@@ -75,12 +75,14 @@ _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 cache_region = get_region()
 
-
 class LuxPrintProxy(PrintProxy):
-    @view_config(route_name="lux_report_create_and_get")
+    @view_config(route_name="lux_report_create_and_get", renderer='geojson')
     def lux_report_create_and_get(self):
-        #spec = self.request.body.decode("utf-8")
-        spec = json.loads(self.request.params.get('spec', None))
+        if 'spec' in self.request.GET:
+            spec = self.request.GET['spec']
+        if 'spec' in self.request.POST:
+            spec = self.request.POST['spec']
+        spec = json.loads(spec)
         print_url = self.config["print_url"]
         resp, content = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
 
