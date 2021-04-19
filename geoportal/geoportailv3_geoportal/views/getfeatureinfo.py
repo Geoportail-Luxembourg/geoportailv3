@@ -1117,7 +1117,7 @@ class Getfeatureinfo(object):
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None,
-                           where_clause=None, use_auth=False, geometry=None, srs_geometry=None):
+                           where_clause=None, use_auth=False, p_geometry=None, srs_geometry=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -1184,8 +1184,8 @@ class Getfeatureinfo(object):
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
             body['spatialRel'] = 'esriSpatialRelIntersects'
-        elif geometry is not None:
-            s = shape(wkt_loads(geometry))
+        elif p_geometry is not None:
+            s = shape(wkt_loads(p_geometry))
             if s.geom_type == 'LineString':
                 coords = []
                 for coord in list(s.coords):
@@ -1219,15 +1219,18 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
+            log.error(query)
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
         except ESRITokenException as e:
-            raise HTTPBadGateway(e)
+            log.exception(e)
+            log.error(url)
+            content = "{}"
         except Exception as e:
             log.exception(e)
             log.error(url)
-            return []
+            content = "{}"
 
         features = []
         try:
