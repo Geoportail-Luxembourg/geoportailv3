@@ -458,7 +458,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            geometry=p_geometry, srs_geometry=self.request.params.get('srs', '2169'))
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', '2169'))
                     else :
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
