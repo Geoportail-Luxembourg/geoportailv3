@@ -1219,7 +1219,6 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
-            log.error(query)
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
