@@ -50,7 +50,7 @@ class Casipo(object):
             data = f
             # YYYYMMJJ_Commune_Extrait_CASIPO_nn.pdf
             commune = ""
-            sql = "select commune_administrative FROM DIFFDATA.communes_adm_cad_sections WHERE code_commune = " + str(int(num[0:3])) + " GROUP BY commune_administrative"
+            sql = "select replace(commune_administrative , '/', '_') as commune_administrative FROM DIFFDATA.communes_adm_cad_sections WHERE code_commune = " + str(int(num[0:3])) + " GROUP BY commune_administrative"
             results = db_ecadastre.execute(sql)
             for res in results:
                 commune = res['commune_administrative']
