@@ -6,8 +6,7 @@ import {INCHES_PER_METER, DOTS_PER_INCH} from 'ngeo/print/Utils.js';
 /**
  * @extends {Layer<any>}
  */
-export default class Mask extends Layer {
-
+ export default class Mask extends Layer {
   constructor(options = {}) {
 
     super(options);
