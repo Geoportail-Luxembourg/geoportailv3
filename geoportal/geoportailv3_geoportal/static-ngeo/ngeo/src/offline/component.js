@@ -5,11 +5,11 @@ import ngeoMapFeatureOverlayMgr from 'ngeo/map/FeatureOverlayMgr.js';
 import ngeoMessageModalComponent from 'ngeo/message/modalComponent.js';
 import {extentToRectangle} from 'ngeo/utils.js';
 import olCollection from 'ol/Collection.js';
-import {unByKey} from 'ol/Observable.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import {DEVICE_PIXEL_RATIO} from 'ol/has.js';
+import MaskLayer from './Mask.js';
 
 /**
  * @type {!angular.Module}
@@ -110,6 +110,11 @@ exports.Controller = class {
     this.$timeout_ = $timeout;
 
     /**
+     * @private
+     */
+     this.maskLayer_ = undefined;
+
+    /**
      * @type {ngeo.offline.ServiceManager}
      * @private
      */
@@ -160,18 +165,6 @@ exports.Controller = class {
     this.overlayCollection_ = new olCollection();
 
     this.featuresOverlay_.setFeatures(this.overlayCollection_);
-
-    /**
-     * @type {function(ol.render.Event)}
-     */
-    this.postcomposeListener_;
-
-    /**
-     * @type {ol.EventsKey|Array.<ol.EventsKey>}
-     * @private
-     */
-    this.postComposeListenerKey_ = null;
-
 
     /**
      * @type {ol.geom.Polygon}
@@ -270,6 +263,11 @@ exports.Controller = class {
     this.estimatedLoadDataSize;
 
     /**
+     * @type {boolean}
+     */
+     this.rotateMask = false;
+
+    /**
      * @private
      * @param {ngeo.CustomEvent} event the progress event.
      */
@@ -285,11 +283,11 @@ exports.Controller = class {
 
   $onInit() {
     this.offlineMode.registerComponent(this);
-    this.postcomposeListener_ = this.createMaskPostcompose_();
     this.ngeoOfflineConfiguration_.on('progress', this.progressCallback_);
     this.maskMargin = this.maskMargin || 100;
     this.minZoom = this.minZoom || 10;
     this.maxZoom = this.maxZoom || 15;
+    this.maskLayer_ = new MaskLayer({margin: this.maskMargin, extentInMeters: this.extentSize});
   }
 
   $onDestroy() {
@@ -324,14 +322,12 @@ exports.Controller = class {
     this.menuDisplayed = false;
     this.selectingExtent = !this.selectingExtent;
 
-    if (this.postComposeListenerKey_) {
-      unByKey(this.postComposeListenerKey_);
-      this.postComposeListenerKey_ = null;
-      this.removeZoomConstraints_();
-    }
-    if (this.selectingExtent && !this.postComposeListenerKey_) {
+    this.map.removeLayer(this.maskLayer_);
+    this.removeZoomConstraints_();
+
+    if (this.selectingExtent && !this.map.getLayers().getArray().includes(this.maskLayer_)) {
       this.addZoomConstraints_();
-      this.postComposeListenerKey_ = this.map.on('postcompose', this.postcomposeListener_);
+      this.map.addLayer(this.maskLayer_);
     }
     this.map.render();
   }
@@ -488,52 +484,6 @@ exports.Controller = class {
   }
 
   /**
-   * @return {function(ol.render.Event)} Function to use as a map postcompose listener.
-   * @private
-   */
-  createMaskPostcompose_() {
-    return (evt) => {
-      const context = evt.context;
-      const frameState = evt.frameState;
-      const resolution = frameState.viewState.resolution;
-
-      const viewportWidth = frameState.size[0] * frameState.pixelRatio;
-      const viewportHeight = frameState.size[1] * frameState.pixelRatio;
-
-      const center = [viewportWidth / 2, viewportHeight / 2];
-
-      const extentLength = this.extentSize ?
-        this.extentSize / resolution * DEVICE_PIXEL_RATIO :
-        Math.min(viewportWidth, viewportHeight) - this.maskMargin * 2;
-
-      const extentHalfLength = Math.ceil(extentLength / 2);
-
-      // Draw a mask on the whole map.
-      context.beginPath();
-      context.moveTo(0, 0);
-      context.lineTo(viewportWidth, 0);
-      context.lineTo(viewportWidth, viewportHeight);
-      context.lineTo(0, viewportHeight);
-      context.lineTo(0, 0);
-      context.closePath();
-
-      // Draw the get data zone
-      const extent = this.createExtent_(center, extentHalfLength);
-
-      context.moveTo(extent[0], extent[1]);
-      context.lineTo(extent[0], extent[3]);
-      context.lineTo(extent[2], extent[3]);
-      context.lineTo(extent[2], extent[1]);
-      context.lineTo(extent[0], extent[1]);
-      context.closePath();
-
-      // Fill the mask
-      context.fillStyle = 'rgba(0, 5, 25, 0.5)';
-      context.fill();
-    };
-  }
-
-  /**
    * A polygon on the whole extent of the projection, with a hole for the offline extent.
    * @param {ol.Extent} extent An extent
    * @return {ol.geom.Polygon} Polygon to save, based on the projection extent, the center of the map and
@@ -549,27 +499,13 @@ exports.Controller = class {
   }
 
   /**
-   * @param {ol.Coordinate} center, a xy point.
-   * @param {number} halfLength a half length of a square's side.
-   * @return {Array.<number>} an extent.
-   * @private
-   */
-  createExtent_(center, halfLength) {
-    const minx = center[0] - halfLength;
-    const miny = center[1] - halfLength;
-    const maxx = center[0] + halfLength;
-    const maxy = center[1] + halfLength;
-    return [minx, miny, maxx, maxy];
-  }
-
-  /**
    * @return {Array.<number>} the download extent.
    * @private
    */
   getDowloadExtent_() {
     const center = /** @type {ol.Coordinate}*/(this.map.getView().getCenter());
     const halfLength = Math.ceil(this.extentSize || this.getExtentSize_()) / 2;
-    return this.createExtent_(center, halfLength);
+    return this.maskLayer_.createExtent(center, halfLength);
   }
 
   getExtentSize_() {
