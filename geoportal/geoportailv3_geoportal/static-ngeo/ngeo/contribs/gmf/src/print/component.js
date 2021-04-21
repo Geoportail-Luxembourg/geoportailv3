@@ -6,6 +6,7 @@ import gmfBase from 'gmf/index.js';
 /** @suppress {extraRequire} */
 import gmfAuthenticationService from 'gmf/authentication/Service.js';
 
+import MaskLayer from 'ngeo/print/Mask.js';
 import gmfThemeThemes from 'gmf/theme/Themes.js';
 import googAsserts from 'goog/asserts.js';
 import ngeoMapLayerHelper from 'ngeo/map/LayerHelper.js';
@@ -244,6 +245,11 @@ exports.Controller_ = class {
      * @export
      */
     this.map;
+
+    /**
+     * @private
+     */
+     this.maskLayer_ = new MaskLayer();
 
     /**
      * @type {boolean}
@@ -496,11 +502,6 @@ exports.Controller_ = class {
     });
 
     /**
-     * @type {function(ol.render.Event)}
-     */
-    this.postcomposeListener_;
-
-    /**
      * @type {angular.$http.HttpPromise}
      * @private
      */
@@ -570,8 +571,9 @@ exports.Controller_ = class {
       getRotationFn = () => this.rotation;
     }
 
-    this.postcomposeListener_ = this.ngeoPrintUtils_.createPrintMaskPostcompose(
-      getSizeFn, this.getScaleFn.bind(this), getRotationFn);
+    this.maskLayer_.getSize = getSizeFn;
+    this.maskLayer_.getScale = this.getScaleFn.bind(this);
+    this.maskLayer_.getRotation = getRotationFn;
   }
 
 
@@ -612,7 +614,7 @@ exports.Controller_ = class {
         this.gmfPrintState_.state = exports.PrintStateEnum.NOT_IN_USE;
         // Get capabilities - On success
         this.parseCapabilities_(resp);
-        this.postComposeListenerKey_ = olEvents.listen(this.map, 'postcompose', this.postcomposeListener_);
+        this.map.addLayer(this.maskLayer_);
         this.pointerDragListenerKey_ = olEvents.listen(this.map, 'pointerdrag', this.onPointerDrag_, this);
         this.mapViewResolutionChangeKey_ = olEvents.listen(this.map.getView(), 'change:resolution', () => {
           this.scaleManuallySelected_ = false;
@@ -624,7 +626,7 @@ exports.Controller_ = class {
         this.capabilities_ = null;
       });
     } else {
-      olEvents.unlistenByKey(this.postComposeListenerKey_);
+      this.map.removeLayer(this.maskLayer_);
       olEvents.unlistenByKey(this.pointerDragListenerKey_);
       olEvents.unlistenByKey(this.mapViewResolutionChangeKey_);
       this.setRotation(0);
