@@ -169,7 +169,7 @@ class Getfeatureinfo(object):
         if layer is None:
             return HTTPBadRequest()
 
-        luxgetfeaturedefinitions = self.get_lux_feature_definition(layer)
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layer, True)
         if len(luxgetfeaturedefinitions) is not 1:
             return HTTPBadRequest()
 
@@ -634,18 +634,16 @@ class Getfeatureinfo(object):
                 "features": features,
                 "has_profile": has_profile}
 
-    def get_lux_feature_definition(self, layers):
+    def get_lux_feature_definition(self, layers, bypass_public=False):
         luxgetfeaturedefinitions = []
         try:
             if layers is not None:
                 for layer in layers.split(','):
-
                     cur_layer = DBSession.query(Layer).filter(
                         Layer.id == layer).first()
                     if cur_layer is None:
                         continue
-
-                    if not cur_layer.public:
+                    if not bypass_public and not cur_layer.public:
                         if self.request.user is None:
                             continue
                         # Check if the layer has a resctriction area
@@ -659,6 +657,7 @@ class Getfeatureinfo(object):
                         # If not restriction is set then check next layer
                         if restriction is None:
                             continue
+
                     query = DBSession.query(
                         LuxGetfeatureDefinition).filter(
                             LuxGetfeatureDefinition.layer == layer
