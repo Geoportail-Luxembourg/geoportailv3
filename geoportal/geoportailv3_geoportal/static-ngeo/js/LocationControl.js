@@ -49,6 +49,9 @@ class LocationControl extends olControlControl {
     button.setAttribute('type', 'button');
     button.setAttribute('title', tipLabel);
 
+    var className = (options.className !== undefined) ? options.className :
+        'location-button';
+
     var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' +
         CLASS_CONTROL + ' ' + 'tracker-off';
 
@@ -63,8 +66,6 @@ class LocationControl extends olControlControl {
       target: options.target
     });
 
-    var className = (options.className !== undefined) ? options.className :
-        'location-button';
     /**
      * @type {angular.$window}
      * @private
