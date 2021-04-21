@@ -1,6 +1,5 @@
 import Layer from 'ol/layer/Layer.js';
 import {createCanvasContext2D} from 'ol/dom.js';
-import {toRadians} from 'ol/math.js';
 import {DEVICE_PIXEL_RATIO} from 'ol/has.js';
 
 

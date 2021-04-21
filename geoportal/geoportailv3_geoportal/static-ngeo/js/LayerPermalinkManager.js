@@ -175,7 +175,7 @@ exports.prototype.listenPropertyChange = function(layers) {
  * @private
  */
 exports.prototype.onLayerUpdate_ = function(layers_) {
-  let layers = layers_.filter(l => !l.get('metadata').hidden);
+  let layers = layers_.filter(l => l.get('metadata') && !l.get('metadata').hidden);
 
   // Check if a layer is added or removed;
   if (layers.length !== this.layersListenerKeys_.length) {
