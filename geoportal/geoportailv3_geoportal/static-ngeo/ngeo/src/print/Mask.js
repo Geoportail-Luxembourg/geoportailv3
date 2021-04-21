@@ -1,6 +1,7 @@
 import Layer from 'ol/layer/Layer.js';
 import {createCanvasContext2D} from 'ol/dom.js';
-import {INCHES_PER_METER, DOTS_PER_INCH} from 'ngeo/print/Utils.js';
+import ngeoPrintUtils from 'ngeo/print/Utils.js';
+import {toRadians} from 'ol/math.js';
 
 
 /**
@@ -38,29 +39,30 @@ import {INCHES_PER_METER, DOTS_PER_INCH} from 'ngeo/print/Utils.js';
    * @param {import("ol/PluggableMap").FrameState} frameState
    */
   render(frameState) {
-    this.context_.canvas.width = frameState.size[0] * frameState.pixelRatio;
-    this.context_.canvas.height = frameState.size[1] * frameState.pixelRatio;
-    const center = [this.context_.canvas.width / 2, this.context_.canvas.height / 2];
+    const cwidth = this.context_.canvas.width = frameState.size[0];
+    const cheight = this.context_.canvas.height = frameState.size[1];
+    const center = [cwidth / 2, cheight / 2];
 
     // background (clockwise)
     this.context_.beginPath();
     this.context_.moveTo(0, 0);
-    this.context_.lineTo(this.context_.canvas.width, 0);
-    this.context_.lineTo(this.context_.canvas.width, this.context_.canvas.height);
-    this.context_.lineTo(0, this.context_.canvas.height);
+    this.context_.lineTo(cwidth, 0);
+    this.context_.lineTo(cwidth, cheight);
+    this.context_.lineTo(0, cheight);
     this.context_.lineTo(0, 0);
     this.context_.closePath();
 
     const size = this.getSize();
-    const height = size[1] * frameState.pixelRatio;
-    const width = size[0] * frameState.pixelRatio;
+    const height = size[1];
+    const width = size[0];
     const scale = this.getScale(frameState);
     const resolution = frameState.viewState.resolution;
 
-    const extentHalfWidth = (((width / DOTS_PER_INCH) / INCHES_PER_METER) * scale / resolution) / 2;
-    const extentHalfHeight = (((height / DOTS_PER_INCH) / INCHES_PER_METER) * scale / resolution) / 2;
+    const extentHalfWidth = (((width / ngeoPrintUtils.DOTS_PER_INCH_) / ngeoPrintUtils.INCHES_PER_METER_) * scale / resolution) / 2;
+    const extentHalfHeight = (((height / ngeoPrintUtils.DOTS_PER_INCH_) / ngeoPrintUtils.INCHES_PER_METER_) * scale / resolution) / 2;
 
-    const rotation = this.getRotation !== undefined ? this.getRotation() : 0;
+
+    const rotation = this.getRotation !== undefined ? toRadians(this.getRotation()) : 0;
 
     // diagonal = distance p1 to center.
     const diagonal = Math.sqrt(Math.pow(extentHalfWidth, 2) + Math.pow(extentHalfHeight, 2));
