@@ -155,12 +155,30 @@ const exports = class extends ngeoPrintService {
     }
     const baseURL = url.substr(0, i);
     const imageExtension = url.substr(j + 1);
-    const object = {
-      baseURL,
-      type: "OSM",
-      imageExtension
-    };
-    arr.push(object);
+    const styleName = baseURL.substr(baseURL.lastIndexOf('/styles/') + '/styles/'.length);
+    if (styleName === 'topomap' || styleName === 'roadmap' || styleName === 'topomap_gray') {
+      const object = {
+        'baseURL': 'https://wms.geoportail.lu/opendata/service',
+        'imageFormat': 'image/' + imageExtension,
+        'layers': [styleName],
+        'customParams': {
+          'TRANSPARENT': true,
+          'MAP_RESOLUTION': 127
+        },
+        'type': 'wms',
+        'opacity': 1,
+        'version': '1.1.1',
+        'useNativeAngle': true
+      }
+      arr.push(object);
+    } else {
+      const object = {
+        baseURL,
+        type: "OSM",
+        imageExtension
+      };
+      arr.push(object);
+    }
   }
 
   /**
