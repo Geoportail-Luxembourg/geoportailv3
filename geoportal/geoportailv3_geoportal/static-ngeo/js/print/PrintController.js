@@ -493,21 +493,25 @@ exports.prototype.print = function(format) {
   }
   var curLang = this.gettextCatalog.currentLanguage;
   var url = this.getHtmlLegendUrl;
-  this.layers_.forEach(function(layer) {
+  
+  // We remove the mask from the array
+  const layersArray_ = this.layers_.filter(l => l instanceof MaskLayer === false);
+
+  layersArray_.forEach((layer) => {
     var curMetadata = layer.get('metadata');
-    var metaMaxDpi = curMetadata.max_dpi;
+    var metaMaxDpi = curMetadata['max_dpi'];
     if (metaMaxDpi !== undefined) {
       var maxDpi = parseInt(metaMaxDpi, 10);
       if (dpi > maxDpi) {
         dpi = maxDpi;
       }
     }
-    var name = curMetadata.legend_name;
+    var name = curMetadata['legend_name'];
     if (name !== undefined) {
       legend.push({ 'name': name });
     } else {
       var id = layer.get('queryable_id');
-      var isExternalWms = curMetadata.isExternalWms;
+      var isExternalWms = curMetadata['isExternalWms'];
       if (isExternalWms) {
         var legendUrl = curMetadata['legendUrl'];
         var accessConstraints = curMetadata['legendAccessConstraints'];
