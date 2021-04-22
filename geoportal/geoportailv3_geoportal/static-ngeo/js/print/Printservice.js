@@ -155,10 +155,10 @@ const exports = class extends ngeoPrintService {
     }
     const baseURL = url.substr(0, i);
     const imageExtension = url.substr(j + 1);
-    const styleName = baseURL.substr(baseURL.lastIndexOf("/styles/") + "/styles/".length);
+    const styleName = baseURL.substr(baseURL.lastIndexOf('/styles/') + '/styles/'.length);
     if (styleName === 'topomap' || styleName === 'roadmap' || styleName === 'topomap_gray') {
       const object = {
-        'baseURL': "https://wms.geoportail.lu/opendata/service",
+        'baseURL': 'https://wms.geoportail.lu/opendata/service',
         'imageFormat': 'image/' + imageExtension,
         'layers': [styleName],
         'customParams': {
