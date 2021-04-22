@@ -202,7 +202,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
     metadata: {
       hidden: true
     }
-  })
+  });
+  layer.setZIndex(1000);
   this.map_.addLayer(layer)
 
   var helpMsg = gettext('Click to start drawing profile');
