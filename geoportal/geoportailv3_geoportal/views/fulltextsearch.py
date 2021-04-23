@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPInternalServerError
 from pyramid.view import view_config
 import fiona
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
-from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, get_host
 import os
 import json
 import geojson
@@ -143,9 +143,13 @@ class FullTextSearchView(object):
             filters['should'].append({"term": {"role_id": role_id}})
 
         es = get_elasticsearch(self.request)
-        search = es.search(index=get_index(self.request),
-                           body=query_body,
-                           size=limit)
+        try:
+            search = es.search(index=get_index(self.request),
+                               body=query_body,
+                               size=limit)
+        except:
+            log.error('ES error querying {} on {}'.format(get_index(self.request), get_host()))
+            return HTTPInternalServerError()
         objs = search['hits']['hits']
         features = []
 
