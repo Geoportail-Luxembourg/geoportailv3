@@ -14,7 +14,7 @@
   "devDependencies": {
     "cesium": "1.79.1",
     "@geoblocks/mapboxlayer": "0.0.6",
-    "ol-cesium": "2.12",
+    "ol-cesium": "2.12.1",
     "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
     "@sentry/browser": "^5.27",
     "@sentry/integrations": "^5.27",
