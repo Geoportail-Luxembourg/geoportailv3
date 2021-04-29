@@ -7,7 +7,8 @@
  */
 
 import appModule from '../module.js';
-import olLayerTile from 'ol/layer/Tile.js';
+import olVectorLayer from 'ol/layer/Vector';
+import olVectorSource from 'ol/source/Vector';
 
 /**
  * @constructor
@@ -20,7 +21,9 @@ const exports = function(gettextCatalog) {
    * @typedef {ol.layer.Tile}
    * @private
    */
-  this.blankLayer_ = new olLayerTile();
+  this.blankLayer_ = new olVectorLayer({
+    source: new olVectorSource({features: []})
+  });
   var blankLabel = gettextCatalog.getString('blank');
   this.blankLayer_.set('label', blankLabel);
 };
