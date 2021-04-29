@@ -16,6 +16,7 @@
 
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
+import MaskLayer from 'ngeo/print/Mask.js';
 
 class Controller {
   /**
@@ -113,6 +114,10 @@ class Controller {
 
   openMvtEditorPanel() {
     this.$rootScope.$broadcast('mvtPanelOpen');
+  }
+
+  isMaskLayer(layer) {
+    return layer instanceof MaskLayer ? true : false;
   }
 };
 
