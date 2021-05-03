@@ -142,7 +142,16 @@ exports.prototype.authenticate = function(username, password) {
   return this.http_.post(this.loginUrl_, req, config).then(
       response => {
         if (response.status == 200) {
-          this.getUserInfo();
+          this.setUserInfo(
+            response.data['login'],
+            response.data['role'],
+            response.data['role_id'],
+            response.data['mail'],
+            response.data['sn'],
+            response.data['mymaps_role'],
+            response.data['is_admin']
+          );
+          this.$rootScope.$broadcast('authenticated');
           var msg = this.gettextCatalog.getString(
               'Vous êtes maintenant correctement connecté.');
           this.notify_(msg, appNotifyNotificationType.INFO);
