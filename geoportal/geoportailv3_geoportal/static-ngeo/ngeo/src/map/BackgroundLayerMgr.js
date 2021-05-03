@@ -89,8 +89,7 @@ export default class BackgroundLayerMgr extends olObservable {
    */
   get(map) {
     const mapUid = olBase.getUid(map).toString();
-    return mapUid in this.mapUids_ ? this.ngeoLayerHelper_.getGroupFromMap(map,
-      BACKGROUNDLAYERGROUP_NAME).getLayers().item(0) : null;
+    return mapUid in this.mapUids_ ? map.getLayers().item(0) : null;
   };
 
 
@@ -104,6 +103,7 @@ export default class BackgroundLayerMgr extends olObservable {
    */
   set(map, layer) {
     const ZIndex = -200;
+    map.getTargetElement().classList.toggle('blankBackground', layer.get('role') === 'blank');
     const mapUid = olBase.getUid(map).toString();
     const previous = this.get(map);
     if (layer !== null) {
@@ -111,18 +111,17 @@ export default class BackgroundLayerMgr extends olObservable {
       this.ngeoLayerHelper_.setZIndexToFirstLevelChildren(layer, ZIndex);
     }
 
-    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, BACKGROUNDLAYERGROUP_NAME);
-
     if (previous !== null) {
       googAsserts.assert(mapUid in this.mapUids_);
       if (layer !== null) {
-        bgGroup.getLayers().setAt(0, layer);
+        layer.setVisible(true);
+        map.getLayers().setAt(0, layer);
       } else {
-        bgGroup.getLayers().removeAt(0);
+        map.getLayers().removeAt(0);
         delete this.mapUids_[mapUid];
       }
     } else if (layer !== null) {
-      bgGroup.getLayers().insertAt(0, layer);
+      map.getLayers().insertAt(0, layer);
       this.mapUids_[mapUid] = true;
     }
     /** @type {ngeox.BackgroundEvent} */
@@ -133,40 +132,6 @@ export default class BackgroundLayerMgr extends olObservable {
     this.dispatchEvent(event);
 
     return previous;
-  };
-
-  /**
-   * Return the current background layer overlay of a given map, used by the opacity slider.
-   * `null` is returned if the map does not have an opacity background layer.
-   * @param {ol.Map} map Map.
-   * @return {ol.layer.Base} layer The opacity background layer.
-   * @export
-   */
-  getOpacityBgLayer(map) {
-    const mapUid = olBase.getUid(map).toString();
-    return mapUid in this.mapUids_ ? this.ngeoLayerHelper_.getGroupFromMap(map,
-      BACKGROUNDLAYERGROUP_NAME).getLayers().item(1) : null;
-  };
-
-  /**
-   * Set an background layer overlay, used by the opacity slider.
-   * @param {ol.Map} map The map.
-   * @param {ol.layer.Base} layer The opacity background layer.
-   * @export
-   */
-  setOpacityBgLayer(map, layer) {
-    const bgGroup = this.ngeoLayerHelper_.getGroupFromMap(map, BACKGROUNDLAYERGROUP_NAME);
-    const previous = bgGroup.getLayers().remove(this.getOpacityBgLayer(map));
-    const ZIndex = -100;
-    layer.setOpacity(previous ? previous.getOpacity() : 0);
-    layer.setVisible(previous ? previous.getVisible() : true);
-    layer.setZIndex(ZIndex);
-    this.ngeoLayerHelper_.setZIndexToFirstLevelChildren(layer, ZIndex);
-
-    const index = bgGroup.getLayers().getArray().indexOf(layer);
-    if (index === -1) {
-      bgGroup.getLayers().push(layer);
-    }
   };
 
   /**
