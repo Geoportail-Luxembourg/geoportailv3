@@ -53,6 +53,7 @@ function replaceWithMVTLayer(bgLayers, target, styleConfigs) {
           });
           mvtLayer.setSource(source);
         }
+        mvtLayer.set('role', 'mapboxBackground');
         bgLayers[i] = mvtLayer;
       }
     });
@@ -172,7 +173,6 @@ class Themes extends olEventsEventTarget {
           ]);
           return bothPromises.then(([target, styleConfigs]) => {
             replaceWithMVTLayer(bgLayers, target, styleConfigs);
-            bgLayers.forEach(l => l.setZIndex(-200)); // Quickfix for uniform zindex accross all bg layers
             return bgLayers;
           });
         });
