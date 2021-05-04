@@ -212,6 +212,12 @@ lux.Map = function(options) {
 
   /**
    * @private
+   * @type {Array<ol.layer.Vector>}
+   */
+  this.showVectorLayerArray_ = [];
+
+  /**
+   * @private
    * @type {ol.source.Vector}
    */
   this.sourceDrawFeatures_ = new ol.source.Vector();
@@ -511,6 +517,20 @@ lux.Map = function(options) {
 ol.inherits(lux.Map, ol.Map);
 
 
+/**
+ * Create a new empty vector layer.
+ * @return {ol.layer.Vector} The created layer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.createVectorLayer = function() {
+  var vectorLayer = new ol.layer.Vector({
+    source: new ol.source.Vector()
+  });
+  this.showVectorLayerArray_.push(vectorLayer);
+  vectorLayer.setMap(this);
+  return vectorLayer;
+}
 
 /**
  * Enable query layer after clicking on the map.
