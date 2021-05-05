@@ -240,7 +240,7 @@ exports.prototype.isAuthenticated = function() {
     return true;
   }
 
-  if (this.hasCookie(this.appAuthtktCookieName_)) {
+  if (this.getUsername()) {
     return this.username.length > 0;
   }
 
@@ -315,25 +315,6 @@ exports.prototype.getMymapsRole = function() {
  */
 exports.prototype.getMymapsAdmin = function() {
   return this.isMymapsAdmin;
-};
-
-/**
- * @param {string} cname The cookie name.
- * @return {boolean} True if the cookie exists.
- */
-exports.prototype.hasCookie = function(cname) {
-  var name = cname + '=';
-  var ca = document.cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return true;
-    }
-  }
-  return false;
 };
 
 
