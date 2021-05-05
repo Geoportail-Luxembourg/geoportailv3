@@ -20,16 +20,10 @@ import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
  * @param {string} getuserinfoUrl The url to get information about the user.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
 const exports = function($http, $rootScope, loginUrl, logoutUrl,
-    getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
-  /**
-   * @type {string}
-   * @private
-   */
-  this.appAuthtktCookieName_ = appAuthtktCookieName;
+    getuserinfoUrl, appNotify, gettextCatalog) {
 
   /**
    * @type {ngeo.offline.Mode}
