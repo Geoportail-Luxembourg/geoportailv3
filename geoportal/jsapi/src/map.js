@@ -88,7 +88,13 @@ lux.Map = function(options) {
     'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu', 'visitmondorf.lu',
     'visitwasserbillig.lu', 'si-schengen.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'visit-wincrange.lu',
     'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
-    'mae.lu', 'gouvernement.lu']
+    'mae.lu', 'gouvernement.lu'];
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.showSelectedFeature_ = true;
 
   /**
    * @private
@@ -519,14 +525,19 @@ ol.inherits(lux.Map, ol.Map);
 
 /**
  * Create a new empty vector layer.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style The 
+ * style to apply to the layer.
  * @return {ol.layer.Vector} The created layer.
  * @export
  * @api
  */
-lux.Map.prototype.createVectorLayer = function() {
+lux.Map.prototype.createVectorLayer = function(style) {
   var vectorLayer = new ol.layer.Vector({
     source: new ol.source.Vector()
   });
+  if (style !== undefined) {
+    vectorLayer.setStyle(style);
+  }
   this.showVectorLayerArray_.push(vectorLayer);
   vectorLayer.setMap(this);
   return vectorLayer;
@@ -542,6 +553,15 @@ lux.Map.prototype.enableQueryOnClick = function(queryOnClick) {
   this.queryOnClick_ = !!queryOnClick;
 }
 
+/**
+ * If set to true, then it allows to display the clicked feature.
+ * @param {boolean} showSelectedFeature.
+ * @export
+ * @api
+ */
+lux.Map.prototype.enableShowSelectedFeature = function(showSelectedFeature) {
+  this.showSelectedFeature_ = showSelectedFeature;
+}
 
 /**
  * Enable query layer after finishing to draw on the map.
@@ -2370,9 +2390,6 @@ lux.Map.prototype.handleDrawendEvent_ = function(evt) {
         }
       }
       var features = this.readJsonFeatures_(resultLayer);
-      if (this.layerInfoCb_ !== undefined) {
-        this.layerInfoCb_.call(this, features);
-      }
 
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
@@ -2382,6 +2399,9 @@ lux.Map.prototype.handleDrawendEvent_ = function(evt) {
       }
       if (curHtml !== undefined) {
         htmls.push(curHtml);
+      }
+      if (this.layerInfoCb_ !== undefined) {
+        this.layerInfoCb_.call(this, features);
       }
     }.bind(this));
     if (this.showLayerInfoPopup_) {
@@ -2446,7 +2466,9 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       }
 
       if (features.length != 0) {
-        this.showLayer_.getSource().addFeatures(features);
+        if (this.showSelectedFeature_) {
+          this.showLayer_.getSource().addFeatures(features);
+        }
         if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {
           curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
         }
