@@ -151,7 +151,7 @@ class PF():
         if referer is not None:
             if "bodfeature" in referer and "search4naila" in referer:
                 return True
-            if "weboffice_um" in referer:
+            if "weboffice" in referer:
                 return True
         town_info = self._get_town_by_name(town_name)
 
