@@ -54,7 +54,6 @@ class Pag(object):
                  self.config["pag"]["owncloud_password"])
         oc.put_file(os.path.basename(self.filename), self.filename)
         link_info = oc.share_file_with_link(os.path.basename(self.filename))
-        log.error (link_info)
         self.link = link_info.get_link().replace(
             self.config["pag"]["owncloud_internal_url"].replace('http://', 'https://'),
             self.config["pag"]["owncloud_external_url"])
