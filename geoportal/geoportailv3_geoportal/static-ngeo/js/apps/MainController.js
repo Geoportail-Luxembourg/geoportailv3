@@ -1393,6 +1393,7 @@ MainController.prototype.createMap_ = function() {
       minZoom: 8,
       enableRotation: true,
       extent: this.maxExtent_,
+      constrainResolution: true,
       rotation,
     })
   });
