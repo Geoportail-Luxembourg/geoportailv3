@@ -93,7 +93,7 @@ services:
       - CASIPO_OWNCLOUD_PASSWORD
       - PAG_SMTP_SERVER
       - DEFAULT_MYMAPS_ROLE
-      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*  --limit-request-line=8190
       - DB_PGROUTE
       - MAILER_DIRECTORY
       - AGE_CRUES_MAP_ID
