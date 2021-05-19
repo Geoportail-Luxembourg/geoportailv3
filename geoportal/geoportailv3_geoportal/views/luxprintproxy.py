@@ -269,7 +269,7 @@ class LuxPrintProxy(PrintProxy):
         else:
             restriction = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
-                    Role.id == self.request.user.role.id)).filter(
+                    Role.id == self.request.user.settings_role.id)).filter(
                         RestrictionArea.layers.any(
                             Layer.id == internal_wms.id
                         )
