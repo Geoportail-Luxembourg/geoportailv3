@@ -172,7 +172,7 @@ class Wms:
             # Check if the layer has a restriction area
             restriction: Optional[RestrictionArea] = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
-                    Role.id == self.request.user.role.id)).filter(
+                    Role.id == self.request.user.settings_role.id)).filter(
                 RestrictionArea.layers.any(
                     Layer.id == internal_wms.id
                 )

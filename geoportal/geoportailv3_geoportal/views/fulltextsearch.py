@@ -138,7 +138,7 @@ class FullTextSearchView(object):
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
-            role_id = self.request.user.role.id
+            role_id = self.request.user.settings_role.id
             filters['should'].append({"term": {"public": True}})
             filters['should'].append({"term": {"role_id": role_id}})
 
@@ -234,7 +234,7 @@ class FullTextSearchView(object):
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
-            role_id = self.request.user.role.id
+            role_id = self.request.user.settings_role.id
             filters['should'].append({"term": {"public": True}})
             filters['should'].append({"term": {"role_id": role_id}})
 
