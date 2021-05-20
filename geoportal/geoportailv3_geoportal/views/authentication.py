@@ -6,6 +6,7 @@ from geoportailv3_geoportal.portail import Connections
 from c2cgeoportal_commons.models import DBSession
 import ldap3 as ldap
 import logging
+from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized, HTTPBadRequest
 
 log = logging.getLogger(__name__)
 
@@ -167,6 +168,9 @@ class Authentication(object):
         username = self.request.registry.validate_user(self.request, login, password)
         if username is None:
             raise HTTPUnauthorized("See server logs for details")
+        came_from = self.request.params.get("came_from")
+        if came_from:
+            return HTTPFound(location=came_from, headers=remember(self.request, username))
         self.request.response.headers = remember(self.request, username)
         self.request.user = get_user(self.request, username)
         return self.get_user_info()
