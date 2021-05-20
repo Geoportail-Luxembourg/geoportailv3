@@ -44,10 +44,7 @@ function bootstrap(module) {
 
   const interface_ = $('meta[name=interface]')[0].getAttribute('content');
   const dynamicUrl_ = $('meta[name=dynamicUrl]')[0].getAttribute('content');
-  const search = document.location ? document.location.search || '' : '';
-  const dynamicUrl = `${dynamicUrl_}?interface=${interface_}&query=${encodeURIComponent(
-    search
-  )}&path=${encodeURIComponent(document.location.pathname)}`;
+  const dynamicUrl = `${dynamicUrl_}?interface=${interface_}&path=${encodeURIComponent(document.location.pathname)}`;
   const request = $.ajax(dynamicUrl, {
     'dataType': 'json',
     'xhrFields': {
