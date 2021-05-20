@@ -103,7 +103,7 @@ export default class BackgroundLayerMgr extends olObservable {
    */
   set(map, layer) {
     const ZIndex = -200;
-    map.getTargetElement().classList.toggle('blankBackground', layer.get('role') === 'blank');
+    map.getTargetElement().classList.toggle('blankBackground', layer.get('role') === 'blank' || layer.get('role') === 'mapboxBackground');
     const mapUid = olBase.getUid(map).toString();
     const previous = this.get(map);
     if (layer !== null) {
