@@ -32,8 +32,8 @@ node_modules/url-polyfill/url-polyfill.min.js > /etc/static-ngeo/build/vendor.js
 node /etc/apiv3/jsapi/jsdoc/get-ol3-doc-ref.js > /etc/apiv3/.build/jsdocOl3.js
 
 # FIXME restore doc generation
-# node node_modules/.bin/jsdoc /etc/apiv3/jsapi/jsdoc/api/index.md -c /etc/apiv3/jsapi/jsdoc/api/conf.json  -d /app/geoportailv3_geoportal/jsapi/build/apidoc
-# cp -R /etc/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
+node node_modules/.bin/jsdoc /etc/apiv3/jsapi/jsdoc/api/index.md -c /etc/apiv3/jsapi/jsdoc/api/conf.json  -d /app/geoportailv3_geoportal/jsapi/build/apidoc
+cp -R /etc/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
 
 
 cp /etc/apiv3/node_modules/@camptocamp/closure-util/.deps/library/*/closure/goog/base.js /etc/static-ngeo/build/
