@@ -717,10 +717,8 @@ function readLineStringGeometry_(text) {
  console.assert(text.substring(0, 2) === 'l(');
  console.assert(text[text.length - 1] == ')');
  text = text.substring(2, text.length - 1);
- var flatCoordinates = this.decodeCoordinates_(text);
- var lineString = new olGeomLineString(null);
- lineString.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
- return lineString;
+ const flatCoordinates = this.decodeCoordinates_(text);
+ return new olGeomLineString(flatCoordinates, olGeomGeometryLayout.XY);
 };
 
 
@@ -743,10 +741,7 @@ function readMultiLineStringGeometry_(text) {
    flatCoordinates = this.decodeCoordinates_(lineStrings[i], flatCoordinates);
    ends[i] = flatCoordinates.length;
  }
- var multiLineString = new olGeomMultiLineString(null);
- multiLineString.setFlatCoordinates(
-     olGeomGeometryLayout.XY, flatCoordinates, ends);
- return multiLineString;
+ return new olGeomMultiLineString(flatCoordinates, olGeomGeometryLayout.XY, ends);
 };
 
 
@@ -764,9 +759,7 @@ function readPointGeometry_(text) {
  text = text.substring(2, text.length - 1);
  var flatCoordinates = this.decodeCoordinates_(text);
  console.assert(flatCoordinates.length === 2);
- var point = new olGeomPoint(null);
- point.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
- return point;
+ return new olGeomPoint(flatCoordinates, olGeomGeometryLayout.XY);
 };
 
 
@@ -783,9 +776,7 @@ function readMultiPointGeometry_(text) {
  console.assert(text[text.length - 1] == ')');
  text = text.substring(2, text.length - 1);
  var flatCoordinates = this.decodeCoordinates_(text);
- var multiPoint = new olGeomMultiPoint(null);
- multiPoint.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates);
- return multiPoint;
+ return new olGeomMultiPoint(flatCoordinates, olGeomGeometryLayout.XY);
 };
 
 
@@ -816,9 +807,7 @@ function readPolygonGeometry_(text) {
    }
    ends[i] = end;
  }
- var polygon = new olGeomPolygon(null);
- polygon.setFlatCoordinates(olGeomGeometryLayout.XY, flatCoordinates, ends);
- return polygon;
+ return new olGeomPolygon(flatCoordinates, olGeomGeometryLayout.XY, ends);
 };
 
 
@@ -853,10 +842,7 @@ function readMultiPolygonGeometry_(text) {
      ends[j] = end;
    }
  }
- var multipolygon = new olGeomMultiPolygon(null);
- multipolygon.setFlatCoordinates(
-     olGeomGeometryLayout.XY, flatCoordinates, endss);
- return multipolygon;
+ return new olGeomMultiPolygon(flatCoordinates, olGeomGeometryLayout.XY, endss);
 };
 
 
