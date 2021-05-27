@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import csv
 import json
 import logging
-from c2cgeoportal_geoportal.views.entry import Entry
+from c2cgeoportal_geoportal.views.theme import Theme
 from pyramid.i18n import make_localizer, TranslationStringFactory
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry
@@ -15,12 +15,12 @@ from pyramid.response import Response
 log = logging.getLogger(__name__)
 
 
-class JsapiEntry(Entry):
+class JsapiEntry(Theme):
     @view_config(route_name='jsapithemesfull',
                  renderer='json')
     def apithemes_full(self):
         t = []
-        themes, errors = self._themes(None, 1, u'main', True, 2, True)
+        themes, errors = self._themes(u'main', True, 0)
         client = TranslationStringFactory("geoportailv3_geoportal-client")
         registry = get_current_registry()
         dir = registry.queryUtility(ITranslationDirectories, default=[])
@@ -49,7 +49,7 @@ class JsapiEntry(Entry):
         View to return a list of layers.
         Same as the theme service but in a flat representation.
         '''
-        themes, errors = self._themes(None, 1, u'main', True, 2, True)
+        themes, errors = self._themes(u'main', True, 0)
 
         layers = {}
         # get themes layers
@@ -57,7 +57,7 @@ class JsapiEntry(Entry):
             self._extract_layers_with_path(theme, layers, [theme['name']])
 
         # get background layers
-        group, errors = self._get_group(None, u'background', None, u'main', 2)
+        group, errors = self._get_group(u'background', u'main')
 
         self._extract_layers(group, layers, True)
         l = []
@@ -115,7 +115,7 @@ class JsapiEntry(Entry):
         View to return a list of layers.
         Same as the theme service but in a flat representation.
         '''
-        themes, errors = self._themes(None, None, u'main', True, 2, True)
+        themes, errors = self._themes(u'main', True, 0)
 
         layers = {}
 
@@ -124,7 +124,7 @@ class JsapiEntry(Entry):
             self._extract_layers(theme, layers)
 
         # get background layers
-        group, errors = self._get_group(None, u'background', None, u'main', 2)
+        group, errors = self._get_group(u'background', u'main')
         self._extract_layers(group, layers, True)
         all_errors = set()
         for id in layers:
