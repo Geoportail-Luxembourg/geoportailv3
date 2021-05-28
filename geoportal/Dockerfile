@@ -8,7 +8,7 @@ ENV https_proxy $HTTPS_PROXY_URL
 
 WORKDIR /app
 
-RUN apt update && apt install openjdk-8-jdk-headless -y && apt-get dist-upgrade -y
+RUN apt update && apt install openjdk-8-jdk-headless git -y && apt-get dist-upgrade -y
 COPY package.json /app
 RUN npm set progress=false && \
     npm-packages --src=/app/package.json --dst=/tmp/npm-packages && \
@@ -75,7 +75,9 @@ COPY . /app
 COPY --chown=www-data:www-data --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
 #COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/ /etc/static-ngeo/
-COPY --from=builder /etc/apiv3/* /etc/apiv3/
+#COPY --from=builder /etc/apiv3/* /etc/apiv3/
+RUN mkdir -p /app/geoportailv3_geoportal/jsapi/build/
+COPY --from=builder /app/geoportailv3_geoportal/jsapi/build/apidoc /app/geoportailv3_geoportal/jsapi/build/apidoc
 COPY --chown=www-data:www-data --from=builder /app/alembic.ini /app/alembic.yaml ./
 #RUN chmod go+w /etc/static-ngeo/ \
 #    /app/geoportailv3_geoportal/locale/ \
