@@ -232,7 +232,7 @@ vars:
   devserver_url: http://{DEVSERVER_HOST}{VISIBLE_ENTRY_POINT}
   enable_admin_interface: true
   exclude_theme_layer_search: null
-  excluded_themes_from_search: null
+  excluded_themes_from_search: API_ONLY
   fulltextsearch:
     defaultlimit: 30
     languages: {de: german, en: english, fr: french}
