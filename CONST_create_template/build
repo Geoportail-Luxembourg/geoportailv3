@@ -27,6 +27,8 @@ def load_env(env_files):
     Parse env files and return environment as dict
     """
     env = {}
+    if  os.path.exists('env.personal'):
+        env_files.append('env.personal')
     for env_file in env_files:
         with open(env_file) as f:
             for line in f:
@@ -54,7 +56,7 @@ def main():
         match = re.match(r"^([0-9]+\.[0-9]+)\.[0-9]+$", args.upgrade)
         if match is not None:
             major_version = match.group(1)
-        match = re.match(r"^([0-9]+\.[0-9]+)\.[0-9]+\.[0-9]+$", args.upgrade)
+        match = re.match(r"^([0-9]+\.[0-9]+)\.[0-9a-z]+\.[0-9]+$", args.upgrade)
         if match is not None:
             major_version = match.group(1)
         full_version = args.upgrade if args.upgrade != "master" else "latest"
@@ -98,12 +100,15 @@ def main():
 
     default = not (args.config or args.geoportal)
 
+    docker_build = ["docker", "build"]
+    if os.environ.get("CI", "FALSE").upper() != "TRUE":
+        docker_build.append("--pull")
+
     if default or args.config:
         call(
             args.verbose,
-            [
-                "docker",
-                "build",
+            docker_build
+            + [
                 "--tag={}-config{}".format(base, tag),
                 "--build-arg=PGSCHEMA=" + schema,
                 ".",
@@ -113,9 +118,8 @@ def main():
         git_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip().decode()
         call(
             args.verbose,
-            [
-                "docker",
-                "build",
+            docker_build
+            + [
                 "--tag={}-geoportal{}".format(base, tag),
                 "--build-arg=PGSCHEMA=" + schema,
                 "--build-arg=GIT_HASH=" + git_hash,
@@ -124,9 +128,8 @@ def main():
         )
         call(
             args.verbose,
-            [
-                "docker",
-                "build",
+            docker_build
+            + [
                 "--target=builder",
                 "--tag={}-geoportal-dev{}".format(base, tag),
                 "geoportal",
