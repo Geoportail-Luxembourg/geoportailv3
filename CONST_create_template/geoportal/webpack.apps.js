@@ -21,7 +21,7 @@ for (const filename of ls(path.resolve(__dirname, 'geoportailv3_geoportal/static
       chunks: [name],
       vars: {
         entry_point: '${VISIBLE_ENTRY_POINT}',
-        version: '2.5.0.88',
+        version: '2.5.0.139',
         cache_version: '${CACHE_VERSION}',
        },
     })
