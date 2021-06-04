@@ -27,6 +27,7 @@ import os
 import sentry_sdk
 
 from sentry_sdk.integrations.pyramid import PyramidIntegration
+from c2cgeoportal_geoportal.lib import C2CPregenerator
 
 mailer = None
 
@@ -88,6 +89,8 @@ def main(global_config, **settings):
 
     # Workaround to not have the error: distutils.errors.DistutilsArgError: no commands supplied
     distutils.core._setup_stop_after = 'config'
+
+    config.add_route("lux_themes", "/themes", request_method="GET", pregenerator=C2CPregenerator(role=True))
 
     config.add_route(
         "lux_get_thumbnail",
