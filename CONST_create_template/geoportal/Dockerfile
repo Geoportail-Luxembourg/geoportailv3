@@ -1,4 +1,4 @@
-FROM camptocamp/geomapfish-tools:2.5.0.88 as builder
+FROM camptocamp/geomapfish-tools:2.5.0.139 as builder
 LABEL maintainer Camptocamp "info@camptocamp.com"
 
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN make build
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
-CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
+CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--no-inline" ]
 
 ###############################################################################
 

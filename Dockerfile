@@ -1,4 +1,4 @@
-FROM camptocamp/geomapfish-tools:2.5.0.88 as builder
+FROM camptocamp/geomapfish-tools:2.5.0.139 as builder
 
 ENV LANGUAGES="en fr de lb"
 ENV VARS_FILE=vars.yaml
@@ -55,7 +55,7 @@ RUN \
 
 ###############################################################################
 
-FROM camptocamp/geomapfish-config:2.5.0.88
+FROM camptocamp/geomapfish-config:2.5.0.139
 
 ARG PGSCHEMA
 ENV PGSCHEMA=$PGSCHEMA
@@ -74,6 +74,7 @@ RUN \
     sed 's#bind :80#bind *:443 ssl crt /etc/haproxy_dev/localhost.pem#g' /etc/haproxy/haproxy.cfg.tmpl \
         > /etc/haproxy_dev/haproxy.cfg.tmpl && \
     echo '    http-request set-header X-Forwarded-Proto https' >> /etc/haproxy_dev/haproxy.cfg.tmpl
+
 VOLUME /etc/geomapfish \
     /etc/mapserver \
     /etc/qgisserver \

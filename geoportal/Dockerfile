@@ -1,4 +1,4 @@
-FROM camptocamp/geomapfish-tools:2.5.0.88 as builder
+FROM camptocamp/geomapfish-tools:2.5.0.139 as builder
 LABEL maintainer Camptocamp "info@camptocamp.com"
 
 ARG HTTP_PROXY_URL

@@ -7,6 +7,7 @@ __pycache__/
 /.upgrade.yaml
 /.UPGRADE*
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+/env.personal
 
 # Generated with dev mode
 /geoportal/geoportailv3_geoportal/static/apihelp/index.html
