@@ -324,7 +324,7 @@ class Getfeatureinfo(object):
                         query = query_point + " UNION ALL " + query_others
                     else:
                         geometry_srs = self.request.params.get('geometry_srs', '2169')
-                        query = query_1 + "ST_Intersects( %(geom)s, 'SRID=%(geometry_srs)s;%(geometry)s'::geometry)"\
+                        query = query_1 + "ST_Intersects( ST_Transform(%(geom)s, %(geometry_srs)s), 'SRID=%(geometry_srs)s;%(geometry)s'::geometry)"\
                             % {'geometry': p_geometry,
                                'geom': luxgetfeaturedefinition.geometry_column,
                                'geometry_srs': geometry_srs}
