@@ -1079,6 +1079,7 @@ class Getfeatureinfo(object):
             return features
         except Exception as e:
             log.exception(e)
+            log.error(content)
             return []
         return []
 
