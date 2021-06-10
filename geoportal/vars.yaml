@@ -273,13 +273,16 @@ vars:
     - {name: fake_scales, type: list}
     - {name: hasRetina, type: boolean}
     - {name: is_queryable, type: boolean}
+    - {name: is_expanded, type: boolean}
     - {name: legend_name}
     - {name: link, type: url}
     - {name: link_title}
+    - {name: linked_layers, type: list}
     - {name: max_dpi, type: float}
     - {name: metadata_id}
     - {name: ogc_info_format}
     - {name: ogc_info_srs}
+    - {name: ogc_query_layers, type: list}
     - {name: page_title}
     - {name: print_img}
     - {name: print_long_txt_de}
