@@ -240,7 +240,7 @@ exports.prototype.toggle = function(node) {
       }
       map.addLayer(layer);
       if (layerMetadata.hasOwnProperty('linked_layers')) {
-        var layers = layerMetadata['linked_layers'].split(',');
+        var layers = layerMetadata['linked_layers'];
         layers.forEach(function(layerId) {
           this.appThemes_.getFlatCatalog().then(
             function(flatCatalog) {
