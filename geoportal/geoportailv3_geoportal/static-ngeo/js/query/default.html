@@ -7,8 +7,8 @@
         <span ng-if="!ctrl.isEmpty(entry['value'])">
           <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label> 
           <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          <a ng-if="layers.layerLabel != 'myenergy_solarkataster_luxemburg_solar_potentials' && ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
-          <a ng-if="layers.layerLabel == 'myenergy_solarkataster_luxemburg_solar_potentials' && ctrl.isLink(entry['value']) && entry['key'] == 'f_href'" ng-href="{{entry['value']}}" target="_blank">
+          <a ng-if="!layers.layerLabel.startswith('myenergy_solarkataster_luxemburg') && ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
+          <a ng-if="layers.layerLabel.startswith('myenergy_solarkataster_luxemburg') && ctrl.isLink(entry['value']) && entry['key'] == 'f_href'" ng-href="{{entry['value']}}" target="_blank">
           <button class="solarkatasterbutton"><span translate>Lien direct vers le calculateur d'efficacité économique</span></button></a>
         </span>
       </div>
