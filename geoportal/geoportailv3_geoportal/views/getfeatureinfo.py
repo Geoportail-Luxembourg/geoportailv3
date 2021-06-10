@@ -528,6 +528,7 @@ class Getfeatureinfo(object):
                    r['remote_template']:
                     data = ""
                     try:
+                        DBSession.rollback()
                         url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
                         data = url_remote.read()
@@ -924,6 +925,7 @@ class Getfeatureinfo(object):
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3_geoportal.PF
+        DBSession.rollback()
         pf = geoportailv3_geoportal.PF.PF()
         features = []
         for row in rows:
@@ -1050,6 +1052,7 @@ class Getfeatureinfo(object):
         query = '%s%s%s' % (url, separator, urlencode(body))
         content = ""
         try:
+            DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
             content = result.read()
         except Exception as e:

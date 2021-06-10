@@ -7,10 +7,12 @@ from sqlalchemy import func
 import logging
 import os
 import sys
-
+import ssl
 
 log = logging.getLogger(__name__)
 
+if hasattr(ssl, '_create_unverified_context'):
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 # Classe pour accéder aux attributs de la publicité foncière##
 # Les classes importées en haut ont été générées par wsdl2py
@@ -18,11 +20,16 @@ log = logging.getLogger(__name__)
 
 class PF():
     def __init__(self):
+        pf_server = 'titan.etat.lu'
+        if 'PF_SERVER' in os.environ:
+            pf_server = os.environ['PF_SERVER']
+
         self.client = \
-            Client('https://titan.etat.lu/xxpfoWS/ParcelDetailVer1Service/ParcelDetailVer1Service.wsdl')
+           Client('https://' + pf_server + '/xxpfoWS/ParcelDetailVer1Service/ParcelDetailVer1Service.wsdl')
         self.client_mesurage = \
-            Client('https://titan.etat.lu/xxpfoWS/Measure' +
-                   'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
+           Client('https://' + pf_server + '/xxpfoWS/Measure' +
+                  'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
+
         self.log = logging.getLogger(__name__)
 
     def get_client(self):
