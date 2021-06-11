@@ -458,7 +458,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', '2169'))
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')))
                     else :
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
@@ -1151,7 +1151,6 @@ class Getfeatureinfo(object):
         #
         # example:
         # http://ws.geoportail.lu/ArcGIS/rest/services/wassergis/waassergis_mxd/MapServer/45/query?text=&geometry=69000%2C124000%2C70000%2C125000&geometryType=esriGeometryEnvelope&inSR=2169&spatialRel=esriSpatialRelIntersects&where=&returnGeometry=true&outSR=&outFields=&f=pjson
-
         body = {'f': 'json',
                 'geometry': '',
                 'geometryType': '',
@@ -1165,7 +1164,7 @@ class Getfeatureinfo(object):
                 'objectIds': ''}
         if id_column is None:
             id_column = 'objectid'
-
+ 
         if use_auth:
             auth_token = get_arcgis_token(self.request, log)
             if 'token' in auth_token:
@@ -1222,6 +1221,7 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
+            log.error(query)
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
