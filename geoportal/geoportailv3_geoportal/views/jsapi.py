@@ -193,13 +193,3 @@ class JsapiEntry(Theme):
                 if bg:
                     child['isBgLayer'] = True
                 layers[child.get('id')] = child
-
-
-    @view_config(route_name="lux_themes", renderer="json")
-    def themes(self):
-        return super().themes()
-
-
-    @staticmethod
-    def is_mixed(_):
-        return True
