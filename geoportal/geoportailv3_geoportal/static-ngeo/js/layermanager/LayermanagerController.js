@@ -16,7 +16,8 @@
 
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
-import MaskLayer from 'ngeo/print/Mask.js';
+import PrintMaskLayer from 'ngeo/print/Mask.js';
+import OfflineMaskLayer from 'ngeo/offline/Mask.js';
 
 class Controller {
   /**
@@ -117,7 +118,7 @@ class Controller {
   }
 
   isMaskLayer(layer) {
-    return layer instanceof MaskLayer ? true : false;
+    return layer instanceof PrintMaskLayer || layer instanceof OfflineMaskLayer ? true : false;
   }
 };
 
