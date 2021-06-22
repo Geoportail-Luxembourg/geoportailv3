@@ -9,7 +9,7 @@
       % endif
       % if not (isinstance(feature['attributes'][attr], str) and (feature['attributes'][attr].lower().startswith("http://") or feature['attributes'][attr].lower().startswith("https://"))):
         <label>${_t('f_' + attr)| n}</label>
-        <span>${feature['attributes'][attr]| n}</span>
+        <span>${str(feature['attributes'][attr])| n}</span>
       <br>
       % endif
     % endif
