@@ -104,6 +104,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "lux_report_create_and_get",
+        "/printproxy/report_create_and_get.{format}",
+        request_method= ("GET", "POST")
+    )
+    config.add_route(
         "lux_printproxy_status",
         "/printproxy/status/{ref}.json",
         request_method="GET"
@@ -477,6 +482,8 @@ def main(global_config, **settings):
         'appcache',
         '/geoportailv3.appcache'
     )
+    config.include("pyramid_assetviews")
+    config.add_asset_views("geoportailv3_geoportal:static-ngeo/build/", filenames=['apiv3-full-async.js', 'apiv3.css'])
     # ldap
     from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
         get_user_from_request
