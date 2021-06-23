@@ -40,6 +40,13 @@ luxx.MapOptions;
 luxx.MapOptions.prototype.callback;
 
 /**
+ * Function called when an info layer is return.
+ * @type {function()|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.layerInfoCallback;
+
+/**
  * Identifier of background layer. Default to `basemap_2015_global`.
  * @type {string|undefined}
  * @api
@@ -120,6 +127,13 @@ luxx.MapOptions.prototype.layerVisibilities;
  * @api
  */
 luxx.MapOptions.prototype.layers;
+
+/**
+ * Set the presence of a ZoomToExtent control in the map. (not included by
+ * default).
+ * @type {boolean|undefined}
+ */
+luxx.MapOptions.prototype.zoomToExtent;
 
 /**
  * Set the presence of a mouse position control in the map. (not included by
@@ -518,6 +532,14 @@ luxx.FeaturesOptions.prototype.maxZoom;
  * @typedef {Object}
  */
 luxx.VectorOptions;
+
+/**
+ * Callback function called when a feature is added.
+ * @type {function() | undefined}
+ * @api
+ */
+luxx.VectorOptions.prototype.onFeatureAdd;
+
 
 /**
  * True if map should fit to the vector. Default and undefined are true.

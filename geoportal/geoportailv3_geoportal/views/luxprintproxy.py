@@ -76,8 +76,21 @@ _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 cache_region = get_region('std')
 
-
 class LuxPrintProxy(PrintProxy):
+    @view_config(route_name="lux_report_create_and_get", renderer='geojson')
+    def lux_report_create_and_get(self):
+        if 'spec' in self.request.GET:
+            spec = self.request.GET['spec']
+        if 'spec' in self.request.POST:
+            spec = self.request.POST['spec']
+        spec = json.loads(spec)
+        print_url = self.config["print_url"]
+        resp, content = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+
+        return self._build_response(
+            resp, content, NO_CACHE, "print"
+        )
+
     @view_config(route_name="lux_get_thumbnail")
     def lux_get_thumbnail(self):
         layer_id = self.request.params.get('layerid', 359)
@@ -188,6 +201,10 @@ class LuxPrintProxy(PrintProxy):
         spec = json.loads(self.request.body.decode("utf-8").replace(".app.geoportail", ".geoportail").replace("vectortiles.geoportail.lu", "vectortiles-print.geoportail.lu"))
 
         for map_layer in spec["attributes"]["map"]["layers"]:
+            if "type" in map_layer and "OSM" == map_layer["type"]:
+                if "baseURL" in map_layer:
+                    if map_layer["baseURL"].count("-") == 1:
+                        map_layer["baseURL"] = map_layer["baseURL"].replace("vectortiles-print.geoportail.lu", "vectortiles-print-fix.geoportail.lu")
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
                 if "customParams" in map_layer:

@@ -241,6 +241,7 @@ class Wms:
         # retry for other errors not related to tokens
         except:
             try:
+                DBSession.rollback()
                 # Retry to get the result
                 f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()
