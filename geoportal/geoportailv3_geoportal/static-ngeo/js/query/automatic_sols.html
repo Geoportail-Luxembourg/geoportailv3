@@ -4,12 +4,18 @@
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, 'f_')">
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
-        <span ng-if="!ctrl.isEmpty(entry['value'])">
+        <span ng-if="!ctrl.isEmpty(entry['value']) && !entry['key'].startsWith('f_LC_class_name') && !entry['key'].startsWith('f_LABEL_')">
           <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label> 
           <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          <a ng-if="!layers.layerLabel.startsWith('myenergy_solarkataster_luxemburg') && ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
-          <a ng-if="layers.layerLabel.startsWith('myenergy_solarkataster_luxemburg') && ctrl.isLink(entry['value']) && entry['key'] == 'f_href'" ng-href="{{entry['value']}}" target="_blank">
-          <button class="solarkatasterbutton"><span translate>Lien direct vers le calculateur d'efficacité économique</span></button></a>
+          <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
+        </span>
+        <span ng-if="!ctrl.isEmpty(entry['value']) && (entry['key'].startsWith('f_LC_class_name') || entry['key'].startsWith('f_LABEL_'))">
+          <label ng-if="ctrl.language == 'fr' && (entry['key'] == 'f_LC_class_name_fr' || entry['key'] == 'f_LABEL_fr')">{{entry['key'] | translate}} :</label>
+          <span ng-if="ctrl.language == 'fr' && (entry['key'] == 'f_LC_class_name_fr' || entry['key'] == 'f_LABEL_fr')" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+          <label ng-if="(ctrl.language == 'de' || ctrl.language == 'lb')&& (entry['key'] == 'f_LC_class_name_de' || entry['key'] == 'f_LABEL_de')">{{entry['key'] | translate}} :</label>
+          <span ng-if="(ctrl.language == 'de' || ctrl.language == 'lb')&& (entry['key'] == 'f_LC_class_name_de' || entry['key'] == 'f_LABEL_de')" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+          <label ng-if="ctrl.language == 'en' && (entry['key'] == 'f_LC_class_name' || entry['key'] == 'f_LABEL_eng')">{{entry['key'] | translate}} :</label>
+          <span ng-if="ctrl.language == 'en' && (entry['key'] == 'f_LC_class_name' || entry['key'] == 'f_LABEL_eng')" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
         </span>
       </div>
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">
@@ -18,6 +24,7 @@
       <div class="no-print" ng-show="feature.attributes.showProfile.active">
         <a class="btn btn-default"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
       </div>
+      
       <div ng-if="!ctrl.hasAttributes(feature)">
         <span translate>Aucune information disponible pour cette couche</span>
       </div>

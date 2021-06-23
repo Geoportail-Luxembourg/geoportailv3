@@ -64,15 +64,23 @@ function fetchAndStoreResponseHelper(url, clone) {
     .then(() => response);
 }
 
-function fetchBlobsAndStore(urls, progressCallback) {
-  let count = 0;
-  return Promise.all(urls.map(url => {
-    return fetchAndStoreResponseHelper(url)
-    .finally(() => {
-        ++count;
-        progressCallback(count / urls.length);
+function fetchBlobsAndStore(urls, progressCallback, i) {
+  if (i === undefined) {
+    i = 0;
+  }
+  let count = i;
+  const maxJob = 20;
+  const requests = urls.slice(i, i + maxJob).map((url) => {
+    return fetchAndStoreResponseHelper(url).finally(() => {
+      ++count;
+      progressCallback(count / urls.length);
     })
-  }));
+  });
+  return Promise.all(requests).finally(() => {
+    if (i < urls.length) {
+      return fetchBlobsAndStore(urls, progressCallback, i + maxJob);
+    }
+  });
 }
 
 
@@ -154,7 +162,6 @@ export default class MapBoxOffline {
 
   getUrlsPromise(style, extentByZoom) {
     const glyphUrls = this.getGlyphUrls(style);
-    
     return this.getSourcesPromise(style).then(sources => this.getTileUrls(sources, extentByZoom)).then(sourceUrls => [
       ...glyphUrls, ...sourceUrls
     ]);

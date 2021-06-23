@@ -55,7 +55,7 @@ class Pag(object):
         oc.put_file(os.path.basename(self.filename), self.filename)
         link_info = oc.share_file_with_link(os.path.basename(self.filename))
         self.link = link_info.get_link().replace(
-            self.config["pag"]["owncloud_internal_url"],
+            self.config["pag"]["owncloud_internal_url"].replace('http://', 'https://'),
             self.config["pag"]["owncloud_external_url"])
         self.link += "/download"
         os.remove(self.filename)

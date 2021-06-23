@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 import httplib2
 import json
 import yaml
+import polib
 from geojson import loads as geojson_loads
 from sqlalchemy.exc import NoSuchTableError, OperationalError, ProgrammingError
 from lingua.extractors import Extractor, Message
@@ -25,6 +26,28 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
     ESRI legend extractor
     """
     extensions = [".ini"]
+
+    # Get the keys existing in po file and not in pot file and add them
+    def _get_missing_keys(self, po_name):
+        po_path = "geoportal/geoportailv3_geoportal/locale/" + po_name
+        pot = self.messages
+        po = None
+        keys = []
+        if os.path.exists(po_path):
+            po = polib.pofile(po_path, encoding="utf-8")
+        else:
+            print("File not found")
+            return keys
+
+        for po_entry in po:
+            found = False
+            for pot_entry in pot:
+                if pot_entry.msgid == po_entry.msgid:
+                    found = True
+                    break
+            if not found:
+                keys.append(po_entry)
+        return keys
 
     def __init__(self):
         super().__init__()
@@ -64,7 +87,13 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
             init_dbsessions(settings, config_)
             try:
                 self._extract_messages()
-
+                file = "geoportailv3_geoportal-legends.pot"
+                if str(self.__class__).find('LuxembourgTooltipsExtractor') > 0:
+                    file = "geoportailv3_geoportal-tooltips.pot"
+                for attribute in self._get_missing_keys(file):
+                    self._insert_attribute(
+                        attribute.msgid,
+                        (attribute.comment, ""))
             except ProgrammingError as e:
                 print(
                     colorize(
@@ -146,10 +175,15 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
             self._load_result(result)
 
     def _load_result(self, result):
+        data = None
         if result.rest_url is not None and len(result.rest_url) > 0:
             full_url = result.rest_url + '/legend?f=pjson'
-            f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
-            data = json.load(f)
+            try:
+                f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
+                data = json.load(f)
+            except Exception as e:
+                log.error(full_url)
+                log.exception(e)
         if data is not None:
             for l in data['layers']:
                 if str(l['layerId']) in result.layers.split(','):
@@ -164,7 +198,6 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
                                                ("ogc_server_id:%s Layer:%s Sublayer"
                                                 % (result.ogc_server_id, result.layer),
                                                 l['layerName']),)
-
 
 class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
     """
@@ -321,7 +354,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                   filter(LuxGetfeatureDefinition.remote_template == False).\
                   filter(
                       LuxGetfeatureDefinition.template.in_
-                      (['default.html', 'default_table.html', 'feedbackanf.html']))  # noqa
+                      (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols']))  # noqa
 
         print("%d results" % results.count())
         for result in results:
