@@ -27,6 +27,7 @@ from c2cgeoportal_commons.models import DBSession, DBSessions
 from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, Metadata
 from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
+from shapely.wkt import loads as wkt_loads
 from functools import partial
 
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
@@ -167,7 +168,7 @@ class Getfeatureinfo(object):
         if layer is None:
             return HTTPBadRequest()
 
-        luxgetfeaturedefinitions = self.get_lux_feature_definition(layer)
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layer, True)
         if len(luxgetfeaturedefinitions) is not 1:
             return HTTPBadRequest()
 
@@ -256,6 +257,11 @@ class Getfeatureinfo(object):
 
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
+        geometry = self.request.params.get('geometry', None)
+        if geometry is not None and len(geometry) > 0:
+            return self.get_info(
+                fid, None,
+                None, results, layers, None, geometry)
         if big_box is None or small_box is None:
             return HTTPBadRequest()
 
@@ -265,13 +271,12 @@ class Getfeatureinfo(object):
         coordinates_small_box = small_box.split(',')
         if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
             return HTTPBadRequest()
-
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box)
+            coordinates_small_box, results, layers, big_box, None)
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box):
+                 results, layers, big_box, p_geometry=None):
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if (luxgetfeaturedefinition is not None and
@@ -297,27 +302,34 @@ class Getfeatureinfo(object):
                         % {'geom': luxgetfeaturedefinition.geometry_column} +\
                         query_1
                 if fid is None:
-                    query_point = query_1 + "ST_Intersects( %(geom)s, "\
-                        "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
-                        "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
-                        % {'left': coordinates_big_box[0],
-                           'bottom': coordinates_big_box[1],
-                           'right': coordinates_big_box[2],
-                           'top': coordinates_big_box[3],
-                           'geom': luxgetfeaturedefinition.geometry_column}
+                    if p_geometry is None:
+                        query_point = query_1 + "ST_Intersects( %(geom)s, "\
+                            "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
+                            "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
+                            % {'left': coordinates_big_box[0],
+                               'bottom': coordinates_big_box[1],
+                               'right': coordinates_big_box[2],
+                               'top': coordinates_big_box[3],
+                               'geom': luxgetfeaturedefinition.geometry_column}
 
-                    query_others = query_1 + "ST_Intersects( %(geom)s,"\
-                        " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
-                        " %(top)s, 2169) ) AND  ST_NRings(%(geom)s) > 0"\
-                        % {'left': coordinates_small_box[0],
-                           'bottom': coordinates_small_box[1],
-                           'right': coordinates_small_box[2],
-                           'top': coordinates_small_box[3],
-                           'geom': luxgetfeaturedefinition.geometry_column}
+                        query_others = query_1 + "ST_Intersects( %(geom)s,"\
+                            " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
+                            " %(top)s, 2169) ) AND  ST_NRings(%(geom)s) > 0"\
+                            % {'left': coordinates_small_box[0],
+                               'bottom': coordinates_small_box[1],
+                               'right': coordinates_small_box[2],
+                               'top': coordinates_small_box[3],
+                               'geom': luxgetfeaturedefinition.geometry_column}
+                        query = query_point + " UNION ALL " + query_others
+                    else:
+                        geometry_srs = self.request.params.get('geometry_srs', '2169')
+                        query = query_1 + "ST_Intersects(%(geom)s, ST_Transform('SRID=%(geometry_srs)s;%(geometry)s'::geometry,2169))"\
+                            % {'geometry': p_geometry,
+                               'geom': luxgetfeaturedefinition.geometry_column,
+                               'geometry_srs': geometry_srs}
                     query_limit = 20
                     if luxgetfeaturedefinition.query_limit is not None:
                         query_limit = luxgetfeaturedefinition.query_limit
-                    query = query_point + " UNION ALL " + query_others
                     if query_limit > 0:
                         query = query + " LIMIT " + str(query_limit)
                 else:
@@ -437,13 +449,23 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.rest_url is not None and
                     len(luxgetfeaturedefinition.rest_url) > 0):
                 if fid is None:
-                    features = self._get_external_data(
-                        luxgetfeaturedefinition.layer,
-                        luxgetfeaturedefinition.rest_url,
-                        luxgetfeaturedefinition.id_column,
-                        big_box, None, None, None,
-                        luxgetfeaturedefinition.columns_order,
-                        use_auth=luxgetfeaturedefinition.use_auth)
+                    if p_geometry is not None:
+                        features = self._get_external_data(
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.rest_url,
+                            luxgetfeaturedefinition.id_column,
+                            None, None, None, None,
+                            luxgetfeaturedefinition.columns_order,
+                            use_auth=luxgetfeaturedefinition.use_auth,
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')))
+                    else :
+                        features = self._get_external_data(
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.rest_url,
+                            luxgetfeaturedefinition.id_column,
+                            big_box, None, None, None,
+                            luxgetfeaturedefinition.columns_order,
+                            use_auth=luxgetfeaturedefinition.use_auth)
                 else:
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
@@ -505,6 +527,7 @@ class Getfeatureinfo(object):
                    r['remote_template']:
                     data = ""
                     try:
+                        DBSession.rollback()
                         url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
                         data = url_remote.read()
@@ -537,7 +560,7 @@ class Getfeatureinfo(object):
     def pixel2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
         box3857 = bbox.split(',')
         the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
-        print (self.transform_(the_box, epsg_source, epsg_dest))
+
         box2169 = shape(self.transform_(the_box, epsg_source, epsg_dest)).bounds
         if (box2169[2] - box2169[0]) > 0:
             scale_x = (box2169[2] - box2169[0]) / width
@@ -547,6 +570,8 @@ class Getfeatureinfo(object):
         return scale_x * pixels
 
     def remove_features_outside_tolerance(self, features, coords):
+        if coords is None:
+            return features
         features_to_keep = []
 
         the_box = box(float(coords[0]), float(coords[1]),
@@ -609,18 +634,16 @@ class Getfeatureinfo(object):
                 "features": features,
                 "has_profile": has_profile}
 
-    def get_lux_feature_definition(self, layers):
+    def get_lux_feature_definition(self, layers, bypass_public=False):
         luxgetfeaturedefinitions = []
         try:
             if layers is not None:
                 for layer in layers.split(','):
-
                     cur_layer = DBSession.query(Layer).filter(
                         Layer.id == layer).first()
                     if cur_layer is None:
                         continue
-
-                    if not cur_layer.public:
+                    if not bypass_public and not cur_layer.public:
                         if self.request.user is None:
                             continue
                         # Check if the layer has a resctriction area
@@ -634,6 +657,7 @@ class Getfeatureinfo(object):
                         # If not restriction is set then check next layer
                         if restriction is None:
                             continue
+
                     query = DBSession.query(
                         LuxGetfeatureDefinition).filter(
                             LuxGetfeatureDefinition.layer == layer
@@ -901,6 +925,7 @@ class Getfeatureinfo(object):
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3_geoportal.PF
+        DBSession.rollback()
         pf = geoportailv3_geoportal.PF.PF()
         features = []
         for row in rows:
@@ -1027,6 +1052,7 @@ class Getfeatureinfo(object):
         query = '%s%s%s' % (url, separator, urlencode(body))
         content = ""
         try:
+            DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
             content = result.read()
         except Exception as e:
@@ -1056,6 +1082,7 @@ class Getfeatureinfo(object):
             return features
         except Exception as e:
             log.exception(e)
+            log.error(content)
             return []
         return []
 
@@ -1093,7 +1120,7 @@ class Getfeatureinfo(object):
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None,
-                           where_clause=None, use_auth=False):
+                           where_clause=None, use_auth=False, p_geometry=None, srs_geometry=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -1124,7 +1151,6 @@ class Getfeatureinfo(object):
         #
         # example:
         # http://ws.geoportail.lu/ArcGIS/rest/services/wassergis/waassergis_mxd/MapServer/45/query?text=&geometry=69000%2C124000%2C70000%2C125000&geometryType=esriGeometryEnvelope&inSR=2169&spatialRel=esriSpatialRelIntersects&where=&returnGeometry=true&outSR=&outFields=&f=pjson
-
         body = {'f': 'json',
                 'geometry': '',
                 'geometryType': '',
@@ -1138,7 +1164,7 @@ class Getfeatureinfo(object):
                 'objectIds': ''}
         if id_column is None:
             id_column = 'objectid'
-
+ 
         if use_auth:
             auth_token = get_arcgis_token(self.request, log)
             if 'token' in auth_token:
@@ -1160,6 +1186,27 @@ class Getfeatureinfo(object):
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
             body['spatialRel'] = 'esriSpatialRelIntersects'
+        elif p_geometry is not None:
+            s = shape(wkt_loads(p_geometry))
+            if s.geom_type == 'LineString':
+                coords = []
+                for coord in list(s.coords):
+                    coords.append('[%(x)s,%(y)s]' %{'x': coord[0], 'y': coord[1]})
+                body['geometry'] = '{"paths" : [[' + ','.join(coords) + ']], "spatialReference" : {"wkid" : ' + srs_geometry + '}}'
+                body['geometryType'] = 'esriGeometryPolyline'
+            elif s.geom_type == 'Polygon':
+                coords = []
+                for coord in list(s.exterior.coords):
+                    coords.append('[%(x)s,%(y)s]' %{'x': coord[0], 'y': coord[1]})
+                body['geometry'] = '{"rings" : [[' + ','.join(coords) + ']], "spatialReference" : {"wkid" : ' + srs_geometry + '}}'
+                body['geometryType'] = 'esriGeometryPolygon'
+            elif s.geom_type == 'Point':
+                coords = []
+                for coord in list(s.coords):
+                    body['geometry'] = '{"x" : %(x)s, "y": %(y)s, "spatialReference" : {"wkid" : %(srs_geometry)s}}'%{'x': coord[0], 'y': coord[1], 'srs_geometry': srs_geometry}
+                body['geometryType'] = 'esriGeometryPoint'
+
+            body['spatialRel'] = 'esriSpatialRelIntersects'
         elif where_clause is not None:
             body['where'] = where_clause
         else:
@@ -1178,12 +1225,13 @@ class Getfeatureinfo(object):
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
         except ESRITokenException as e:
-            return []
-            raise HTTPBadGateway(e)
+            log.exception(e)
+            log.error(url)
+            content = "{}"
         except Exception as e:
             log.exception(e)
             log.error(url)
-            return []
+            content = "{}"
 
         features = []
         try:

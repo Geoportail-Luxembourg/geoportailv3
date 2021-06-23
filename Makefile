@@ -83,7 +83,6 @@ update-pots:
 	docker cp $(DOCKER_CONTAINER):/tmp/legends.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 	# Handle tooltips.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/development.ini
-	docker exec $(DOCKER_CONTAINER) msguniq /tmp/tooltips.pot -o /tmp/tooltips.pot
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
@@ -92,10 +91,12 @@ OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
 update-translations:
 	tx push --source
 	tx pull --force
+	tx pull -s --force
 
 .PHONY: pull-translations
 pull-translations:
 	tx pull --force
+	tx pull -s --force
 
 .PHONY: update-search-layers
 update-search-layers:

@@ -334,6 +334,7 @@ class FullTextSearchView(object):
         if 'query' not in self.request.params:
             return HTTPBadRequest(detail='no query')
         query = self.request.params.get('query')
+        query = query.replace("'", "''")
         if layers is None:
             layers = self.request.params.get('layers', '')
         layers = layers.split(',')

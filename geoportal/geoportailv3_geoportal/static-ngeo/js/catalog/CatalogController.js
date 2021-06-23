@@ -122,7 +122,7 @@ const exports = function($scope, appThemes, appTheme,
           theme: this.appTheme_.getCurrentTheme()
         })
       } else {
-        if (this.tree !== undefined) {
+        if (this.tree !== undefined && this.tree !== null) {
           const idx = this.tree.children.findIndex((e) => e.id === -1);
           this.tree.children.splice(idx, 1);
         }
@@ -169,6 +169,12 @@ exports.prototype.setTree_ = function() {
        */
       (function(tree) {
         this['tree'] = tree;
+        if (this['tree'] !== undefined && this['tree'] !== null) {
+          const idx = this.tree.children.findIndex((e) => ('display_in_switcher' in e.metadata && e.metadata['display_in_switcher'] === false));
+          if (idx > -1) {
+            this['tree'].children.splice(idx, 1);
+          }
+        }
         this.setThemeZooms(this['tree']);
       }).bind(this));
 };
@@ -222,7 +228,7 @@ exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
   if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e.url.includes(node.layer)) !== -1) {
+    if (olcs.tilesets3d.findIndex(e => e._url.includes(node.layer)) !== -1) {
       olcs.remove3dLayer(node.layer);
     } else {
       olcs.add3dTile(node.layer)

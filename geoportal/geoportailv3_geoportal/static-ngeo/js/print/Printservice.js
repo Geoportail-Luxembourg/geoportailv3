@@ -5,7 +5,8 @@ import ngeoPrintService from 'ngeo/print/Service.js';
 import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
-
+import * as olMath from 'ol/math.js';
+import olStyleRegularShape from 'ol/style/RegularShape.js';
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 
@@ -32,7 +33,60 @@ class AppVectorEncoder extends VectorEncoder {
    */
   encodeVectorStylePoint(symbolizers, imageStyle) {
     const len = symbolizers.length;
-    super.encodeVectorStylePoint(symbolizers, imageStyle);
+    if (imageStyle instanceof olStyleRegularShape) {
+      /**
+       * Mapfish Print does not support image defined with ol.style.RegularShape.
+       * As a workaround, I try to map the image on a well-known image name.
+       */
+      const points = /** @type {ol.style.RegularShape} */ (imageStyle).getPoints();
+      const angle = /** @type {ol.style.RegularShape} */ (imageStyle).getAngle();
+      if (points !== null) {
+        let symbolizer = /** @type {MapFishPrintSymbolizerPoint} */ ({
+          type: 'point'
+        });
+        if (points === 4 && angle !== 0) {
+          symbolizer.graphicName = 'square';
+        } else if (points === 4 && angle === 0) {
+          symbolizer.graphicName = 'cross';
+        } else if (points === 3) {
+          symbolizer.graphicName = 'triangle';
+        } else if (points === 5) {
+          symbolizer.graphicName = 'star';
+        } else if (points === 8) {
+          symbolizer.graphicName = 'cross';
+        }
+        const sizeShape = imageStyle.getSize();
+        if (sizeShape !== null) {
+          symbolizer.graphicWidth = sizeShape[0];
+          symbolizer.graphicHeight = sizeShape[1];
+        }
+        const rotationShape = imageStyle.getRotation();
+        if (!isNaN(rotationShape) && rotationShape !== 0) {
+          symbolizer.rotation = olMath.toDegrees(rotationShape);
+        }
+        const opacityShape = imageStyle.getOpacity();
+        if (opacityShape !== null) {
+          symbolizer.graphicOpacity = opacityShape;
+        }
+        const strokeShape = imageStyle.getStroke();
+        if (strokeShape !== null) {
+          super.encodeVectorStyleStroke(symbolizer, strokeShape);
+        }
+        const fillShape = imageStyle.getFill();
+        if (fillShape !== null) {
+          super.encodeVectorStyleFill(symbolizer, fillShape);
+        }
+        if (symbolizer !== undefined) {
+          if (symbolizer.graphicName === 'cross') {
+            symbolizer.strokeWidth = 0;
+            symbolizer.fillOpacity = 1;
+          }
+          symbolizers.push(symbolizer);
+        }
+      }
+    } else {
+      super.encodeVectorStylePoint(symbolizers, imageStyle);
+    }
     const newLen = symbolizers.length;
     if (newLen > len) {
       const last = symbolizers[newLen - 1];
@@ -101,12 +155,30 @@ const exports = class extends ngeoPrintService {
     }
     const baseURL = url.substr(0, i);
     const imageExtension = url.substr(j + 1);
-    const object = {
-      baseURL,
-      type: "OSM",
-      imageExtension
-    };
-    arr.push(object);
+    const styleName = baseURL.substr(baseURL.lastIndexOf('/styles/') + '/styles/'.length);
+    if (styleName === 'topomap' || styleName === 'roadmap' || styleName === 'topomap_gray') {
+      const object = {
+        'baseURL': 'https://wms.geoportail.lu/opendata/service',
+        'imageFormat': 'image/' + imageExtension,
+        'layers': [styleName],
+        'customParams': {
+          'TRANSPARENT': true,
+          'MAP_RESOLUTION': 127
+        },
+        'type': 'wms',
+        'opacity': 1,
+        'version': '1.1.1',
+        'useNativeAngle': true
+      }
+      arr.push(object);
+    } else {
+      const object = {
+        baseURL,
+        type: "OSM",
+        imageExtension
+      };
+      arr.push(object);
+    }
   }
 
   /**
