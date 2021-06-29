@@ -28,11 +28,14 @@ node_modules/js-autocomplete/auto-complete.min.js \
 node_modules/promise-polyfill/promise.min.js \
 node_modules/url-polyfill/url-polyfill.min.js > /etc/static-ngeo/build/vendor.js
 
-cat /app/geoportailv3_geoportal/static-ngeo/build/vendor.js \
-/app/geoportailv3_geoportal/static-ngeo/build/apiv3.js > /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full.js
-cat /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full.js > /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full-async.js
-echo "lux.setBaseUrl('https://apiv3.geoportail.lu/', 'https');" >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full-async.js
-echo "lux.setI18nUrl('https://apiv3.geoportail.lu/static-ngeo/ee65595014a441ba8b1bceb971cc7d4b/build/fr.json');" >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full.js >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3-full-async.js
+./node_modules/.bin/lessc --clean-css /etc/apiv3/jsapi/less/geoportailv3.api.less /etc/static-ngeo/build/apiv3.css
+node /etc/apiv3/jsapi/jsdoc/get-ol3-doc-ref.js > /etc/apiv3/.build/jsdocOl3.js
+
+cat /etc/static-ngeo/build/vendor.js \
+/etc/static-ngeo/build/apiv3.js > /etc/static-ngeo/build/apiv3-full.js
+cat /etc/static-ngeo/build/apiv3-full.js > /etc/static-ngeo/build/apiv3-full-async.js
+echo "lux.setBaseUrl('https://apiv3.geoportail.lu/', 'https');" >> /etc/static-ngeo/build/apiv3-full-async.js
+echo "lux.setI18nUrl('https://apiv3.geoportail.lu/static-ngeo/ee65595014a441ba8b1bceb971cc7d4b/build/fr.json');" >> /etc/static-ngeo/build/apiv3-full.js >> /etc/static-ngeo/build/apiv3-full-async.js
 
 
 # FIXME restore doc generation
