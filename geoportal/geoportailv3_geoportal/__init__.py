@@ -483,7 +483,7 @@ def main(global_config, **settings):
         '/geoportailv3.appcache'
     )
     config.include("pyramid_assetviews")
-    config.add_asset_views("geoportailv3_geoportal:static-ngeo/build/", filenames=['apiv3-full-async.js', 'apiv3.css'])
+    config.add_asset_views("/etc/static-ngeo/build/", filenames=['apiv3-full-async.js', 'apiv3.css'])
     # ldap
     from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
         get_user_from_request
