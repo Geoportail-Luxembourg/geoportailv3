@@ -85,7 +85,7 @@ class FullTextSearchView(object):
                 { "name": "lieu_dit", "boost": 7 },
                 { "name": "Parcelle", "boost": 1 },
                 { "name": "FLIK", "boost": 1 },
-                { "name": "asta esp", "boost": 0 },
+                { "name": "asta_esp", "boost": 0 },
                 { "name": "hydro", "boost": 0 },
                 { "name": "hydro_km", "boost": 0 },
                 { "name": "biotope", "boost": 0 },
