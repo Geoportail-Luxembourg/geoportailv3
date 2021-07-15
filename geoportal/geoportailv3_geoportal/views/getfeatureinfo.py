@@ -1060,6 +1060,9 @@ class Getfeatureinfo(object):
             return []
         try:
             features = []
+            # Some webservices return this bad content
+            if content is not None and content == b"\n\n":
+                return []
             ogc_features = geojson_loads(content)
 
             for feature in ogc_features['features']:
