@@ -1119,6 +1119,21 @@ exports.prototype.highlightFeatures_ = function(features, fit) {
 
 
 /**
+ * @param {string} key The key to find.
+ * @param {Object} attributes The attributes to translate.
+ * @param {number | undefined} minLength The minimum length of the value to be considered as existing.
+ * @return {boolean} True if the property is in the attributes.
+ * @export
+ */
+exports.prototype.hasProperty = function(key, attributes, minLength) {
+  if (minLength == undefined) {
+    minLength = 0;
+  }
+  return (key in attributes && ('' + attributes[key]).length > minLength);
+};
+
+
+/**
  * @return {string} Get the URL.
  * @export
  */
