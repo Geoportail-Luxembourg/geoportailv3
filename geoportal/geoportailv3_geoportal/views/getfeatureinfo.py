@@ -259,9 +259,22 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         if geometry is not None and len(geometry) > 0:
-            return self.get_info(
+        
+            fc = self.get_info(
                 fid, None,
                 None, results, layers, None, geometry)
+            if len(fc) > 0 and 'features' in fc[0]:
+                s = shape(wkt_loads(geometry))
+                for feature in fc[0]['features']:
+                    feature['stats'] = {}
+                    try:
+                        s2 = asShape(feature['geometry'])
+                        feature['stats']['intersection_area'] = round(s.intersection(s2).area, 2)
+                        feature['stats']['feature_area'] = round(s2.area, 2)
+                        feature['stats']['filter_area'] = round(s.area, 2)
+                    except Exception as e:
+                        log.exception(e)
+                return fc
         if big_box is None or small_box is None:
             return HTTPBadRequest()
 
@@ -1060,6 +1073,9 @@ class Getfeatureinfo(object):
             return []
         try:
             features = []
+            # Some webservices return this bad content
+            if content is not None and content == b"\n\n":
+                return []
             ogc_features = geojson_loads(content)
 
             for feature in ogc_features['features']:
