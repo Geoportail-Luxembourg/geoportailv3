@@ -65,7 +65,10 @@ class Legends(object):
         legend_title = self.request.params.get("legend_title")
         if lang == 'lb':
             lang = 'lu'
-
+        try: 
+            int(id)
+        except ValueError:
+            id = ""
         # for an ESRI legend service the layer id is given, whereas the getDoku service
         # depends on the name parameter
         if id != "":
