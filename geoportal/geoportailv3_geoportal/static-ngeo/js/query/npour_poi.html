@@ -1,0 +1,34 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3 ng-if="ctrl.language == 'de' && ctrl.hasProperty('title_de', feature.attributes, 0)">{{feature.attributes.title_de}}</h3>
+  <h3 ng-if="ctrl.language == 'en' && ctrl.hasProperty('title_en', feature.attributes, 0)">{{feature.attributes.title_en}}</h3>
+  <h3 ng-if="ctrl.language == 'lb' && ctrl.hasProperty('title_lb', feature.attributes, 0)">{{feature.attributes.title_nl}}</h3>
+  <h3 ng-if="ctrl.language == 'fr' && ctrl.hasProperty('title_fr', feature.attributes, 0)">{{feature.attributes.title_fr}}</h3>
+  <h3 ng-if="ctrl.language == 'de' && ctrl.hasProperty('nom_de', feature.attributes, 0)">{{feature.attributes.nom_de}}</h3>
+  <h3 ng-if="ctrl.language == 'fr' && ctrl.hasProperty('nom_fr', feature.attributes, 0)">{{feature.attributes.nom_fr}}</h3>
+  <h3 ng-if="ctrl.language == 'en' && ctrl.hasProperty('nom_en', feature.attributes, 0)">{{feature.attributes.nom_en}}</h3>
+  <h3 ng-if="ctrl.language == 'lb' && ctrl.hasProperty('nom_lu', feature.attributes, 0)">{{feature.attributes.nom_lu}}</h3>
+
+  <span ng-if="ctrl.language == 'de' && ctrl.hasProperty('descr_de', feature.attributes, 0)">{{feature.attributes.descr_de}}<br></span>
+  <span ng-if="ctrl.language == 'fr' && ctrl.hasProperty('descr_fr', feature.attributes, 0)">{{feature.attributes.descr_fr}}<br></span>
+  <span ng-if="ctrl.language == 'en' && ctrl.hasProperty('descr_en', feature.attributes, 0)">{{feature.attributes.descr_en}}<br></span>
+  <span ng-if="ctrl.language == 'lb' && ctrl.hasProperty('descr_nl', feature.attributes, 0)">{{feature.attributes.descr_nl}}<br></span>
+
+  <span ng-if="ctrl.hasProperty('number', feature.attributes, 0)">{{feature.attributes.number}},</span> <span ng-if="ctrl.hasProperty('street', feature.attributes, 0)">{{feature.attributes.street}}<br></span>
+  <span ng-if="ctrl.hasProperty('town', feature.attributes, 0)">{{feature.attributes.zip}} {{feature.attributes.town}}<br><br></span>
+  <span  ng-if="ctrl.hasProperty('phone', feature.attributes, 1)"><i class="fa fa-phone" aria-hidden="true"></i> <span>{{feature.attributes.phone}}</span><br></span>
+  <span  ng-if="ctrl.hasProperty('fax', feature.attributes, 1)"><i class="fa fa-fax" aria-hidden="true"></i> <span>{{feature.attributes.fax}}</span><br></span>
+  <span  ng-if="ctrl.hasProperty('email', feature.attributes, 1)"><i class="fa fa-at" aria-hidden="true"></i> <span>{{feature.attributes.email}}</span><br></span>
+
+  <span ng-if="ctrl.hasProperty('website', feature.attributes, 3) && feature.attributes.website.startsWith('http')"><a target="_blank" href="{{ctrl.getTrustedUrl(feature.attributes.website)}}">{{feature.attributes.website}}</a><br></span>
+  <span ng-if="ctrl.hasProperty('website', feature.attributes, 3) && !feature.attributes.website.startsWith('http')"><a target="_blank" href="http://{{ctrl.getTrustedUrl(feature.attributes.website)}}">{{feature.attributes.website}}</a><br></span>
+
+  <span ng-if="ctrl.language != 'fr' && ctrl.hasProperty('link_de', feature.attributes, 3)"><a target="_blank" href="{{ctrl.getTrustedUrl(feature.attributes.link_de)}}">{{feature.attributes.link_de}}</a><br></span>
+  <span ng-if="ctrl.language == 'fr' && ctrl.hasProperty('link_fr', feature.attributes, 3)"><a target="_blank" href="{{ctrl.getTrustedUrl(feature.attributes.link_fr)}}">{{feature.attributes.link_fr}}</a><br></span>
+  <span ng-if="ctrl.hasProperty('Bild', feature.attributes, 3)"> <img ng-src="{{feature.attributes.Bild}}" width="250"><br><br></span>
+  <span ng-if="ctrl.hasProperty('longueur sentier', feature.attributes, 0)" translate>Longueur du sentier : {{feature.attributes['longueur sentier']}}<br></span>
+  <div class="query-profile" ng-show="feature.attributes.showProfile.active">
+    <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+  </div>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

@@ -53,7 +53,7 @@ class Metadata(object):
 
             if 'metadata' in data_fr and 'responsibleParty' in data_fr['metadata']:
                 if isinstance(data_fr['metadata']['responsibleParty'], type([])):
-                    data['metadata']['responsibleParty'] = data['metadata']['responsibleParty'] + data_fr['metadata']['responsibleParty']
+                    data['metadata']['responsibleParty'] = data_fr['metadata']['responsibleParty']
                 else:
                     if not 'responsibleParty' in data['metadata']:
                         data['metadata']['responsibleParty'] = []

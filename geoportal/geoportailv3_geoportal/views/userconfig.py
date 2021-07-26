@@ -2,6 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from c2cgeoportal_commons.models import DBSession
 from geoportailv3_geoportal.userconfig import UserConfig
+from pyramid.httpexceptions import HTTPUnauthorized
 
 import json
 import urllib.request
