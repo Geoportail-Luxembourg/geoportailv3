@@ -250,7 +250,7 @@ class LuxPrintProxy(PrintProxy):
         resp = self._proxy("%s/report.%s" % (
             print_url,
             self.request.matchdict.get("format")
-        ))
+        ), headers={"Referer": "https://map.geoportail.lu/"})
         job.id = json.loads(resp.content)["ref"]
         job.print_url = print_url
         job.creation = datetime.now()
