@@ -577,7 +577,6 @@ class Mymaps(object):
                             func.lower(CategoryUser.user_login) ==
                             func.lower(owner))
                     )))))
-
             db_mymaps = self.db_mymaps
 
             shared_maps_uuid_query = db_mymaps.query(MapUser.map_uuid).filter(
@@ -587,7 +586,11 @@ class Mymaps(object):
                 Map.uuid.in_(shared_maps_uuid_query),
                 Map.uuid.in_(query)
             ))
+            if category is not None:
+                maps_uuid_query = maps_uuid_query.filter(func.coalesce(Map.category_id, 999) == category)
+
             maps = maps_uuid_query.order_by(text("category_id asc,title asc")).all()
+
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
@@ -681,10 +684,20 @@ class Mymaps(object):
                 for cur_user in user_categories]
 
     def _getuserscategories_for_non_admin(self, session, user):
-        categies_id = session.query(
-            func.coalesce(Map.category_id, 999).label("category_id")).\
-            filter(func.lower(Map.user_login) == func.lower(user.username)).\
+        query1 = session.query(Map.uuid).\
+            filter(func.lower(Map.user_login) == func.lower(user.username))
+        categies_id = session.query(func.coalesce(Map.category_id, 999).label("category_id")).filter(or_(
+            Map.uuid.in_(session.query(MapUser.map_uuid).filter(
+                func.lower(MapUser.user_login) == func.lower(user.username))),
+            Map.uuid.in_(query1),
+            Map.uuid.in_(session.query(Map.uuid).filter(
+                func.coalesce(Map.category_id, 999).in_(
+                    session.query(CategoryUser.category_id).filter(
+                        func.lower(CategoryUser.user_login) ==
+                        func.lower(user.username))
+                ))))).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
+
         return [{'username': user.username, 'categories':
                 [c.category_id for c in categies_id]}]
 
