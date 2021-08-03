@@ -21,3 +21,5 @@ HTMLParser
 gevent
 gpxpy==1.4.2
 pyramid_assetviews==1.0a3
+transifex-client
+pyyaml
