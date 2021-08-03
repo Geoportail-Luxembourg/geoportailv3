@@ -38,6 +38,6 @@ def get_urls(request):
         urls.append(UNUSED + stuff)
 
     for lang in ['fr', 'en', 'lb', 'de']:
-        urls.append(request.static_path('geoportailv3_geoportal:static-ngeo/build/' + lang + '.json'))
+        urls.append(request.static_path('geoportailv3_geoportal:static/no_cache/' + lang + '.json'))
 
     return urls
