@@ -7,18 +7,18 @@ CACHE MANIFEST
   fonts = os.listdir('/app/geoportailv3_geoportal/static-ngeo/fonts/')
   webfonts = os.listdir('/app/geoportailv3_geoportal/static-ngeo/webfonts/')
   import time
-  main_js = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/main.*.js')[0]
+  main_js = glob.glob('/etc/static-ngeo/main.*.js')[0]
   # main_js_url = 'geoportailv3_geoportal:static-ngeo/build/' + os.path.basename(main_js)
-  main_js_url = '/static-ngeo/UNUSED_CACHE_VERSION/build/' + os.path.basename(main_js)
-  main_css = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/main.*.css')[0]
+  main_js_url = '/static-ngeo/build/' + os.path.basename(main_js)
+  main_css = glob.glob('/etc/static-ngeo/main.*.css')[0]
   # main_css_url = 'geoportailv3_geoportal:static-ngeo/build/' + os.path.basename(main_css)
-  main_css_url = '/static-ngeo/UNUSED_CACHE_VERSION/build/' + os.path.basename(main_css)
-  gov_light = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/gov-light.*.png')[0]
-  gov_light_url = '/static-ngeo/UNUSED_CACHE_VERSION/build/' + os.path.basename(gov_light)
-  ttfs = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/*.ttf')
-  eots = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/*.eot')
-  woffs = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/*.woff')
-  built_stuffs_urls = ['/static-ngeo/UNUSED_CACHE_VERSION/build/' + os.path.basename(stuff) for stuff in ttfs + eots + woffs]
+  main_css_url = '/static-ngeo/build/' + os.path.basename(main_css)
+  gov_light = glob.glob('/etc/static-ngeo/gov-light.*.png')[0]
+  gov_light_url = '/static-ngeo/build/' + os.path.basename(gov_light)
+  ttfs = glob.glob('/etc/static-ngeo/*.ttf')
+  eots = glob.glob('/etc/static-ngeo/*.eot')
+  woffs = glob.glob('/etc/static-ngeo/*.woff')
+  built_stuffs_urls = ['/static-ngeo/build/' + os.path.basename(stuff) for stuff in ttfs + eots + woffs]
 %>
 
 % if 'skip_appcache' in settings:
