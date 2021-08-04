@@ -37,7 +37,4 @@ def get_urls(request):
     for stuff in get_built_filenames('*.woff'):
         urls.append(UNUSED + stuff)
 
-    for lang in ['fr', 'en', 'lb', 'de']:
-        urls.append(request.static_path('geoportailv3_geoportal:static/no_cache/' + lang + '.json'))
-
     return urls
