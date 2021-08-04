@@ -147,7 +147,8 @@ class FullTextSearchView(object):
             search = es.search(index=get_index(self.request),
                                body=query_body,
                                size=limit)
-        except:
+        except Exception as e:
+            log.exception(e)
             log.error('ES error querying {} on {}'.format(get_index(self.request), get_host()))
             return HTTPInternalServerError()
         objs = search['hits']['hits']
