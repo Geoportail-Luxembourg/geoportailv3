@@ -63,6 +63,15 @@ ENV http_proxy $HTTP_PROXY_URL
 ARG HTTPS_PROXY_URL
 ENV https_proxy $HTTPS_PROXY_URL
 RUN apt update && apt install vim -y
+RUN apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+    ghostscript \
+    libgs-dev \
+    imagemagick && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
 
 COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
