@@ -62,6 +62,7 @@ ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
 ARG HTTPS_PROXY_URL
 ENV https_proxy $HTTPS_PROXY_URL
+RUN apt update && apt install vim -y
 
 COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
