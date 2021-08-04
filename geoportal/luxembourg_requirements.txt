@@ -5,7 +5,7 @@ httplib2shim
 pyocclient
 suds-jurko
 ipaddr
-elasticsearch
+elasticsearch==7.13.4
 ldap3
 pyramid_ldap3
 qrcode
