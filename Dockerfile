@@ -40,6 +40,8 @@ RUN \
             /opt/c2cgeoportal/geoportal/c2cgeoportal_geoportal/locale/${lang}/LC_MESSAGES/ngeo.po \
             /opt/c2cgeoportal/geoportal/c2cgeoportal_geoportal/locale/${lang}/LC_MESSAGES/gmf.po \
             /tmp/config/geoportal/geoportailv3_geoportal/locale/${lang}/LC_MESSAGES/geoportailv3_geoportal-client.po \
+            /tmp/config/geoportal/geoportailv3_geoportal/locale/${lang}/LC_MESSAGES/geoportailv3_geoportal-tooltips.po \
+            /tmp/config/geoportal/geoportailv3_geoportal/locale/${lang}/LC_MESSAGES/geoportailv3_geoportal-legends.po \
             > /tmp/config/geoportal/geoportailv3_geoportal/static/${lang}.json; \
     done && \
     rm -rf /tmp/config/geoportal/geoportailv3_geoportal/locale
