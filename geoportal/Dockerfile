@@ -86,6 +86,7 @@ COPY --chown=www-data:www-data --from=builder /app/geoportailv3_geoportal/locale
 #COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/ /etc/static-ngeo/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/d7c6c320f7be4834954b8bf063492442/build/
+COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/4742262ea36e4a48827009c4d591e875/build/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/not_used/build/
 
 #COPY --from=builder /etc/apiv3/* /etc/apiv3/
