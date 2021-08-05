@@ -2,7 +2,7 @@ httplib2shim
 # c2cgeoportal_commons==2.3.6.28
 # c2cgeoportal_geoportal==2.3.6.28
 # c2cgeoportal_admin==2.3.6.28
-pyocclient
+pyocclient==0.4
 suds-jurko
 ipaddr
 elasticsearch==7.13.4
