@@ -85,10 +85,12 @@ COPY . /app
 COPY --chown=www-data:www-data --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
 #COPY --chown=www-data:www-data --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/ /etc/static-ngeo/
+COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/d7c6c320f7be4834954b8bf063492442/build/
 #COPY --from=builder /etc/apiv3/* /etc/apiv3/
 RUN mkdir -p /app/geoportailv3_geoportal/jsapi/build/
 COPY --from=builder /app/geoportailv3_geoportal/jsapi/build/apidoc /app/geoportailv3_geoportal/jsapi/build/apidoc
 COPY --chown=www-data:www-data --from=builder /app/alembic.ini /app/alembic.yaml ./
+
 #RUN chmod go+w /etc/static-ngeo/ \
 #    /app/geoportailv3_geoportal/locale/ \
 #    /app/geoportailv3_geoportal/locale/*/LC_MESSAGES/geoportailv3_geoportal-client.po
