@@ -12,7 +12,7 @@ qrcode
 bleach
 html5lib
 CairoSVG
-weasyprint
+WeasyPrint==0.42.3
 PyPDF2
 marrow.mailer
 webtest
