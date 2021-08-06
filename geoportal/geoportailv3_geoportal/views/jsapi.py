@@ -3,6 +3,7 @@ import csv
 import json
 import logging
 from c2cgeoportal_geoportal.views.theme import Theme
+from c2cgeoportal_commons.models import DBSession
 from pyramid.i18n import make_localizer, TranslationStringFactory
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry
@@ -10,9 +11,13 @@ from pyramid.renderers import render
 from c2cgeoportal_commons import models
 from c2cgeoportal_commons.models import main, static
 from c2cgeoportal_geoportal.lib import get_url2
+from c2cgeoportal_geoportal.lib.caching import get_region, invalidate_region
 from pyramid.response import Response
+from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
 log = logging.getLogger(__name__)
+cache_region = get_region("std")
+invalidate_region()
 
 
 class JsapiEntry(Theme):
@@ -41,6 +46,12 @@ class JsapiEntry(Theme):
                 'name_lb': localizer_lb.translate(client(entry.name))
             })
         return t
+
+    def _wms_layers(self, ogc_server):
+        if ogc_server.name == "Internal WMS":
+            return self._wms_layers_internal()
+
+        return super()._wms_layers(ogc_server)
 
     @view_config(route_name='jsapilayersfull',
                  renderer='json')
@@ -193,3 +204,55 @@ class JsapiEntry(Theme):
                 if bg:
                     child['isBgLayer'] = True
                 layers[child.get('id')] = child
+
+    @cache_region.cache_on_arguments()
+    def _wms_layers_internal(self):
+        layers = {}
+        for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
+            for sublayer in layer.layers.split(","):
+                layers[layer.name + '__' + sublayer] = {
+                    "info": {
+                        "name": layer.name + '__' + sublayer,
+                    },
+                    "children": []
+                }
+
+        return {"layers": layers}, set()
+
+    def _fill_wms(self, layer_theme, layer, errors, mixed):
+        if isinstance(layer, LuxLayerInternalWMS):
+            layer_theme["imageType"] = layer.ogc_server.image_type
+            if layer.style:  # pragma: no cover
+                layer_theme["style"] = layer.style
+
+            wms, wms_errors = self._wms_layers(layer.ogc_server)
+            errors |= wms_errors
+            if wms is None:
+                return
+            layer_theme["childLayers"] = []
+            for layer_name in layer.layers.split(","):
+                full_layer_name = layer.name + '__' + layer_name
+                if full_layer_name in wms["layers"]:
+                    wms_layer_obj = wms["layers"][full_layer_name]
+                    if not wms_layer_obj["children"]:
+                        layer_theme["childLayers"].append(wms["layers"][full_layer_name]["info"])
+                    else:
+                        for child_layer in wms_layer_obj["children"]:
+                            layer_theme["childLayers"].append(wms["layers"][child_layer]["info"])
+                else:
+                    errors.add(
+                        "The sublayer '{}' of internal layer {} is not defined in WMS capabilities".format(
+                            layer_name, layer.name
+                        )
+                    )
+        else:
+            return super()._fill_wms(layer_theme, layer, errors, mixed)
+
+    @view_config(route_name="lux_themes", renderer="json")
+    def themes(self):
+        return super().themes()
+
+
+    @staticmethod
+    def is_mixed(_):
+        return True
