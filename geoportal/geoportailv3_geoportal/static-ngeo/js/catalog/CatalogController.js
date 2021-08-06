@@ -124,7 +124,9 @@ const exports = function($scope, appThemes, appTheme,
       } else {
         if (this.tree !== undefined && this.tree !== null) {
           const idx = this.tree.children.findIndex((e) => e.id === -1);
-          this.tree.children.splice(idx, 1);
+          if (idx > -1) {
+            this['tree'].children.splice(idx, 1);
+          }
         }
       }
     }
