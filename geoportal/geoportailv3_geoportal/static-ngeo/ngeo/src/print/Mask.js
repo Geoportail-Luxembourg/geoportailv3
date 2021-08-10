@@ -18,6 +18,7 @@ import {toRadians} from 'ol/math.js';
     this.context_ = createCanvasContext2D();
 
     this.context_.canvas.style.opacity = '0.5';
+    this.context_.canvas.style.position = 'absolute';
 
     /**
      * @type {function(import("ol/PluggableMap.js").FrameState):number}
