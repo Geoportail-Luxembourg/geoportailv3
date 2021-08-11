@@ -47,6 +47,7 @@ class DrawRoute extends olInteractionPointer {
   constructor(options) {
 
     super({
+      stopDown: FALSE,
       handleDownEvent: handleDownEvent_,
       handleEvent: handleEvent,
       handleUpEvent: handleUpEvent_
