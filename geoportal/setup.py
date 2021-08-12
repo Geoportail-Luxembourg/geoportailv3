@@ -26,8 +26,10 @@ setup(
           'lux_gunicorn = geoportailv3_geoportal.scripts.lux_gunicorn:main',
         ],
         "lingua.extractors": [
+            "luxembourg-themes = geoportailv3_geoportal.lib.lingua_extractor:GeomapfishThemeExtractor",
             "luxembourg-tooltips = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgTooltipsExtractor",
             "luxembourg-legends = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgESRILegendExtractor",
+            "luxembourg-angular = c2cgeoportal_geoportal.lib.lingua_extractor:GeomapfishAngularExtractor",
         ],
     },
 )
