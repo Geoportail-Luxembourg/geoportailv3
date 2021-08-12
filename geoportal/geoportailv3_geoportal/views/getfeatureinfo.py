@@ -9,6 +9,7 @@ import geojson
 import os
 import json
 import pytz
+import dateutil
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -259,7 +260,6 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         if geometry is not None and len(geometry) > 0:
-        
             fc = self.get_info(
                 fid, None,
                 None, results, layers, None, geometry)
@@ -781,6 +781,23 @@ class Getfeatureinfo(object):
                             break
             modified_features.append(feature)
         return modified_features
+
+    def format_date(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
+        modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
+        for feature in features:
+            try:
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                                feature['attributes'][attribute] =\
+                                    dateutil.parser.isoparse(value).strftime(format)
+            except Exception as e:
+                log.exception(e)
+            modified_features.append(feature)
+        return modified_features    
 
     def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []
