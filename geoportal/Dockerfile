@@ -113,7 +113,7 @@ ENV PGSCHEMA=${PGSCHEMA}
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
-
+RUN ln -s . geoportal
 ENV VISIBLE_ENTRY_POINT=/ \
     AUTHTKT_TIMEOUT=86400 \
     AUTHTKT_REISSUE_TIME=9000 \

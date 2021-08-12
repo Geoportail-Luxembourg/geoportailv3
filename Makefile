@@ -54,16 +54,15 @@ docker-build-print:
 docker-build-ldap:
 	cd ldap && docker build --tag=lux-dev-ldap --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
 
-DOCKER_COMPOSE_PROJECT ?= luxembourg
+DOCKER_COMPOSE_PROJECT ?= geoportailv3
 DOCKER_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_geoportal_1
-APP_JS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
-APP_HTML_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
-APP_HTML_FILES += geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
+APP_JS_FILES = $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
+APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+APP_HTML_FILES += $(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
 
 I18N_SOURCE_FILES += \
-    geoportal/development.ini \
-	geoportal/print-config.yaml.tmpl \
+    pot-create.ini \
   $(APP_HTML_FILES) \
 	$(APP_JS_FILES)
 
@@ -72,18 +71,19 @@ I18N_SOURCE_FILES += \
 update-pots:
 	echo "This target must be run inside Luxembourg internal network"
 	# Handle client.pot
-	docker cp ./config/print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
+	#docker cp ./config/print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/client.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 	# Handle server.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/server.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
 	# Handle legends.pot
-	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-legends.cfg --output /tmp/legends.pot geoportal/development.ini
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-legends.cfg --output /tmp/legends.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/legends.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 	# Handle tooltips.pot
-	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/development.ini
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
+
 
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
 
