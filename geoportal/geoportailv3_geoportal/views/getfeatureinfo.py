@@ -792,8 +792,12 @@ class Getfeatureinfo(object):
                     if attribute in feature['attributes']:
                         value = feature['attributes'][attribute]
                         if value is not None:
-                                feature['attributes'][attribute] =\
-                                    dateutil.parser.isoparse(value).strftime(format)
+                            lux_tz = pytz.timezone("Europe/Luxembourg")
+                            UTC_datetime_timestamp = float(dateutil.parser.isoparse(value).strftime("%s"))
+                            utc_dt = datetime.datetime.fromtimestamp(UTC_datetime_timestamp, tz=pytz.utc)
+                            local_time = lux_tz.normalize(utc_dt)
+                            feature['attributes'][attribute] =\
+                                local_time.strftime(format)
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
