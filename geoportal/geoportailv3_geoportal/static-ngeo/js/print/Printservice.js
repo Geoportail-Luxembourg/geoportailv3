@@ -207,7 +207,7 @@ const exports = class extends ngeoPrintService {
     console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
-    stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
+    stableSort(layers, (layer_a, layer_b) => ((layer_a.getZIndex() !== undefined) ? layer_a.getZIndex() : 0) - ((layer_b.getZIndex() !== undefined) ? layer_b.getZIndex() : 0));
     layers = layers.slice().reverse();
 
     layers.forEach((layer) => {
