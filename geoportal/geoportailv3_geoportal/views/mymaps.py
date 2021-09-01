@@ -441,7 +441,7 @@ class Mymaps(object):
     def _maps(self, session, user, owner=None, category=None):
         query = None
         is_mymaps_admin = getattr(user, 'is_mymaps_admin', False)
-        user_role_id = getattr(user, 'mymaps_role', user.role.id)
+        user_role_id = getattr(user, 'mymaps_role', user.settings_role.id)
 
         if not is_mymaps_admin:
             owner = user.username
@@ -577,7 +577,6 @@ class Mymaps(object):
                             func.lower(CategoryUser.user_login) ==
                             func.lower(owner))
                     )))))
-
             db_mymaps = self.db_mymaps
 
             shared_maps_uuid_query = db_mymaps.query(MapUser.map_uuid).filter(
@@ -587,7 +586,11 @@ class Mymaps(object):
                 Map.uuid.in_(shared_maps_uuid_query),
                 Map.uuid.in_(query)
             ))
+            if category is not None:
+                maps_uuid_query = maps_uuid_query.filter(func.coalesce(Map.category_id, 999) == category)
+
             maps = maps_uuid_query.order_by(text("category_id asc,title asc")).all()
+
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
@@ -620,7 +623,7 @@ class Mymaps(object):
 
     def _getuserscategories(self, session, user):
         is_admin = getattr(user, 'is_mymaps_admin', False)
-        role_id = getattr(user, 'mymaps_role', user.role.id)
+        role_id = getattr(user, 'mymaps_role', user.settings_role.id)
         user_role = session.query(Role).get(role_id)
         if is_admin:
             if role_id == 1:
@@ -681,10 +684,20 @@ class Mymaps(object):
                 for cur_user in user_categories]
 
     def _getuserscategories_for_non_admin(self, session, user):
-        categies_id = session.query(
-            func.coalesce(Map.category_id, 999).label("category_id")).\
-            filter(func.lower(Map.user_login) == func.lower(user.username)).\
+        query1 = session.query(Map.uuid).\
+            filter(func.lower(Map.user_login) == func.lower(user.username))
+        categies_id = session.query(func.coalesce(Map.category_id, 999).label("category_id")).filter(or_(
+            Map.uuid.in_(session.query(MapUser.map_uuid).filter(
+                func.lower(MapUser.user_login) == func.lower(user.username))),
+            Map.uuid.in_(query1),
+            Map.uuid.in_(session.query(Map.uuid).filter(
+                func.coalesce(Map.category_id, 999).in_(
+                    session.query(CategoryUser.category_id).filter(
+                        func.lower(CategoryUser.user_login) ==
+                        func.lower(user.username))
+                ))))).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
+
         return [{'username': user.username, 'categories':
                 [c.category_id for c in categies_id]}]
 
@@ -1127,7 +1140,7 @@ class Mymaps(object):
             if not getattr(user, 'is_mymaps_admin', False):
                 return False
             user_role = self.db_mymaps.query(Role).get(getattr(
-                user, 'mymaps_role', user.role.id))
+                user, 'mymaps_role', user.settings_role.id))
             if map.category is None and 999 in\
                     [cat.id for cat in user_role.categories]:
                 return True

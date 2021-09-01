@@ -16,6 +16,8 @@
 
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
+import PrintMaskLayer from 'ngeo/print/Mask.js';
+import OfflineMaskLayer from 'ngeo/offline/Mask.js';
 
 class Controller {
   /**
@@ -52,7 +54,7 @@ class Controller {
   get background() {
     let background = this.ngeoBackgroundLayerMgr_.get(this.map);
     if (background) {
-      this.activeMvt = background.getType() === 'GEOBLOCKS_MVT';
+      this.activeMvt = !!background.get('defaultMapBoxStyle');
       this.backgroundInfo = background;
       return background.get('label');
     }
@@ -113,6 +115,10 @@ class Controller {
 
   openMvtEditorPanel() {
     this.$rootScope.$broadcast('mvtPanelOpen');
+  }
+
+  isMaskLayer(layer) {
+    return layer instanceof PrintMaskLayer || layer instanceof OfflineMaskLayer ? true : false;
   }
 };
 

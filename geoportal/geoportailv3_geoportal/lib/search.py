@@ -7,15 +7,16 @@ SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'index_settings.json')
 with open(SETTINGS_FILE) as json_file:
     settings = json.load(json_file)
 
+def get_host():
+    return os.environ['ELASTIC_SERVERS'] if 'ELASTIC_SERVERS' in os.environ else 'localhost:9200'
+
 
 def get_elasticsearch(request):
-    elastichost = \
-        request.registry.settings.get('elastic.servers', 'localhost:9200')
-    return Elasticsearch(hosts=elastichost, timeout=60)
+    return Elasticsearch(hosts=get_host(), timeout=60)
 
 
 def get_index(request):
-    return request.registry.settings.get('elastic.index', 'index')
+    return os.environ['ELASTIC_INDEX'] if 'ELASTIC_INDEX' in os.environ else 'index'
 
 
 def ensure_index(client, index, recreate=False):

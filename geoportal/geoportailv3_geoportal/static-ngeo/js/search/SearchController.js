@@ -617,7 +617,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
           prepare: (query, settings) => {
             const url = new URL(settings.url)
             const params = url.searchParams
-            params.set('query', encodeURIComponent(query))
+            params.set('query', query)
             params.set('limit', this.limitResults)
             // Facets
             let layers = Object.keys(this.esMatch_)
@@ -857,7 +857,7 @@ exports.prototype.addLayerToMap_ = function(input) {
   }
   var layerMetadata = layer.get('metadata');
   if (layerMetadata.hasOwnProperty('linked_layers')) {
-    var layers = layerMetadata['linked_layers'].split(',');
+    var layers = layerMetadata['linked_layers'];
     layers.forEach(function(layerId) {
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalog) {

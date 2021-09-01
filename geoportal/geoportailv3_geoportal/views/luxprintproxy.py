@@ -60,6 +60,7 @@ from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -73,10 +74,23 @@ from geoportailv3_geoportal.models import LuxPrintJob, LuxPrintServers, \
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
-cache_region = get_region()
-
+cache_region = get_region('std')
 
 class LuxPrintProxy(PrintProxy):
+    @view_config(route_name="lux_report_create_and_get", renderer='geojson')
+    def lux_report_create_and_get(self):
+        if 'spec' in self.request.GET:
+            spec = self.request.GET['spec']
+        if 'spec' in self.request.POST:
+            spec = self.request.POST['spec']
+        spec = json.loads(spec)
+        print_url = self.config["print_url"]
+        resp, content = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+
+        return self._build_response(
+            resp, content, NO_CACHE, "print"
+        )
+
     @view_config(route_name="lux_get_thumbnail")
     def lux_get_thumbnail(self):
         layer_id = self.request.params.get('layerid', 359)
@@ -152,7 +166,8 @@ class LuxPrintProxy(PrintProxy):
             print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
-        resp, content = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        resp = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        content = resp.content
         resp["content-disposition"] = "filename=%s.png" % (str(layer_id))
 
         return self._build_response(
@@ -183,8 +198,13 @@ class LuxPrintProxy(PrintProxy):
         else:
             print_url = self.config["print_url"]
 
-        spec = json.loads(self.request.body.decode("utf-8").replace(".app.geoportail", ".geoportail"))
+        spec = json.loads(self.request.body.decode("utf-8").replace(".app.geoportail", ".geoportail").replace("vectortiles.geoportail.lu", "vectortiles-print.geoportail.lu"))
+
         for map_layer in spec["attributes"]["map"]["layers"]:
+            if "type" in map_layer and "OSM" == map_layer["type"]:
+                if "baseURL" in map_layer:
+                    if map_layer["baseURL"].count("-") == 1:
+                        map_layer["baseURL"] = map_layer["baseURL"].replace("vectortiles-print.geoportail.lu", "vectortiles-print-fix.geoportail.lu")
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
                 if "customParams" in map_layer:
@@ -227,17 +247,17 @@ class LuxPrintProxy(PrintProxy):
             spec["attributes"].pop('firstPagesUrls', None)
         self.request.body = str.encode(json.dumps(spec))
 
-        resp, content = self._proxy("%s/report.%s" % (
+        resp = self._proxy("%s/report.%s" % (
             print_url,
             self.request.matchdict.get("format")
-        ))
-        job.id = json.loads(content)["ref"]
+        ), headers={"Referer": "https://map.geoportail.lu/"})
+        job.id = json.loads(resp.content)["ref"]
         job.print_url = print_url
         job.creation = datetime.now()
         DBSession.add(job)
 
         return self._build_response(
-            resp, content, False, "print"
+            resp, resp.content, False, "print"
         )
 
     @view_config(route_name="lux_printproxy_status")
@@ -266,7 +286,7 @@ class LuxPrintProxy(PrintProxy):
         else:
             restriction = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
-                    Role.id == self.request.user.role.id)).filter(
+                    Role.id == self.request.user.settings_role.id)).filter(
                         RestrictionArea.layers.any(
                             Layer.id == internal_wms.id
                         )
@@ -367,9 +387,10 @@ class LuxPrintProxy(PrintProxy):
         if job is None:
             return HTTPNotFound()
         try:
-            resp, content = self._proxy("%s/report/%s" % (
+            resp = self._proxy("%s/report/%s" % (
                 job.print_url, ref
             ))
+            content = resp.content
 
             attributes = json.loads(job.spec)["attributes"]
             is_pdf = json.loads(job.spec)["format"] == "pdf"
@@ -489,15 +510,15 @@ class LuxPrintProxy(PrintProxy):
                 content = content.getvalue()
 
             DBSession.delete(job)
-            if is_pdf:
-                resp["content-disposition"] =\
-                    "attachment; filename=%s.pdf" % (str(print_title))
-            else:
-                resp["content-disposition"] =\
-                    "attachment; filename=%s.png" % (str(print_title))
+            headers = resp.headers
+            headers.update({
+                "content-disposition": "attachment; filename=%s.%s" % (str(print_title), 'pdf' if is_pdf else 'png')
+            })
+
+            response = Response(content, status=resp.status_code, headers=headers)
 
             return self._build_response(
-                resp, content, NO_CACHE, "print"
+                response, content, NO_CACHE, "print"
             )
         except Exception as e:
             log.exception(e)

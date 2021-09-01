@@ -20,5 +20,4 @@ switch (nodeEnv) {
 
 config = webpackMerge(config, apps, devProdConfig);
 
-
 module.exports = config;

@@ -42,6 +42,8 @@ import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
 import {isValidSerial} from '../utils.js';
 
+import bootstrapApp from './bootstrap.js';
+
 import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
@@ -876,7 +878,7 @@ const MainController = function(
    * @type {function}
    */
   this.selectedLayersLength = function() {
-    return this.selectedLayers.filter(l => !l.get('metadata').hidden).length
+    return this.selectedLayers.filter(l => l.get('metadata') && !l.get('metadata').hidden).length
   }
 
   /**
@@ -1176,7 +1178,7 @@ const MainController = function(
   $scope.$on('authenticated', () => {
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    if (bgLayer && bgLayer.getMapBoxMap()) {
+    if (bgLayer && bgLayer.getMapBoxMap) {
       this.appMvtStylingService.getBgStyle().then(configs => {
         const config = configs.find(config => config.label === bgLayer.get('label'));
         if (config) {
@@ -1391,6 +1393,7 @@ MainController.prototype.createMap_ = function() {
       minZoom: 8,
       enableRotation: true,
       extent: this.maxExtent_,
+      constrainResolution: true,
       rotation,
     })
   });
@@ -1711,10 +1714,10 @@ MainController.prototype.initMymaps_ = function() {
                 size: /** @type {ol.Size} */ (this.map_.getSize())
               });
             }
-            var layer = this.drawnFeatures_.getLayer();
-            if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
-              this.map_.addLayer(layer);
-            }
+            // var layer = this.drawnFeatures_.getLayer();
+            // if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
+            //   this.map_.addLayer(layer);
+            // }
           }.bind(this));
   } else {
     this.appMymaps_.clear();
@@ -1820,5 +1823,6 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
+bootstrapApp(appModule);
 
 export default MainController;

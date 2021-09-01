@@ -16,8 +16,8 @@ import base64
 import os
 import json
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 log = logging.getLogger(__name__)
 
@@ -172,7 +172,7 @@ class Wms:
             # Check if the layer has a restriction area
             restriction: Optional[RestrictionArea] = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
-                    Role.id == self.request.user.role.id)).filter(
+                    Role.id == self.request.user.settings_role.id)).filter(
                 RestrictionArea.layers.any(
                     Layer.id == internal_wms.id
                 )
@@ -228,9 +228,9 @@ class Wms:
         separator = ""
         if remote_host[-1] != "?" and remote_host[-1] != "&":
             separator = "&"
-
-        url = remote_host + separator + urllib.parse.urlencode(query_params)
+        url = remote_host + separator + urllib.parse.urlencode(query_params).replace('+', '%20')
         timeout = 15
+
         url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
@@ -241,6 +241,7 @@ class Wms:
         # retry for other errors not related to tokens
         except:
             try:
+                DBSession.rollback()
                 # Retry to get the result
                 f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()

@@ -13,8 +13,8 @@ import urllib.request
 import httplib2
 import json
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 import logging
 
@@ -65,7 +65,10 @@ class Legends(object):
         legend_title = self.request.params.get("legend_title")
         if lang == 'lb':
             lang = 'lu'
-
+        try: 
+            int(id)
+        except ValueError:
+            id = ""
         # for an ESRI legend service the layer id is given, whereas the getDoku service
         # depends on the name parameter
         if id != "":

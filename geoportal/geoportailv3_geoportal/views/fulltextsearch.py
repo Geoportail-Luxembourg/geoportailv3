@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPInternalServerError
 from pyramid.view import view_config
 import fiona
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
-from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, get_host
 import os
 import json
 import geojson
 import urllib
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 
 import logging
 log = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ class FullTextSearchView(object):
                 { "name": "lieu_dit", "boost": 7 },
                 { "name": "Parcelle", "boost": 1 },
                 { "name": "FLIK", "boost": 1 },
-                { "name": "asta esp", "boost": 0 },
+                { "name": "asta_esp", "boost": 0 },
                 { "name": "hydro", "boost": 0 },
                 { "name": "hydro_km", "boost": 0 },
                 { "name": "biotope", "boost": 0 },
@@ -138,14 +138,19 @@ class FullTextSearchView(object):
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
-            role_id = self.request.user.role.id
+            role_id = self.request.user.settings_role.id
             filters['should'].append({"term": {"public": True}})
             filters['should'].append({"term": {"role_id": role_id}})
 
         es = get_elasticsearch(self.request)
-        search = es.search(index=get_index(self.request),
-                           body=query_body,
-                           size=limit)
+        try:
+            search = es.search(index=get_index(self.request),
+                               body=query_body,
+                               size=limit)
+        except Exception as e:
+            log.exception(e)
+            log.error('ES error querying {} on {}'.format(get_index(self.request), get_host()))
+            return HTTPInternalServerError()
         objs = search['hits']['hits']
         features = []
 
@@ -230,7 +235,7 @@ class FullTextSearchView(object):
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
-            role_id = self.request.user.role.id
+            role_id = self.request.user.settings_role.id
             filters['should'].append({"term": {"public": True}})
             filters['should'].append({"term": {"role_id": role_id}})
 
@@ -330,6 +335,7 @@ class FullTextSearchView(object):
         if 'query' not in self.request.params:
             return HTTPBadRequest(detail='no query')
         query = self.request.params.get('query')
+        query = query.replace("'", "''")
         if layers is None:
             layers = self.request.params.get('layers', '')
         layers = layers.split(',')
@@ -402,7 +408,12 @@ class FullTextSearchView(object):
                 res = session.execute(gfi_query)
                 rows = res.fetchall()
 
+                cnt = 0
                 for row in rows:
+                    cnt = cnt + 1
+                    if cnt > limit:
+                        break
+
                     try:
                         geom = geojson.loads(row['st_asgeojson'])
                     except:
@@ -473,8 +484,11 @@ class FullTextSearchView(object):
                     esricoll = mf.open(driver='ESRIJSON')
                 except:
                     raise
-
+                cnt = 0
                 for rawfeature in esricoll:
+                    cnt = cnt + 1
+                    if cnt > limit:
+                        break
                     geom = rawfeature['geometry']
                     bbox = {}
                     try:

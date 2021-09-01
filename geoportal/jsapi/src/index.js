@@ -448,12 +448,13 @@ lux.geocode = function(obj, cb) {
   return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
-    goog.asserts.assert(json.results.length, 'No address was found');
-
-    var result = json.results[0];
-    if (cb !== undefined) {
-      cb.call(null, [result.easting, result.northing]);
+    if (json.results.length > 0) {
+      var result = json.results[0];
+      if (cb !== undefined) {
+        cb.call(null, [result.easting, result.northing]);
+      }
     }
+    return json;
   }));
 };
 
@@ -635,4 +636,75 @@ lux.generatePagRepport = function(ids, mail, eula) {
     fetch(lux.pagUrl + '/report/' + ids + '.pdf?email=' + mail + '&staging=false', request);
     lux.notify(msg);
   }
+};
+
+/**
+ * Set the center of the current view in EPSG:2169.
+ * @param {ol.geometry.Geometry} geometry The geometry to check.
+ * @return {true} True if self intercting otherwise false.
+ * @export
+ * @api
+ */
+lux.isSelfIntersecting = function(geometry) {
+  var coordinates;
+  if (geometry.getType() === 'LineString') {
+    coordinates = geometry.getCoordinates();
+  }
+  if (geometry.getType() === 'Polygon') {
+    coordinates = geometry.getCoordinates()[0];
+    coordinates.pop();
+  }
+  var segments = [];
+  var intersect = false;
+  for (var iSegement=0; iSegement < coordinates.length-1; iSegement++) {
+    segments.push(new ol.geom.LineString([coordinates[iSegement], coordinates[iSegement + 1]]));
+  }
+  for (var i=0; i < segments.length-1; i++) {
+    for(var j = i + 2; j < segments.length; j++) {
+      if (lux.segmentsIntersect_(segments[i], segments[j])) {
+        intersect = true;
+        break;
+      }
+    }
+  }
+  return intersect;
+};
+
+/**
+ * Set the center of the current view in EPSG:2169.
+ * @param {ol.geometry.LineString} seg1 The first line to check.
+ * @param {ol.geometry.LineString} seg2 The second line to check.
+ * @return {boolean} return true if intersects.
+ * @private
+ */
+lux.segmentsIntersect_ = function(seg1, seg2) {
+  var intersection = false;
+  var p1s1 = seg1.getFirstCoordinate();
+  var p2s1 = seg1.getLastCoordinate();
+  var p1s2 = seg2.getFirstCoordinate();
+  var p2s2 = seg2.getLastCoordinate();
+  var x11_21 = p1s1[0] - p1s2[0];
+  var y11_21 = p1s1[1] - p1s2[1];
+  var x12_11 = p2s1[0] - p1s1[0];
+  var y12_11 = p2s1[1] - p1s1[1];
+  var y22_21 = p2s2[1] - p1s2[1];
+  var x22_21 = p2s2[0] - p1s2[0];
+  var d = (y22_21 * x12_11) - (x22_21 * y12_11);
+  var n1 = (x22_21 * y11_21) - (y22_21 * x11_21);
+  var n2 = (x12_11 * y11_21) - (y12_11 * x11_21);
+
+  if(d == 0) {
+      // parallel
+      if(n1 == 0 && n2 == 0) {
+          // coincident
+          intersection = true;
+      }
+  } else {
+      var along1 = n1 / d;
+      var along2 = n2 / d;
+      if(along1 >= 0 && along1 <= 1 && along2 >=0 && along2 <= 1) {
+        intersection = true;
+      }
+  }
+  return intersection;
 };
