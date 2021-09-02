@@ -99,7 +99,7 @@ In the `geoportal/.dockerignore` file add:
 Translations
 ------------
 
-The translation worflow is as follows:
+The translation workflow is as follows:
 - make update-pots # Replace pot files with new ones using a running composition
 - make update-translations # push new pots to transifex
 - make pull-translations # retrieve pos from transifex
@@ -112,6 +112,6 @@ Updating c2cgeoportal
 
 Update version in:
 - geoportal/luxembourg_requirements.txt
-- replace geoportal/upstrean_requirements.txt using the corresponding version
+- replace geoportal/upstream_requirements.txt using the corresponding version
   https://github.com/camptocamp/c2cgeoportal/blob/_C2C_GEOPORTAL_VERSION_/geoportal/requirements.txt
 - check the docs / adapt the code
