@@ -5,11 +5,11 @@ import re
 import urllib.request
 import datetime
 import pyproj
-import shapely
 import geojson
 import os
 import json
 import pytz
+import dateutil
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -31,8 +31,8 @@ from shapely.ops import transform
 from shapely.wkt import loads as wkt_loads
 from functools import partial
 
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
-from geoportal.geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 log = logging.getLogger(__name__)
 
 
@@ -260,7 +260,6 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         if geometry is not None and len(geometry) > 0:
-        
             fc = self.get_info(
                 fid, None,
                 None, results, layers, None, geometry)
@@ -663,7 +662,7 @@ class Getfeatureinfo(object):
                         # Check if the layer has a resctriction area
                         restriction = DBSession.query(RestrictionArea).filter(
                             RestrictionArea.roles.any(
-                                Role.id == self.request.user.role.id)).filter(
+                                Role.id == self.request.user.settings_role.id)).filter(
                             RestrictionArea.layers.any(
                                 Layer.id == layer
                             )
@@ -679,11 +678,11 @@ class Getfeatureinfo(object):
                     if self.request.user is not None:
                         if query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                self.request.user.role.id
+                                self.request.user.settings_role.id
                                 ).count() > 0:
                             for res in query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                    self.request.user.role.id).all():
+                                    self.request.user.settings_role.id).all():
                                 luxgetfeaturedefinitions.append(res)
                         else:
                             for res in query.filter(
@@ -697,6 +696,7 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinitions.append(res)
         except Exception as e:
             log.exception(e)
+            return []
             return HTTPBadRequest()
         return luxgetfeaturedefinitions
 
@@ -781,6 +781,27 @@ class Getfeatureinfo(object):
                             break
             modified_features.append(feature)
         return modified_features
+
+    def format_date(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
+        modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
+        for feature in features:
+            try:
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                            lux_tz = pytz.timezone("Europe/Luxembourg")
+                            UTC_datetime_timestamp = float(dateutil.parser.isoparse(value).strftime("%s"))
+                            utc_dt = datetime.datetime.fromtimestamp(UTC_datetime_timestamp, tz=pytz.utc)
+                            local_time = lux_tz.normalize(utc_dt)
+                            feature['attributes'][attribute] =\
+                                local_time.strftime(format)
+            except Exception as e:
+                log.exception(e)
+            modified_features.append(feature)
+        return modified_features    
 
     def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []

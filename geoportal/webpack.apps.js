@@ -69,8 +69,14 @@ rules.push({
 
 module.exports = {
   output: {
-    path: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/build/'),
-    publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '${VISIBLE_ENTRY_POINT}static-ngeo/UNUSED_CACHE_VERSION/build/'
+    path: '/etc/static-ngeo/',
+    publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '.__ENTRY_POINT__static-ngeo/'
+  },
+  devServer: {
+    publicPath: '${VISIBLE_WEB_PROTOCOL}://${VISIBLE_WEB_HOST}${VISIBLE_ENTRY_POINT}dev/',
+    port: 8080,
+    host: 'webpack_dev_server',
+    hot: true,
   },
   entry: entry,
   module: {
@@ -78,8 +84,16 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
+    modules: ['/usr/lib/node_modules'],
     alias: {
       geoportailv3: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/js'),
+      'bootstrap': '/usr/lib/node_modules/bootstrap/',
+      'jsts': '/usr/lib/node_modules/jsts/org/locationtech/jts',
+      'ol/ol.css': '/usr/lib/node_modules/ol/ol.css',
+      'ol': '/usr/lib/node_modules/ol/src',
+      'olcs': '/usr/lib/node_modules/ol-cesium/src/olcs',
+      'jquery-ui/datepicker': '/usr/lib/node_modules/jquery-ui/ui/widgets/datepicker', // For angular-ui-date
+      'proj4': '/usr/lib/node_modules/proj4/lib',
     }
   },
 };

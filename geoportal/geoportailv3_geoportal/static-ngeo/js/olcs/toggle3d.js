@@ -29,6 +29,7 @@ class Controller {
   toggleSelector() {
     this.isOpened = !this.isOpened;
   }
+
   toggleMesh() {
     if (this.manager.getMode() === '3D' && this.manager.is3dEnabled()) {
       this.manager.setMode('MESH');

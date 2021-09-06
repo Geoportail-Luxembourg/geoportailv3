@@ -20,16 +20,10 @@ import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
  * @param {string} getuserinfoUrl The url to get information about the user.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
 const exports = function($http, $rootScope, loginUrl, logoutUrl,
-    getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
-  /**
-   * @type {string}
-   * @private
-   */
-  this.appAuthtktCookieName_ = appAuthtktCookieName;
+    getuserinfoUrl, appNotify, gettextCatalog) {
 
   /**
    * @type {ngeo.offline.Mode}
@@ -142,7 +136,16 @@ exports.prototype.authenticate = function(username, password) {
   return this.http_.post(this.loginUrl_, req, config).then(
       response => {
         if (response.status == 200) {
-          this.getUserInfo();
+          this.setUserInfo(
+            response.data['login'],
+            response.data['role'],
+            response.data['role_id'],
+            response.data['mail'],
+            response.data['sn'],
+            response.data['mymaps_role'],
+            response.data['is_admin']
+          );
+          this.$rootScope.$broadcast('authenticated');
           var msg = this.gettextCatalog.getString(
               'Vous êtes maintenant correctement connecté.');
           this.notify_(msg, appNotifyNotificationType.INFO);
@@ -231,7 +234,7 @@ exports.prototype.isAuthenticated = function() {
     return true;
   }
 
-  if (this.hasCookie(this.appAuthtktCookieName_)) {
+  if (this.getUsername()) {
     return this.username.length > 0;
   }
 
@@ -306,25 +309,6 @@ exports.prototype.getMymapsRole = function() {
  */
 exports.prototype.getMymapsAdmin = function() {
   return this.isMymapsAdmin;
-};
-
-/**
- * @param {string} cname The cookie name.
- * @return {boolean} True if the cookie exists.
- */
-exports.prototype.hasCookie = function(cname) {
-  var name = cname + '=';
-  var ca = document.cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return true;
-    }
-  }
-  return false;
 };
 
 
