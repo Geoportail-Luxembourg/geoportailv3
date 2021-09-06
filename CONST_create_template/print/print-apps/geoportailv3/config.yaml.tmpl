@@ -1,0 +1,166 @@
+---
+
+throwErrorOnExtraParameters: true
+defaultToSvg: true
+
+allowedReferers:
+  - !hostnameMatch
+    host: ${VISIBLE_WEB_HOST}
+  - !localMatch {}
+
+templates:
+  1 A4 portrait: !template
+    reportTemplate: A4_Portrait.jrxml
+    attributes:
+      title:
+        !string &title
+        default: ""
+      comments:
+        !string &comments
+        default: ""
+      debug:
+        !boolean &debug
+        default: false
+      legend: !legend &legend {}
+      map:
+        !map &map
+        maxDpi: 254
+        dpiSuggestions: [254]
+        zoomLevels:
+          !zoomLevels
+          scales: [100, 250, 500, 2500, 5000, 10000, 25000, 50000, 100000, 500000]
+        width: 555
+        height: 675
+      northArrow:
+        !northArrow &northArrow
+        size: 40
+        default:
+          graphic: "file:///north.svg"
+      scalebar:
+        !scalebar &scalebar
+        width: 150
+        height: 20
+        default:
+          fontSize: 8
+      datasource:
+        !datasource &datasource
+        attributes:
+          title: !string {}
+          table: !table {}
+
+    processors: &processors
+      - !reportBuilder  # compile all reports in current directory
+        directory: '.'
+      - !configureHttpRequests &configureHttpRequests
+        httpProcessors:
+          ## For internal print
+          ## - !mapUri
+          ##   mapping:
+          ##     https?://${VISIBLE_WEB_HOST_RE_ESCAPED}${VISIBLE_ENTRY_POINT_RE_ESCAPED}tiles(.*): "${TILECLOUDCHAIN_INTERNAL_URL}${VISIBLE_ENTRY_POINT}tiles$1"
+          ## - !mapUri
+          ##   mapping:
+          ##     https?://${VISIBLE_WEB_HOST_RE_ESCAPED}${VISIBLE_ENTRY_POINT_RE_ESCAPED}(.*): "${GEOPORTAL_INTERNAL_URL}${VISIBLE_ENTRY_POINT}$1"
+          ## - !forwardHeaders
+          ##   matchers:
+          ##     - !hostnameMatch
+          ##       host: ${GEOPORTAL_INTERNAL_HOST}
+          ##       port: ${GEOPORTAL_INTERNAL_PORT}
+          - !forwardHeaders
+            matchers:
+              - !hostnameMatch
+                host: ${VISIBLE_WEB_HOST}
+                port: ${VISIBLE_WEB_PORT}
+            headers:
+              - Cookie
+              ## - Host
+          - !forwardHeaders
+            headers:
+              - Referer
+              - X-Request-ID
+              - Forwarded
+          - !restrictUris
+            matchers:
+              - !localMatch
+                reject: true
+              ## For internal print
+              ## - !hostnameMatch
+              ##   host: ${GEOPORTAL_INTERNAL_HOST}
+              ##   port: ${GEOPORTAL_INTERNAL_PORT}
+              ## - !hostnameMatch
+              ##   host: ${TILECLOUDCHAIN_INTERNAL_HOST}
+              ##   port: ${TILECLOUDCHAIN_INTERNAL_PORT}
+              - !ipMatch
+                ip: 10.0.0.0
+                mask: 255.0.0.0
+                reject: true
+              - !ipMatch
+                ip: 172.16.0.0
+                mask: 255.240.0.0
+                reject: true
+              - !ipMatch
+                ip: 192.168.0.0
+                mask: 255.255.0.0
+                reject: true
+              - !acceptAll {}
+      - !prepareLegend
+        maxWidth: 185
+        template: legend.jrxml
+      - !createMap {}
+      - !createNorthArrow {}
+      - !createScalebar {}
+      - !createDataSource
+        processors:
+          - !prepareTable
+            dynamic: true
+            columns:
+              icon: !urlImage
+                urlExtractor: (.*)
+                urlGroup: 1
+
+  2 A4 landscape: !template
+    reportTemplate: A4_Landscape.jrxml
+    attributes:
+      title: *title
+      comments: *comments
+      debug: *debug
+      legend: *legend
+      map: !map
+        <<: *map
+        width: 800
+        height: 441
+      northArrow: *northArrow
+      scalebar: *scalebar
+      datasource: *datasource
+    processors: *processors
+
+  3 A3 portrait: !template
+    reportTemplate: A3_Portrait.jrxml
+    attributes:
+      title: *title
+      comments: *comments
+      debug: *debug
+      legend: *legend
+      map: !map
+        <<: *map
+        width: 800
+        height: 1000
+      northArrow: *northArrow
+      scalebar: *scalebar
+      datasource: *datasource
+    processors: *processors
+
+  4 A3 landscape: !template
+    reportTemplate: A3_Landscape.jrxml
+    attributes:
+      title: *title
+      comments: *comments
+      debug: *debug
+      legend: *legend
+      map: !map
+        <<: *map
+        width: 1150
+        height: 673
+      northArrow: *northArrow
+      scalebar: *scalebar
+      datasource: *datasource
+    processors: *processors

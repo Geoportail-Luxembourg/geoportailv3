@@ -293,7 +293,7 @@ class Category(Base):
     @staticmethod
     def belonging_to(user, session):
         user_role = session.query(Role).get(
-            getattr(user, 'mymaps_role', user.role.id))
+            getattr(user, 'mymaps_role', user.settings_role.id))
         try:
             categories = user_role.categories\
                 if user_role.categories is not None else []

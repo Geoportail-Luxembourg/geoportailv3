@@ -491,7 +491,6 @@ const exports = function($scope, $window, $compile,
     })
   }, {
       name: 'features',
-      limit: 20,
       source: FeatureBloodhoundEngine.ttAdapter(),
       display: function(suggestion) {
           var feature = /** @type {ol.Feature} */ (suggestion);
@@ -547,15 +546,15 @@ const exports = function($scope, $window, $compile,
     :this.initialFacets
   );
   this.esLabels = {
-    address: this.gettextCatalog.getString('Adresses'),
-    parcels: this.gettextCatalog.getString('Parcelles cadastrales'),
-    localite: this.gettextCatalog.getString('Localités'),
-    lieudit: this.gettextCatalog.getString('Lieux-dits'),
-    commune: this.gettextCatalog.getString('Communes'),
-    flik: this.gettextCatalog.getString('Éléments agricoles'),
-    hydro: this.gettextCatalog.getString('Hydrographie'),
-    biotopes: this.gettextCatalog.getString('Biotopes'),
-    editus: this.gettextCatalog.getString('POI Editus')
+    address: 'Adresses',
+    parcels: 'Parcelles cadastrales',
+    localite: 'Localités',
+    lieudit: 'Lieux-dits',
+    commune: 'Communes',
+    flik: 'Éléments agricoles',
+    hydro: 'Hydrographie',
+    biotopes: 'Biotopes',
+    editus: 'POI Editus'
   }
 
 
@@ -616,16 +615,16 @@ exports.prototype.createAndInitPOIBloodhound_ =
         remote: {
           url: searchServiceUrl,
           prepare: (query, settings) => {
-            const url = new URL(settings.url);
-            const params = url.searchParams;
-            params.set('query', query);
-            params.set('limit', this.limitResults);
+            const url = new URL(settings.url)
+            const params = url.searchParams
+            params.set('query', query)
+            params.set('limit', this.limitResults)
             // Facets
             let layers = Object.keys(this.esMatch_)
               .filter(k => this.facets[k])
               .map(k => this.esMatch_[k])
-              .flat();
-            if (layers.length > 0) params.set('layer', layers.join(','));
+              .flat()
+            if (layers.length > 0) params.set('layer', layers.join(','))
             // Restrict to area
             if (this.facets.extent) {
               let extent = transformExtent(
@@ -633,9 +632,9 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 'EPSG:3857',
                 'EPSG:4326'
               );
-              params.set('extent', extent.join(','));
+              params.set('extent', extent.join(','))
             }
-            settings.url = url.toString();
+            settings.url = url.toString()
             return settings
           },
           rateLimitWait: 50,
@@ -745,7 +744,7 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           const url = new URL(settings.url);
           const params = url.searchParams;
           params.set('query', query);
-          params.set('limit', 5)
+          params.set('limit', this.limitResults)
           params.set('language', this.gettextCatalog.currentLanguage);
           let selected_layers = this.selectedLayers.map((el) => el.get('queryable_id'))
             .filter(el => el !== undefined);
@@ -858,7 +857,7 @@ exports.prototype.addLayerToMap_ = function(input) {
   }
   var layerMetadata = layer.get('metadata');
   if (layerMetadata.hasOwnProperty('linked_layers')) {
-    var layers = layerMetadata['linked_layers'].split(',');
+    var layers = layerMetadata['linked_layers'];
     layers.forEach(function(layerId) {
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalog) {
