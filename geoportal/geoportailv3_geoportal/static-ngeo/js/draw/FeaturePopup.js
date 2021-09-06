@@ -250,7 +250,7 @@ exports.prototype.getAnchor = function(feature) {
 exports.prototype.formatArea = function(polygon) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedArea(
+  return ngeoInteractionMeasure.prototype.getFormattedArea(
       polygon,
        /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -266,7 +266,7 @@ exports.prototype.formatArea = function(polygon) {
 exports.prototype.formatRadius = function(line) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedLength(
+  return ngeoInteractionMeasure.prototype.getFormattedLength(
       line,
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -284,7 +284,7 @@ exports.prototype.formatLength = function(line) {
       line.getCoordinates()[0] : line.getCoordinates();
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedLength(
+  return ngeoInteractionMeasure.prototype.getFormattedLength(
       new olGeomLineString(coordinates),
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,

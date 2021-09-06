@@ -1,0 +1,36 @@
+<tinyows
+    online_resource="${VISIBLE_WEB_PROTOCOL}://${VISIBLE_WEB_HOST}${VISIBLE_ENTRY_POINT}tinyows_proxy"
+    schema_dir="/usr/share/tinyows/schema/"
+    log="/var/log/tinyows.log"
+    log_level="1"
+    check_schema="0">
+
+  <contact
+      name="GeoMapFish"
+      site="https://www.geomapfish.org/"
+      email="geomapfish@googlegroups.com" />
+
+  <metadata
+      name="GeoMapFish TinyOWS Server"
+      title="GeoMapFish TinyOWS Server" />
+
+  <pg
+      host="${PGHOST}"
+      user="${PGUSER}"
+      password="${PGPASSWORD}"
+      port="${PGPORT}"
+      dbname="${PGDATABASE}" />
+
+<!--
+  <layer
+      retrievable="1"
+      writable="1"
+      ns_prefix="tows"
+      ns_uri="https://www.tinyows.org/"
+      name="point"
+      schema="edit"
+      table="point"
+      title="Points"
+      pkey="id" />
+-->
+</tinyows>

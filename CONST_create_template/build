@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import os.path
+import platform
+import re
+import stat
+import subprocess
+import sys
+import urllib.request
+
+import yaml
+
+
+def call(verbose, arguments, **kwargs):
+    if verbose:
+        print_args = [a.replace(" ", "\\ ") for a in arguments]
+        print_args = [a.replace('"', '\\"') for a in print_args]
+        print_args = [a.replace("'", "\\'") for a in print_args]
+        print(" ".join(print_args))
+    subprocess.check_call(arguments, **kwargs)
+
+
+def load_env(env_files):
+    """
+    Parse env files and return environment as dict
+    """
+    env = {}
+    if  os.path.exists('env.personal'):
+        env_files.append('env.personal')
+    for env_file in env_files:
+        with open(env_file) as f:
+            for line in f:
+                if line and line[0] != "#":
+                    try:
+                        index = line.index("=")
+                        env[line[:index].strip()] = line[index + 1 :].strip()
+                    except ValueError:
+                        # Ignore lines that don't have a '='
+                        pass
+    return env
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Build the project")
+    parser.add_argument("--verbose", help="Display the docker build commands")
+    parser.add_argument("--config", action="store_true", help="Build only the configuration image")
+    parser.add_argument("--geoportal", action="store_true", help="Build only the geoportal image")
+    parser.add_argument("--upgrade", help="Start upgrading the project to version")
+    parser.add_argument("env", nargs="*", help="The environment config")
+    args = parser.parse_args()
+
+    if args.upgrade:
+        major_version = args.upgrade
+        match = re.match(r"^([0-9]+\.[0-9]+)\.[0-9]+$", args.upgrade)
+        if match is not None:
+            major_version = match.group(1)
+        match = re.match(r"^([0-9]+\.[0-9]+)\.[0-9a-z]+\.[0-9]+$", args.upgrade)
+        if match is not None:
+            major_version = match.group(1)
+        full_version = args.upgrade if args.upgrade != "master" else "latest"
+        with open("upgrade", "w") as f:
+            result = urllib.request.urlopen(
+                "https://raw.githubusercontent.com/camptocamp/c2cgeoportal/{}/scripts/upgrade".format(
+                    major_version
+                )
+            )
+            if result.code != 200:
+                print("ERROR:")
+                print(result.read())
+                sys.exit(1)
+            f.write(result.read().decode())
+        os.chmod("upgrade", os.stat("upgrade").st_mode | stat.S_IXUSR)
+        try:
+            if platform.system() == "Windows":
+                subprocess.check_call(["python", "upgrade", full_version])
+            else:
+                subprocess.check_call(["./upgrade", full_version])
+        except subprocess.CalledProcessError:
+            sys.exit(1)
+        sys.exit(0)
+
+    with open("project.yaml") as project_file:
+        project_env = yaml.load(project_file, Loader=yaml.SafeLoader)["env"]
+    if len(args.env) != project_env["required_args"]:
+        print(project_env["help"])
+        sys.exit(1)
+    env_files = [e.format(*args.env) for e in project_env["files"]]
+    print("Use env files: {}".format(", ".join(env_files)))
+    for env_file in env_files:
+        if not os.path.exists(env_file):
+            print("Error: the env file '{}' does not exist.".format(env_file))
+            sys.exit(1)
+    env = load_env(env_files)
+
+    base = env["DOCKER_BASE"] if "DOCKER_BASE" in env else "camptocamp/geoportailv3"
+    tag = ":" + env["DOCKER_TAG"] if "DOCKER_TAG" in env else ""
+    schema = env["PGSCHEMA"]
+
+    default = not (args.config or args.geoportal)
+
+    docker_build = ["docker", "build"]
+    if os.environ.get("CI", "FALSE").upper() != "TRUE":
+        docker_build.append("--pull")
+
+    if default or args.config:
+        call(
+            args.verbose,
+            docker_build
+            + [
+                "--tag={}-config{}".format(base, tag),
+                "--build-arg=PGSCHEMA=" + schema,
+                ".",
+            ],
+        )
+    if default or args.geoportal:
+        git_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip().decode()
+        call(
+            args.verbose,
+            docker_build
+            + [
+                "--tag={}-geoportal{}".format(base, tag),
+                "--build-arg=PGSCHEMA=" + schema,
+                "--build-arg=GIT_HASH=" + git_hash,
+                "geoportal",
+            ],
+        )
+        call(
+            args.verbose,
+            docker_build
+            + [
+                "--target=builder",
+                "--tag={}-geoportal-dev{}".format(base, tag),
+                "geoportal",
+            ],
+        )
+
+    with open(".env", "w") as dest:
+        for file_ in env_files:
+            with open(file_) as src:
+                dest.write(src.read() + "\n")
+        dest.write("# Used env files: {}\n".format(" ".join(env_files)))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+*.pyc
+*.pyo
+__pycache__/
+/.env
+/docker-compose.override.yaml
+/upgrade
+/.upgrade.yaml
+/.UPGRADE*
+/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+/env.personal
+
+# Generated with dev mode
+/geoportal/geoportailv3_geoportal/static/apihelp/index.html

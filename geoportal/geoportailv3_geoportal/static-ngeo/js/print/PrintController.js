@@ -15,13 +15,11 @@
 
 import appModule from '../module.js';
 import appPrintPrintservice from '../print/Printservice.js';
-import {includes as arrayIncludes} from 'ol/array.js';
-import {easeOut} from 'ol/easing.js';
-import {listen} from 'ol/events.js';
-import {unByKey} from 'ol/Observable.js';
-import {getPointResolution} from 'ol/proj.js';
+import { includes as arrayIncludes } from 'ol/array.js';
+import { easeOut } from 'ol/easing.js';
+import { getPointResolution } from 'ol/proj.js';
 import LayerGroup from 'ol/layer/Group.js';
-import olRenderEventType from 'ol/render/EventType.js';
+import MaskLayer from 'ngeo/print/Mask.js';
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -50,11 +48,11 @@ import olRenderEventType from 'ol/render/EventType.js';
  * @ngInject
  */
 const exports = function($scope, $window, $timeout, $q, gettextCatalog,
-    ngeoFeatureOverlayMgr, ngeoPrintUtils,
-    appThemes, appTheme, appFeaturePopup, appGetShorturl,
-    printServiceUrl, qrServiceUrl, appSelectedFeatures,
-    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
-    arrowUrl, appMvtStylingService, getHtmlLegendUrl) {
+  ngeoFeatureOverlayMgr, ngeoPrintUtils,
+  appThemes, appTheme, appFeaturePopup, appGetShorturl,
+  printServiceUrl, qrServiceUrl, appSelectedFeatures,
+  ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
+  arrowUrl, appMvtStylingService, getHtmlLegendUrl) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -91,6 +89,11 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @private
    */
   this.map_;
+
+  /**
+   * @private
+   */
+  this.maskLayer_ = new MaskLayer();
 
   /**
    * @type {angular.$timeout}
@@ -225,39 +228,34 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
   this['printing'] = false;
 
   /**
-   * @type {ol.EventsKey?}
-   */
-  var postcomposeListenerKey = null;
-
-  /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers_ = this['layers'];
 
   /**
-   * @type {function(ol.render.Event)}
+ * Return the size in dots of the map to print. Depends on
+ * the selected layout.
+ * @return {ol.Size} Size.
+ */
+  const getSizeFn = () => {
+    var layoutIdx = this['layouts'].indexOf(this['layout']);
+    console.assert(layoutIdx >= 0);
+    return exports.MAP_SIZES_[layoutIdx];
+  };
+  this.maskLayer_.getSize = getSizeFn;
+
+  /**
+   * Return the scale of the map to print.
+   * @param {olx.FrameState} frameState Frame state.
+   * @return {number} Scale.
    */
-  var postcomposeListener = ngeoPrintUtils.createPrintMaskPostcompose(
-          /**
-           * Return the size in dots of the map to print. Depends on
-           * the selected layout.
-           * @return {ol.Size} Size.
-           */
-          (function() {
-            var layoutIdx = this['layouts'].indexOf(this['layout']);
-            console.assert(layoutIdx >= 0);
-            return exports.MAP_SIZES_[layoutIdx];
-          }).bind(this),
-          /**
-           * Return the scale of the map to print.
-           * @param {olx.FrameState} frameState Frame state.
-           * @return {number} Scale.
-           */
-          (function(frameState) {
-            return exports.adjustScale_(
-                this.map_.getView(), this['scale']);
-          }).bind(this));
+  const getScaleFn = (frameState) => {
+    return exports.adjustScale_(
+      this.map_.getView(), this['scale']);
+  };
+  this.maskLayer_.getScale = getScaleFn;
+
 
   // Show/hide the print mask based on the value of the "open" property.
   $scope.$watch(function() {
@@ -275,16 +273,13 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = listen(this.map_,
-          olRenderEventType.POSTCOMPOSE, postcomposeListener);
+      this.map_.addLayer(this.maskLayer_);
       const bgLayer = this.backgroundLayerMgr_.get(this.map_);
       if (bgLayer.get('defaultMapBoxStyle')) {
         this.appMvtStylingService_.publishIfSerial(this.map_);
       }
-    } else if (postcomposeListenerKey !== null) {
-      unByKey(postcomposeListenerKey);
-      postcomposeListenerKey = null;
+    } else {
+      this.map_.removeLayer(this.maskLayer_);
       this.appMvtStylingService_.unpublishIfSerial(this.map_);
     }
     this.map_.render();
@@ -454,18 +449,19 @@ exports.prototype.changeScale = function(newScale) {
   console.assert(layoutIdx >= 0);
 
   var optimalResolution = this.printUtils_.getOptimalResolution(
-      /** @type {Array<number>} */ (mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
+       /** @type {Array<number>} */(mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
 
+  /** @type {import("ol/View.js".default)} */
   var view = map.getView();
   var currentResolution = view.getResolution();
 
   if (currentResolution < optimalResolution) {
-    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
+    var newResolution = view.getConstrainedResolution(optimalResolution, 1);
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
       easing: easeOut,
-      resolution: currentResolution
+      resolution: newResolution
     });
   }
 
@@ -492,12 +488,16 @@ exports.prototype.print = function(format) {
   if (bgMetadata !== undefined) {
     var bgName = bgMetadata['legend_name'];
     if (bgName !== undefined) {
-      legend.push({'name': bgName});
+      legend.push({ 'name': bgName });
     }
   }
   var curLang = this.gettextCatalog.currentLanguage;
   var url = this.getHtmlLegendUrl;
-  this.layers_.forEach(function(layer) {
+  
+  // We remove the mask from the array
+  const layersArray_ = this.layers_.filter(l => l instanceof MaskLayer === false);
+
+  layersArray_.forEach((layer) => {
     var curMetadata = layer.get('metadata');
     var metaMaxDpi = curMetadata['max_dpi'];
     if (metaMaxDpi !== undefined) {
@@ -508,7 +508,7 @@ exports.prototype.print = function(format) {
     }
     var name = curMetadata['legend_name'];
     if (name !== undefined) {
-      legend.push({'name': name});
+      legend.push({ 'name': name });
     } else {
       var id = layer.get('queryable_id');
       var isExternalWms = curMetadata['isExternalWms'];
@@ -522,19 +522,21 @@ exports.prototype.print = function(format) {
             'name': null,
             'legendUrl': legendUrl,
             'accessConstraints': accessConstraints,
-            'legendTitle': legendTitle});
+            'legendTitle': legendTitle
+          });
         }
       } else if (id !== undefined) {
-          var queryParams = {
-              'lang': curLang,
-              'id': id,
-              'dpi': dpi,
-              'legend_title': layer.get('label')
-          };
-          legend.push({
-              'name': layer.get('label'),
-              'restUrl': url + '?' + (new URLSearchParams(queryParams)).toString(),
-              'legendTitle': layer.get('label')});
+        var queryParams = {
+          'lang': curLang,
+          'id': id,
+          'dpi': dpi,
+          'legend_title': layer.get('label')
+        };
+        legend.push({
+          'name': layer.get('label'),
+          'restUrl': url + '?' + (new URLSearchParams(queryParams)).toString(),
+          'legendTitle': layer.get('label')
+        });
       }
     }
   });
@@ -558,150 +560,150 @@ exports.prototype.print = function(format) {
   }
 
   this.getShorturl_().then(
-      /**
-       * @param {string} shorturl The short URL.
-       */
-      (function(shorturl) {
-        this.requestCanceler_ = this.$q_.defer();
-        this['printing'] = true;
-        var format = curFormat;
-        var dataOwners = [];
-        recursiveGetLayerAttributions(map.getLayerGroup(), dataOwners);
+    /**
+     * @param {string} shorturl The short URL.
+     */
+    (function(shorturl) {
+      this.requestCanceler_ = this.$q_.defer();
+      this['printing'] = true;
+      var format = curFormat;
+      var dataOwners = [];
+      recursiveGetLayerAttributions(map.getLayerGroup(), dataOwners);
 
-        var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
-        if (routingAttributions) {
-          const htmls = routingAttributions();
-          dataOwners.push(...htmls);
+      var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
+      if (routingAttributions) {
+        const htmls = routingAttributions();
+        dataOwners.push(...htmls);
+      }
+      //Remove duplicates.
+      dataOwners = dataOwners.filter(function(item, pos, self) {
+        return self.indexOf(item) == pos;
+      });
+      var disclaimer = this.gettextCatalog.getString('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
+      var dateText = this.gettextCatalog.getString('Date d\'impression: ');
+      var scaleTitle = this.gettextCatalog.getString('Echelle approximative 1:');
+      var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
+      var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
+      var queryResultsHtml = null;
+      if ((this['routingOpen'] || this['infoOpen']) && queryResults.length > 0) {
+        var clonedQuery = queryResults[0].cloneNode(true);
+        var profileElements = clonedQuery.getElementsByClassName('profile');
+        if (profileElements !== null && profileElements.length > 0) {
+          Array.prototype.slice.call(profileElements).forEach(function(profileElement) {
+            var nodeList = profileElement.getElementsByTagName('svg');
+            if (nodeList !== undefined && nodeList.length > 0) {
+              var svgString = this.getSVGString_(nodeList[0]);
+              var img = document.createElement('IMG');
+              img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+              var parent = nodeList[0].parentNode;
+              if (parent) {
+                parent.replaceChild(img, nodeList[0]);
+              }
+            }
+          }, this);
         }
-        //Remove duplicates.
-        dataOwners = dataOwners.filter(function(item, pos, self) {
-          return self.indexOf(item) == pos;
-        });
-        var disclaimer = this.gettextCatalog.getString('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
-        var dateText = this.gettextCatalog.getString('Date d\'impression: ');
-        var scaleTitle = this.gettextCatalog.getString('Echelle approximative 1:');
-        var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
-        var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
-        var queryResultsHtml = null;
-        if ((this['routingOpen'] || this['infoOpen']) && queryResults.length > 0) {
-          var clonedQuery = queryResults[0].cloneNode(true);
-          var profileElements = clonedQuery.getElementsByClassName('profile');
-          if (profileElements !== null && profileElements.length > 0) {
-            Array.prototype.slice.call(profileElements).forEach(function(profileElement) {
-              var nodeList = profileElement.getElementsByTagName('svg');
-              if (nodeList !== undefined && nodeList.length > 0) {
-                var svgString = this.getSVGString_(nodeList[0]);
-                var img = document.createElement('IMG');
-                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-                var parent = nodeList[0].parentNode;
-                if (parent) {
-                  parent.replaceChild(img, nodeList[0]);
+        var noprintElements = clonedQuery.getElementsByClassName('no-print');
+        if (noprintElements !== null && noprintElements.length > 0) {
+          Array.prototype.slice.call(noprintElements).forEach(function(noprintElement) {
+            noprintElement.parentNode.removeChild(noprintElement);
+          }, this);
+        }
+        queryResultsHtml = clonedQuery.innerHTML;
+      }
+
+      // create print spec object
+      var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
+        'disclaimer': disclaimer,
+        'scaleTitle': scaleTitle,
+        'appTitle': appTitle,
+        'scale': this['scale'],
+        'name': this['title'],
+        'url': shorturl,
+        'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl,
+        'lang': this.gettextCatalog.currentLanguage,
+        'legend': this['legend'] ? legend : null,
+        'scalebar': { 'geodetic': true },
+        'dataOwner': dataOwners.join(' '),
+        'dateText': dateText,
+        'queryResults': queryResultsHtml
+      });
+      var piwikUrl =
+        'http://' + this.appTheme_.getCurrentTheme() +
+        '.geoportail.lu/print/' +
+        layout.replace(' ', '/');
+      var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
+      piwik.push(['trackLink', piwikUrl, 'download']);
+
+      // add feature overlay layer to print spec
+      var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
+      var resolution = map.getView().getResolution();
+      console.assert(resolution !== undefined);
+      this.print_.encodeLayer(layers, this.featureOverlayLayer_, /** @type{number} */(resolution));
+      if (layers.length > 0) {
+        spec.attributes.map.layers.unshift(layers[0]);
+      }
+      spec.attributes.map.layers.forEach(function(layer) {
+        if ((layer.matrices instanceof Array) &&
+          layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
+          // Ugly hack to request non retina wmts layer for print
+          layer.baseURL = layer.baseURL.replace('_hd', '');
+          layer.matrixSet = layer.matrixSet.replace('_HD', '');
+          // layer.layer = layer.layer + '_hd';
+          // layer.matrices.forEach(function(matrice) {
+          //   matrice.tileSize = [512, 512];
+          // });
+        }
+        if ((layer.matrices instanceof Array)) {
+          for (var i = layer.matrices.length - 1; i > 0; i--) {
+            if (layer.matrices[i].scaleDenominator > this['scale']) {
+              layer.matrices.splice(0, i + 1);
+              break;
+            }
+          }
+        }
+        if (layer.type === 'wms') {
+          if (!layer.customParams) {
+            layer.customParams = {};
+          }
+          layer.customParams['MAP_RESOLUTION'] = dpi;
+        }
+        // set the graphicFormat because mapfish print is not able
+        // to guess it from the externalGraphic (doesn't end with file
+        // extension)
+        if (layer.type === 'geojson') {
+          var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
+          for (var key in vector.style) {
+            var style = vector.style[key];
+            if ((typeof style == 'object' && style !== null) || typeof style == 'function') {
+              for (var j = 0; j < style.symbolizers.length; j++) {
+                var symbolizer = style.symbolizers[j];
+                symbolizer['conflictResolution'] = false;
+                if (symbolizer.labelAlign) {
+                  symbolizer.labelAlign = 'lm';
+                }
+                if (symbolizer.externalGraphic) {
+                  symbolizer.graphicFormat = 'image/png';
+                  if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
+                    delete symbolizer.graphicHeight;
+                    delete symbolizer.graphicWidth;
+                  } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
+                    symbolizer.graphicHeight = 10;
+                    symbolizer.graphicWidth = 10;
+                  }
                 }
               }
-            }, this);
+            }
           }
-          var noprintElements = clonedQuery.getElementsByClassName('no-print');
-          if (noprintElements !== null && noprintElements.length > 0) {
-            Array.prototype.slice.call(noprintElements).forEach(function(noprintElement) {
-              noprintElement.parentNode.removeChild(noprintElement);
-            }, this);
-          }
-          queryResultsHtml = clonedQuery.innerHTML;
         }
+      }, this);
+      // create print report
+      this.print_.createReport(spec, /** @type {angular.$http.Config} */({
+        timeout: this.requestCanceler_.promise
+      })).then(
+        angular.bind(this, this.handleCreateReportSuccess_),
+        angular.bind(this, this.handleCreateReportError_));
 
-        // create print spec object
-        var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
-          'disclaimer': disclaimer,
-          'scaleTitle': scaleTitle,
-          'appTitle': appTitle,
-          'scale': this['scale'],
-          'name': this['title'],
-          'url': shorturl,
-          'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl,
-          'lang': this.gettextCatalog.currentLanguage,
-          'legend': this['legend'] ? legend : null,
-          'scalebar': {'geodetic': true},
-          'dataOwner': dataOwners.join(' '),
-          'dateText': dateText,
-          'queryResults': queryResultsHtml
-        });
-        var piwikUrl =
-            'http://' + this.appTheme_.getCurrentTheme() +
-            '.geoportail.lu/print/' +
-            layout.replace(' ', '/');
-        var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
-        piwik.push(['trackLink', piwikUrl, 'download']);
-
-        // add feature overlay layer to print spec
-        var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
-        var resolution = map.getView().getResolution();
-        console.assert(resolution !== undefined);
-        this.print_.encodeLayer(layers, this.featureOverlayLayer_, /** @type{number} */(resolution));
-        if (layers.length > 0) {
-          spec.attributes.map.layers.unshift(layers[0]);
-        }
-        spec.attributes.map.layers.forEach(function(layer) {
-          if ((layer.matrices instanceof Array) &&
-            layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
-            // Ugly hack to request non retina wmts layer for print
-            layer.baseURL = layer.baseURL.replace('_hd', '');
-            layer.matrixSet = layer.matrixSet.replace('_HD', '');
-            // layer.layer = layer.layer + '_hd';
-            // layer.matrices.forEach(function(matrice) {
-            //   matrice.tileSize = [512, 512];
-            // });
-          }
-          if ((layer.matrices instanceof Array)) {
-            for (var i = layer.matrices.length - 1; i > 0; i--) {
-              if (layer.matrices[i].scaleDenominator > this['scale']) {
-                layer.matrices.splice(0, i + 1);
-                break;
-              }
-            }
-          }
-          if (layer.type === 'wms') {
-            if (!layer.customParams) {
-              layer.customParams = {};
-            }
-            layer.customParams['MAP_RESOLUTION'] = dpi;
-          }
-          // set the graphicFormat because mapfish print is not able
-          // to guess it from the externalGraphic (doesn't end with file
-          // extension)
-          if (layer.type === 'geojson') {
-            var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
-            for (var key in vector.style) {
-              var style = vector.style[key];
-              if ((typeof style == 'object' && style !== null) || typeof style == 'function') {
-                for (var j = 0; j < style.symbolizers.length; j++) {
-                  var symbolizer = style.symbolizers[j];
-                  symbolizer['conflictResolution'] = false;
-                  if (symbolizer.labelAlign) {
-                    symbolizer.labelAlign = 'lm';
-                  }
-                  if (symbolizer.externalGraphic) {
-                    symbolizer.graphicFormat = 'image/png';
-                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
-                      delete symbolizer.graphicHeight;
-                      delete symbolizer.graphicWidth;
-                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
-                      symbolizer.graphicHeight = 10;
-                      symbolizer.graphicWidth = 10;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }, this);
-        // create print report
-        this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
-          timeout: this.requestCanceler_.promise
-        })).then(
-            angular.bind(this, this.handleCreateReportSuccess_),
-            angular.bind(this, this.handleCreateReportError_));
-
-      }).bind(this));
+    }).bind(this));
 };
 
 
@@ -724,11 +726,11 @@ exports.prototype.handleCreateReportSuccess_ = function(resp) {
  */
 exports.prototype.getStatus_ = function(ref) {
   this.requestCanceler_ = this.$q_.defer();
-  this.print_.getStatus(ref, /** @type {angular.$http.Config} */ ({
+  this.print_.getStatus(ref, /** @type {angular.$http.Config} */({
     timeout: this.requestCanceler_.promise
   })).then(
-      angular.bind(this, this.handleGetStatusSuccess_, ref),
-      angular.bind(this, this.handleGetStatusError_));
+    angular.bind(this, this.handleGetStatusSuccess_, ref),
+    angular.bind(this, this.handleGetStatusError_));
 };
 
 
@@ -792,31 +794,31 @@ exports.prototype.resetPrintStates_ = function() {
 exports.prototype.setScales_ = function() {
   var currentTheme = this.appTheme_.getCurrentTheme();
   this.appThemes_.getThemeObject(currentTheme).then(
-      /**
-       * @param {Object} tree Tree object for the theme.
-       */
-      tree => {
-        var scales;
-        if (!tree) {
-          this.needScaleRefresh = true;
+    /**
+     * @param {Object} tree Tree object for the theme.
+     */
+    tree => {
+      var scales;
+      if (!tree) {
+        this.needScaleRefresh = true;
+      }
+      if (tree && tree['metadata']['print_scales']) {
+        scales = tree['metadata']['print_scales'].map(s => +s);
+        scales.sort((a, b) => a - b); // sort numerically
+      } else {
+        scales = DEFAULT_MAP_SCALES;
+      }
+      this['scales'] = scales;
+      var scale = this['scale'];
+      if (scale !== -1) {
+        // find nearest scale to current scale
+        scale = exports.findNearestScale_(scales, scale);
+        if (scale != this['scale']) {
+          this['scale'] = scale;
+          this.map_.render();
         }
-        if (tree && tree['metadata']['print_scales']) {
-          scales = tree['metadata']['print_scales'].map(s => +s);
-          scales.sort((a, b) => a - b); // sort numerically
-        } else {
-          scales = DEFAULT_MAP_SCALES;
-        }
-        this['scales'] = scales;
-        var scale = this['scale'];
-        if (scale !== -1) {
-          // find nearest scale to current scale
-          scale = exports.findNearestScale_(scales, scale);
-          if (scale != this['scale']) {
-            this['scale'] = scale;
-            this.map_.render();
-          }
-        }
-      });
+      }
+    });
 };
 
 
@@ -832,14 +834,14 @@ exports.prototype.useOptimalScale_ = function() {
   console.assert(mapSize !== undefined && mapSize !== null);
 
   var viewCenterResolution = exports.getViewCenterResolution_(
-      map.getView());
+    map.getView());
 
   var layoutIdx = this['layouts'].indexOf(this['layout']);
   console.assert(layoutIdx >= 0);
 
-  var scale = this.printUtils_.getOptimalScale(/** @type {Array<number>} */ (mapSize),
-      viewCenterResolution, exports.MAP_SIZES_[layoutIdx],
-      this['scales']);
+  var scale = this.printUtils_.getOptimalScale(/** @type {Array<number>} */(mapSize),
+    viewCenterResolution, exports.MAP_SIZES_[layoutIdx],
+    this['scales']);
 
   this['scale'] = scale != -1 ? scale : this['scales'][0];
 };

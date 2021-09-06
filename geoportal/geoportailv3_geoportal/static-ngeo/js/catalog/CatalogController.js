@@ -125,7 +125,7 @@ const exports = function($scope, appThemes, appTheme,
         if (this.tree !== undefined && this.tree !== null) {
           const idx = this.tree.children.findIndex((e) => e.id === -1);
           if (idx > -1) {
-            this.tree.children.splice(idx, 1);
+            this['tree'].children.splice(idx, 1);
           }
         }
       }
@@ -210,6 +210,7 @@ exports.prototype.setThemeZooms = function(tree) {
       center: currentView.getCenter(),
       enableRotation: true,
       zoom: currentView.getZoom(),
+      constrainResolution: true,
       rotation,
     }));
   }
@@ -247,7 +248,7 @@ exports.prototype.toggle = function(node) {
       }
       map.addLayer(layer);
       if (layerMetadata.hasOwnProperty('linked_layers')) {
-        var layers = layerMetadata['linked_layers'].split(',');
+        var layers = layerMetadata['linked_layers'];
         layers.forEach(function(layerId) {
           this.appThemes_.getFlatCatalog().then(
             function(flatCatalog) {
