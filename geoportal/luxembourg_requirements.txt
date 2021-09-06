@@ -1,26 +1,25 @@
-pykwalify==1.7.0
-sentry-sdk==0.10.2
-urllib3[secure]==1.23
-httplib2shim==0.0.3
-c2cgeoportal_commons==2.3.6.28
-c2cgeoportal_geoportal==2.3.6.28
-c2cgeoportal_admin==2.3.6.28
+httplib2shim
+# c2cgeoportal_commons==2.3.6.28
+# c2cgeoportal_geoportal==2.3.6.28
+# c2cgeoportal_admin==2.3.6.28
 pyocclient==0.4
-suds-jurko==0.6
-ipaddr==2.2.0
-elasticsearch
-ldap3==2.5.1
-pyramid_ldap3==0.3.2
-qrcode==5.1
-bleach==2.1.4
-html5lib==1.0.1
-CairoSVG==1.0.22
-weasyprint==v0.42.3
-PyPDF2==1.26
+suds-jurko
+ipaddr
+elasticsearch==7.13.4
+ldap3
+pyramid_ldap3
+qrcode
+bleach
+html5lib
+CairoSVG
+WeasyPrint==0.42.3
+PyPDF2
 marrow.mailer
 webtest
-beautifulsoup4==4.5.1
-HTMLParser==0.0.2
-gevent==1.4.0
+beautifulsoup4
+HTMLParser
+gevent
 gpxpy==1.4.2
 pyramid_assetviews==1.0a3
+transifex-client
+pyyaml

@@ -1,11 +1,12 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pyramid.view import view_config
 from pyramid_ldap3 import get_ldap_connector
-from pyramid.security import unauthenticated_userid
+from pyramid.security import unauthenticated_userid, remember
 from geoportailv3_geoportal.portail import Connections
 from c2cgeoportal_commons.models import DBSession
 import ldap3 as ldap
 import logging
+from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized, HTTPBadRequest
 
 log = logging.getLogger(__name__)
 
@@ -65,72 +66,76 @@ but from ldap
 
 
 def get_user_from_request(request):
+    username = unauthenticated_userid(request)
+    if username is not None:
+        return get_user(request, username)
+
+def get_user(request, username):
     from c2cgeoportal_commons.models import DBSession
     from c2cgeoportal_commons.models.main import Role
 
     class O(object):
         pass
-    username = unauthenticated_userid(request)
-    if username is not None:
-        default_mymaps_role = int(request.registry.settings['default_mymaps_role'])
-        user = O()
-        user.id = 0
-        user.username = username
-        user.email = None
-        user.is_mymaps_admin = False
-        user.mymaps_role = default_mymaps_role
-        user.ogc_role = -1
-        user.sn = None
-        user.is_password_changed = None
-        user.role_name = None
-        connector = get_ldap_connector(request)
-        cm = connector.manager
+    default_mymaps_role = int(request.registry.settings['default_mymaps_role'])
+    user = O()
+    user.id = 0
+    user.username = username
+    user.email = None
+    user.is_mymaps_admin = False
+    user.mymaps_role = default_mymaps_role
+    user.ogc_role = -1
+    user.sn = None
+    user.is_password_changed = None
+    user.role_name = None
+    connector = get_ldap_connector(request)
+    cm = connector.manager
 
-        # 0 means 'Tous publics'
-        roletheme = 0
-        with cm.connection() as conn:
-            ldap_settings = request.registry.settings['ldap']
-            base_dn = ldap_settings['base_dn']
-            filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
-            message_id = conn.search(
-                base_dn, filter_tmpl, ldap.SUBTREE,
-                ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
-            result = conn.get_response(message_id)[0]
+    # 0 means 'Tous publics'
+    roletheme = 0
+    with cm.connection() as conn:
+        ldap_settings = request.registry.settings['ldap']
+        base_dn = ldap_settings['base_dn']
+        filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+        message_id = conn.search(
+            base_dn, filter_tmpl, ldap.SUBTREE,
+            ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
+        result = conn.get_response(message_id)[0]
 
-            if len(result) == 1:
-                obj = result[0]['raw_attributes']
-                if 'roleTheme' in obj:
-                    # This is the plain c2cgeoportal role used for authentication.
-                    # Notably in the admin interface.
-                    # The role with name role_admin has id 645.
-                    roletheme = obj['roleTheme'][0].decode()
-                if 'mail' in obj:
-                    user.mail = obj['mail'][0].decode()
-                if 'sn' in obj:
-                    user.sn = obj['sn'][0].decode()
-                else:
-                    user.sn = user.mail
-                if 'isMymapsAdmin' in obj:
-                    user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
-                if 'roleMymaps' in obj:
-                    # This role is used for myMaps.
-                    user.mymaps_role = int(obj['roleMymaps'][0])
-                if 'roleOGC' in obj:
-                    # This role is used by the print proxy and internal WMS proxy.
-                    user.ogc_role = int(obj['roleOGC'][0])
-            conn.unbind()
-        try:
-            # Loading the plain c2cgeoportal role used for authentication.
-            user.role = DBSession.query(Role).filter_by(id=roletheme).one()
-        except Exception as e:
-            # Fallback to the "Tous publics" role
-            user.role = DBSession.query(Role).filter_by(id=0).one()
-            log.exception(e)
+        if len(result) == 1:
+            obj = result[0]['raw_attributes']
+            if 'roleTheme' in obj:
+                # This is the plain c2cgeoportal role used for authentication.
+                # Notably in the admin interface.
+                # The role with name role_admin has id 645.
+                roletheme = obj['roleTheme'][0].decode()
+            if 'mail' in obj:
+                user.mail = obj['mail'][0].decode()
+            if 'sn' in obj:
+                user.sn = obj['sn'][0].decode()
+            else:
+                user.sn = user.mail
+            if 'isMymapsAdmin' in obj:
+                user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
+            if 'roleMymaps' in obj:
+                # This role is used for myMaps.
+                user.mymaps_role = int(obj['roleMymaps'][0])
+            if 'roleOGC' in obj:
+                # This role is used by the print proxy and internal WMS proxy.
+                user.ogc_role = int(obj['roleOGC'][0])
+        conn.unbind()
+    try:
+        # Loading the plain c2cgeoportal role used for authentication.
+        user.roles = DBSession.query(Role).filter_by(id=roletheme)
+    except Exception as e:
+        # Fallback to the "Tous publics" role
+        user.roles = DBSession.query(Role).filter_by(id=0)
+        log.exception(e)
 
-        user.role_name = user.role.name
-        user.functionalities = []
-        return user
+    # todo: check if this is sufficiently precise or if a request in static."User" is needed ?
+    user.settings_role = user.roles[0]
 
+    user.functionalities = []
+    return user
 
 class Authentication(object):
     def __init__(self, request):
@@ -140,11 +145,11 @@ class Authentication(object):
     def get_user_info(self):
         if self.request.user is not None:
             return {"login": self.request.user.username,
-                    "role": self.request.user.role.name,
-                    "role_id": self.request.user.role.id,
+                    "role": self.request.user.settings_role.name,
+                    "role_id": self.request.user.settings_role.id,
                     "mymaps_role": getattr(
                         self.request.user,
-                        'mymaps_role', self.request.user.role.id),
+                        'mymaps_role', self.request.user.settings_role.id),
                     "mail": getattr(
                         self.request.user, 'mail',
                         self.request.user.email),
@@ -153,3 +158,19 @@ class Authentication(object):
                         self.request.user.username),
                     "is_admin": getattr(self.request.user, 'is_mymaps_admin', False)}
         return {}
+
+    @view_config(route_name="login", renderer='json')
+    def login(self):
+        login = self.request.POST.get("login")
+        password = self.request.POST.get("password")
+        if login is None or password is None:  # pragma nocover
+            raise HTTPBadRequest("'login' and 'password' should be available in request params.")
+        username = self.request.registry.validate_user(self.request, login, password)
+        if username is None:
+            raise HTTPUnauthorized("See server logs for details")
+        came_from = self.request.params.get("came_from")
+        if came_from:
+            return HTTPFound(location=came_from, headers=remember(self.request, username))
+        self.request.response.headers = remember(self.request, username)
+        self.request.user = get_user(self.request, username)
+        return self.get_user_info()

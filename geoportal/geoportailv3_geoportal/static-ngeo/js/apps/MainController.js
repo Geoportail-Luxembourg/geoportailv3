@@ -42,6 +42,8 @@ import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
 import {isValidSerial} from '../utils.js';
 
+import bootstrapApp from './bootstrap.js';
+
 import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
@@ -876,7 +878,7 @@ const MainController = function(
    * @type {function}
    */
   this.selectedLayersLength = function() {
-    return this.selectedLayers.filter(l => !l.get('metadata').hidden).length
+    return this.selectedLayers.filter(l => l.get('metadata') && !l.get('metadata').hidden).length
   }
 
   /**
@@ -1317,6 +1319,10 @@ MainController.prototype.enable3dCallback_ = function(active) {
   }
   this.appMvtStylingService.publishIfSerial(this.map_);
 
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', 'enable3d']);
+  piwik.push(['trackPageView']);
+
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
@@ -1387,6 +1393,7 @@ MainController.prototype.createMap_ = function() {
       minZoom: 8,
       enableRotation: true,
       extent: this.maxExtent_,
+      constrainResolution: true,
       rotation,
     })
   });
@@ -1707,10 +1714,10 @@ MainController.prototype.initMymaps_ = function() {
                 size: /** @type {ol.Size} */ (this.map_.getSize())
               });
             }
-            var layer = this.drawnFeatures_.getLayer();
-            if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
-              this.map_.addLayer(layer);
-            }
+            // var layer = this.drawnFeatures_.getLayer();
+            // if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
+            //   this.map_.addLayer(layer);
+            // }
           }.bind(this));
   } else {
     this.appMymaps_.clear();
@@ -1816,5 +1823,6 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
+bootstrapApp(appModule);
 
 export default MainController;

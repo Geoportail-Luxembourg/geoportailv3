@@ -1,11 +1,52 @@
-#!/bin/bash -e
+#!/bin/bash -eu
 
-export DOLLAR=$
+export CACHE_VERSION=$RANDOM
 
-find /app/ -name '*.tmpl' -print |grep -v jsdoc| grep -v node_modules | while read file
+function evaluate {
+    file=$1
+    echo "Evaluate: ${file}"
+    DOLLAR=$ envsubst < ${file} > ${file%.tmpl}
+    if [ `id -u` == 0 ]
+    then
+        chmod --reference=${file} ${file%.tmpl}
+        chown --reference=${file} ${file%.tmpl}
+    fi
+}
+
+if [ "${TEST}" == true ]
+then
+    find /opt/c2cgeoportal/ -name '*.tmpl' -print | grep -v jsdoc | grep -v node_modules | while read file
+    do
+        evaluate $file
+    done
+fi
+
+find /app/ -name '*.tmpl' -print | grep -v jsdoc | grep -v node_modules | while read file
+do
+    evaluate $file
+done
+
+find /etc/static-ngeo/ -name '*.tmpl' -print | grep -v jsdoc | grep -v node_modules | while read file
+do
+    evaluate $file
+done
+
+find /etc/static-ngeo/ \( -name '*.js' -or -name '*.css' -or -name '*.html' \) -print | while read file
 do
     echo "Evaluate: ${file}"
-    envsubst < ${file} > ${file%.tmpl}
+    sed --in-place --expression="s#\.__ENTRY_POINT__#${VISIBLE_ENTRY_POINT}#g" "${file}"
 done
 
 exec "$@"
+
+# #!/bin/bash -e
+
+# export DOLLAR=$
+
+# find /app/ -name '*.tmpl' -print | grep -v jsdoc| grep -v node_modules | while read file
+# do
+#     echo "Evaluate: ${file}"
+#     envsubst < ${file} > ${file%.tmpl}
+# done
+
+# exec "$@"

@@ -55,7 +55,7 @@ class Profile(Raster):
             content_type="application/csv"
         )
 
-    @view_config(route_name="profile.json", renderer="decimaljson")
+    @view_config(route_name="profile.json", renderer="fast_json")
     def json(self):
         if self.valid_request:
             """answers to /profile.json"""

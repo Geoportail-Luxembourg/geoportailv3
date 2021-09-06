@@ -23,6 +23,7 @@ const exports = function(gettextCatalog) {
   this.blankLayer_ = new olLayerTile();
   var blankLabel = gettextCatalog.getString('blank');
   this.blankLayer_.set('label', blankLabel);
+  this.blankLayer_.set('role', 'blank');
 };
 
 

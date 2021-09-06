@@ -8,7 +8,7 @@ import {toDegrees} from 'ol/math.js';
 import * as olMath from 'ol/math.js';
 import olStyleRegularShape from 'ol/style/RegularShape.js';
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
-import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -207,7 +207,7 @@ const exports = class extends ngeoPrintService {
     console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
-    stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
+    stableSort(layers, (layer_a, layer_b) => ((layer_a.getZIndex() !== undefined) ? layer_a.getZIndex() : 0) - ((layer_b.getZIndex() !== undefined) ? layer_b.getZIndex() : 0));
     layers = layers.slice().reverse();
 
     layers.forEach((layer) => {
