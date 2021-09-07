@@ -803,7 +803,7 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features    
 
-    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
+    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S", use_local_time=False, delta_hours=0):
         modified_features = []
         if type(attributes) != type([]):
             attributes = [attributes]
@@ -814,10 +814,20 @@ class Getfeatureinfo(object):
                         value = feature['attributes'][attribute]
                         if value is not None:
                                 utc_dt = datetime.datetime.fromtimestamp(int(value)/1000.0, tz=pytz.utc)
-                                lux_tz = pytz.timezone("Europe/Luxembourg")
-                                local_time = lux_tz.normalize(utc_dt)
-                                feature['attributes'][attribute] =\
-                                    local_time.strftime(format)
+                                if use_local_time:
+                                    hours_added = datetime. timedelta(hours = delta_hours)
+                                    dt = utc_dt + hours_added
+                                    lux_tz = pytz.timezone("Europe/Luxembourg")
+                                    local_time = lux_tz.normalize(utc_dt)
+                                    feature['attributes'][attribute] =\
+                                        local_time.strftime(format)
+                                else:
+                                    utc_dt = datetime.datetime.fromtimestamp(int(value)/1000.0)
+                                    hours_added = datetime. timedelta(hours = delta_hours)
+                                    dt = utc_dt + hours_added
+                                    feature['attributes'][attribute] =\
+                                        dt.strftime(format)
+ 
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
