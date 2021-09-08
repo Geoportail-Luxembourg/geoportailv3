@@ -803,7 +803,7 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features    
 
-    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S", use_local_time=False, delta_hours=0):
+    def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S", use_local_time=True, delta_hours=0):
         modified_features = []
         if type(attributes) != type([]):
             attributes = [attributes]
