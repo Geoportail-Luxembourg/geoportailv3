@@ -85,7 +85,8 @@ class LuxPrintProxy(PrintProxy):
             spec = self.request.POST['spec']
         spec = json.loads(spec)
         print_url = self.config["print_url"]
-        resp, content = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        resp = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        content = resp.content
 
         return self._build_response(
             resp, content, NO_CACHE, "print"
