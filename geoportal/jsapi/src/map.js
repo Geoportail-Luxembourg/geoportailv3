@@ -51,11 +51,35 @@ var _paq = [];
 
 _paq.push(['setSiteId', 22]);
 
+function getCookie(cname) {
+  return "";
+}
+
 (function() {
-  var u = 'https://statistics.geoportail.lu/';
-  _paq.push(['setTrackerUrl', u + 'piwik.php']);
-  var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-  g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
+  // if cookie orejime exists and geoportail is False then don't load Piwik otherwise yes
+  let loadPiwik = true;
+  let name = 'orejime=';
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      loadPiwik = false;
+      let value = JSON.parse(c.substring(name.length, c.length));
+      if ('geoportail' in value && value['geoportail']) {
+        loadPiwik = true;
+      }
+    }
+  }
+  if (loadPiwik) {
+    var u = 'https://statistics.geoportail.lu/';
+    _paq.push(['setTrackerUrl', u + 'piwik.php']);
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
+  }
 })();
 
 
