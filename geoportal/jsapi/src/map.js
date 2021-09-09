@@ -51,10 +51,6 @@ var _paq = [];
 
 _paq.push(['setSiteId', 22]);
 
-function getCookie(cname) {
-  return "";
-}
-
 (function() {
   // if cookie orejime exists and geoportail is False then don't load Piwik otherwise yes
   let loadPiwik = true;
