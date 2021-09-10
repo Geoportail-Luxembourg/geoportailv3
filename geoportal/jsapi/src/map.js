@@ -50,11 +50,7 @@ proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666
 var _paq = [];
 
 _paq.push(['setSiteId', 22]);
-
-(function() {
-  // if cookie orejime exists and geoportail is False then don't load Piwik otherwise yes
-  let loadPiwik = true;
-  let name = 'orejime=';
+function getCookie(name) {
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
   for(let i = 0; i <ca.length; i++) {
@@ -63,13 +59,32 @@ _paq.push(['setSiteId', 22]);
       c = c.substring(1);
     }
     if (c.indexOf(name) == 0) {
-      loadPiwik = false;
-      let value = JSON.parse(c.substring(name.length, c.length));
-      if ('geoportail' in value && value['geoportail']) {
-        loadPiwik = true;
-      }
+      let value = c.substring(name.length, c.length);
+      return value;
     }
   }
+  return null;
+}
+(function() {
+  let loadPiwik = true;
+  let cookieOrejime = getCookie('orejime=');
+  let cookieIsPublicWebsite = getCookie('isPublicWebsite=');
+  if (cookieIsPublicWebsite == null && cookieOrejime == null) {
+    // If IsPublicWebsite and Orejime don't exist load piwik.
+    loadPiwik = true;
+  } else if (cookieIsPublicWebsite !== null && cookieOrejime == null) {
+    // If IsPublicWebsite exists and orejime does not exist, do not load piwik.
+    loadPiwik = false;
+  } else if ((cookieIsPublicWebsite !== null && cookieOrejime != null) ||
+      (cookieIsPublicWebsite == null && cookieOrejime != null)) {
+    // If IsPublicWebsite exists and orejime exists, loading piwik depends on the orejime value.
+    loadPiwik = false;
+    let value = JSON.parse(cookieOrejime);
+    if ('geoportail' in value && value['geoportail']) {
+      loadPiwik = true;
+    }
+  } 
+
   if (loadPiwik) {
     var u = 'https://statistics.geoportail.lu/';
     _paq.push(['setTrackerUrl', u + 'piwik.php']);
