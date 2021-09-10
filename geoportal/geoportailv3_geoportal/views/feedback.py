@@ -10,6 +10,9 @@ import bleach
 import logging
 from c2cgeoportal_commons.models import DBSessions
 from geoportailv3_geoportal import mailer
+from email.mime.text import MIMEText
+import smtplib
+import os
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
@@ -23,6 +26,17 @@ class Feedback(object):
         self.localizer = get_localizer(self.request)
         self.db_mymaps = DBSessions['mymaps']
 
+    def __send_mail(self, to, mail_from, subject, mailtext):
+
+        msg = MIMEText(mailtext, 'html', 'utf-8')
+        mails = [to]
+        msg['Subject'] = subject
+        msg['From'] = mail_from
+        msg['To'] = to
+        s = smtplib.SMTP(os.environ["SMTP_SERVER"])
+        s.sendmail(mail_from, mails, msg.as_string())
+        s.quit()
+        return
 
     @view_config(route_name='feedback', renderer='json')
     def feedback(self):
@@ -41,14 +55,8 @@ class Feedback(object):
                         )
             support_email = self.config.get('feedback.support_email',
                                             'support@geoportail.lu')
-            message = Message(
-                author=vars['email'],
-                to=support_email,
-                subject=u'Un utilisateur a signalé un problème')
-            message.plain = html_body
-            message.rich = html_body
-            message.encoding = 'utf-8'
-            mailer.send(message)
+            self.__send_mail(support_email, vars['email'], u'Un utilisateur a signalé un problème', html_body)
+
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()
@@ -109,14 +117,7 @@ class Feedback(object):
                         )
 
             support_email = self.config['anf']['email']
-            message = Message(
-                author=vars['email'],
-                to=support_email,
-                subject=u'Un utilisateur a signalé un problème')
-            message.plain = html_body
-            message.rich = html_body
-            message.encoding = 'utf-8'
-            mailer.send(message)
+            self.__send_mail(support_email, vars['email'], u'Un utilisateur a signalé un problème', html_body)
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()
@@ -180,14 +181,7 @@ class Feedback(object):
                         )
 
             support_email = self.config['age']['email']
-            message = Message(
-                author=vars['email'],
-                to=support_email,
-                subject=u'Un utilisateur a signalé un problème')
-            message.plain = html_body
-            message.rich = html_body
-            message.encoding = 'utf-8'
-            mailer.send(message)
+            self.__send_mail(support_email, vars['email'], u'Un utilisateur a signalé un problème', html_body)
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()
@@ -237,14 +231,7 @@ class Feedback(object):
                         )
 
             support_email = self.config['age_crues']['email']
-            message = Message(
-                author=vars['email'],
-                to=support_email,
-                subject=u'Un utilisateur a signalé un problème')
-            message.plain = html_body
-            message.rich = html_body
-            message.encoding = 'utf-8'
-            mailer.send(message)
+            self.__send_mail(support_email, vars['email'], u'Un utilisateur a signalé un problème', html_body)
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()
