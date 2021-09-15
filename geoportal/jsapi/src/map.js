@@ -2574,16 +2574,23 @@ lux.Map.prototype.destroyMap = function() {
  * Transforms features into geojson
  * @param {Array.<ol.Feature>} fArray features array.
  * @param {olx.format.GeoJSONOptions=} opt_options Options.
+ * @param {boolean=} exportMeasures True if length and area should be added to attributes.
  * @return {string} The geojson string.
  * @export
  * @api
  */
-lux.Map.prototype.exportGeoJSON = function(fArray, opt_options) {
+lux.Map.prototype.exportGeoJSON = function(fArray, opt_options, exportMeasures) {
   let options = opt_options;
   if (opt_options == undefined) {
     options = {dataProjection: 'EPSG:4326', featureProjection: this.getView().getProjection()};
   }
-
+  if (exportMeasures === true && fArray !== null && fArray !== undefined) {
+    fArray.forEach(function(feature) {
+      console.log(feature);
+      feature.set('__length__', this.getGeometryLength(feature.getGeometry()));
+      feature.set('__area__', this.getGeometryArea(feature.getGeometry()));
+    }, this);
+  }
   const writer = new ol.format.GeoJSON(options);
   return writer.writeFeatures(fArray);
 }
