@@ -19,16 +19,30 @@ def create_authentication(settings):
     http_only = http_only.lower() in ("true", "yes", "1")
     secure = settings.get("authtkt_secure", "True")
     secure = secure.lower() in ("true", "yes", "1")
-    cookie_authentication_policy = AppAwareAuthTktAuthenticationPolicy(
+
+    # AuthenticationPolicy for login via the mobile app ('app=true' in the request params)
+    app_authentication_policy = ConditionalAuthTktAuthenticationPolicy(
+        settings["authtkt_secret"],
+        callback=defaultgroupsfinder,
+        cookie_name=settings["authtkt_cookie_name"] + "_app",
+        timeout=None, max_age=None, reissue_time=None,
+        hashalg="sha512", http_only=http_only, secure=secure,
+        parent_domain=True,
+        condition=lambda params: params.get('app', 'false').lower() == 'true'
+    )
+
+    # AuthenticationPolicy for login not via the mobile app ('app=false' in the request params)
+    non_app_authentication_policy = ConditionalAuthTktAuthenticationPolicy(
         settings["authtkt_secret"],
         callback=defaultgroupsfinder,
         cookie_name=settings["authtkt_cookie_name"],
         timeout=timeout, max_age=timeout, reissue_time=reissue_time,
         hashalg="sha512", http_only=http_only, secure=secure,
-        parent_domain=True
+        parent_domain=True,
+        condition=lambda params: params.get('app', 'false').lower() == 'false'
     )
     basic_authentication_policy = BasicAuthAuthenticationPolicy(c2cgeoportal_check)
-    policies = [cookie_authentication_policy, basic_authentication_policy]
+    policies = [app_authentication_policy, non_app_authentication_policy, basic_authentication_policy]
     return MultiAuthenticationPolicy(policies)
 
 
@@ -39,19 +53,14 @@ def c2cgeoportal_check(username, password, request):  # pragma: no cover
 
 
 @implementer(IAuthenticationPolicy)
-class AppAwareAuthTktAuthenticationPolicy(AuthTktAuthenticationPolicy):
+class ConditionalAuthTktAuthenticationPolicy(AuthTktAuthenticationPolicy):
+    def __init__(self, *args, **kwargs):
+        self.condition = kwargs['condition']
+        del kwargs['condition']
+        super().__init__(*args, **kwargs)
+
     def remember(self, request, userid, **kw):
-        """ Accepts the following kw args: ``max_age=<int-seconds>,
-        ``tokens=<sequence-of-ascii-strings>``.
-
-        Return a list of headers which will set appropriate cookies on
-        the response.
-
-        """
-        is_app = request.params.get('app', 'false').lower() == 'true'
-        if is_app:
-            # Force any cookie to be set with a big expiration time
-            # when login is done from the Android or iOS apps
-            kw['max_age'] = math.ceil(time.time() + (10 * 365 * 24 * 60 * 60))
-
-        return super().remember(request, userid, **kw)
+        if self.condition(request.params):
+            return super().remember(request, userid, **kw)
+        else:
+            return []
