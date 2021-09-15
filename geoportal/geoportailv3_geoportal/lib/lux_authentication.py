@@ -1,13 +1,10 @@
-from pyramid.authentication import CallbackAuthenticationPolicy, AuthTktCookieHelper, \
-    BasicAuthAuthenticationPolicy, AuthTktAuthenticationPolicy
+from pyramid.authentication import BasicAuthAuthenticationPolicy, AuthTktAuthenticationPolicy
 
 from pyramid_multiauth import MultiAuthenticationPolicy
 from pyramid.interfaces import IAuthenticationPolicy
 
 from c2cgeoportal_geoportal.resources import defaultgroupsfinder
 from zope.interface import implementer
-import time
-import math
 
 import logging
 
