@@ -219,6 +219,11 @@ def main(global_config, **settings):
         request_method="PUT"
     )
     config.add_route(
+        "convert_geojson",
+        "/helper/convert_geojson",
+        request_method="POST"
+    )
+    config.add_route(
         "get_gpx",
         "/mymaps/get_gpx/{map_id}",
         request_method="GET"
