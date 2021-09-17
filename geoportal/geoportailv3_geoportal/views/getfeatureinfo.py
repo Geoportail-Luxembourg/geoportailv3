@@ -557,7 +557,6 @@ class Getfeatureinfo(object):
                    r['remote_template']:
                     data = ""
                     try:
-                        
                         url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
                         data = url_remote.read()
