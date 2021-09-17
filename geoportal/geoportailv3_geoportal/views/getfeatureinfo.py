@@ -40,7 +40,7 @@ class Getfeatureinfo(object):
 
     def __init__(self, request):
         self.request = request
-
+        self.content_count = 0
     @view_config(route_name='download_resource')
     def download_resource(self):
         fid = self.request.params.get('fid', None)
@@ -290,6 +290,7 @@ class Getfeatureinfo(object):
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
                  results, layers, big_box, p_geometry=None):
+        rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if (luxgetfeaturedefinition is not None and
@@ -346,6 +347,7 @@ class Getfeatureinfo(object):
                     if query_limit > 0:
                         query = query + " LIMIT " + str(query_limit)
                 else:
+                    query_limit = 1
                     if luxgetfeaturedefinition.id_column is not None:
                         query = query_1 + luxgetfeaturedefinition.id_column +\
                             " = '" + fid + "'"
@@ -353,6 +355,15 @@ class Getfeatureinfo(object):
                         query = query_1 + " id = '" + fid + "'"
 
                 session = self._get_session(luxgetfeaturedefinition.engine_gfi)
+                try:
+                    query_cnt = query.replace(query[query.index("SELECT"): query.index("FROM")], "SELECT count(*) " , 1)
+                    query_cnt = query_cnt.replace("LIMIT " + str(query_limit), "" , 1)
+                    res_cnt = session.execute(query_cnt)
+                    rows_cnt = res_cnt.fetchall()[0][0]
+                except Exception as e:
+                    log.exception(e)
+                    log.error("ERROR COUNTING")
+                
                 res = session.execute(query)
                 rows = res.fetchall()
 
@@ -372,7 +383,8 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
                                 luxgetfeaturedefinition.has_profile,
-                                luxgetfeaturedefinition.remote_template))
+                                luxgetfeaturedefinition.remote_template,
+                                rows_cnt))
                 else:
                     features = []
                     for row in rows:
@@ -404,7 +416,8 @@ class Getfeatureinfo(object):
                                     luxgetfeaturedefinition.template,
                                     is_ordered,
                                     luxgetfeaturedefinition.has_profile,
-                                    luxgetfeaturedefinition.remote_template))
+                                    luxgetfeaturedefinition.remote_template,
+                                    rows_cnt))
                         else:
                             results.append(
                                 self.to_featureinfo(
@@ -413,7 +426,8 @@ class Getfeatureinfo(object):
                                     luxgetfeaturedefinition.template,
                                     is_ordered,
                                     luxgetfeaturedefinition.has_profile,
-                                    luxgetfeaturedefinition.remote_template))
+                                    luxgetfeaturedefinition.remote_template,
+                                    rows_cnt))
             if (luxgetfeaturedefinition is not None and
                 (luxgetfeaturedefinition.rest_url is None or
                     len(luxgetfeaturedefinition.rest_url) == 0) and
@@ -508,7 +522,8 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
                                 luxgetfeaturedefinition.has_profile,
-                                luxgetfeaturedefinition.remote_template))
+                                luxgetfeaturedefinition.remote_template,
+                                self.content_count))
                     else:
                         results.append(
                             self.to_featureinfo(
@@ -517,7 +532,8 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
                                 luxgetfeaturedefinition.has_profile,
-                                luxgetfeaturedefinition.remote_template))
+                                luxgetfeaturedefinition.remote_template,
+                                self.content_count))
 
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
@@ -638,14 +654,17 @@ class Getfeatureinfo(object):
                 'alias': alias}
 
     def to_featureinfo(self, features, layer, template, ordered,
-                       has_profile=False, remote_template=False):
-
+                       has_profile=False, remote_template=False, total_count=0):
+        if total_count == 0:
+            total_count = len(features)
         return {"remote_template": remote_template,
                 "template": template,
                 "layer": layer,
                 "ordered": ordered,
                 "features": features,
-                "has_profile": has_profile}
+                "has_profile": has_profile,
+                "total_features_count": total_count,
+                "features_count": len(features)}
 
     def get_lux_feature_definition(self, layers, bypass_public=False):
         luxgetfeaturedefinitions = []
@@ -1279,6 +1298,22 @@ class Getfeatureinfo(object):
             log.exception(e)
             log.error(url)
             content = "{}"
+
+        #Count
+        body['returnCountOnly'] = True
+        query_count = '%s%s%s' % (url, separator, urlencode(body))
+        try:
+            url_request = urllib.request.Request(query_count)
+            result = read_request_with_token(url_request, self.request, log)
+            self.content_count = geojson_loads(result.data)['count']
+        except ESRITokenException as e:
+            log.exception(e)
+            log.error(url)
+            self.content_count = 0
+        except Exception as e:
+            log.exception(e)
+            log.error(url)
+            self.content_count = 0
 
         features = []
         try:
