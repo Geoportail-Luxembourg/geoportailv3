@@ -355,17 +355,18 @@ class Getfeatureinfo(object):
                         query = query_1 + " id = '" + fid + "'"
 
                 session = self._get_session(luxgetfeaturedefinition.engine_gfi)
+                res = session.execute(query)
+                rows = res.fetchall()
                 try:
+                    session = self._get_session(luxgetfeaturedefinition.engine_gfi)
                     query_cnt = query.replace(query[query.index("SELECT"): query.index("FROM")], "SELECT count(*) " , 1)
                     query_cnt = query_cnt.replace("LIMIT " + str(query_limit), "" , 1)
                     res_cnt = session.execute(query_cnt)
                     rows_cnt = res_cnt.fetchall()[0][0]
                 except Exception as e:
+                    session.rollback()
                     log.exception(e)
                     log.error("ERROR COUNTING")
-                
-                res = session.execute(query)
-                rows = res.fetchall()
 
                 if (luxgetfeaturedefinition.additional_info_function
                     is not None and
@@ -556,7 +557,7 @@ class Getfeatureinfo(object):
                    r['remote_template']:
                     data = ""
                     try:
-                        DBSession.rollback()
+                        
                         url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
                         data = url_remote.read()
