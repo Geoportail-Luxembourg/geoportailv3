@@ -359,7 +359,7 @@ class Getfeatureinfo(object):
                 rows = res.fetchall()
                 try:
                     session = self._get_session(luxgetfeaturedefinition.engine_gfi)
-                    query_cnt = query.replace(query[query.index("SELECT"): query.index("FROM")], "SELECT count(*) " , 1)
+                    query_cnt = "SELECT COUNT(*) FROM (" + query + ") as request"
                     query_cnt = query_cnt.replace("LIMIT " + str(query_limit), "" , 1)
                     res_cnt = session.execute(query_cnt)
                     rows_cnt = res_cnt.fetchall()[0][0]
