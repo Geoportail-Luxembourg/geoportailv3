@@ -141,7 +141,7 @@ class Import:
         self.layers = []
 
         settings = {}
-        with open("config.yaml") as f:
+        with open("/etc/geomapfish/config.yaml") as f:
             settings = yaml.load(f)
 
         self.languages = settings["vars"]["available_locale_names"]
