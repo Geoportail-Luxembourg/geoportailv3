@@ -1301,20 +1301,22 @@ class Getfeatureinfo(object):
             content = "{}"
 
         #Count
-        body['returnCountOnly'] = True
-        query_count = '%s%s%s' % (url, separator, urlencode(body))
-        try:
-            url_request = urllib.request.Request(query_count)
-            result = read_request_with_token(url_request, self.request, log)
-            self.content_count = geojson_loads(result.data)['count']
-        except ESRITokenException as e:
-            log.exception(e)
-            log.error(url)
-            self.content_count = 0
-        except Exception as e:
-            log.exception(e)
-            log.error(url)
-            self.content_count = 0
+        self.content_count = 0
+        if len(body) > 0:
+            body['returnCountOnly'] = True
+            query_count = '%s%s%s' % (url, separator, urlencode(body))
+            try:
+                url_request = urllib.request.Request(query_count)
+                result = read_request_with_token(url_request, self.request, log)
+                self.content_count = geojson_loads(result.data)['count']
+            except ESRITokenException as e:
+                log.exception(e)
+                log.error(url)
+                self.content_count = 0
+            except Exception as e:
+                log.exception(e)
+                log.error(url)
+                self.content_count = 0
 
         features = []
         try:
