@@ -701,7 +701,7 @@ exports.prototype.exportShape = function() {
     return !!feature.get('__map_id__');
   });
   var json = this.geoJsonFormat_.writeFeatures(mymapsFeatures, {
-    dataProjection: 'EPSG:4326',
+    dataProjection: 'EPSG:2169',
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(json, 'shape',
