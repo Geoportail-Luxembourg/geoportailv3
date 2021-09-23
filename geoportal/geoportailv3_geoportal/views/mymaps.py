@@ -339,7 +339,7 @@ class Mymaps(object):
             driver = ogr.GetDriverByName('Esri Shapefile')
             ds = driver.CreateDataSource(dirpath)
             srs =  osr.SpatialReference()
-            srs.ImportFromEPSG(4326)
+            srs.ImportFromEPSG(2169)
             layer_line = None
             layer_polygon = None
             layer_point = None
