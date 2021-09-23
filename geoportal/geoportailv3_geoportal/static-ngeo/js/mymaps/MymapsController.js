@@ -17,6 +17,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import {extend} from 'ol/extent.js';
 import olFormatGPX from 'ol/format/GPX.js';
 import olFormatKML from 'ol/format/KML.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import * as olExtent from 'ol/extent.js';
@@ -164,6 +165,12 @@ const exports = function($scope, $compile, $sce,
    * @type {ol.format.KML}
    */
   this.kmlFormat_ = new olFormatKML();
+
+  /**
+   * @private
+   * @type {ol.format.GeoJSON}
+   */
+  this.geoJsonFormat_ = new olFormatGeoJSON();
 
   /**
    * @private
@@ -680,6 +687,24 @@ exports.prototype.exportKml = function() {
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
+      appMiscFile.sanitizeFilename(this.appMymaps_.mapTitle));
+};
+
+
+/**
+ * Export a zipped shapefile.
+ * @export
+ */
+exports.prototype.exportShape = function() {
+  var features = this.drawnFeatures_.getCollection();
+  var mymapsFeatures = features.getArray().filter(function(feature) {
+    return !!feature.get('__map_id__');
+  });
+  var json = this.geoJsonFormat_.writeFeatures(mymapsFeatures, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(json, 'shape',
       appMiscFile.sanitizeFilename(this.appMymaps_.mapTitle));
 };
 
