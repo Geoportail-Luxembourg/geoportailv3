@@ -405,7 +405,7 @@ exports.prototype.createNewCircle = function(radius) {
  */
 exports.prototype.exportShape = function() {
   var json = this.geoJsonFormat_.writeFeatures([this.feature], {
-    dataProjection: 'EPSG:4326',
+    dataProjection: 'EPSG:2169',
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(json, 'shape',
