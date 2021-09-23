@@ -67,12 +67,17 @@ RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
     ghostscript \
     libgs-dev \
-    imagemagick && \
+    imagemagick \
+    gdal-bin \
+    libgdal-dev \
+    build-essential \
+    python3.7-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
 RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
-
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
 COPY luxembourg_requirements.txt /tmp/requirements.txt
 RUN \
   python3 -m pip install --upgrade pip && \

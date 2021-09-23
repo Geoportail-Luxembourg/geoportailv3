@@ -62,6 +62,7 @@
         <ul class="dropdown-menu {{ctrl.isDocked()?'dropdown-menu-right':''}}" role="menu">
           <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+          <li ng-click="ctrl.exportShape()"><a href translate>Exporter un Shapefile</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
           <li ng-show="ctrl.isCircle()" ng-click="ctrl.tempCircleRadius = ctrl.getCircleRadius() ; ctrl.askRadius = true"><a href translate>Créer cercle concentrique</a></li>
