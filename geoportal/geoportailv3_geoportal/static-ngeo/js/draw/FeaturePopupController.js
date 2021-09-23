@@ -11,6 +11,7 @@ import {listen, unlistenByKey} from 'ol/events.js';
 import {getCenter} from 'ol/extent.js';
 import {transform, getPointResolution, METERS_PER_UNIT} from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import {fromCircle} from 'ol/geom/Polygon.js';
@@ -82,6 +83,12 @@ const exports = function($scope, $sce, appFeaturePopup,
    * @type {ol.format.KML}
    */
   this.kmlFormat_ = new olFormatKML();
+
+  /**
+   * @private
+   * @type {ol.format.GeoJSON}
+   */
+  this.geoJsonFormat_ = new olFormatGeoJSON();
 
   /**
    * @private
@@ -389,6 +396,21 @@ exports.prototype.createNewCircle = function(radius) {
   this.selectedFeatures_.push(newCircle);
   this.feature = newCircle;
   this.modifySelectedFeature();
+};
+
+
+/**
+ * Export a zipped shapefile.
+ * @export
+ */
+exports.prototype.exportShape = function() {
+  var json = this.geoJsonFormat_.writeFeatures([this.feature], {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(json, 'shape',
+      appMiscFile.sanitizeFilename(/** @type {string} */(this.feature.get('name'))));
+  this.appFeaturePopup_.toggleDropdown();
 };
 
 
