@@ -42,8 +42,10 @@ from shapely import wkb
 from shapely.geometry import asShape, shape
 from shapely.ops import transform
 from functools import partial
-
-
+from osgeo import ogr, osr
+from shapely.geometry import Polygon
+import tempfile
+import shutil
 import logging
 import urllib.request
 import json
@@ -308,6 +310,88 @@ class Mymaps(object):
         headers = {"Content-Type": f.info()['Content-Type']}
         return Response(data, headers=headers)
 
+    def create_layer(self, ds, type, srs):
+        if type == ogr.wkbLineString:
+            name = "lines"
+        elif type == ogr.wkbPolygon:
+            name = "polygons"
+        elif type == ogr.wkbPoint:
+            name = "points"
+        layer = ds.CreateLayer(name, srs, type)
+        layer.CreateField(ogr.FieldDefn("id", ogr.OFTInteger))
+        layer.CreateField(ogr.FieldDefn("name", ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn("descr", ogr.OFTString))
+        return layer
+
+    def exportshape(self):
+        doc = self.request.params.get("doc")
+        if doc is None:
+            return HTTPBadRequest("doc parameter is required")
+        feature_collection = geojson.\
+            loads(doc, object_hook=geojson.GeoJSON.to_instance)
+        name = self.request.params.get("name")
+        if name is None:
+            name = "shape"
+        filename = name + ".zip"
+        #dirpath = tempfile.mkdtemp()
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as dirpath:
+            driver = ogr.GetDriverByName('Esri Shapefile')
+            ds = driver.CreateDataSource(dirpath)
+            srs =  osr.SpatialReference()
+            srs.ImportFromEPSG(4326)
+            layer_line = None
+            layer_polygon = None
+            layer_point = None
+            i = 0
+            for feature in feature_collection.features:
+                i = i + 1
+                geom = ogr.CreateGeometryFromJson(geojson.dumps(feature.geometry))
+                if (feature.geometry.type == 'LineString'):
+                    if layer_line is None:
+                        layer_line = self.create_layer(ds, ogr.wkbLineString, srs)
+                    featureDefn = layer_line.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_line.CreateFeature(featureogr)
+                if (feature.geometry.type == 'Polygon'):
+                    if layer_polygon is None:
+                        layer_polygon = self.create_layer(ds, ogr.wkbPolygon, srs)
+                    featureDefn = layer_polygon.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_polygon.CreateFeature(featureogr)
+                if (feature.geometry.type == 'Point'):
+                    if layer_point is None:
+                        layer_point = self.create_layer(ds, ogr.wkbPoint, srs)
+                    featureDefn = layer_point.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_point.CreateFeature(featureogr)
+                featureogr = None
+            ds = None
+            zippath = dirpath + ".zip"
+            shutil.make_archive(dirpath, 'zip', dirpath)
+        
+
+        charset = "utf-8"
+        headers = {"Content-Type": "application/octet-stream",
+                   "Content-Disposition": "attachment; filename=\""
+                   + str(filename) + "\""}
+        f = open(zippath, "rb")
+        response =  Response(f.read(), headers=headers)
+        os.remove(zippath)
+        return response
+
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):
         """
@@ -317,8 +401,11 @@ class Mymaps(object):
         fmt = self.request.params.get("format")
         if fmt is None:
             return HTTPBadRequest("format parameter is required")
+        if fmt == 'shape':
+            return self.exportshape()
+
         if fmt not in _CONTENT_TYPES:
-            return HTTPBadRequest("format is not supported")
+            return HTTPBadRequest("format is not supported : '" + fmt + "'")
 
         name = self.request.params.get("name")
         if name is None:
