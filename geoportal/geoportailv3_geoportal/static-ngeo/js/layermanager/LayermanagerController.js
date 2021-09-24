@@ -78,7 +78,9 @@ class Controller {
   }
   reorderCallback(element, layers) {
     for (var i = 0; i < layers.length; i++) {
-      layers[i].setZIndex(layers.length - i);
+      if (layers[i].getZIndex() < 1000) {
+        layers[i].setZIndex(layers.length - i);
+      }
     }
   }
 
