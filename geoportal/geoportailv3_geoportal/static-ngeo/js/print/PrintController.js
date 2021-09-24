@@ -273,6 +273,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
+      this.maskLayer_.setZIndex(2000);
       this.map_.addLayer(this.maskLayer_);
       const bgLayer = this.backgroundLayerMgr_.get(this.map_);
       if (bgLayer.get('defaultMapBoxStyle')) {
