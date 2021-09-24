@@ -41,6 +41,7 @@ import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 import {listen} from 'ol/events.js';
 import {isValidSerial} from '../utils.js';
+import MaskLayer from 'ngeo/print/Mask.js';
 
 import bootstrapApp from './bootstrap.js';
 
@@ -1487,6 +1488,9 @@ MainController.prototype.manageSelectedLayers_ =
             return false;
           }
           if (layer instanceof LayerGroup && layer.get('groupName') === 'background') {
+            return false;
+          }
+          if (layer instanceof MaskLayer) {
             return false;
           }
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
