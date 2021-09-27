@@ -1,8 +1,9 @@
-goog.provide('geocode');
+import './common.js';
+import lux from '../src/index.js';
+import LuxMap from '../src/map.js';
+import {transform} from 'ol/proj';
 
-goog.require('lux.Map');
-
-var map = new lux.Map({
+var map = new LuxMap({
   target           : 'mapContainer',
   zoom             : 18
 });
@@ -17,12 +18,12 @@ lux.geocode({
     position: position,
     autoCenter: true,
     positioning: 'center-center',
-    iconURL: 'http://apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png'
+    iconURL: 'lion.png'
   });
 });
 
 map.on('click', function(evt) {
-  var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
+  var coordinate = transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
   lux.reverseGeocode(coordinate, function(address) {
     var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
     document.getElementById('address').innerHTML = html;

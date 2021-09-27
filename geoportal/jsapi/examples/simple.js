@@ -1,14 +1,12 @@
-goog.provide('index');
+import './common.js';
+import LuxMap from '../src/map.js';
 
-goog.require('common');
-goog.require('lux.Map');
-
-var map = new lux.Map({
+var map = new LuxMap({
   target           : 'mapContainer',
   position         : [ 6.13, 49.61 ],
   positionSrs      : '4326',
   zoom             : 14,
-  bgLayer          : 653,
+  bgLayer          : 501,
   layers           : [ 147 ],
   layerOpacities   : [0.5],
   mousePosition    : {
@@ -24,5 +22,5 @@ var map = new lux.Map({
 });
 
 window.setTimeout(function() {
-  map.addLayerById(204);
+  map.addLayerById(302);
 }, 1000);

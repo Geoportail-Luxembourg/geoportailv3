@@ -1,5 +1,3 @@
-goog.provide('common');
-
-goog.require('lux.Map');
+import lux from '../src/index.js';
 
 lux.setBaseUrl();

@@ -1,9 +1,7 @@
-goog.provide('marker');
+import './common.js';
+import LuxMap from '../src/map.js';
 
-goog.require('common');
-goog.require('lux');
-
-var map = new lux.Map({
+var map = new LuxMap({
   target: 'mapContainer',
   zoom: 14,
   bgLayer: 'topo_bw_jpeg'
@@ -14,6 +12,6 @@ map.showMarker({
   position: markerPos,
   autoCenter: true,
   positioning: 'center-center',
-  iconURL: 'http://apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+  iconURL: 'lion.png',
   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
