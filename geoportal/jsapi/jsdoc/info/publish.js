@@ -3,7 +3,6 @@
  * an api tag) and boolean defines (with a define tag and a default value).
  */
 var assert = require('assert');
-var fs = require('fs');
 var path = require('path');
 
 

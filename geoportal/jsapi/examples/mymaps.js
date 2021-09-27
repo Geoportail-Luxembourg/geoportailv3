@@ -1,14 +1,11 @@
-goog.provide('mymaps');
+import './common.js';
+import LuxMap from '../src/map.js';
 
-goog.require('common');
-goog.require('lux.Map');
-
-var map = new lux.Map({
+var map = new LuxMap({
   target           : 'mapContainer',
   position         : [ 6.13, 49.61 ],
   positionSrs      : '4326',
   zoom             : 14,
-  bgLayer          : 655
 });
 
 map.addMyMapLayer({
@@ -16,12 +13,11 @@ map.addMyMapLayer({
   profileTarget: 'profile'
 });
 
-var map = new lux.Map({
+var map = new LuxMap({
   target           : 'mapContainer2',
   position         : [ 6.13, 49.61 ],
   positionSrs      : '4326',
   zoom             : 14,
-  bgLayer          : 655
 });
 
 map.addMyMapLayer({
