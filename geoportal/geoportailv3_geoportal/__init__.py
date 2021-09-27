@@ -432,7 +432,7 @@ def main(global_config, **settings):
     # jsapi routes
     config.add_route(
         'jsapiloader',
-        '/apiv3loader.js'
+        '/apiv4loader.js'
     )
     config.add_route(
         'jsapiexample',
@@ -488,7 +488,7 @@ def main(global_config, **settings):
         '/geoportailv3.appcache'
     )
     config.include("pyramid_assetviews")
-    config.add_asset_views("/etc/static-ngeo/build/", filenames=['apiv3-full-async.js', 'apiv3.css'])
+    config.add_asset_views("/etc/static-ngeo/build/", filenames=['apiv4.js', 'apiv4.css'])
     # ldap
     from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
         get_user_from_request

@@ -1,6 +1,5 @@
 <?js
-    var data = obj;
-    var props = data.subprops || data.properties;
+    var props = obj;
 
     /* sort subprops under their parent props (like opts.classname) */
     var parentProp = null;
@@ -33,7 +32,7 @@
             props.hasName = true;
         }
 
-        if (typeof prop.defaultvalue !== 'undefined' && !data.isEnum) {
+        if (typeof prop.defaultvalue !== 'undefined') {
             props.hasDefault = true;
         }
     });
@@ -41,33 +40,31 @@
 
 <table class="props">
     <thead>
-    <tr>
-        <?js if (props.hasName) {?>
-        <th>Name</th>
-        <?js } ?>
+	<tr>
+		<?js if (props.hasName) {?>
+		<th>Name</th>
+		<?js } ?>
 
-        <th>Type</th>
+		<th>Type</th>
 
-        <?js if (props.hasAttributes) {?>
-        <th>Attributes</th>
-        <?js } ?>
+		<?js if (props.hasAttributes) {?>
+		<th>Argument</th>
+		<?js } ?>
 
-        <?js if (props.hasDefault) {?>
-        <th>Default</th>
-        <?js } ?>
+		<?js if (props.hasDefault) {?>
+		<th>Default</th>
+		<?js } ?>
 
-        <?js if (data.kind != 'typedef') {?>
-        <th class="last">Description</th>
-        <?js } ?>
-    </tr>
-    </thead>
+		<th class="last">Description</th>
+	</tr>
+	</thead>
 
-    <tbody>
-    <?js
+	<tbody>
+	<?js
         var self = this;
-        props.forEach(function(prop) {
-            if (!prop) { return; }
-    ?>
+	    props.forEach(function(prop) {
+	        if (!prop) { return; }
+	?>
 
         <tr>
             <?js if (props.hasName) {?>
@@ -100,13 +97,11 @@
                 </td>
             <?js } ?>
 
-            <?js if (data.kind != 'typedef') {?>
             <td class="description last"><?js= prop.description ?><?js if (prop.subprops) { ?>
-                <h6>Properties</h6><?js= self.partial('properties.tmpl', prop) ?>
-            <?js } ?></td>
+                <h6>Properties</h6><?js= self.partial('properties.tmpl', prop.subprops) ?>
             <?js } ?></td>
         </tr>
 
-    <?js }); ?>
-    </tbody>
+	<?js }); ?>
+	</tbody>
 </table>
