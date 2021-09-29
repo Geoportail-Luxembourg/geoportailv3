@@ -26,7 +26,7 @@
   <span ng-if="ctrl.language != 'fr' && ctrl.hasProperty('link_de', feature.attributes, 3)"><a target="_blank" href="{{ctrl.getTrustedUrl(feature.attributes.link_de)}}">{{feature.attributes.link_de}}</a><br></span>
   <span ng-if="ctrl.language == 'fr' && ctrl.hasProperty('link_fr', feature.attributes, 3)"><a target="_blank" href="{{ctrl.getTrustedUrl(feature.attributes.link_fr)}}">{{feature.attributes.link_fr}}</a><br></span>
   <span ng-if="ctrl.hasProperty('Bild', feature.attributes, 3)"> <img ng-src="{{feature.attributes.Bild}}" width="250"><br><br></span>
-  <span ng-if="ctrl.hasProperty('longueur sentier', feature.attributes, 0)" translate>Longueur du sentier : {{feature.attributes['longueur sentier']}}<br></span>
+  <div ng-if="ctrl.hasProperty('longueur sentier', feature.attributes, 0)"><span translate>Longueur du sentier :</span> <span>{{feature.attributes['longueur sentier']}}</span><br></div>
   <div class="query-profile" ng-show="feature.attributes.showProfile.active">
     <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
   </div>
