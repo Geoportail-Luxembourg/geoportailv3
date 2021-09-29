@@ -2,7 +2,7 @@
 <div ng-repeat="feature in layers.features" class="poi-feature">
   <h3 ng-if="ctrl.language == 'de' && ctrl.hasProperty('title_de', feature.attributes, 0)">{{feature.attributes.title_de}}</h3>
   <h3 ng-if="ctrl.language == 'en' && ctrl.hasProperty('title_en', feature.attributes, 0)">{{feature.attributes.title_en}}</h3>
-  <h3 ng-if="ctrl.language == 'lb' && ctrl.hasProperty('title_lb', feature.attributes, 0)">{{feature.attributes.title_nl}}</h3>
+  <h3 ng-if="ctrl.language == 'lb' && ctrl.hasProperty('title_nl', feature.attributes, 0)">{{feature.attributes.title_nl}}</h3>
   <h3 ng-if="ctrl.language == 'fr' && ctrl.hasProperty('title_fr', feature.attributes, 0)">{{feature.attributes.title_fr}}</h3>
   <h3 ng-if="ctrl.language == 'de' && ctrl.hasProperty('nom_de', feature.attributes, 0)">{{feature.attributes.nom_de}}</h3>
   <h3 ng-if="ctrl.language == 'fr' && ctrl.hasProperty('nom_fr', feature.attributes, 0)">{{feature.attributes.nom_fr}}</h3>
