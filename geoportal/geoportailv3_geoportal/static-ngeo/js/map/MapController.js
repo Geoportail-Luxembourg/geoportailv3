@@ -43,12 +43,17 @@ const exports = function(appStateManager, ngeoDebounce) {
 
   var x = appStateManager.getInitialValue('X');
   var y = appStateManager.getInitialValue('Y');
-
+  var srs = appStateManager.getInitialValue('SRS');
+  appStateManager.deleteParam('SRS');
   /** @type {ol.Coordinate} */
   var viewCenter;
   if (x !== undefined && y !== undefined) {
-    viewCenter = version === 3 ?
-        [+x, +y] : lurefToWebMercatorFn([+y, +x], undefined, 2);
+    if (version === 3 && srs !== undefined) {
+      viewCenter = transform([+x, +y], srs, 'EPSG:3857');
+    } else {
+      viewCenter = version === 3 ?
+          [+x, +y] : lurefToWebMercatorFn([+y, +x], undefined, 2);
+    }
   } else {
     viewCenter = transform([6, 49.7], 'EPSG:4326', 'EPSG:3857');
   }
