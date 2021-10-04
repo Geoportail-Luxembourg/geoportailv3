@@ -830,7 +830,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
  * @api
  */
 lux.Map.prototype.getPrintSpec = function(layout, scale) {
-  var dpi = 127;
+  var printDpi = 127;
   var format = 'png';
 
   var pm = new lux.PrintManager(lux.printUrl, this);
@@ -873,7 +873,11 @@ lux.Map.prototype.getPrintSpec = function(layout, scale) {
   var appTitle = lux.translate('Le géoportail national du Grand-Duché du Luxembourg');
 
   if (scale === undefined || scale === null) {
-    scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
+    const resolution = this.getView().getResolution();
+    const dpi = 25.4 / 0.28;
+    const mpu = this.getView().getProjection().getMetersPerUnit();
+    const inchesPerMeter = 1000 / 25.4;
+    scale = Math.round(parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi);
   }
   var longUrl = this.stateManager_.getUrl();
   if (longUrl.toLowerCase().indexOf('http') !== 0 &&
@@ -881,7 +885,7 @@ lux.Map.prototype.getPrintSpec = function(layout, scale) {
     longUrl = 'http:' + longUrl;
   }
 
-  var spec = pm.createSpec(scale, dpi, curLayout, format, {
+  var spec = pm.createSpec(scale, printDpi, curLayout, format, {
     'disclaimer': disclaimer,
     'scaleTitle': scaleTitle,
     'appTitle': appTitle,
