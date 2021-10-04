@@ -788,7 +788,11 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
   }
 
   if (scale === undefined || scale === null) {
-    scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
+    const resolution = this.getView().getResolution();
+    const dpi = 25.4 / 0.28;
+    const mpu = this.getView().getProjection().getMetersPerUnit();
+    const inchesPerMeter = 1000 / 25.4;
+    scale = Math.round(parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi);
   }
   var spec = pm.createSpec(scale, dpi, curLayout, format, {
     'disclaimer': disclaimer,
