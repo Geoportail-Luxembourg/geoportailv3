@@ -67,6 +67,11 @@ ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
 ARG HTTPS_PROXY_URL
 ENV https_proxy $HTTPS_PROXY_URL
+RUN mv /etc/apt/sources.list.d/nodesource.list /etc/apt/sources.list.d/nodesource.list.disabled
+RUN apt-get update
+RUN apt-get -y upgrade
+RUN apt-get  install -y ca-certificates
+RUN mv /etc/apt/sources.list.d/nodesource.list.disabled /etc/apt/sources.list.d/nodesource.list
 RUN apt update && apt install vim -y
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
