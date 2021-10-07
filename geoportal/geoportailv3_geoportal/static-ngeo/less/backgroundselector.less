@@ -1,3 +1,9 @@
+// to preload BG selector at launch
+body {
+  background: url(../images/backgroundselector/routiere.png) no-repeat -9999px -9999px;
+  background-image: url(../images/backgroundselector/routiere.png), url(../images/backgroundselector/topo_nb.png), url(../images/backgroundselector/topo.png), url(../images/backgroundselector/orthophoto.png), url(../images/backgroundselector/hybrid.png);
+}
+
 .background-layer {
     width: auto;
     height: auto;
@@ -101,6 +107,11 @@
 }
 
 @media (max-width: @screen-xs-max) {
+  // to preload BG selector at launch
+  body {
+    background-image: url(../images/backgroundselector/routiere_sm.png), url(../images/backgroundselector/topo_nb_sm.png), url(../images/backgroundselector/topo_sm.png), url(../images/backgroundselector/orthophoto_sm.png), url(../images/backgroundselector/hybrid_sm.png);
+  }
+
     .background-layer {
         .bg-selector-layer,
         .bg-selector-opener {
@@ -148,6 +159,10 @@ only screen and ( min-device-pixel-ratio: 1.25),
 only screen and ( min-resolution: 200dpi),
 only screen and ( min-resolution: 1.25dppx)
 {
+  // to preload BG selector at launch
+  body {
+    background-image: url(../images/backgroundselector/routiere_retina.png), url(../images/backgroundselector/topo_nb_retina.png), url(../images/backgroundselector/topo_retina.png), url(../images/backgroundselector/orthophoto_retina.png), url(../images/backgroundselector/hybrid_retina.png);
+  }
     .background-layer {
         // Retina for thumbnails
         .bg-selector-layer-0 { // roadmap (mvt)
@@ -185,4 +200,10 @@ only screen and ( min-resolution: 1.25dppx)
             }
         }
     }
+  @media (max-width: @screen-xs-max) {
+    // to preload BG selector at launch
+    body {
+      background-image: url(../images/backgroundselector/routiere_sm_retina.png), url(../images/backgroundselector/topo_nb_sm_retina.png), url(../images/backgroundselector/topo_sm_retina.png), url(../images/backgroundselector/orthophoto_sm_retina.png), url(../images/backgroundselector/hybrid_sm_retina.png);
+    }
+  }
 }
