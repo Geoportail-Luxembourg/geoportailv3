@@ -7,7 +7,12 @@ ARG HTTPS_PROXY_URL
 ENV https_proxy $HTTPS_PROXY_URL
 
 WORKDIR /app
-
+RUN mv /etc/apt/sources.list.d/nodesource.list /etc/apt/sources.list.d/nodesource.list.disabled
+RUN apt-get update
+RUN apt-get -y upgrade
+RUN apt-get  install -y ca-certificates
+RUN mv /etc/apt/sources.list.d/nodesource.list.disabled /etc/apt/sources.list.d/nodesource.list
+RUN apt update && apt-get install libgnutls30
 RUN apt update && apt install openjdk-8-jdk-headless git -y && apt-get dist-upgrade -y
 COPY package.json /app
 RUN npm set progress=false && \
