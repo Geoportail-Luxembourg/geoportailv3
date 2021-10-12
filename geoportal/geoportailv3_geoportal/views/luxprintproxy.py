@@ -84,6 +84,24 @@ class LuxPrintProxy(PrintProxy):
         if 'spec' in self.request.POST:
             spec = self.request.POST['spec']
         spec = json.loads(spec)
+
+        if "url" in spec["attributes"]:
+            try:
+                opener = urllib.request.build_opener(urllib.request.HTTPHandler())
+                data = urllib.parse.urlencode({"url": spec["attributes"]["url"]})
+                content = opener.open(
+                    "https://map.geoportail.lu/short/create",
+                    data=data.encode('utf-8')).read()
+                shortner = json.loads(content)
+                spec["attributes"]["url"] = shortner["short_url"]
+                spec["attributes"]["qrimage"] =\
+                    "https://map.geoportail.lu/main/wsgi/qr?url=" + \
+                    spec["attributes"]["url"]
+            except Exception as e:
+                log.exception(e)
+        if "longUrl" in spec["attributes"]:
+            spec["attributes"].pop('longUrl', None)
+
         print_url = self.config["print_url"]
         resp = self._proxy("%s/buildreport.%s" % (print_url, self.request.matchdict.get("format")), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
         content = resp.content
