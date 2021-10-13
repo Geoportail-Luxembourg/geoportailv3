@@ -30,6 +30,7 @@ from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from shapely.wkt import loads as wkt_loads
 from functools import partial
+from arcgis2geojson import arcgis2geojson
 
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
@@ -1308,7 +1309,10 @@ class Getfeatureinfo(object):
             try:
                 url_request = urllib.request.Request(query_count)
                 result = read_request_with_token(url_request, self.request, log)
-                self.content_count = geojson_loads(result.data)['count']
+                geojson_res = geojson_loads(result.data)
+                self.content_count = 0
+                if 'count' in geojson_res:
+                    self.content_count = geojson_res['count']
             except ESRITokenException as e:
                 log.exception(e)
                 log.error(url)
@@ -1340,45 +1344,9 @@ class Getfeatureinfo(object):
                                 'coordinates': [[
                                     [x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]
                                 ]]}
-                elif (rawfeature['geometry'] and
-                    'x' in rawfeature['geometry'] and
-                        'y' in rawfeature['geometry']):
-                    geometry = {'type': 'Point',
-                                'coordinates': [rawfeature['geometry']['x'],
-                                                rawfeature['geometry']['y']]}
-                elif (rawfeature['geometry'] and
-                      'x' in rawfeature['geometry'] and
-                      'Y' in rawfeature['geometry']):
-                    geometry = {'type': 'Point',
-                                'coordinates': [rawfeature['geometry']['x'],
-                                                rawfeature['geometry']['Y']]}
-                elif (rawfeature['geometry'] and
-                      'paths' in rawfeature['geometry'] and
-                      len(rawfeature['geometry']['paths']) > 0):
-                    geometry = {'type': 'MultiLineString',
-                                'coordinates': rawfeature['geometry']['paths']}
-                elif (rawfeature['geometry'] and
-                      'rings' in rawfeature['geometry'] and
-                      len(rawfeature['geometry']['rings']) > 0):
-                        if len(rawfeature['geometry']['rings']) == 1:
-                            geometry = {'type': 'Polygon',
-                                        'coordinates':
-                                            rawfeature['geometry']['rings']}
-                        else:
-                            coordinates = []
-                            curpolygon = []
-                            for ring in rawfeature['geometry']['rings']:
-                                if not LinearRing(ring).is_ccw:
-                                    if len(curpolygon) > 0:
-                                        coordinates.append(curpolygon)
-                                        curpolygon = []
-                                curpolygon.append(ring)
-
-                            if len(curpolygon) > 0:
-                                coordinates.append(curpolygon)
-
-                            geometry = {'type': 'MultiPolygon',
-                                        'coordinates': coordinates}
+                else:
+                    geojsonrawfeature = arcgis2geojson(rawfeature)
+                    geometry = geojsonrawfeature['geometry']
 
                 if geometry != '':
                     alias = {}

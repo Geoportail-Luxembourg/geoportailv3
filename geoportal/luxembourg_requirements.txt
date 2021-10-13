@@ -24,3 +24,4 @@ pyramid_assetviews==1.0a3
 transifex-client
 pyyaml
 gdal==2.2
+arcgis2geojson==2.0.1
