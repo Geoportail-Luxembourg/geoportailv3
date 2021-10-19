@@ -143,7 +143,8 @@ exports.prototype.authenticate = function(username, password) {
             response.data['mail'],
             response.data['sn'],
             response.data['mymaps_role'],
-            response.data['is_admin']
+            response.data['is_admin'],
+            response.data['typeUtilisateur']
           );
           this.$rootScope.$broadcast('authenticated');
           var msg = this.gettextCatalog.getString(
@@ -211,7 +212,8 @@ exports.prototype.getUserInfo = function() {
               response.data['mail'],
               response.data['sn'],
               response.data['mymaps_role'],
-              response.data['is_admin']
+              response.data['is_admin'],
+              response.data['typeUtilisateur']
           );
           this.$rootScope.$broadcast('authenticated');
         } else {
@@ -248,7 +250,7 @@ exports.prototype.isAuthenticated = function() {
  * of error.
  */
 exports.prototype.clearUserInfo = function() {
-  this.setUserInfo('', undefined, null, undefined, undefined, null, false);
+  this.setUserInfo('', undefined, null, undefined, undefined, null, false, 'prive');
 };
 
 
@@ -260,9 +262,10 @@ exports.prototype.clearUserInfo = function() {
  * @param {string|undefined} name Name.
  * @param {?number} mymapsRole The role used by mymaps.
  * @param {boolean} isAdmin True if is a mymaps admin.
+ * @param {string|undefined} typeUtilisateur type of user.
  */
 exports.prototype.setUserInfo = function(
-    username, role, roleId, mail, name, mymapsRole, isAdmin) {
+    username, role, roleId, mail, name, mymapsRole, isAdmin, typeUtilisateur) {
   if (username !== undefined) {
     this.username = username;
     this.role = role;
@@ -271,6 +274,7 @@ exports.prototype.setUserInfo = function(
     this.name = name;
     this.mymapsRole = mymapsRole;
     this.isMymapsAdmin = isAdmin;
+    this.typeUtilisateur = typeUtilisateur;
   } else {
     this.clearUserInfo();
   }
@@ -288,6 +292,13 @@ exports.prototype.getUsername = function() {
  */
 exports.prototype.getEmail = function() {
   return this.email;
+};
+
+/**
+ * @return {string|undefined} The user type.
+ */
+exports.prototype.getUserType = function() {
+  return this.typeUtilisateur;
 };
 
 /**
