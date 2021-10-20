@@ -546,7 +546,8 @@ exports.prototype.getLidarUrl = function() {
  * @export
  */
 exports.prototype.isCyclomediaAvailable = function() {
-  if (this.appUserManager_.getUserType() == 'etat') {
+  if (this.appUserManager_.getUserType() == 'etat' ||
+      this.appUserManager_.getUserType() == 'commune') {
     return true;
   }
   return false;
