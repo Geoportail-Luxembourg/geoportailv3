@@ -12,7 +12,7 @@ make -f configfile.mk build-js-api
 ## Development
 
 The JS API comes with examples along with a handy server to make it easier for
-the JS API developpers.
+the JS API developers.
 
 Launch the following command:
 
