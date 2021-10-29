@@ -1014,7 +1014,7 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
             except Exception as e:
                 log.error(full_url)
                 log.exception(e)
-        if data is not None:
+        if data is not None and 'layers' in data:
             for l in data['layers']:
                 if str(l['layerId']) in result.layers.split(','):
                     attribute = l['layerName']
