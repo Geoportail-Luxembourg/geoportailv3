@@ -38,7 +38,8 @@ const exports = function($window, ngeoLocation, appThemes) {
     'urban_farming': 30,
     'logement': 32,
     'energie': 40,
-    'embedded': 44
+    'embedded': 44,
+    'geosciences': 59
   };
 
   /**
