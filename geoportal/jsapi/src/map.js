@@ -1057,23 +1057,48 @@ lux.Map.prototype.setLayerInfoCb = function(layerInfoCb) {
 /**
  * Get the area of a geometry in square meters.
  * @param {ol.geom.Geometry} geometry The geometry the get the area.
+ * @param {string} srs the geometry's srs. Default is EPSG:3857.
  * @return {number} The spherical area (in square meters).
  * @export
  * @api
  */
-lux.Map.prototype.getGeometryArea = function(geometry) {
-  return ol.Sphere.getArea(geometry);
+lux.Map.prototype.getGeometryArea = function(geometry, srs) {
+  const curSrs = ((srs === undefined) ? 'EPSG:3857' : srs);
+  let area = 0;
+  switch (geometry.getType()) {
+    case 'Polygon':
+      area = geometry.clone().transform(curSrs, 'EPSG:2169').getArea();
+      break;
+    case 'MultiPolygon':
+      area = geometry.clone().transform(curSrs, 'EPSG:2169').getArea();
+      break;
+  }
+  return area;
 };
 
 /**
  * Get the length of a geometry in meters.
  * @param {ol.geom.Geometry} geometry The geometry the get the area.
+ * @param {string} srs the geometry's srs. Default is EPSG:3857.
  * @return {number} The spherical length (in meters).
  * @export
  * @api
  */
-lux.Map.prototype.getGeometryLength = function(geometry) {
-  return ol.Sphere.getLength(geometry);
+lux.Map.prototype.getGeometryLength = function(geometry, srs) {
+  const curSrs = ((srs === undefined) ? 'EPSG:3857' : srs);
+  let length = 0;
+  switch (geometry.getType()) {
+      case 'Polygon':
+        length = new ol.geom.LineString(geometry.getLinearRing(0).clone().transform(curSrs, 'EPSG:2169').getCoordinates()).getLength();
+        break;
+      case 'MultiPolygon':
+        length = new ol.geom.LineString(geometry.getPolygon(0).getLinearRing(0).clone().transform(curSrs, 'EPSG:2169').getCoordinates()).getLength();
+        break;
+      case 'LineString':
+        length = geometry.clone().transform(curSrs, 'EPSG:2169').getLength();
+        break;
+    }
+  return length;
 };
 
 /**
