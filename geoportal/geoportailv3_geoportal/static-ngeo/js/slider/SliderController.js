@@ -131,10 +131,9 @@ exports.prototype.activate = function(active) {
                 this.mousemoveEvent_ = null;
               }, this);
         }, this);
-
     var layer = this['layers'][0];
     if (layer !== undefined) {
-      this.precomposeEvent_ = listen(layer, 'precompose', function(event) {
+      this.precomposeEvent_ = listen(layer, 'prerender', function(event) {
         if (this['layers'][0] === layer) {
           var ratio = this.ngeoLocation_.getParam('sliderRatio');
           var ctx = event.context;
@@ -148,7 +147,7 @@ exports.prototype.activate = function(active) {
         }
       }, this);
 
-      this.postcomposeEvent_ = listen(layer, 'postcompose', function(event) {
+      this.postcomposeEvent_ = listen(layer, 'postrender', function(event) {
         if (this['layers'][0] === layer) {
           var ctx = event.context;
           ctx.restore();
