@@ -180,7 +180,7 @@ class JsapiEntry(Theme):
         return response
 
     @view_config(route_name='jsapiexample',
-                 renderer='geoportailv3_geoportal:templates/api/apiv3example.html')
+                 renderer='geoportailv3_geoportal:templates/api/apiv4example.html')
     def apiexample(self):
         return {}
     def _extract_layers_with_path(self, node, layers, came_from):
