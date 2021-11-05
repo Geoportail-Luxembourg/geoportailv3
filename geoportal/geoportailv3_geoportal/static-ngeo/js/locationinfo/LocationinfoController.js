@@ -43,6 +43,7 @@ import {intersects} from 'ol/extent.js';
  * @param {angular.$sce} $sce Angular $sce service.
  * @param {app.locationinfo.LocationInfoOverlay} appLocationInfoOverlay The overlay.
  * @param {app.Activetool} appActivetool The activetool service.
+ * @param {app.UserManager} appUserManager
  * @ngInject
  */
 const exports = function(
@@ -51,7 +52,14 @@ const exports = function(
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
-        appRouting, $sce, appLocationInfoOverlay, appActivetool) {
+        appRouting, $sce, appLocationInfoOverlay, appActivetool,
+        appUserManager) {
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+
   /**
    * @type {app.Activetool}
    * @private
@@ -530,6 +538,33 @@ exports.prototype.getLidarUrl = function() {
       parseInt(this.rawElevation_ / 1, 0);
   }
   return '';
+};
+
+
+/**
+ * @return {boolean} True if we want to show cyclomedia button.
+ * @export
+ */
+exports.prototype.isCyclomediaAvailable = function() {
+  if (this.appUserManager_.getUserType() == 'etat' ||
+      this.appUserManager_.getUserType() == 'commune') {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * @return {string} The cyclomedia url.
+ * @export
+ */
+exports.prototype.getCyclomediaUrl = function() {
+  if (this.clickCoordinateLuref_ !== undefined) {
+  return 'http://streetsmart.cyclomedia.com/streetsmart?q=' +
+          this.clickCoordinateLuref_[0] + ';' +
+          this.clickCoordinateLuref_[1];
+  }
+  return undefined;
 };
 
 /**

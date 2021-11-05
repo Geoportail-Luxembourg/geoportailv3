@@ -13,7 +13,7 @@ RUN apt-get -y upgrade
 RUN apt-get  install -y ca-certificates
 RUN mv /etc/apt/sources.list.d/nodesource.list.disabled /etc/apt/sources.list.d/nodesource.list
 RUN apt update && apt-get install libgnutls30
-RUN apt update && apt install openjdk-8-jdk-headless git -y && apt-get dist-upgrade -y
+RUN apt update && apt install git -y && apt-get dist-upgrade -y
 COPY package.json /app
 RUN npm set progress=false && \
     npm-packages --src=/app/package.json --dst=/tmp/npm-packages && \
@@ -28,18 +28,11 @@ RUN mv /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
 COPY . /app
 
 # jsapi generation
-RUN mkdir /etc/apiv3
+ADD ./jsapi /etc/apiv3/
 WORKDIR /etc/apiv3
 RUN node --version
-RUN mkdir -p /etc/apiv3/.build/externs && mkdir -p /etc/apiv3/build
-RUN curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js -o /etc/apiv3/.build/externs/angular-1.6.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js -o /etc/apiv3/.build/externs/angular-1.6-q_templated.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js -o /etc/apiv3/.build/externs/angular-1.6-http-promise_templated.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js -o /etc/apiv3/.build/externs/jquery-1.9.js
-COPY ./jsapi/package.json /etc/apiv3/
 RUN npm install --no-optional && npm cache clear --force
-ADD ./jsapi /etc/apiv3/jsapi
-RUN /etc/apiv3/jsapi/rebuild_api.sh
+RUN /etc/apiv3/rebuild_api.sh
 
 WORKDIR /app
 # sad fix, to allow webpack's file-loader to find files with query string & hash added

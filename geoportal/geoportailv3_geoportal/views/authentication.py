@@ -7,6 +7,7 @@ from c2cgeoportal_commons.models import DBSession
 import ldap3 as ldap
 import logging
 from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized, HTTPBadRequest
+from sqlalchemy import func
 
 log = logging.getLogger(__name__)
 
@@ -70,6 +71,9 @@ def get_user_from_request(request):
     if username is not None:
         return get_user(request, username)
 
+def get_compte_pere(username):
+    return DBSession.query(func.lower(func.geov3.getMainAccount(username))).one()[0]
+
 def get_user(request, username):
     from c2cgeoportal_commons.models import DBSession
     from c2cgeoportal_commons.models.main import Role
@@ -87,6 +91,7 @@ def get_user(request, username):
     user.sn = None
     user.is_password_changed = None
     user.role_name = None
+    user.typeUtilisateur = "prive"
     connector = get_ldap_connector(request)
     cm = connector.manager
 
@@ -122,6 +127,16 @@ def get_user(request, username):
             if 'roleOGC' in obj:
                 # This role is used by the print proxy and internal WMS proxy.
                 user.ogc_role = int(obj['roleOGC'][0])
+            if 'typeUtilisateur' in obj:
+                user.typeUtilisateur = obj['typeUtilisateur'][0].lower().decode()
+
+            login_pere = get_compte_pere(username)
+            # If an ascendant user exist, use his user type
+            if login_pere != username:
+                user_pere = get_user(request, login_pere)
+                if 'typeUtilisateur' in obj:
+                    user.typeUtilisateur = user_pere.typeUtilisateur
+
         conn.unbind()
     try:
         # Loading the plain c2cgeoportal role used for authentication.
@@ -156,6 +171,9 @@ class Authentication(object):
                     "sn": getattr(
                         self.request.user, 'sn',
                         self.request.user.username),
+                    "typeUtilisateur":  getattr(
+                        self.request.user, 'typeUtilisateur',
+                        self.request.user.typeUtilisateur),
                     "is_admin": getattr(self.request.user, 'is_mymaps_admin', False)}
         return {}
 
