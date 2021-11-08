@@ -260,6 +260,10 @@ class Getfeatureinfo(object):
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
+        geometry_type = self.request.params.get('geometry_type', 'wkt')
+        if geometry_type.lower() != 'wkt':
+            geometry = shape(geojson_loads(geometry)).wkt
+
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
