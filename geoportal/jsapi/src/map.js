@@ -1947,6 +1947,7 @@ lux.Map.prototype.decDegFromMatch_ = function(m) {
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
  * @param {string} url Url to the GPX file.
  * @param {luxx.VectorOptions=} opt_options Options.
+ * @return {Promise} The vector layer promise.
  * @export
  * @api
  */
@@ -1987,7 +1988,7 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
     };
   }
 
-  this.addVector_(url, new ol.format.GPX(), {
+  return this.addVector_(url, new ol.format.GPX(), {
     style: styleFunction,
     reloadInterval: opt_options && opt_options.reloadInterval,
     click: opt_options.click,
@@ -2001,11 +2002,12 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
  * @param {string} url Url to the KML file.
  * @param {luxx.VectorOptions=} opt_options Options.
+ * @return {Promise} The vector layer promise.
  * @export
  * @api
  */
 lux.Map.prototype.addKML = function(url, opt_options) {
-  this.addVector_(url, new ol.format.KML(), opt_options);
+  return this.addVector_(url, new ol.format.KML(), opt_options);
 };
 
 /**
@@ -2104,6 +2106,11 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
       var interaction = new ol.interaction.Select({
         layers: this.addedKmlLayers_
       });
+      this.getLayers().on('remove', function(event) {
+        if (event.element == vector) {
+          this.removeInteraction(interaction);
+        }
+      }.bind(this));
       this.addInteraction(interaction);
       if (opt_options.onClick) {
         interaction.on('select', function(e) {
