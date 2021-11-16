@@ -1279,7 +1279,7 @@ const MainController = function(
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
 
   Sentry.init({
-    dsn: 'https://a74e513e9cb84d5a9a2cd24a46d260a8@sentry.geoportail.lu/4',
+    dsn: 'https://afe219319897490e9ba927b06afdf934@sentry.geoportail.lu/3',
     integrations: [
       new Integrations.Angular(),
     ],
