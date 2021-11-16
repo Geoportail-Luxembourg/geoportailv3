@@ -189,6 +189,8 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
+import '../lux-iframe-preview/lux-iframe-preview.ts';
+
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
 import Rotate from 'ol/control/Rotate';
