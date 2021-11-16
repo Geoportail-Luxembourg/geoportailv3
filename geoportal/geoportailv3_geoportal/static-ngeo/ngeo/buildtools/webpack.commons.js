@@ -26,13 +26,13 @@ const providePlugin = new webpack.ProvidePlugin({
   $: 'jquery',
 });
 
-const babelPresets = [['env', {
+const babelPresets = [require.resolve('@babel/preset-env'), {
   'targets': {
     'browsers': ['last 2 versions', 'Firefox ESR', 'ie 11'],
   },
   'modules': false,
   'loose': true,
-}]];
+}];
 
 const angularRule = {
   test: require.resolve('angular'),
@@ -79,6 +79,26 @@ const cssLessLoaderConfigs = [
   }
 ];
 
+const tsRule = {
+  test: /\.tsx?$/,
+  use: {
+    loader: 'babel-loader',
+    options: {
+      presets: [babelPresets, require.resolve('@babel/preset-typescript')],
+      babelrc: false,
+      comments: false,
+      assumptions: {
+        setPublicClassFields: true,
+      },
+      plugins: [
+        [require.resolve('@babel/plugin-transform-typescript'), {allowDeclareFields: true}],
+        [require.resolve('@babel/plugin-proposal-decorators'), {decoratorsBeforeExport: true}],
+        [require.resolve('@babel/plugin-proposal-class-properties')],
+      ],
+    },
+  },
+};
+
 const lessRule = {
   test: /\.less$/,
   use: ExtractTextPlugin.extract({
@@ -96,14 +116,14 @@ const htmlRule = {
   }]
 };
 
-const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
+const config = function(hardSourceConfig) {
   const babelAnnotateUse = {
     loader: 'babel-loader',
     options: {
+      babelrc: false,
       comments: false,
-      cacheDirectory: babelLoaderCacheDirectory,
-      presets: babelPresets,
-      plugins: ['@camptocamp/babel-plugin-angularjs-annotate'],
+      presets: [babelPresets],
+      plugins: [require.resolve('babel-plugin-angularjs-annotate')],
     }
   };
 
@@ -139,8 +159,7 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
       options: {
         babelrc: false,
         comments: false,
-        cacheDirectory: babelLoaderCacheDirectory,
-        presets: babelPresets,
+        presets: [babelPresets],
       }
     }
   };
@@ -152,8 +171,7 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
       options: {
         babelrc: false,
         comments: false,
-        cacheDirectory: babelLoaderCacheDirectory,
-        presets: babelPresets,
+        presets: [babelPresets],
       }
     }
   };
@@ -165,8 +183,7 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
       options: {
         babelrc: false,
         comments: false,
-        cacheDirectory: babelLoaderCacheDirectory,
-        presets: babelPresets,
+        presets: [babelPresets],
       }
     }
   };
@@ -187,6 +204,7 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
         cssRule,
         lessRule,
         htmlRule,
+        tsRule,
         ngeoRule,
         ngeoExamplesRule,
         gmfAppsRule,
@@ -207,7 +225,8 @@ const config = function(hardSourceConfig, babelLoaderCacheDirectory) {
       modules: [
         '../node_modules'
       ],
-      mainFields: ['jsnext:main', 'main'],
+      extensions: ['.ts', '.tsx', '.js'],
+      mainFields: ['module', 'jsnext:main', 'main'],
       alias: {
         'ngeo/test': path.resolve(__dirname, '../test/spec'),
         'gmf/test': path.resolve(__dirname, '../contribs/gmf/test/spec'),

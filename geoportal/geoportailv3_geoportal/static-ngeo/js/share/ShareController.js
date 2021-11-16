@@ -138,12 +138,11 @@ exports.prototype.openMailLink = function() {
 };
 
 /**
- * Copy to clipboard
+ * @export
  */
-exports.prototype.copyLink = function() {
-  const input = document.querySelector(".embedded-input");
-  input.select();
-  document.execCommand("copy");
+ exports.prototype.showIframePreview = function() {
+  const element = document.querySelector("lux-iframe-preview");
+  element.show();
 };
 
 appModule.controller('AppShareController', exports);
