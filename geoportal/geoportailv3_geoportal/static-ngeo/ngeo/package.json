@@ -10,7 +10,8 @@
     "build-gmf-apps-profile": "TARGET=gmf-apps webpack --profile --json > profile.json",
     "serve-ngeo-examples": "DEV_SERVER=1 TARGET=ngeo-examples webpack-dev-server --port 3000 --progress --watch --bail --debug",
     "serve-gmf-examples": "DEV_SERVER=1 TARGET=gmf-examples webpack-dev-server --port 3000 --progress --watch --bail --debug",
-    "serve-gmf-apps": "DEV_SERVER=1 TARGET=gmf-apps webpack-dev-server --port 3000 --progress --watch --bail --debug"
+    "serve-gmf-apps": "DEV_SERVER=1 TARGET=gmf-apps webpack-dev-server --port 3000 --progress --watch --bail --debug",
+    "i18next-parse": "i18next --config buildtools/i18next-parser.config.js"
   },
   "repository": {
     "type": "git",
@@ -74,6 +75,8 @@
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "i18next": "21.5.1",
+    "i18next-parser": "5.2.0",
+    "i18next-xhr-backend": "3.2.2",
     "istanbul-instrumenter-loader": "3.0.1",
     "jasmine-core": "2.99.0",
     "jquery": "3.3.1",
