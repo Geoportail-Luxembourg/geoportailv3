@@ -27,11 +27,9 @@ const providePlugin = new webpack.ProvidePlugin({
 });
 
 const babelPresets = [require.resolve('@babel/preset-env'), {
-  'targets': {
-    'browsers': ['last 2 versions', 'Firefox ESR', 'ie 11'],
-  },
-  'modules': false,
-  'loose': true,
+  targets: {
+    browsers: ['> 0.5% in CH', '> 0.5% in FR', 'Firefox ESR', 'ie 11']
+  }
 }];
 
 const angularRule = {

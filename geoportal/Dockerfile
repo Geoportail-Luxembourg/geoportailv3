@@ -49,6 +49,7 @@ RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 # put Cesium build in static-ngeo
 RUN mkdir /etc/static-ngeo/Cesium && cp -r /usr/lib/node_modules/cesium/Build/Cesium/* /etc/static-ngeo/Cesium/
+RUN cp -r /app/geoportailv3_geoportal/static-ngeo/ngeo/locales/ /etc/static-ngeo/
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
 
@@ -139,4 +140,5 @@ ENV VISIBLE_ENTRY_POINT=/ \
     GUNICORN_LOG_LEVEL=INFO \
     SQL_LOG_LEVEL=WARN \
     DOGPILECACHE_LOG_LEVEL=INFO \
-    OTHER_LOG_LEVEL=WARN
+    OTHER_LOG_LEVEL=WARN \
+    TEST=false
