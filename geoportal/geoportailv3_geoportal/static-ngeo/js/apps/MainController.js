@@ -18,6 +18,8 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
+import i18next from 'i18next';
+
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
@@ -1647,6 +1649,8 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this.locale_.NUMBER_FORMATS.GROUP_SEP = ' ';
   this['lang'] = lang;
+
+  i18next.changeLanguage(lang);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
