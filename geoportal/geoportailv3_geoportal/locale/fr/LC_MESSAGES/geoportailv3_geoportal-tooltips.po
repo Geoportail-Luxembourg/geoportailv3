@@ -25,7 +25,7 @@ msgstr ""
 
 #: engineecadastre Layer:537 RoleNone
 msgid "f_Nom"
-msgstr "Le Nom"
+msgstr "Nom2"
 
 #: engineecadastre Layer:537 RoleNone
 msgid "f_Code national"
