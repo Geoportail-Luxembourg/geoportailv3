@@ -1,0 +1,219 @@
+vars:
+  debug: true
+  log_folder: /var/log
+  gmf_url: ""
+  # path to cpotree exectuable
+  cpotree_executable: extract_profile
+  # Available point clouds. NOTE: pointclouds CRS must be the same as the APP, reprojection is not implemented!
+  pointclouds:
+    luxembourg: ./data/processed/metadata.json
+  # point cloud to use in profile
+  default_point_cloud: luxembourg
+  # default profile width
+  width: 10
+  # point size on d3 plot in pixels
+  point_size: 1
+  # Max point number allowed in a profile. Passed this limit (approx...), the following requests are canceled client side (gmf2)
+  max_point_number: 75000
+  # Tolerance of lateral movements during vertical pan. Passing this threshold, new points will be requested
+  vertical_pan_tolerance: 0.2
+  # max LOD for first profile request (will extend from LOD 0 to LOD initialLOD)
+  initialLOD: 6
+  # Classification colors for GMF2
+  classification_colors:
+    0:
+      color: 100, 250, 100
+      name: Unknown
+      value: Unknown
+      visible: 1
+    1:
+      color: 100, 100, 100
+      name: Unclassified
+      value: Unclassified
+      visible: 1
+    2:
+      color: 200, 200, 200
+      name: Ground
+      value: Ground
+      visible: 1
+    3:
+      color: 0, 125, 0
+      name: Low Vegetation
+      visible: 1
+    4:
+      color: 0, 250, 125
+      name: Medium Vegetation
+      value: Medium Vegetation
+      visible: 1
+    5:
+      color: 40, 150, 0
+      name: High Vegetation
+      value: High Vegetation
+      visible: 1
+    6:
+      color: 140, 50, 0
+      name: Building
+      value: Building
+      visible: 1
+    7:
+      color: 120, 120, 120
+      name: Low Point
+      value: Low Point
+      visible: 1
+    8:
+      color: 250, 250, 0
+      name: Key-Point
+      value: Key-Point
+      visible: 1
+    10:
+      color: 0, 89, 98
+      name: Rail
+      value: Rail
+      visible: 1
+    11:
+      color: 0, 89, 98
+      name: Road Surface
+      value: Road Surface
+      visible: 1
+    12:
+      color: 0, 89, 98
+      name: Overlap
+      value: Overlap
+      visible: 1
+    13:
+      color: 120, 120, 120
+      name: Wire Guard
+      visible: 1
+    14:
+      color: 120, 120, 120
+      name: Wire Conductor
+      value: Wire Conductor
+      visible: 1
+    15:
+      color: 120, 120, 120
+      name: Transmission Tower
+      visible: 1
+    16:
+      color: 120, 120, 120
+      name: Wire-structure connector
+      value: Wire-structure connector
+      visible: 1
+    17:
+      color: 120, 120, 120
+      name: Bridge Deck
+      value: Bridge Deck
+      visible: 1
+    18:
+      color: 120, 120, 250
+      name: Hihh noise
+      value: Hihh noise
+      visible: 1
+    64:
+      color: 0, 120, 120
+      name: Cars
+      value: Cars
+      visible: 1
+    65:
+      color: 0, 120, 120
+      name: Cranes
+      value: Cranes
+      visible: 1
+    70:
+      color: 0, 120, 120
+      name: Facades
+      value: Facades
+      visible: 1
+    71:
+      color: 0, 120, 120
+      name: Walls
+      value: Walls
+      visible: 1
+    99:
+      color: 0, 120, 120
+      name: Outside perimeter
+      value: Outside perimeter
+      visible: 1
+
+  default_color: RGB(250,150,150)
+
+  # Default profile attribute (material)
+  default_attribute: CLASSIFICATION
+
+  # Points attributes and materials. The visible property defines which atribute becomes an option in material select in the lidarpanel
+  default_point_attribute: CLASSIFICATION
+  point_attributes:
+    INTENSITY:
+      name: Intensité
+      value: INTENSITY
+      element: 1
+      bytes: 2
+      visible: 1
+    RGB: # use COLOR_PACKED instead for SITN data sets
+      name: Couleur
+      value: RGB
+      elements: 4
+      bytes: 3
+      visible: 0
+    CLASSIFICATION:
+      name: Classification
+      value: CLASSIFICATION
+      elements: 1
+      bytes: 1
+      visible: 1
+    POSITION_CARTESIAN:
+      name: Position-cartesian
+      value: POSITION_CARTESIAN
+      elements: 3
+      bytes: 12
+      visible: 0
+    POSITION_PROJECTED_PROFILE:
+      name: Position-projected
+      value: POSITION_PROJECTED_PROFILE
+      elements: 2
+      bytes: 8
+      visible: 0
+    COLOR_PACKED:
+      name: Couleur
+      value: COLOR_PACKED
+      elements: 4
+      bytes: 4
+      visible: 1
+
+  # here you can define as many steps as you like
+  max_levels:
+    25:
+      max: 14
+      width: 2
+    50:
+      max: 13
+      width: 2
+    75:
+      max: 12
+      width: 3
+    100:
+      max: 11
+      width: 3
+    150:
+      max: 10
+      width: 4
+    250:
+      max: 9
+      width: 4
+    350:
+      max: 9
+      width: 4
+    500:
+      max: 8
+      width: 5
+    1000:
+      max: 8
+      width: 5
+    5000:
+      max: 7
+      width: 6
+    7500:
+      max: 6
+      width: 6
+    100000:
+      max: 6
+      width: 7
