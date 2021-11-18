@@ -614,19 +614,22 @@ class Getfeatureinfo(object):
 
         for feature in features:
             s = asShape(feature['geometry'])
-            if s.area > 0:
-                if the_box.intersects(s):
-                    features_to_keep.append(feature)
-            else:
-                width = self.request.params.get('WIDTH', None)
-                height = self.request.params.get('HEIGHT', None)
-                bbox = self.request.params.get('BBOX', None)
-                if width is None or height is None or bbox is None:
-                    features_to_keep.append(feature)
-                else:
-                    buffer = self.pixel2meter(float(width), float(height), bbox, "epsg:3857", "epsg:2169", 10)
-                    if the_box.intersects(s.buffer(buffer, 1)):
+            try:
+                if s.area > 0:
+                    if the_box.intersects(s):
                         features_to_keep.append(feature)
+                else:
+                    width = self.request.params.get('WIDTH', None)
+                    height = self.request.params.get('HEIGHT', None)
+                    bbox = self.request.params.get('BBOX', None)
+                    if width is None or height is None or bbox is None:
+                        features_to_keep.append(feature)
+                    else:
+                        buffer = self.pixel2meter(float(width), float(height), bbox, "epsg:3857", "epsg:2169", 10)
+                        if the_box.intersects(s.buffer(buffer, 1)):
+                            features_to_keep.append(feature)
+            except:
+                features_to_keep.append(feature)
         return features_to_keep
 
     def to_feature(self, layer_id, fid, geometry, attributes,
@@ -1234,6 +1237,8 @@ class Getfeatureinfo(object):
                 'where': '',
                 'outFields': '*',
                 'objectIds': ''}
+        splitted_url = url.split('f=geojson')
+        url = splitted_url[0]
         if id_column is None:
             id_column = 'objectid'
  
@@ -1305,6 +1310,19 @@ class Getfeatureinfo(object):
             log.error(url)
             content = "{}"
 
+        contentgeojson = {'features': []}
+        if len(splitted_url) > 1:
+            bodygeojson = body
+            bodygeojson['f'] = 'geojson'
+            querygeojson = '%s%s%s' % (url, separator, urlencode(bodygeojson))
+            try:
+                url_request = urllib.request.Request(querygeojson)
+                result = read_request_with_token(url_request, self.request, log)
+                contentgeojson = json.loads(result.data)
+            except Exception as e:
+                log.exception(e)
+                log.error(url)
+
         #Count
         self.content_count = 0
         if len(body) > 0:
@@ -1331,11 +1349,13 @@ class Getfeatureinfo(object):
             esricoll = geojson_loads(content)
         except:
             raise
+
         if 'fields' in esricoll:
             fields = esricoll['fields']
         else:
             fields = []
         if 'features' in esricoll:
+            i = 0
             for rawfeature in esricoll['features']:
                 geometry = ''
                 if 'geometry' not in rawfeature:
@@ -1349,7 +1369,10 @@ class Getfeatureinfo(object):
                                     [x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]
                                 ]]}
                 else:
-                    geojsonrawfeature = arcgis2geojson(rawfeature)
+                    if len(contentgeojson['features']) > 0:
+                        geojsonrawfeature = contentgeojson['features'][i]
+                    else:
+                        geojsonrawfeature = arcgis2geojson(rawfeature)
                     geometry = geojsonrawfeature['geometry']
 
                 if geometry != '':
