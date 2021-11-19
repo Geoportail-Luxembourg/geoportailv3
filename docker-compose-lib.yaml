@@ -300,3 +300,12 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_DEFAULT_REGION
       - AWS_S3_ENDPOINT
+
+  pytree:
+    image: camptocamp/pytree
+    environment:
+      - DEPLOY_ENV=PROD
+    volumes:
+      - ./lidar/data:/home/pytree/data/processed
+      - ./lidar/pytree.yml:/home/pytree/pytree.yml
+
