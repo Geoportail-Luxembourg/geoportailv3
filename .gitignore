@@ -14,3 +14,4 @@ __pycache__/
 
 # Generated with dev mode
 /geoportal/geoportailv3_geoportal/static/apihelp/index.html
+lidar/data
