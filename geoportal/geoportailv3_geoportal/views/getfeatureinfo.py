@@ -279,7 +279,8 @@ class Getfeatureinfo(object):
                         feature['stats']['filter_area'] = round(s.area, 2)
                     except Exception as e:
                         log.exception(e)
-                return fc
+            return fc
+
         if big_box is None or small_box is None:
             return HTTPBadRequest()
 
@@ -391,6 +392,16 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.has_profile,
                                 luxgetfeaturedefinition.remote_template,
                                 rows_cnt))
+                    else:
+                        results.append(
+                            self.to_featureinfo(
+                                [],
+                                luxgetfeaturedefinition.layer,
+                                luxgetfeaturedefinition.template,
+                                False,
+                                luxgetfeaturedefinition.has_profile,
+                                luxgetfeaturedefinition.remote_template,
+                                rows_cnt))
                 else:
                     features = []
                     for row in rows:
@@ -434,6 +445,16 @@ class Getfeatureinfo(object):
                                     luxgetfeaturedefinition.has_profile,
                                     luxgetfeaturedefinition.remote_template,
                                     rows_cnt))
+                    else:
+                        results.append(
+                            self.to_featureinfo(
+                                [],
+                                luxgetfeaturedefinition.layer,
+                                luxgetfeaturedefinition.template,
+                                False,
+                                luxgetfeaturedefinition.has_profile,
+                                luxgetfeaturedefinition.remote_template,
+                                rows_cnt))
             if (luxgetfeaturedefinition is not None and
                 (luxgetfeaturedefinition.rest_url is None or
                     len(luxgetfeaturedefinition.rest_url) == 0) and
@@ -477,7 +498,15 @@ class Getfeatureinfo(object):
                             is_ordered,
                             luxgetfeaturedefinition.has_profile,
                             luxgetfeaturedefinition.remote_template))
-
+                else:
+                    results.append(
+                        self.to_featureinfo(
+                            [],
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.template,
+                            False,
+                            luxgetfeaturedefinition.has_profile,
+                            luxgetfeaturedefinition.remote_template))
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.rest_url is not None and
                     len(luxgetfeaturedefinition.rest_url) > 0):
@@ -540,6 +569,16 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.has_profile,
                                 luxgetfeaturedefinition.remote_template,
                                 self.content_count))
+                else:
+                    results.append(
+                        self.to_featureinfo(
+                            [],
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.template,
+                            False,
+                            luxgetfeaturedefinition.has_profile,
+                            luxgetfeaturedefinition.remote_template,
+                            self.content_count))
 
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
