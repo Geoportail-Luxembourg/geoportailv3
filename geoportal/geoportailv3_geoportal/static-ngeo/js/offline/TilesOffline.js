@@ -4,14 +4,14 @@ export default class TilesOffline {
     }
 
     updateTiles(selection) {
-        return fetch("http://localhost:8766/update?map=" + selection, {
-            method: "POST"
+        return fetch("http://localhost:8766/map/" + selection, {
+            method: "PUT"
         });
     }
 
     deleteTiles(selection) {
-        return fetch("http://localhost:8766/delete?map=" + selection, {
-            method: "POST"
+        return fetch("http://localhost:8766/map/" + selection, {
+            method: "DELETE"
         });
     }
 
