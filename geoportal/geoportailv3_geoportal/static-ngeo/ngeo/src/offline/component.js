@@ -348,6 +348,7 @@ exports.Controller = class {
 
     checkTiles(selection) {
         this.ngeoOfflineServiceManager_.checkTiles(selection).then(response => response.text()).then(text => this.statusDict = text);
+        this.displayAlertLoadData = true;
         return this.statusDict;
     }
 
