@@ -31,6 +31,7 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import TilesOffline from './offline/TilesOffline.js';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
 
@@ -99,6 +100,9 @@ exports.service('ngeoOfflineConfiguration', appOfflineConfiguration);
 
 // Define the offline download configuration service
 exports.service('appMapBoxOffline', MapBoxOffline);
+
+// Define the offline download configuration service
+exports.service('appTilesOffline', TilesOffline);
 
 exports.config(['$httpProvider', function($httpProvider) {
   $httpProvider.interceptors.push('noCacheInterceptor');

@@ -94,6 +94,18 @@ const exports = class {
     this.saveService_.save(extent, map);
   }
 
+    checkTiles(selection) {
+        return this.saveService_.checkTiles(selection);
+    }
+
+    updateTiles(selection) {
+        return this.saveService_.updateTiles(selection);
+    }
+
+    deleteTiles(selection) {
+        return this.saveService_.deleteTiles(selection);
+    }
+
   /**
    * Ask the provided service to restore the saved data on the map
    * @param {ol.Map} map The map to work on.
