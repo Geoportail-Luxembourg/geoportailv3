@@ -699,7 +699,7 @@ class Geocode(object):
         results = []
         # List of zip code belonging to the locality
 
-        if len(p_locality) > 0:
+        if p_locality is not None and len(p_locality) > 0:
             features = p_session.query(
                 (func.ST_AsText(func.ST_Centroid(func.ST_Collect(
                     Address.geom)))).label("geom"),
