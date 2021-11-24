@@ -829,9 +829,9 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
  * @export
  * @api
  */
-lux.Map.prototype.getPrintSpec = function(layout, scale) {
-  var printDpi = 127;
-  var format = 'png';
+lux.Map.prototype.getPrintSpec = function(layout, scale, dpi, pformat) {
+  var printDpi = (dpi !== undefined) ? dpi : 127;
+  var format = (pformat !== undefined) ? pformat : 'png';
 
   var pm = new lux.PrintManager(lux.printUrl, this);
 
