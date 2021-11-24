@@ -511,7 +511,7 @@ class Geocode(object):
             pass
 
         return p_session.query(Address).\
-            filter(text("code_postal = '" + p_zip + "'")).count() > 0
+            filter(Address.code_postal == p_zip).count() > 0
 
     # Returns the best matching loçcality name.
     # For instance Esch/Alzette should return Esch sur Alzette
