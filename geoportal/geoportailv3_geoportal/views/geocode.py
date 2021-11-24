@@ -1279,8 +1279,9 @@ class Geocode(object):
                         part2 = streetandhouse[len(house_num) + 1:]
 
                         nums2 = re.findall(r'\d+', part2)
-                        idx2 = streetandhouse.find(nums2[0])
-                        house_num = streetandhouse[idx:idx2 + len(nums2[0])]
+                        if nums2 is not None and len(nums2) > 0:
+                            idx2 = streetandhouse.find(nums2[0])
+                            house_num = streetandhouse[idx:idx2 + len(nums2[0])]
                     else:
                         try:
                             if streetandhouse[idx + len(house_num) + 1:
