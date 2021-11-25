@@ -2634,3 +2634,21 @@ lux.Map.prototype.exportGeoJSON = function(fArray, opt_options, exportMeasures) 
   const writer = new ol.format.GeoJSON(options);
   return writer.writeFeatures(fArray);
 }
+
+
+/**
+ * Fit the map to an extent. The default extent is content of a vector layer.
+ * @param {ol.Extent | undefined} extent The extent to fit on. Default is the one of the drawing layer.
+ * @param {object | undefined} opt_options Options.
+ * @export
+ * @api
+ */
+lux.Map.prototype.fit = function(extent, opt_options) {
+  var curExtent = this.getDrawingLayer().getSource().getExtent();
+  if (extent !== undefined && extent !== null) {
+    curExtent = extent;
+  }
+  if (curExtent !== undefined) {
+    this.getView().fit(curExtent, opt_options);
+  }
+}
