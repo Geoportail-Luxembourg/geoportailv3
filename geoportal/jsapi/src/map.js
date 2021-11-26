@@ -2644,11 +2644,33 @@ lux.Map.prototype.exportGeoJSON = function(fArray, opt_options, exportMeasures) 
  * @api
  */
 lux.Map.prototype.fit = function(extent, opt_options) {
-  var curExtent = this.getDrawingLayer().getSource().getExtent();
+  var curExtent = undefined;
   if (extent !== undefined && extent !== null) {
     curExtent = extent;
+  } else {
+    var curExtentDL = this.getDrawingLayer().getSource().getExtent();
+    var curExtentSL = this.getShowLayer().getSource().getExtent();
+    if (!ol.extent.isEmpty(curExtentDL) && !ol.extent.isEmpty(curExtentSL)) {
+      curExtent = ol.extent.extend(curExtentDL, curExtentSL)
+    } else if (!ol.extent.isEmpty(curExtentDL)) {
+      curExtent = curExtentDL;
+    } else if (!ol.extent.isEmpty(curExtentSL)) {
+      curExtent = curExtentSL;
+    }
+    
+    this.showVectorLayerArray_.forEach(function(curLayer) {
+      if (curExtent !== undefined && curExtent !== null) {
+        if (!ol.extent.isEmpty(curLayer.getSource().getExtent())) {
+          curExtent = ol.extent.extend(curExtent, curLayer.getSource().getExtent());
+        }
+      } else {
+        if (!ol.extent.isEmpty(curLayer.getSource().getExtent())) {
+          curExtent = curLayer.getSource().getExtent();
+        }
+      }
+    }.bind(this))
   }
-  if (curExtent !== undefined) {
+  if (curExtent !== undefined && !ol.extent.isEmpty(curExtent)) {
     this.getView().fit(curExtent, opt_options);
   }
 }
