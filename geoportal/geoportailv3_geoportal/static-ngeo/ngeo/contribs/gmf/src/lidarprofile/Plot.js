@@ -101,7 +101,7 @@ const exports = class {
     let i = -1;
     const nPoints = points.distance.length;
     let cx, cy;
-    const ctx = d3.select('#gmf-lidarprofile-container .lidar-canvas').node().getContext('2d');
+    const ctx = d3.select('.gmf-lidarprofile-container .lidar-canvas').node().getContext('2d');
     const profileServerConfig = this.manager_.config.serverConfig;
 
     while (++i < nPoints) {
@@ -143,13 +143,13 @@ const exports = class {
    * @export
    */
   setupPlot(rangeX, rangeY) {
-    const canvas = d3.select('#gmf-lidarprofile-container .lidar-canvas');
+    const canvas = d3.select('.gmf-lidarprofile-container .lidar-canvas');
     const canvasEl = canvas.node();
     const ctx = canvasEl.getContext('2d');
     ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
 
     const margin = this.manager_.config.clientConfig.margin;
-    const containerEl = d3.select('#gmf-lidarprofile-container').node();
+    const containerEl = d3.select('.gmf-lidarprofile-container').node();
     const containerWidth = containerEl.getBoundingClientRect().width;
     const containerHeight = containerEl.getBoundingClientRect().height;
     this.width_ = containerWidth - (margin.left + margin.right);
@@ -208,7 +208,7 @@ const exports = class {
     this.updateScaleX = this.scaleX;
     this.updateScaleY = this.scaleY;
 
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
 
     svg.call(zoom).on('dblclick.zoom', null);
 
@@ -255,7 +255,7 @@ const exports = class {
       return;
     }
     this.moved_ = false;
-    const ctx = d3.select('#gmf-lidarprofile-container .lidar-canvas')
+    const ctx = d3.select('.gmf-lidarprofile-container .lidar-canvas')
       .node().getContext('2d');
     ctx.clearRect(0, 0, this.width_, this.height_);
     this.manager_.updateData();
@@ -277,7 +277,7 @@ const exports = class {
     this.manager_.measure.clearMeasure();
 
     const tr = d3Event.transform;
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     const xAxis = d3.axisBottom(this.scaleX);
     const yAxis = d3.axisLeft(this.scaleY)
       .tickSize(-this.width_);
@@ -288,7 +288,7 @@ const exports = class {
     svg.select('.x.axis').call(xAxis.scale(new_scaleX));
     svg.select('.y.axis').call(yAxis.scale(new_scaleY));
 
-    const ctx = d3.select('#gmf-lidarprofile-container .lidar-canvas')
+    const ctx = d3.select('.gmf-lidarprofile-container .lidar-canvas')
       .node().getContext('2d');
     ctx.clearRect(0, 0, this.width_, this.height_);
 
@@ -308,13 +308,13 @@ const exports = class {
    */
   pointHighlight() {
 
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
-    const lidarInfo = d3.select('#gmf-lidarprofile-container .lidar-info');
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
+    const lidarInfo = d3.select('.gmf-lidarprofile-container .lidar-info');
     const pointSize = this.manager_.config.serverConfig.point_size;
     const margin = this.manager_.config.clientConfig.margin;
     const tolerance = this.manager_.config.clientConfig.tolerance || 0;
 
-    const canvasCoordinates = d3.mouse(d3.select('#gmf-lidarprofile-container .lidar-canvas').node());
+    const canvasCoordinates = d3.mouse(d3.select('.gmf-lidarprofile-container .lidar-canvas').node());
     const classification_colors = this.manager_.config.serverConfig.classification_colors;
 
     let cx, cy;
@@ -384,7 +384,7 @@ const exports = class {
   getInfoHTML(point, classification_color, distDecimal) {
     const gettextCatalog = this.manager_.gettextCatalog;
     const html = [];
-    const number = this.manager_.$filter('number');
+    const number = (x, decimal) => parseFloat(`${x}`).toFixed(decimal)
 
     const distance = point.distance;
     const altitude = point.altitude;
@@ -419,7 +419,7 @@ const exports = class {
   */
   changeStyle(material) {
     this.material = material;
-    const canvasEl = d3.select('#gmf-lidarprofile-container .lidar-canvas').node();
+    const canvasEl = d3.select('.gmf-lidarprofile-container .lidar-canvas').node();
     const ctx = canvasEl.getContext('2d');
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
     this.drawPoints(this.manager_.profilePoints);
