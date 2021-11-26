@@ -13,18 +13,18 @@
 <div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.displayAlertLoadData = !$ctrl.displayAlertLoadData">
   show status
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-geoportail')" ng-style="{top:'15rem',left:'2rem'}">
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-geoportail-lu')" ng-style="{top:'15rem',left:'2rem'}">
   update roadmap
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-topo-geoportail')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-topo-geoportail-lu')"
       ng-style="{top:'19rem',left:'2rem'}">
   update topomap
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('contours')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('contours-lu')"
       ng-style="{top:'23rem',left:'2rem'}">
   update contours
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('hillshade')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('hillshade-lu')"
       ng-style="{top:'27rem',left:'2rem'}">
   update hilllshade
 </div>
@@ -41,18 +41,18 @@
   update sprites
 </div>
 
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-geoportail')" ng-style="{top:'15rem',left:'22rem'}">
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-geoportail-lu')" ng-style="{top:'15rem',left:'22rem'}">
   delete roadmap
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-topo-geoportail')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-topo-geoportail-lu')"
       ng-style="{top:'19rem',left:'22rem'}">
   delete topomap
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('contours')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('contours-lu')"
       ng-style="{top:'23rem',left:'22rem'}">
   delete contours
 </div>
-<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('hillshade')"
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('hillshade-lu')"
       ng-style="{top:'27rem',left:'22rem'}">
   delete hilllshade
 </div>
