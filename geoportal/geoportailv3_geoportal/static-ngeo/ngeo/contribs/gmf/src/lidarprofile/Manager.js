@@ -1,10 +1,9 @@
 /**
  * @module gmf.lidarprofile.Manager
  */
-import gmfLidarprofileMeasure from 'gmf/lidarprofile/Measure.js';
-import gmfLidarprofilePlot from 'gmf/lidarprofile/Plot.js';
-import gmfLidarprofileUtils from 'gmf/lidarprofile/Utils.js';
-import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
+import gmfLidarprofileMeasure from './Measure.js';
+import gmfLidarprofilePlot from './Plot.js';
+import gmfLidarprofileUtils from './Utils.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olOverlay from 'ol/Overlay.js';
 import olSourceVector from 'ol/source/Vector.js';
@@ -16,6 +15,15 @@ const d3 = {
   select,
 };
 
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
+const gettextCatalog = { getString: str => str }
 
 const exports = class {
 
@@ -24,25 +32,10 @@ const exports = class {
    * Requires access to a Pytree webservice: https://github.com/sitn/pytree
    *
    * @struct
-   * @param {angular.$http} $http Angular http service.
-   * @param {angular.$filter} $filter Angular filter.
-   * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
-   * @param {ngeo.misc.Debounce} ngeoDebounce ngeo debounce service.
-   * @ngInject
    * @ngdoc service
    * @ngname gmflidarprofileManager
    */
-  constructor($http, $filter, gettextCatalog, ngeoDebounce) {
-
-    /**
-     * @type {angular.$http}
-     */
-    this.$http = $http;
-
-    /**
-     * @type {angular.$filter}
-     */
-    this.$filter = $filter;
+  constructor() {
 
     /**
      * @type {angularGettext.Catalog}
@@ -53,7 +46,7 @@ const exports = class {
      * @type {ngeo.misc.Debounce}
      * @private
      */
-    this.ngeoDebounce_ = ngeoDebounce;
+    this.ngeoDebounce_ = debounce;
 
     /**
      * @type {?angular.$q.Promise}
@@ -217,7 +210,7 @@ const exports = class {
       this.isPlotSetup_ = false;
     }
 
-    d3.select('#gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
+    d3.select('.gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
     let pytreeLinestring = this.utils.getPytreeLinestring(this.line_);
 
     let maxLODWith;
@@ -237,7 +230,7 @@ const exports = class {
     }
 
     let lastLOD = false;
-    d3.select('#gmf-lidarprofile-container .lod-info').html('');
+    d3.select('.gmf-lidarprofile-container .lod-info').html('');
     this.config.clientConfig.pointSum = 0;
     let profileWidth = 0;
     if (this.config.clientConfig.autoWidth) {
@@ -247,7 +240,7 @@ const exports = class {
     }
 
     const profileWidthTxt = gettextCatalog.getString('Profile width: ');
-    d3.select('#gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
+    d3.select('.gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
 
     for (let i = 0; i < maxLODWith.maxLOD; i++) {
       if (i == 0) {
@@ -277,7 +270,7 @@ const exports = class {
    */
   queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot) {
     const gettextCatalog = this.gettextCatalog;
-    const lodInfo = d3.select('#gmf-lidarprofile-container .lod-info');
+    const lodInfo = d3.select('.gmf-lidarprofile-container .lod-info');
     if (this.config.serverConfig.debug) {
       let html = lodInfo.html();
       const loadingLodTxt = gettextCatalog.getString('Loading LOD: ');
@@ -286,15 +279,16 @@ const exports = class {
     }
 
     const pointCloudName = this.config.serverConfig.default_point_cloud;
-    const hurl = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}
+    const url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}
       &maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=`;
 
-    this.$http.get(hurl, {
+    fetch(url, {
       headers: {
         'Content-Type': 'text/plain; charset=x-user-defined'
       },
-      responseType: 'arraybuffer'
-    }).then((response) => {
+    }).then(
+      response => response.arrayBuffer()
+    ).then((response) => {
       if (this.config.serverConfig.debug) {
         let html = lodInfo.html();
         const lodTxt = gettextCatalog.getString('LOD: ');
@@ -302,10 +296,8 @@ const exports = class {
         html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
         lodInfo.html(html);
       }
-      this.processBuffer_(response.data, iter, distanceOffset, lastLOD, resetPlot);
-    }, (response) => {
-      console.error(response);
-    });
+      this.processBuffer_(response, iter, distanceOffset, lastLOD, resetPlot);
+    }).catch(console.error)
   }
 
   /**
@@ -318,7 +310,7 @@ const exports = class {
    * @private
    */
   processBuffer_(profile, iter, distanceOffset, lastLOD, resetPlot) {
-    const lidarError = d3.select('#gmf-lidarprofile-container .lidar-error');
+    const lidarError = d3.select('.gmf-lidarprofile-container .lidar-error');
 
     const typedArrayInt32 = new Int32Array(profile, 0, 4);
     const headerSize = typedArrayInt32[0];
@@ -335,7 +327,7 @@ const exports = class {
 
     } catch (e) {
       if (!this.isPlotSetup_) {
-        const canvas = d3.select('#gmf-lidarprofile-container .lidar-canvas');
+        const canvas = d3.select('.gmf-lidarprofile-container .lidar-canvas');
         const canvasEl = canvas.node();
         const ctx = canvasEl.getContext('2d');
         ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
@@ -494,13 +486,5 @@ const exports = class {
 
 };
 
-
-/**
- * @type {!angular.Module}
- */
-exports.module = angular.module('gmfLidarprofileManager', [
-  ngeoMiscDebounce.name,
-]);
-exports.module.service('gmfLidarprofileManager', exports);
 
 export default exports;
