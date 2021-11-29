@@ -2476,7 +2476,9 @@ lux.Map.prototype.handleDrawendEvent_ = function(evt) {
         htmls.push(curHtml);
       }
       if (this.layerInfoCb_ !== undefined) {
-        this.layerInfoCb_.call(this, features);
+        if (features.length > 0) {
+          this.layerInfoCb_.call(this, features);
+        }
       }
     }.bind(this));
     if (this.showLayerInfoPopup_) {
@@ -2537,7 +2539,9 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       }
       var features = this.readJsonFeatures_(resultLayer);
       if (this.layerInfoCb_ !== undefined) {
-        this.layerInfoCb_.call(this, features);
+        if (features.length > 0) {
+          this.layerInfoCb_.call(this, features);
+        }
       }
 
       if (features.length != 0) {
