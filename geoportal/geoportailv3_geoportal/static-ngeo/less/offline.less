@@ -1,8 +1,8 @@
-ngeo-offline {
+ngeo-offline, lux-offline {
   div {
     z-index: 1;
   }
-  .main-button {
+  .main-button, .db-button {
     position: absolute;
     right: 96px;
     bottom: 152px;
@@ -24,10 +24,16 @@ ngeo-offline {
         content: @fa-var-arrow-circle-o-down;
       }
     }
+    .webcomponent {
+      &::after {
+        content: @fa-var-database;
+      }
+    }
     .with-data {
       color: red;
     }
   }
+  .db-button {bottom: 198px}
 
   &.offline-mode {
     .main-button {
@@ -37,9 +43,21 @@ ngeo-offline {
     }
   }
 
+  .offline-btns {
+    position: absolute;
+    top: 2.2rem;
+    left: calc(~"50% - 10rem");
+    text-align: center;
+  }
+
+  .offline-btn {
+      // width: 20rem;
+      margin: 5px;
+  }
+
   .validate-extent {
     position: absolute;
-    top: 4.5rem;
+    bottom: 4.5rem;
     width: 12rem;
     left: calc(~"50% - 6rem");
   }

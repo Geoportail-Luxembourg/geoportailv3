@@ -195,6 +195,7 @@ import '../../less/geoportailv3.less';
 
 import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
+import '../offlineWebComponent.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
