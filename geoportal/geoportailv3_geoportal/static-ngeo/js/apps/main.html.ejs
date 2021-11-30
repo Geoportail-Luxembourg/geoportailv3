@@ -364,6 +364,7 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <lux-offline></lux-offline>
       <ngeo-offline
           ngeo-offline-map="::mainCtrl.map"
           ngeo-offline-mask-margin="::100"
