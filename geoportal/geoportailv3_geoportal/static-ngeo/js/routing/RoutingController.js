@@ -24,9 +24,8 @@ import Fill from 'ol/style/Fill.js';
 import Select from 'ol/interaction/Select.js';
 import Modify from 'ol/interaction/Modify.js';
 import {listen} from 'ol/events.js';
-import {getCenter, containsCoordinate} from 'ol/extent';
+import {getCenter} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import {includes as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
@@ -143,12 +142,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @export
    */
   this.appRouting = appRouting;
-
-  /**
-   * @type {ol.Map}
-   * @export
-   */
-  this.map = this['map'];
 
   /**
    * @type {angularGettext.Catalog}
@@ -323,7 +316,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     }.bind(this)
   });
 
-  this.map.addInteraction(this.selectInteraction_);
   this.selectInteraction_.setActive(false);
   /**
    * We cannot use pointermove condition.
@@ -337,8 +329,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     }.bind(this)
   });
 
-  this.map.addInteraction(this.selectInteractionPM_);
-
   this.selectInteractionPM_.setActive(false);
   listen(this.selectInteractionPM_, 'select',
     this.showHideTooltip_, this);
@@ -350,7 +340,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.modifyInteraction_ = new Modify({
     features: this.modyfyFeaturesCollection_
   });
-  this.map.addInteraction(this.modifyInteraction_);
   this.modifyInteraction_.setActive(true);
 
   listen(this.modifyInteraction_,
@@ -366,6 +355,12 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   listen(this.appRouting.routeFeatures, 'remove',
     this.removeRoute_, this);
 
+  this.initRoutingService_();
+};
+
+exports.prototype.$onInit = function() {
+  this.map = this['map'];
+
   /**
    * @type {ol.Geolocation}
    * @private
@@ -378,8 +373,12 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
       timeout: 7000
     })
   });
-  this.initRoutingService_();
-};
+
+  this.map.addInteraction(this.selectInteraction_);
+  this.map.addInteraction(this.selectInteractionPM_);
+  this.map.addInteraction(this.modifyInteraction_);
+
+}
 
 /**
  * Init the routing service_.

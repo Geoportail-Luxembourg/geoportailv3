@@ -293,7 +293,7 @@ const exports = function($scope, $window, $compile,
    */
   var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
     query,
-    this['map'].getView().getProjection().getCode(),
+    this.map_.getView().getProjection().getCode(),
     this.maxExtent_,
     this.coordinateString_
   ));
@@ -516,15 +516,6 @@ const exports = function($scope, $window, $compile,
     select: exports.selected_.bind(this)
   });
 
-  listen(this['map'].getLayers(),
-      olCollectionEventType.ADD,
-      /**
-       * @param {ol.Collection.Event} e Collection event.
-       */
-      (function(e) {
-        this.featureOverlay.clear();
-      }), this);
-
   this.facetsPanelOpen = false;
   this.initialFacets = {
     layers: true,
@@ -590,6 +581,11 @@ const exports = function($scope, $window, $compile,
   }
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+
+  listen(this.map_.getLayers(), olCollectionEventType.ADD, () => this.featureOverlay.clear());
+}
 
 /**
  * @param {Fuse} fuseEngine The fuse engine.
@@ -824,7 +820,7 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this['map'], input);
+  this.backgroundLayerMgr_.set(this.map_, input);
 };
 
 
@@ -851,7 +847,7 @@ exports.prototype.addLayerToMap_ = function(input) {
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
-  var map = this['map'];
+  var map = this.map_;
   if (map.getLayers().getArray().indexOf(layer) <= 0) {
     map.addLayer(layer);
   }
@@ -883,7 +879,7 @@ exports.prototype.addLayerToMap_ = function(input) {
  */
 exports.selected_ =
     function(event, suggestion) {
-      var map = /** @type {ol.Map} */ (this['map']);
+      var map = /** @type {ol.Map} */ (this.map_);
       var /** @type {string} */ dataset;
       if (suggestion['dataset'] !== undefined) {
         dataset = suggestion['dataset'];

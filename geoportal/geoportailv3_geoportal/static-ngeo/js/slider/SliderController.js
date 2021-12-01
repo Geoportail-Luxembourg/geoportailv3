@@ -34,12 +34,6 @@ const exports = function($element, ngeoLocation, $document, $scope) {
   this.ngeoLocation_ = ngeoLocation;
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
-  /**
    * @type {angular.JQLite}
    * @private
    */
@@ -102,6 +96,10 @@ const exports = function($element, ngeoLocation, $document, $scope) {
     }
   }.bind(this));
 };
+
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+}
 
 /**
  * Activate the slider on the line.

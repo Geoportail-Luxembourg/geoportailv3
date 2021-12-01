@@ -4,6 +4,7 @@
       "module": "commonjs",
       "lib": ["es2020", "dom"],
       "allowJs": true,
+      "experimentalDecorators": true,
       "baseUrl": ".",
       "paths": {
         "cesium/*": ["./node_modules/cesium/Source/*"]
