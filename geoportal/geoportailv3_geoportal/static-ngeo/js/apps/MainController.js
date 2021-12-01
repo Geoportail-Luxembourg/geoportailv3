@@ -192,6 +192,7 @@ import '../../less/geoportailv3.less';
  /* eslint-enable no-unused-vars */
 
 import '../lux-iframe-preview/lux-iframe-preview.ts';
+import '../offlineWebComponent.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
