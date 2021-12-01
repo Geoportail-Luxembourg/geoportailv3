@@ -26,6 +26,10 @@ export class LuxOffline extends LuxBaseElement {
 
     constructor() {
         super();
+        const searchParams = new URLSearchParams(document.location.search);
+        const server = searchParams.get('embeddedserver');
+        const proto = searchParams.get('embeddedserverprotocol') || 'http';
+        this.baseURL = (server ? `${proto}://${server}` : "http://localhost:8766/map/")
     }
 
     static offlinePackages = [
@@ -102,7 +106,7 @@ ${this.renderInfo()}
     checkTiles()
     {
         console.log("check");
-        let checkPromise = fetch("http://localhost:8766/check");
+        let checkPromise = fetch(this.baseURL + "/check");
         checkPromise.then(response => response.text()).then(text => this.statusDict = text);
         this.showInfo()
     }
@@ -118,7 +122,7 @@ ${this.renderInfo()}
         let method = eventId.substring(0, separatorPos);
         let packageName = eventId.substring(separatorPos+1);
         console.log(method + " " + packageName);
-        let alterPromise = fetch("http://localhost:8766/map/" + packageName, {method})
+        let alterPromise = fetch(this.baseURL + "/map/" + packageName, {method})
         alterPromise.then(res => res.text());
     }
 
