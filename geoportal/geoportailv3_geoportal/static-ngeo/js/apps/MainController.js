@@ -192,6 +192,7 @@ import '../../less/geoportailv3.less';
  /* eslint-enable no-unused-vars */
 
 import '../lux-iframe-preview/lux-iframe-preview.ts';
+import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
@@ -822,6 +823,14 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['lidarOpen'] = false;
+
+  // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
+  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
+
+  /**
+   * @type {boolean}
+   */
   this['layersOpen'] = false;
 
   /**
@@ -1403,6 +1412,10 @@ MainController.prototype.createMap_ = function() {
     })
   });
 
+  // FIXME: this is a hack to make the map avaialble to the web components.
+  // To be changed to use `ng-prop` when available (angular > 1.7).
+  this.window_.map = map;
+
   map.on('moveend', e => {
     const rotation = map.getView().getRotation();
     this.ngeoLocation_.updateParams({
@@ -1606,7 +1619,7 @@ MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
-      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = false;
+      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
 };
 
 
@@ -1618,7 +1631,7 @@ MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
       this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
-      this['vectorEditorOpen'];
+      this['vectorEditorOpen'] || this['lidarOpen'];
 };
 
 
