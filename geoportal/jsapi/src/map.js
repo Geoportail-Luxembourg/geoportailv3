@@ -2630,7 +2630,6 @@ lux.Map.prototype.exportGeoJSON = function(fArray, opt_options, exportMeasures) 
   }
   if (exportMeasures === true && fArray !== null && fArray !== undefined) {
     fArray.forEach(function(feature) {
-      console.log(feature);
       feature.set('__length__', this.getGeometryLength(feature.getGeometry()));
       feature.set('__area__', this.getGeometryArea(feature.getGeometry()));
     }, this);
@@ -2673,6 +2672,27 @@ lux.Map.prototype.fit = function(extent, opt_options) {
         }
       }
     }.bind(this))
+    this.getLayers().forEach(function(layer) {
+        if(layer instanceof ol.layer.Group) {
+            layer.getLayers().forEach(function(groupLayer) {
+                if(layer instanceof ol.layer.Vector) {
+                  if (curExtent !== undefined && curExtent !== null) {
+                    ol.extent.extend(curExtent, groupLayer.getSource().getExtent());
+                  } else {
+                    curExtent = groupLayer.getSource().getExtent();
+                  }
+                }
+            });
+        } else {
+          if(layer instanceof ol.layer.Vector) {
+            if (curExtent !== undefined && curExtent !== null) {
+              ol.extent.extend(curExtent, layer.getSource().getExtent());
+            } else {
+              curExtent = layer.getSource().getExtent();
+            }
+          }
+        }
+    });
   }
   if (curExtent !== undefined && !ol.extent.isEmpty(curExtent)) {
     this.getView().fit(curExtent, opt_options);
