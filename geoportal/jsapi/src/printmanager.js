@@ -106,7 +106,8 @@ lux.PrintManager.LAYOUTS = [
   'A1 landscape',
   'A1 portrait',
   'A0 landscape',
-  'A0 portrait'
+  'A0 portrait',
+  'a4_landscape_notext'
 ];
 
 /**
