@@ -836,7 +836,8 @@ lux.PrintManager.prototype.encodeVectorStyleStroke_ = function(symbolizer, strok
  */
 lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
   var symbolizer = /** @type {MapFishPrintSymbolizerText} */ ({
-    type: 'Text'
+    type: 'Text',
+    'goodnessOfFit': 0.0,
   });
   var label = textStyle.getText();
   if (label !== undefined) {
@@ -895,7 +896,6 @@ lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
       // minus sign is required for the y offset to be identical.
       symbolizer.labelYOffset = -textStyle.getOffsetY();
     }
-
     symbolizers.push(symbolizer);
   }
 };
