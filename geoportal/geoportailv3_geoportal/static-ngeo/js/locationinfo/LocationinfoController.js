@@ -312,12 +312,22 @@ const exports = function(
       urlLocationInfo === 'true') {
     var x = parseInt(appStateManager.getInitialValue('X'), 0);
     var y = parseInt(appStateManager.getInitialValue('Y'), 0);
+    var srs = appStateManager.getInitialValue('SRS');
+    if (srs !== undefined) {
+      if (version === 3) {
+        srs = 'EPSG:3857';
+      } else {
+        srs = 'EPSG:2169';
+      }
+    }
     var version = this.stateManager_.getVersion();
+
 
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
-          /** @type {ol.Coordinate} */ ([x, y]) :
-          /** @type {ol.Coordinate} */ (transform([y, x], 'EPSG:2169',
+          /** @type {ol.Coordinate} */ (transform([x, y], srs,
+              this['map'].getView().getProjection())) :
+          /** @type {ol.Coordinate} */ (transform([y, x], srs,
               this['map'].getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
