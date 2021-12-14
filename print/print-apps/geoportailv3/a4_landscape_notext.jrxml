@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="716" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="34" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
+	<parameter name="mapSubReport" class="java.lang.String"/>
+	<parameter name="scalebarSubReport" class="java.lang.String"/>
+	<parameter name="northArrowSubReport" class="java.lang.String"/>
+	<parameter name="disclaimer" class="java.lang.String"/>
+	<parameter name="dateText" class="java.lang.String"/>
+	<parameter name="scaleTitle" class="java.lang.String"/>
+	<parameter name="appTitle" class="java.lang.String"/>
+	<parameter name="name" class="java.lang.String"/>
+	<parameter name="scale" class="java.lang.String">
+		<defaultValueExpression><![CDATA[5000]]></defaultValueExpression>
+	</parameter>
+	<parameter name="url" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://g-o.lu/start"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="qrimage" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://dev.geoportail.lu/shorten/qr?url=http%3A%2F%2Fdevv3.geoportail.lu%2Fmain"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dataOwner" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<field name="table" class="net.sf.jasperreports.engine.data.JRMapCollectionDataSource"/>
+	<field name="displayName" class="java.lang.String"/>
+	<field name="reportTemplate" class="java.lang.String"/>
+	<title>
+		<band height="505" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="mm"/>
+			<property name="com.jaspersoft.studio.unit.height" value="mm"/>
+			<subreport>
+				<reportElement x="0" y="0" width="715" height="505" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<subreportExpression><![CDATA[$P{mapSubReport}]]></subreportExpression>
+			</subreport>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="-10" y="250" width="10" height="200" uuid="8fc2886b-89fa-42b6-a724-e737557966bc">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Serif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>
