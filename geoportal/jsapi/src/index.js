@@ -647,23 +647,25 @@ lux.generatePagRepport = function(ids, mail, eula) {
  */
 lux.isSelfIntersecting = function(geometry) {
   var coordinates;
+  var segments = [];
+  var intersect = false;
+
   if (geometry.getType() === 'LineString') {
     coordinates = geometry.getCoordinates();
   }
   if (geometry.getType() === 'Polygon') {
     coordinates = geometry.getCoordinates()[0];
-    coordinates.pop();
   }
-  var segments = [];
-  var intersect = false;
   for (var iSegement=0; iSegement < coordinates.length-1; iSegement++) {
     segments.push(new ol.geom.LineString([coordinates[iSegement], coordinates[iSegement + 1]]));
   }
   for (var i=0; i < segments.length-1; i++) {
     for(var j = i + 2; j < segments.length; j++) {
-      if (lux.segmentsIntersect_(segments[i], segments[j])) {
-        intersect = true;
-        break;
+      if (!(geometry.getType() === 'Polygon' && i == 0 && j == segments.length - 1)) {
+        if (lux.segmentsIntersect_(segments[i], segments[j])) {
+          intersect = true;
+          break;
+        }
       }
     }
   }
