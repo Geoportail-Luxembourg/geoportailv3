@@ -313,7 +313,7 @@ const exports = function(
     var x = parseInt(appStateManager.getInitialValue('X'), 0);
     var y = parseInt(appStateManager.getInitialValue('Y'), 0);
     var srs = appStateManager.getInitialValue('SRS');
-    if (srs !== undefined) {
+    if (srs === undefined) {
       if (version === 3) {
         srs = 'EPSG:3857';
       } else {
