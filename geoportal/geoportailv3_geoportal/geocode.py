@@ -32,6 +32,7 @@ class Address(Base):
     code_postal = Column(Unicode)
     id_caclr_rue = Column(Unicode)
     id_caclr_bat = Column(Unicode)
+    id_caclr_loca = Column(Unicode)
     cle_parcelle = Column(Unicode)
     geom = Column(Geometry(srid=2169))
 
