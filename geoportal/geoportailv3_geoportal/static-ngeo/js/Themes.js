@@ -42,19 +42,23 @@ function replaceWithMVTLayer(bgLayers, target, styleConfigs) {
 
     bgLayers.forEach((l, i) => {
       if (l.get('label') === label) {
-        const options = Object.assign({
-          container: target,
-        }, styleConfig)
-        const mvtLayer = new MapBoxLayer(options);
-        mvtLayer.set('metadata', l.get('metadata'));
-        if ('attribution' in l.get('metadata')) {
-          const source = new olSourceVector({
-              attributions: l.get('metadata')['attribution']
-          });
-          mvtLayer.setSource(source);
+        try {
+          const options = Object.assign({
+            container: target,
+          }, styleConfig)
+          const mvtLayer = new MapBoxLayer(options);
+          mvtLayer.set('metadata', l.get('metadata'));
+          if ('attribution' in l.get('metadata')) {
+            const source = new olSourceVector({
+                attributions: l.get('metadata')['attribution']
+            });
+            mvtLayer.setSource(source);
+          }
+          mvtLayer.set('role', 'mapboxBackground');
+          bgLayers[i] = mvtLayer;
+        } catch(e) {
+          console.log(e);
         }
-        mvtLayer.set('role', 'mapboxBackground');
-        bgLayers[i] = mvtLayer;
       }
     });
   });
