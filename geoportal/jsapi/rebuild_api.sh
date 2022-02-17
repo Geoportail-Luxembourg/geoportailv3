@@ -35,7 +35,7 @@ cat /etc/static-ngeo/build/vendor.js \
 /etc/static-ngeo/build/apiv3.js > /etc/static-ngeo/build/apiv3-full.js
 cat /etc/static-ngeo/build/apiv3-full.js > /etc/static-ngeo/build/apiv3-full-async.js
 echo "lux.setBaseUrl('https://apiv3.geoportail.lu/', 'https');" >> /etc/static-ngeo/build/apiv3-full-async.js
-echo "lux.setI18nUrl('https://apiv3.geoportail.lu/static-ngeo/ee65595014a441ba8b1bceb971cc7d4b/build/fr.json');" >> /etc/static-ngeo/build/apiv3-full.js >> /etc/static-ngeo/build/apiv3-full-async.js
+echo "lux.setI18nUrl('https://apiv3.geoportail.lu/static-ngeo/build/fr.json');" >> /etc/static-ngeo/build/apiv3-full.js >> /etc/static-ngeo/build/apiv3-full-async.js
 
 
 # FIXME restore doc generation
