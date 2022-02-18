@@ -158,7 +158,7 @@ const exports = class extends ngeoPrintService {
     const styleName = baseURL.substr(baseURL.lastIndexOf('/styles/') + '/styles/'.length);
     if (styleName === 'topomap' || styleName === 'roadmap' || styleName === 'topomap_gray') {
       const object = {
-        'baseURL': 'https://wms.geoportail.lu/opendata/service',
+        'baseURL': 'https://wms.geoportail.lu/vectortiles_wms_4_print/service',
         'imageFormat': 'image/' + imageExtension,
         'layers': [styleName],
         'customParams': {
