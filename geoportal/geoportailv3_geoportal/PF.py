@@ -174,4 +174,11 @@ class PF():
                        str(town_info.get('town_code'))).count() > 0):
             return True
 
+        if (DBSession.query(LuxMeasurementLoginCommune).
+                filter(func.lower(LuxMeasurementLoginCommune.login) ==
+                       func.lower(user.username)).
+                filter(LuxMeasurementLoginCommune.num_commune ==
+                       str(town_info.get('town_code'))).count() > 0):
+            return True
+
         return False
