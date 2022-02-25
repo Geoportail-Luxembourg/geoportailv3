@@ -187,10 +187,16 @@ class LuxPrintProxy(PrintProxy):
             print_url = self.config["print_url"]
         resp = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
         content = resp.content
-        resp["content-disposition"] = "filename=%s.png" % (str(layer_id))
+
+        headers = resp.headers
+        headers.update({
+            "content-disposition": "attachment; filename=%s.png" % (str(layer_id))
+        })
+
+        response = Response(content, status=resp.status_code, headers=headers)
 
         return self._build_response(
-            resp, content, NO_CACHE, "print"
+            response, content, NO_CACHE, "print"
         )
 
     @view_config(route_name="lux_printproxy_report_create")
