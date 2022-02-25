@@ -1436,6 +1436,7 @@ class Getfeatureinfo(object):
                                         attributes_to_remove,
                                         columns_order, 'geom', alias)
                     features.append(f)
+                i = i + 1
         return features
 
     def _get_url_with_token(self, url):
