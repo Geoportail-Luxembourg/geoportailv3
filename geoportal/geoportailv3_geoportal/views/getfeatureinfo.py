@@ -698,6 +698,7 @@ class Getfeatureinfo(object):
         return {'type': 'Feature',
                 'geometry': geometry,
                 'fid': layer_fid,
+                'id': fid,
                 'attributes': attributes,
                 'alias': alias}
 
