@@ -1381,6 +1381,21 @@ exports.prototype.showGeom = function(geom, color, width) {
   }
 };
 
+/**
+ * Open the legend panel.
+ * @export
+ */
+exports.prototype.openLegendPanel = function() {
+  this['legendsOpen'] = true;
+};
+
+/**
+ * Close the legend panel.
+ * @export
+ */
+exports.prototype.closeLegendPanel = function() {
+  this['legendsOpen'] = false;
+};
 
 appModule.controller('AppQueryController',
                       exports);
