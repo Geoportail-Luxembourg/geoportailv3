@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{layers.layerLabel | translate}}</h1>
+    <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, 'f_')">
+      <h4>{{feature.attributes['Nom de l\'action']}}</h4>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_OBJECTID</label> 
+          </div>
+          <div class="col-xs-8">
+            <span>{{feature.attributes['OBJECTID']}}</span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Nom de l'action</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-bind-html="ctrl.trustAsHtml(feature.attributes['Nom de l\'action'])"></span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Date début action</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-if="feature.attributes['Date début action'] == null">-</span>
+            <span ng-if="feature.attributes['Date début action'] != null">{{feature.attributes['Date début action']}}</span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Date fin action</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-if="feature.attributes['Date fin action'] == null">-</span>
+            <span ng-if="feature.attributes['Date fin action'] != null">{{feature.attributes['Date fin action']}}</span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Détail Action</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-bind-html="ctrl.trustAsHtml(feature.attributes['Détail Action'])"></span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Détail Coordinateur</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-bind-html="ctrl.trustAsHtml(feature.attributes['Détail Coordinateur'])"></span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>f_Description de la zone</label> 
+          </div>
+          <div class="col-xs-8">
+            <span ng-bind-html="ctrl.trustAsHtml(feature.attributes['Description de la zone'])"></span>
+          </div>
+        </span>
+      </div>
+      <div class="row">
+        <span>
+          <div class="col-xs-4">
+             <label translate>Plus d'info</label> 
+          </div>
+          <div class="col-xs-8">
+            <a href="https://www.naturemwelt.lu/sauvons-les-crapauds/" target="_blank">https://www.naturemwelt.lu/sauvons-les-crapauds/</a>
+          </div>
+        </span>
+      </div>
+        <button ng-click="ctrl.openLegendPanel()" target="_blank" translate>Montrer la légende</button>
+        <div class="no-print" ng-if="ctrl.hasValidFID(feature)">
+          <span><a class="fid-link" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
