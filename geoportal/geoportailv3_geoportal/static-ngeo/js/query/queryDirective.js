@@ -20,7 +20,8 @@ const exports = function(appQueryTemplateUrl) {
       'routingOpen': '=appQueryRoutingOpen',
       'feedbackAnfOpen': '=appQueryFeedbackAnfOpen',
       'language': '=appQueryLanguage',
-      'hiddenContent': '=appQueryHiddenInfo'
+      'hiddenContent': '=appQueryHiddenInfo',
+      'legendsOpen': '=appQueryLegendsOpen'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
