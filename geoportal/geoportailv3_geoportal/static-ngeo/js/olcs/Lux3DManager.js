@@ -144,7 +144,7 @@ const exports = class extends ngeoOlcsManager {
     const domain = (isIpv6) ? 'app.geoportail.lu' : 'geoportail.lu';
 
     const url = terrainToDisplay === 'own' ?
-      'https://3dtiles.' + domain + '/tiles' :
+      'https://acts3.' + domain + '/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles' :
       'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
