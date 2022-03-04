@@ -1034,6 +1034,24 @@ class Getfeatureinfo(object):
 
         return features
 
+    def chargy_attributes(self, features):
+        modified_features = []
+        for feature in features:
+            if 'attributes' in feature and \
+               'chargingdevice' in feature['attributes']:
+                chargingdevice = json.loads(feature['attributes']['chargingdevice'].replace("&quot;", "\""))
+                for connector in chargingdevice['connectors']:
+                    feature['attributes']['connector_name'] = connector['name']
+                    feature['attributes']['connector_maxchspeed'] = connector['maxchspeed']
+                    feature['attributes']['connector_description'] = connector['description']
+            del feature['attributes']['chargingdevice']
+            modified_features.append(feature)
+
+        return modified_features    
+
+
+        return features
+
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3_geoportal.PF
