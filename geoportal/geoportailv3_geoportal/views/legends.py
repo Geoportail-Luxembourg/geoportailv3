@@ -63,6 +63,8 @@ class Legends(object):
         name = self.request.params.get("name")
         id = self.request.params.get("id", "")
         legend_title = self.request.params.get("legend_title")
+        if len(id) == 0 and (name is None or len(name) == 0):
+            return Response('')
         if lang == 'lb':
             lang = 'lu'
         try: 
