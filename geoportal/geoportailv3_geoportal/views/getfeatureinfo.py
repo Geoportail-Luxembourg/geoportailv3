@@ -10,6 +10,7 @@ import os
 import json
 import pytz
 import dateutil
+import copy
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -1040,12 +1041,14 @@ class Getfeatureinfo(object):
             if 'attributes' in feature and \
                'chargingdevice' in feature['attributes']:
                 chargingdevice = json.loads(feature['attributes']['chargingdevice'].replace("&quot;", "\""))
+                del feature['attributes']['chargingdevice']
                 for connector in chargingdevice['connectors']:
                     feature['attributes']['connector_name'] = connector['name']
                     feature['attributes']['connector_maxchspeed'] = connector['maxchspeed']
                     feature['attributes']['connector_description'] = connector['description']
-            del feature['attributes']['chargingdevice']
-            modified_features.append(feature)
+                    modified_features.append(copy.deepcopy(feature))
+
+            
 
         return modified_features    
 
