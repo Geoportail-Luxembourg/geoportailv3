@@ -1093,6 +1093,9 @@ exports.prototype.highlightFeatures_ = function(features, fit) {
         extent = extentExtend(extent,
             jsonFeatures[i].getGeometry().getExtent());
         var curFeature = jsonFeatures[i];
+        if (curFeature.getId() == null) {
+          curFeature.setId(undefined);
+        }
         if (curFeature.getGeometry().getType() ==
             olGeomGeometryType.GEOMETRY_COLLECTION) {
           var geomCollection = /** @type {ol.geom.GeometryCollection} */
