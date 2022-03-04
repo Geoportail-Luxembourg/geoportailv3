@@ -10,6 +10,7 @@ import os
 import json
 import pytz
 import dateutil
+import copy
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -1035,7 +1036,6 @@ class Getfeatureinfo(object):
         return features
 
     def chargy_attributes(self, features):
-        import copy
         modified_features = []
         for feature in features:
             if 'attributes' in feature and \
