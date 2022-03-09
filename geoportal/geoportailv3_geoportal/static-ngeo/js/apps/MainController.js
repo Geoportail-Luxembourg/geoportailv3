@@ -1321,9 +1321,10 @@ MainController.prototype.enable3dCallback_ = function(active) {
   this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setDocumentTitle', 'enable3d']);
-  piwik.push(['trackPageView']);
-
+  if (piwik != undefined ) {
+    piwik.push(['setDocumentTitle', 'enable3d']);
+    piwik.push(['trackPageView']);
+  }
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
@@ -1508,10 +1509,12 @@ MainController.prototype.manageSelectedLayers_ =
           for (var i = 0; i < nbLayersAdded; i++) {
             var layer = this['selectedLayers'][i];
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            piwik.push(['setDocumentTitle',
-              'LayersAdded/' + layer.get('label')
-            ]);
-            piwik.push(['trackPageView']);
+            if (piwik != undefined ) {
+              piwik.push(['setDocumentTitle',
+                'LayersAdded/' + layer.get('label')
+              ]);
+              piwik.push(['trackPageView']);
+            }
           }
         }
       }.bind(this));
@@ -1647,9 +1650,11 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this['lang'] = lang;
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
-  if (track) {
-    piwik.push(['trackPageView']);
+  if (piwik != undefined ) {
+    piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
+    if (track) {
+      piwik.push(['trackPageView']);
+    }
   }
 };
 
