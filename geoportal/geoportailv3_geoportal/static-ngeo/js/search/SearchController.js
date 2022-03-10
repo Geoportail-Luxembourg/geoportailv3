@@ -829,18 +829,23 @@ exports.prototype.setBackgroundLayer_ = function(input) {
 
 
 /**
- * @param {(Object|string)} input The input.
+ * @param {(Object|string|number)} input The input.
+ * @param {string | undefined} key The key.
  * @private
  */
-exports.prototype.addLayerToMap_ = function(input) {
-  var layer = {};
-  if (typeof input === 'string') {
+exports.prototype.addLayerToMap_ = function(input, key) {
+  var layer = undefined;
+  if (typeof input === 'string' || typeof input === 'number') {
     var node = this.layers_.find(function(element) {
-      if ('name' in /** @type {Object} */ (element)) {
-        for (var key in /** @type {Object} */ (element)) {
-          if (/** @type {Object} */ (element)[key] == input) {
+      if (key == undefined) {
+         for (var k in /** @type {Object} */ (element)) {
+          if (/** @type {Object} */ (element)[k] == input) {
             return true;
           }
+        }
+      } else if (key in /** @type {Object} */ (element)) {
+        if (/** @type {Object} */ (element)[key] == input) {
+          return true
         }
       }
       return false;
@@ -851,25 +856,27 @@ exports.prototype.addLayerToMap_ = function(input) {
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
-  var map = this['map'];
-  if (map.getLayers().getArray().indexOf(layer) <= 0) {
-    map.addLayer(layer);
-  }
-  var layerMetadata = layer.get('metadata');
-  if (layerMetadata.hasOwnProperty('linked_layers')) {
-    var layers = layerMetadata['linked_layers'];
-    layers.forEach(function(layerId) {
-      this.appThemes_.getFlatCatalog().then(
-        function(flatCatalog) {
-          var node2 = flatCatalog.find(function(catItem) {
-            return catItem.id === Number(layerId);
-          });
-          if (node2 !== undefined) {
-            var linked_layer = this.getLayerFunc_(node2);
-            map.addLayer(linked_layer);
-          }
-        }.bind(this));
-    }, this);
+  if (layer !== undefined) {
+    var map = this['map'];
+    if (map.getLayers().getArray().indexOf(layer) <= 0) {
+      map.addLayer(layer);
+    }
+    var layerMetadata = layer.get('metadata');
+    if (layerMetadata.hasOwnProperty('linked_layers')) {
+      var layers = layerMetadata['linked_layers'];
+      layers.forEach(function(layerId) {
+        this.appThemes_.getFlatCatalog().then(
+          function(flatCatalog) {
+            var node2 = flatCatalog.find(function(catItem) {
+              return catItem.id === Number(layerId);
+            });
+            if (node2 !== undefined) {
+              var linked_layer = this.getLayerFunc_(node2);
+              map.addLayer(linked_layer);
+            }
+          }.bind(this));
+      }, this);
+    }
   }
 };
 
@@ -938,7 +945,11 @@ exports.selected_ =
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
       } else if (dataset === 'layers') { //Layer
-        this.addLayerToMap_(/** @type {string} */ (suggestion.name));
+        if (suggestion.layer_id !== undefined) {
+          this.addLayerToMap_(/** @type {number} */ (suggestion.layer_id), 'id');
+        } else {
+          this.addLayerToMap_(/** @type {string} */ (suggestion.name), 'name');
+        }
       } else if (dataset === 'backgroundLayers') { //BackgroundLayer
         this.setBackgroundLayer_(
         /** @type {app.search.BackgroundLayerSuggestion} */ (suggestion));
