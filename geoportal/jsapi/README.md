@@ -6,7 +6,7 @@ the JS API.
 ## Build JS API
 
 ```sh
-make -f configfile.mk build-js-api
+make rebuild-js-api
 ```
 
 ## Development
@@ -14,10 +14,20 @@ make -f configfile.mk build-js-api
 The JS API comes with examples along with a handy server to make it easier for
 the JS API developers.
 
-Launch the following command:
+Launch the following commands:
 
+Start the local composition:
 ```
-make -f configfile.mk serve-js-api
+make run
 ```
 
-The JS API source code should follow the OL3 development guidelines.
+In another console, start the dev server:
+```
+cd geoportal/jsapi/
+npm i
+npm run start
+```
+And open http://localhost:8000/examples/index.html
+Other examples are available, see full list in the `examples` directory.
+
+The JS API source code should follow the OpenLayers development guidelines.

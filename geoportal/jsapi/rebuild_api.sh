@@ -13,8 +13,6 @@ mkdir -p /etc/static-ngeo/build/
 
 npm run build-js
 cp dist/apiv4.js /etc/static-ngeo/build/
-echo "lux.setBaseUrl('https://apiv3.geoportail.lu/', 'https');" >> /etc/static-ngeo/build/apiv4.js
-echo "lux.setI18nUrl('https://apiv3.geoportail.lu/static-ngeo/build/fr.json');" >> /etc/static-ngeo/build/apiv4.js
 
 npm run build-css
 cp dist/apiv4.css /etc/static-ngeo/build/
