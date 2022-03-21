@@ -265,7 +265,7 @@ function findLayerByName_(name, layers) {
  * @export
  * @api
  */
-export default class Map extends OpenLayersMap {
+class Map extends OpenLayersMap {
 
   /**
    * @param {MapOptions} options Map options.
@@ -2770,3 +2770,4 @@ export default class Map extends OpenLayersMap {
     }
   }
 }
+export default Map;
