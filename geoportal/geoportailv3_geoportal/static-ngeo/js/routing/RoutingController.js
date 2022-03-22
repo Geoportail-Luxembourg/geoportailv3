@@ -974,7 +974,7 @@ function secondsToHHmmss($filter) {
   return function(seconds) {
     var hours   = Math.floor(seconds / 3600);
     var minutes = Math.floor((seconds - (hours * 3600)) / 60);
-    var sec = seconds - (hours * 3600) - (minutes * 60);
+    var sec = Math.floor(seconds - (hours * 3600) - (minutes * 60));
 
     if (hours   < 10) {
       hours   = '0' + hours;
