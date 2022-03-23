@@ -1105,7 +1105,20 @@ class Getfeatureinfo(object):
             if cur_id not in ids:
                 ids.append(cur_id)
                 geometry = geojson_loads(row['st_asgeojson'])
-                if geometry['type'] == "LineString" or\
+                only_points = False
+                if geometry['type'] == "Point":
+                    session = self._get_session("mymaps")
+                    query = "select count(*) as cnt\
+                            , sum(ST_Length(geometry)) as length FROM\
+                             public.feature_with_map_with_colors where\
+                             category_id = %(category_id)d and map_id = '%(map_id)s'\
+                             and ST_GeometryType(geometry) != 'ST_Point'"\
+                            % {'category_id': category_id, 'map_id': map_id}
+                    res = session.execute(query).first()
+                    only_points = (res['cnt'] == 0)
+
+                if not only_points or\
+                   geometry['type'] == "LineString" or\
                    geometry['type'] == "MultiLineString":
                     session = self._get_session("mymaps")
                     query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
@@ -1128,6 +1141,9 @@ class Getfeatureinfo(object):
                                             attributes, ""))
                 else:
                     attributes = dict(row)
+                    if geometry['type'] == "Point":
+                        if 'feature_name' in attributes:
+                            attributes['name'] = attributes['feature_name']
                     self.remove_attributes(attributes,
                                            attributes_to_remove,
                                            "geometry")
