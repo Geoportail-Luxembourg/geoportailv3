@@ -6,6 +6,7 @@ import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
+// import appThemes from '../Themes.js';
 
 
 const exports = class extends ngeoOlcsManager {
@@ -22,7 +23,7 @@ const exports = class extends ngeoOlcsManager {
    *     manager.
    */
   constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
-    tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr) {
+              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr, appThemes) {
     super(cesiumUrl, $rootScope, {
       map,
       cameraExtentInRadians
@@ -87,6 +88,9 @@ const exports = class extends ngeoOlcsManager {
      * @type {Array<Cesium.Cesium3DTileset>}
      */
     this.tilesets3d = [];
+
+    this.tree3d = {};
+    this.appThemes_ = appThemes;
 
     /**
      * @private
@@ -154,6 +158,12 @@ const exports = class extends ngeoOlcsManager {
     return ol3d;
   }
 
+  setTree(tree) {
+    this.tree3d = tree;
+    let allCh = this.appThemes_.getAllChildren_(tree.children, tree.name, []);
+    allCh.forEach(el => this.addAvailableLayers(el));
+  }
+
   addAvailableLayers(layer) {
     if (this.availableTiles3dLayers_.map(x => x.id).indexOf(layer.id) < 0) {
       this.availableTiles3dLayers_.push(layer);
@@ -164,7 +174,7 @@ const exports = class extends ngeoOlcsManager {
     const layers_3d = this.ngeoLocation_.getParam('3d_layers');
     if (layers_3d) {
       const layers = layers_3d.split(',');
-      this.availableTiles3dLayers_.filter(e => (layers.indexOf(e.layer) >= 0)).map(e => e.layer).forEach(this.add3dTile.bind(this));
+      this.availableTiles3dLayers_.filter(e => (layers.indexOf(e.layer) >= 0)).forEach(this.add3dTile.bind(this));
       if (layers.indexOf('wintermesh') >= 0) {
         this.setMode('MESH');
       } else {
@@ -186,10 +196,21 @@ const exports = class extends ngeoOlcsManager {
    */
   init3dTiles(visible) {
     if (this.mode_ === 'MESH') {
-      this.availableTiles3dLayers_.filter(e => e.layer === 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
+      this.availableTiles3dLayers_.filter(e => this.isDefaultMeshLayer(e)).forEach(this.add3dTile.bind(this));
     } else {
-      this.availableTiles3dLayers_.filter(e => e.layer !== 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
+      this.availableTiles3dLayers_.filter(e => !this.isMeshLayer(e)).forEach(this.add3dTile.bind(this));
     }
+  }
+
+  isMeshLayer(layer) {
+    if (layer.layer === 'wintermesh') return true;
+    if (layer.layer === 'mesh3D_2020') return true;
+    return false;
+  }
+
+  isDefaultMeshLayer(layer) {
+    if (layer.layer === 'wintermesh') return true;
+    return false;
   }
 
   /**
@@ -205,12 +226,14 @@ const exports = class extends ngeoOlcsManager {
     tileset.show = visible;
   }
 
-  add3dTile(layerName) {
+  add3dTile(layer) {
+    let layerName = layer.layer
     if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
       return;
     }
     this.activeTiles3dLayers_.push(layerName);
-    const url = this.tiles3dUrl_ + layerName + '/tileset.json';
+    let base_url = layer.url;
+    const url = base_url + '/' + layerName + '/tileset.json';
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const tileset = new Cesium.Cesium3DTileset({
       url: url,
@@ -252,12 +275,14 @@ const exports = class extends ngeoOlcsManager {
   }
 
   remove3dLayer(layerName) {
-    const layer = this.tilesets3d.find(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
-    if (layer !== undefined) {
-      const idx = this.tilesets3d.findIndex(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
-      this.tilesets3d.splice(idx, 1);
+    const idx = this.activeTiles3dLayers_.indexOf(layerName);
+    // const layer = this.tilesets3d.find(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
+    // if (layer !== undefined) {
+    if (idx >= 0) {
+      // const idx = this.tilesets3d.findIndex(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
+      let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
-      this.ol3d.getCesiumScene().primitives.remove(layer);
+      this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
     }
   }
 
@@ -346,7 +371,7 @@ const exports = class extends ngeoOlcsManager {
     }.bind(this));
   }
 
-  is3DEnabled() {
+  is3dTerrainEnabled() {
     if (this.getMode() === '3D') {
       return this.is3dEnabled();
     }
