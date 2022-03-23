@@ -1075,12 +1075,18 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DLayers().then(
-      layers3D => {
-      layers3D.forEach(catItem => {
-        this.ol3dm_.addAvailableLayers(catItem);
-      });
-    });
+    // this.appThemes_.get3DLayers().then(
+    //   layers3D => {
+    //   layers3D.forEach(catItem => {
+    //     this.ol3dm_.addAvailableLayers(catItem);
+    //   });
+    // });
+    this.appThemes_.get3DTree().then(
+      tree3D => {
+        this.ol3dm_.setTree(tree3D);
+      }
+    );
+    // this.ol3dm_.tree3d = this.appThemes_.tree3D;
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1438,7 +1444,8 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
   console.assert(this.map_ !== null && this.map_ !== undefined);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
   return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
+                                 $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
+                                 this.backgroundLayerMgr_, this.appThemes_);
 };
 
 

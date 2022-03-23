@@ -49,9 +49,9 @@ class Controller {
     }
   }
 
-  is3dEnabled() {
+  is3dTerrainEnabled() {
     if (this.manager) {
-      return this.manager.is3DEnabled();
+      return this.manager.is3dTerrainEnabled();
     }
     return false;
   }
