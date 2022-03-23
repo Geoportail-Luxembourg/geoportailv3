@@ -122,6 +122,9 @@ class Themes extends olEventsEventTarget {
 
     this.flatCatalog = null;
     this.layers3D = [];
+    // this.data3D = [];
+    // this.mesh3D = [];
+    this.tree3D = {};
 
     /**
      * @type {app.Mvtstyling}
@@ -226,8 +229,16 @@ class Themes extends olEventsEventTarget {
       const flatCatalogue = [];
       for (var i = 0; i < themes.length; i++) {
         const theme = themes[i];
-        const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
-        arrayExtend(flatCatalogue, children);
+        if (theme.name == '3d Layers') {
+          arrayExtend(this.layers3D, this.getAllChildren_(theme.children, theme.name, root.ogcServers));
+          this.tree3D = theme;
+          // arrayExtend(this.data3D, this.getAllChildren_(theme.children, theme.name, root.ogcServers));
+        } else if (theme.name == '3d Meshes') {
+          // arrayExtend(this.layers3D, this.getAllChildren_(theme.children, theme.name, root.ogcServers));
+        } else {
+          const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
+          arrayExtend(flatCatalogue, children);
+        }
       }
 
       this.flatCatalog = flatCatalogue;
@@ -269,8 +280,8 @@ class Themes extends olEventsEventTarget {
           arrayExtend(array, this.getAllChildren_(
               element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
         } else {
-          arrayExtend(this.layers3D, this.getAllChildren_(
-              element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
+          /* arrayExtend(this.layers3D, this.getAllChildren_(
+              element.children, theme, ogcServers, element.ogcServer || lastOgcServer)); */
         }
       } else {
         // Rewrite url to match the behaviour of c2cgeoportal 1.6
@@ -305,6 +316,9 @@ class Themes extends olEventsEventTarget {
    */
   get3DLayers() {
     return this.promise_.then(() => this.layers3D);
+  };
+  get3DTree() {
+    return this.promise_.then(() => this.tree3D);
   };
 
 }

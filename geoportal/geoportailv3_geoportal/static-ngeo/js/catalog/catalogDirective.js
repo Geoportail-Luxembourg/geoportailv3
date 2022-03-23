@@ -31,10 +31,16 @@ const exports = function() {
     controller: 'AppCatalogController',
     controllerAs: 'catalogCtrl',
     bindToController: true,
-    template: '<div ngeo-layertree="catalogCtrl.tree" ' +
-        'ngeo-layertree-map="catalogCtrl.map" ' +
-        'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
-        'class="themes-switcher collapse in"></div>'
+    template: '<div ngeo-layertree="catalogCtrl.lux3dTree" ' +
+      'ng-if="catalogCtrl.is3dTerrainEnabled() || catalogCtrl.is3dMeshEnabled()" ' +
+      'ngeo-layertree-map="catalogCtrl.map" ' +
+      'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
+      'class="layer-trees themes-switcher collapse in"></div>' +
+      '<div ngeo-layertree="catalogCtrl.tree" ' +
+      'ng-if="!catalogCtrl.is3dMeshEnabledd()" ' +
+      'ngeo-layertree-map="catalogCtrl.map" ' +
+      'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
+      'class="layer-trees themes-switcher collapse in"></div>'
   };
 };
 
