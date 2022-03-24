@@ -12,6 +12,7 @@
 
   document.write('<link rel="stylesheet" type="text/css" href="'
           + "${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv4.css')}" + '" />');
+  writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/auto-complete.min.js')}");
   writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv4.js')}");
 
   document.write('<script type="text/javascript">'
