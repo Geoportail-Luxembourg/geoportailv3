@@ -203,10 +203,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   isMeshLayer(layer) {
-    // TODO the config is not yet read, but the layer contains its type in metadata
-    if (layer.layer === 'wintermesh') return true;
-    if (layer.layer === 'mesh3D_2020') return true;
-    return false;
+    return layer.metadata.ol3d_type == 'mesh';
   }
   getActiveMeshLayers() {
     return this.activeTiles3dLayers_.map(
@@ -218,16 +215,14 @@ const exports = class extends ngeoOlcsManager {
   }
 
   isDefault3dDataLayer(layer) {
-    // TODO the config is not yet read, but the layer contains its type in metadata
-    if (layer.layer === 'wintermesh') return false;
-    if (layer.layer === 'mesh3D_2020') return false;
-    return true;
+    const isData = layer.metadata.ol3d_type == 'data';
+    const isDefault = layer.metadata.ol3d_defaultlayer == true;
+    const isDefaultData = (layer.metadata.ol3d_type == 'data') && (layer.metadata.ol3d_defaultlayer == true);
+    return layer.metadata.ol3d_type == 'data' && layer.metadata.ol3d_defaultlayer == true;
   }
 
   isDefaultMeshLayer(layer) {
-    // TODO for the moment the default layer is hard-coded to wintermesh, but this shall be changed in config
-    if (layer.layer === 'wintermesh') return true;
-    return false;
+    return layer.metadata.ol3d_type == 'mesh' && layer.metadata.ol3d_defaultlayer == true;
   }
 
   /**
