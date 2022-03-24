@@ -81,13 +81,10 @@ class LuxThemes(Theme):
         else:
             return super()._fill_wms(layer_theme, layer, errors, mixed)
 
-
     @view_config(route_name="lux_themes", renderer="json")
-    def themes(self):
+    def lux_themes(self):
         return super().themes()
-
 
     @staticmethod
     def is_mixed(_):
         return True
-

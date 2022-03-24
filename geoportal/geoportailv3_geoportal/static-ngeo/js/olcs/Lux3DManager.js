@@ -6,7 +6,6 @@ import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
-// import appThemes from '../Themes.js';
 
 
 const exports = class extends ngeoOlcsManager {
@@ -89,7 +88,9 @@ const exports = class extends ngeoOlcsManager {
      */
     this.tilesets3d = [];
 
-    this.tree3d = {};
+    this.previous_2D_layers = [];
+
+    this.tree3D = {};
     this.appThemes_ = appThemes;
 
     /**
@@ -159,8 +160,8 @@ const exports = class extends ngeoOlcsManager {
   }
 
   setTree(tree) {
-    this.tree3d = tree;
-    let allCh = this.appThemes_.getAllChildren_(tree.children, tree.name, []);
+    this.tree3D = tree;
+    let allCh = this.appThemes_.getAllChildren_(tree.children, tree, []);
     allCh.forEach(el => this.addAvailableLayers(el));
   }
 
@@ -203,12 +204,14 @@ const exports = class extends ngeoOlcsManager {
   }
 
   isMeshLayer(layer) {
+    // TODO the config is not yet read, but the layer contains its type in metadata
     if (layer.layer === 'wintermesh') return true;
     if (layer.layer === 'mesh3D_2020') return true;
     return false;
   }
 
   isDefaultMeshLayer(layer) {
+    // TODO for the moment the default layer is hard-coded to wintermesh, but this shall be changed in config
     if (layer.layer === 'wintermesh') return true;
     return false;
   }
@@ -233,6 +236,7 @@ const exports = class extends ngeoOlcsManager {
     }
     this.activeTiles3dLayers_.push(layerName);
     let base_url = layer.url;
+    // TODO set ipv6 url for IOS
     const url = base_url + '/' + layerName + '/tileset.json';
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const tileset = new Cesium.Cesium3DTileset({
@@ -254,6 +258,7 @@ const exports = class extends ngeoOlcsManager {
       //scene.terrainProvider = this.noTerrainProvider;
       scene.terrainProvider = this.terrainProvider;
       tileset.readyPromise.then(function(tileset) {
+        // TODO: load tilset config from metadata
         //const heightOffset = -372;
         //const heightOffset = -47.8;
         const heightOffset = 0;
@@ -276,10 +281,7 @@ const exports = class extends ngeoOlcsManager {
 
   remove3dLayer(layerName) {
     const idx = this.activeTiles3dLayers_.indexOf(layerName);
-    // const layer = this.tilesets3d.find(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
-    // if (layer !== undefined) {
     if (idx >= 0) {
-      // const idx = this.tilesets3d.findIndex(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
       this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
@@ -344,22 +346,38 @@ const exports = class extends ngeoOlcsManager {
     }.bind(this));
   }
 
+  disable_2D_layers() {
+    // push all active 2D layers into this.previous_2D_layers and deactivate them
+    this.map.getLayers().getArray().forEach(l => this.previous_2D_layers.push(l));
+    this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
+  }
+
+  restore_2D_layers() {
+    this.previous_2D_layers.forEach(l => {if (l != this.backgroundLayerMgr_.get(this.map)) this.map.addLayer(l)});
+    this.previous_2D_layers = [];
+  }
+
   onToggle() {
     if (this.is3dEnabled()) {
       if (this.mode_ === 'MESH') {
         this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+        this.disable_2D_layers();
         this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
       } else {
         if (this.currentBgLayer !== undefined) {
           this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+          this.currentBgLayer = undefined;
         }
+        this.restore_2D_layers();
       }
       this.init3dTiles();
     } else {
       if (this.currentBgLayer !== undefined) {
         this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+        this.currentBgLayer = undefined;
       }
       this.remove3DLayers();
+      this.restore_2D_layers();
       this.ngeoLocation_.deleteParam('3d_layers');
     }
   }

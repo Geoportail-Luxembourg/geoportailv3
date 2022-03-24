@@ -1075,18 +1075,11 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    // this.appThemes_.get3DLayers().then(
-    //   layers3D => {
-    //   layers3D.forEach(catItem => {
-    //     this.ol3dm_.addAvailableLayers(catItem);
-    //   });
-    // });
     this.appThemes_.get3DTree().then(
       tree3D => {
         this.ol3dm_.setTree(tree3D);
       }
     );
-    // this.ol3dm_.tree3d = this.appThemes_.tree3D;
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
