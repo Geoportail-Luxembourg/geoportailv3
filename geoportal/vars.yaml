@@ -283,7 +283,7 @@ vars:
     - {name: ogc_info_format}
     - {name: ogc_info_srs}
     - {name: ogc_query_layers, type: list}
-    - {name: ol3d_type, type: regex, regex: 'data|terrain|mesh', error_message: 'ol3d_type must be data, terrain or mesh'}
+    - {name: ol3d_type, type: string, comment: 'type: regex does not work correctly with get_typed in c2cgeoportal, so a non validated string is used :-(', regex: 'data|terrain|mesh', error_message: 'ol3d_type must be data, terrain or mesh'}
     - {name: page_title}
     - {name: print_img}
     - {name: print_long_txt_de}

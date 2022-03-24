@@ -111,50 +111,6 @@ const exports = function($scope, appThemes, appTheme,
       this.setTree_();
     }
   }.bind(this));
-
-  // $scope.$watch(
-  //   () => {
-  //     if (!this.map.get('ol3dm')) return;
-  //     return this.map.get('ol3dm').is3dEnabled();
-  //   },
-  //   enabled => {
-  //     if (enabled === undefined) return;
-  //     if (enabled) {
-  //       this.lux3dTree.children = [{
-  //         id: -1,
-  //         name: "3d Layer Tree",
-  //         metadata: {},
-  //         children: this.map.get('ol3dm').getAvailableLayers().map(
-  //           (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
-  //         ),
-  //         type: "Cesium",
-  //         ogcServer: "None",
-  //         mixed: true,
-  //         theme: this.appTheme_.getCurrentTheme()
-  //       }];
-  //       this.tree.children.unshift({
-  //         id: -1,
-  //         name: "3d Layers",
-  //         metadata: {},
-  //         children: this.map.get('ol3dm').getAvailableLayers().map(
-  //           (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
-  //         ),
-  //         type: "Cesium",
-  //         ogcServer: "None",
-  //         mixed: true,
-  //         theme: this.appTheme_.getCurrentTheme()
-  //       })
-  //     } else {
-  //       this.lux3dTree.splice(0, this.lux3dTree.length);
-  //       if (this.tree !== undefined && this.tree !== null) {
-  //         const idx = this.tree.children.findIndex((e) => e.id === -1);
-  //         if (idx > -1) {
-  //           this['tree'].children.splice(idx, 1);
-  //         }
-  //       }
-  //     }
-  //   }
-  // )
 };
 
 exports.prototype.is3dEnabled = function() {
@@ -200,19 +156,7 @@ exports.prototype.getActive = function(layertreeController) {
  */
 exports.prototype.set3dTree_ = function() {
   if (this.lux3dTree.children == undefined) {
-    this.lux3dTree = this.map.get('ol3dm').tree3d;
-    // this.lux3dTree.children = [{
-    //   id: -1,
-    //   name: "3d Layer Tree",
-    //   metadata: {},
-    //   children: this.map.get('ol3dm').getAvailableLayers().map(
-    //     (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
-    //   ),
-    //   type: "Cesium",
-    //   ogcServer: "None",
-    //   mixed: true,
-    //   theme: this.appTheme_.getCurrentTheme()
-    // }];
+    this.lux3dTree = this.map.get('ol3dm').tree3D;
   }
 };
 
