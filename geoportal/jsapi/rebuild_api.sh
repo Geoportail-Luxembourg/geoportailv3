@@ -11,6 +11,10 @@ cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geopor
 
 mkdir -p /etc/static-ngeo/build/
 
+cp vendor/ol/ol.* /etc/static-ngeo/build/
+cp node_modules/proj4/dist/proj4.js /etc/static-ngeo/build/
+cp node_modules/js-autocomplete/auto-complete.min.js /etc/static-ngeo/build/
+
 npm run build-js
 cp dist/apiv4.js /etc/static-ngeo/build/
 
