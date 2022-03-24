@@ -31,22 +31,10 @@ class Controller {
   }
 
   toggleMesh() {
-    if (this.manager.getMode() === '3D' && this.manager.is3dEnabled()) {
-      this.manager.setMode('MESH');
-      this.manager.remove3DLayers();
-      this.manager.onToggle();
-    } else {
-      this.manager.toggleMode('MESH');
-    }
+    this.manager.toggleMesh();
   }
   toggle3d() {
-    if (this.manager.getMode() === 'MESH' && this.manager.is3dEnabled()) {
-      this.manager.setMode('3D');
-      this.manager.remove3DLayers();
-      this.manager.onToggle();
-    } else {
-      this.manager.toggleMode('3D');
-    }
+    this.manager.toggle3dTerrain()
   }
 
   is3dTerrainEnabled() {

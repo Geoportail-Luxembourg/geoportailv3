@@ -195,12 +195,11 @@ const exports = class extends ngeoOlcsManager {
    * Initialize 3D tiles layers (buildings/vegetation)
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
-  init3dTiles(visible) {
-    if (this.mode_ === 'MESH') {
-      this.availableTiles3dLayers_.filter(e => this.isDefaultMeshLayer(e)).forEach(this.add3dTile.bind(this));
-    } else {
-      this.availableTiles3dLayers_.filter(e => !this.isMeshLayer(e)).forEach(this.add3dTile.bind(this));
-    }
+  init3dMeshes() {
+    this.availableTiles3dLayers_.filter(e => this.isDefaultMeshLayer(e)).forEach(this.add3dTile.bind(this));
+  }
+  init3dTiles() {
+    this.availableTiles3dLayers_.filter(e => this.isDefault3dDataLayer(e)).forEach(this.add3dTile.bind(this));
   }
 
   isMeshLayer(layer) {
@@ -208,6 +207,21 @@ const exports = class extends ngeoOlcsManager {
     if (layer.layer === 'wintermesh') return true;
     if (layer.layer === 'mesh3D_2020') return true;
     return false;
+  }
+  getActiveMeshLayers() {
+    return this.activeTiles3dLayers_.map(
+      lName => this.availableTiles3dLayers_.find(l => l.layer == lName)
+    ).filter(l => this.isMeshLayer(l));
+  }
+  removeMeshLayers() {
+    this.getActiveMeshLayers().forEach(l => this.remove3dLayer(l.layer));
+  }
+
+  isDefault3dDataLayer(layer) {
+    // TODO the config is not yet read, but the layer contains its type in metadata
+    if (layer.layer === 'wintermesh') return false;
+    if (layer.layer === 'mesh3D_2020') return false;
+    return true;
   }
 
   isDefaultMeshLayer(layer) {
@@ -277,6 +291,10 @@ const exports = class extends ngeoOlcsManager {
       scene.screenSpaceCameraController.minimumZoomDistance = 0;
     }
 
+    if (this.isMeshLayer(layer)) {
+      this.setMode('MESH');
+      this.onToggle(false);
+    }
   }
 
   remove3dLayer(layerName) {
@@ -357,20 +375,30 @@ const exports = class extends ngeoOlcsManager {
     this.previous_2D_layers = [];
   }
 
-  onToggle() {
+  onToggle(doInit) {
     if (this.is3dEnabled()) {
       if (this.mode_ === 'MESH') {
         this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
         this.disable_2D_layers();
         this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+        if (doInit) {
+          this.remove3DLayers();
+        }
+        if (this.getActiveMeshLayers().length == 0) {
+          this.init3dMeshes();
+        }
       } else {
         if (this.currentBgLayer !== undefined) {
           this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
           this.currentBgLayer = undefined;
         }
         this.restore_2D_layers();
+        this.removeMeshLayers();
+        if (doInit) {
+          this.remove3DLayers();
+          this.init3dTiles();
+        }
       }
-      this.init3dTiles();
     } else {
       if (this.currentBgLayer !== undefined) {
         this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
@@ -382,10 +410,26 @@ const exports = class extends ngeoOlcsManager {
     }
   }
 
+  toggleMesh() {
+    if (this.getMode() === '3D' && this.is3dEnabled()) {
+      this.setMode('MESH');
+      this.onToggle(false);
+    } else {
+      this.toggleMode('MESH');
+    }
+  }
+  toggle3dTerrain() {
+    if (this.getMode() === 'MESH' && this.is3dEnabled()) {
+      this.setMode('3D');
+      this.onToggle(false);
+    } else {
+      this.toggleMode('3D');
+    }
+  }
   toggleMode(mode) {
     this.setMode(mode);
     this.toggle3d().then(function() {
-      this.onToggle();
+      this.onToggle(true);
     }.bind(this));
   }
 
