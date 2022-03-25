@@ -181,10 +181,9 @@ class MvtStylingService {
         const serial = new URLSearchParams(window.location.search).get('serial');
         // check if simple/medium styling
         if (serial && !isValidSerial(serial)) {
-            const bgLayer = this.backgroundLayerMgr_.get(map);
-            const interval = setInterval(() => {
+            setTimeout(() => {
                 try {
-                    clearInterval(interval);
+                    const bgLayer = this.backgroundLayerMgr_.get(map);
                     let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
                     if (lsData !== null) {
                       this.publishStyle(bgLayer).then((result) => {

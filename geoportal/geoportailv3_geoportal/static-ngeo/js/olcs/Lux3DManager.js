@@ -286,7 +286,7 @@ const exports = class extends ngeoOlcsManager {
       scene.screenSpaceCameraController.minimumZoomDistance = 0;
     }
 
-    if (this.isMeshLayer(layer)) {
+    if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
       this.setMode('MESH');
       this.onToggle(false);
     }
@@ -361,7 +361,7 @@ const exports = class extends ngeoOlcsManager {
 
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
-    this.map.getLayers().getArray().forEach(l => this.previous_2D_layers.push(l));
+    this.map.getLayers().getArray().forEach(l => {if (l != this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
     this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
   }
 
