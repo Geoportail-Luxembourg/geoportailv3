@@ -31,3 +31,6 @@ And open http://localhost:8000/examples/index.html
 Other examples are available, see full list in the `examples` directory.
 
 The JS API source code should follow the OpenLayers development guidelines.
+
+Note: Some examples in `index.html` use a built version of OpenLayer 6.9.0 which can be found in `vendor/ol/`.
+The `ol3_api.js` example ilustrates using OL alongside the Luxembourg JS API using ES6 imports from the node_modules package.
