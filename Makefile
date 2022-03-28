@@ -68,18 +68,30 @@ I18N_SOURCE_FILES += \
 
 
 .PHONY: update-pots
-update-pots:
+update-pots: update-pots-client update-pots-server update-pots-legends update-pots-tooltips
 	echo "This target must be run inside Luxembourg internal network"
+
+.PHONY: update-pots-client
+update-pots-client:
 	# Handle client.pot
 	#docker cp ./config/print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/client.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+
+.PHONY: update-pots-server
+update-pots-server:
 	# Handle server.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/server.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
+
+.PHONY: update-pots-legends
+update-pots-legends:
 	# Handle legends.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-legends.cfg --output /tmp/legends.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/legends.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
+
+.PHONY: update-pots-tooltips
+update-pots-tooltips:
 	# Handle tooltips.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
