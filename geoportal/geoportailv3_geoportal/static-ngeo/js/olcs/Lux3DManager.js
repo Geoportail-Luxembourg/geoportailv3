@@ -2,11 +2,33 @@
  * @module app.olcs.Lux3DManager
  */
 import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
+import ngeoCustomEvent from 'ngeo/CustomEvent.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+
 
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
 
+
+class Wrap3dLayer {
+  // Wrapper class for 3D layers so that they behave partly like OL layers.
+  // This (limited) methods of this wrapper class (get, getOpacity) are used in the exclusion manager
+  constructor(layer) {
+    this.layer_ = layer;
+  }
+  getOpacity() {
+    return 1;
+  }
+  get (key) {
+    if (key == "label") {
+      return this.layer_.name;
+    }
+    else if (key == "metadata") {
+      return this.layer_.metadata;
+    }
+  }
+}
 
 const exports = class extends ngeoOlcsManager {
   /**
@@ -22,7 +44,8 @@ const exports = class extends ngeoOlcsManager {
    *     manager.
    */
   constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
-              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr, appThemes) {
+              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
+              appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {
       map,
       cameraExtentInRadians
@@ -44,6 +67,8 @@ const exports = class extends ngeoOlcsManager {
      */
     this.blankLayer_ = appBlankLayer;
 
+    this.notify_ = appNotify;
+    this.gettextCatalog_ = gettextCatalog
     /**
      * @private
      * @type {ngeo.statemanager.Location}
@@ -214,6 +239,12 @@ const exports = class extends ngeoOlcsManager {
     this.getActiveMeshLayers().forEach(l => this.remove3dLayer(l.layer));
   }
 
+  getActive3dLayers() {
+    return this.activeTiles3dLayers_.map(
+      lName => new Wrap3dLayer(this.availableTiles3dLayers_.find(l => l.layer == lName))
+    );
+  }
+
   isDefault3dDataLayer(layer) {
     const isData = layer.metadata.ol3d_type == 'data';
     const isDefault = layer.metadata.ol3d_defaultlayer == true;
@@ -290,14 +321,27 @@ const exports = class extends ngeoOlcsManager {
       this.setMode('MESH');
       this.onToggle(false);
     }
+    /** @type {ngeox.BackgroundEvent} */
+    const event = new ngeoCustomEvent('add', {
+      newLayer: new Wrap3dLayer(layer)
+    });
+    this.dispatchEvent(event);
   }
 
-  remove3dLayer(layerName) {
+  remove3dLayer(layerName, checkNoMeshes = true) {
     const idx = this.activeTiles3dLayers_.indexOf(layerName);
     if (idx >= 0) {
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
       this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
+    }
+    if (checkNoMeshes && this.getMode() == 'MESH' && this.getActiveMeshLayers().length == 0) {
+      this.setMode('3D');
+      this.onToggle(false);
+      const msg = this.gettextCatalog_.getString(
+        '3D Mesh mode has been deactivated because ' +
+          'all mesh layers have been deselected.')
+      this.notify_(msg, appNotifyNotificationType.WARNING);
     }
   }
 
@@ -353,9 +397,9 @@ const exports = class extends ngeoOlcsManager {
     this.mode_ = mode;
   }
 
-  remove3DLayers() {
+  remove3DLayers(checkNoMeshes = true) {
     this.availableTiles3dLayers_.map(e => e.layer).forEach(function(layer) {
-      this.remove3dLayer(layer);
+      this.remove3dLayer(layer, checkNoMeshes);
     }.bind(this));
   }
 
@@ -377,7 +421,7 @@ const exports = class extends ngeoOlcsManager {
         this.disable_2D_layers();
         this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
         if (doInit) {
-          this.remove3DLayers();
+          this.remove3DLayers(false);
         }
         if (this.getActiveMeshLayers().length == 0) {
           this.init3dMeshes();
@@ -399,7 +443,7 @@ const exports = class extends ngeoOlcsManager {
         this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
         this.currentBgLayer = undefined;
       }
-      this.remove3DLayers();
+      this.remove3DLayers(false);
       this.restore_2D_layers();
       this.ngeoLocation_.deleteParam('3d_layers');
     }

@@ -35,6 +35,8 @@ const exports = function(gettextCatalog, ngeoBackgroundLayerMgr,
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
+  this.lux3dMgr_ = null;
+
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -109,6 +111,8 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
     }
     return all;
   }, []);
+  this.lux3dMgr_.getActive3dLayers().forEach(l => layers.push(l));
+
   var len = layers.length;
   var i;
   var layer2;
@@ -118,7 +122,9 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
   for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
     if (layer2 == layer1 || layer2.get('metadata') === undefined ||
-        layer2.get('metadata')['exclusion'] === undefined) {
+        layer2.get('metadata')['exclusion'] === undefined ||
+        // check contents (layerX.layer_) for 3d layers which are inside a wrapper class
+        (layer1.layer_ !== undefined && layer2.layer_ !== undefined && layer1.layer_ == layer2.layer_)) {
       continue;
     }
 
@@ -132,7 +138,13 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
         layersToRemove.push(
             gettextCatalog.getString(/** @type {string} */(layer2.get('label')))
         );
-        map.removeLayer(layer2);
+        if (layer2.get('metadata').ol3d_type === undefined) {
+          // 2D layer case
+          map.removeLayer(layer2);
+        } else {
+          // 3D layer case
+          this.lux3dMgr_.remove3dLayer(layer2.layer_.layer);
+        }
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_.getLayer());
         msg = gettextCatalog.getString(
@@ -169,8 +181,14 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
 /**
  * @param {ol.Map} map The OpenLayers map.
  */
-exports.prototype.init = function(map) {
+exports.prototype.init = function(map, lux3dMgr) {
+  this.lux3dMgr_ = lux3dMgr;
   var layerOpacityListenerKeys = {};
+  this.lux3dMgr_.on('add', function(e) {
+    var newLayer = e.detail.newLayer;
+    this.checkForLayerExclusion_(map, newLayer);
+  }.bind(this));
+
   this.backgroundLayerMgr_.on('change', function(e) {
     var curBgLayer = this.backgroundLayerMgr_.get(map);
     this.checkForLayerExclusion_(map, curBgLayer);
