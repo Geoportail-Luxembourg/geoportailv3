@@ -68,7 +68,7 @@ const exports = class extends ngeoOlcsManager {
     this.blankLayer_ = appBlankLayer;
 
     this.notify_ = appNotify;
-    this.gettextCatalog_ = gettextCatalog
+    this.gettextCatalog = gettextCatalog
     /**
      * @private
      * @type {ngeo.statemanager.Location}
@@ -338,7 +338,7 @@ const exports = class extends ngeoOlcsManager {
     if (checkNoMeshes && this.getMode() == 'MESH' && this.getActiveMeshLayers().length == 0) {
       this.setMode('3D');
       this.onToggle(false);
-      const msg = this.gettextCatalog_.getString(
+      const msg = this.gettextCatalog.getString(
         '3D Mesh mode has been deactivated because ' +
           'all mesh layers have been deselected.')
       this.notify_(msg, appNotifyNotificationType.WARNING);
