@@ -991,7 +991,7 @@ const MainController = function(
 
   this.manageSelectedLayers_($scope);
 
-  appExclusionManager.init(this.map_);
+  appExclusionManager.init(this.map_, this.ol3dm_);
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
@@ -1438,7 +1438,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
   return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
-                                 this.backgroundLayerMgr_, this.appThemes_);
+                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
