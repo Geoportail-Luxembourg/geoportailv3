@@ -1,3 +1,4 @@
 node_modules
 package-lock.json
 jsdoc/api/template/jsdocOpenLayers.js
+dist
