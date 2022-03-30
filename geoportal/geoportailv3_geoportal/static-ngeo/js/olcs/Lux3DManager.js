@@ -241,7 +241,13 @@ const exports = class extends ngeoOlcsManager {
 
   getActive3dLayers() {
     return this.activeTiles3dLayers_.map(
-      lName => new Wrap3dLayer(this.availableTiles3dLayers_.find(l => l.layer == lName))
+      lName => this.availableTiles3dLayers_.find(l => l.layer == lName)
+    );
+  }
+
+  getWrappedActive3dLayers() {
+    return this.getActive3dLayers().map(
+      l => new Wrap3dLayer(l)
     );
   }
 
@@ -279,43 +285,74 @@ const exports = class extends ngeoOlcsManager {
     // TODO set ipv6 url for IOS
     const url = base_url + '/' + layerName + '/tileset.json';
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
-    const tileset = new Cesium.Cesium3DTileset({
+    const cs3d_options = {
       url: url,
-      skipLevelOfDetail: false,
+      skipLevelOfDetail: true,
       baseScreenSpaceError: 623,
       skipScreenSpaceErrorFactor: 8,
       skipLevels: 1,
       loadSiblings: true,
-      cullWithChildrenBounds: true
-    });
+      cullWithChildrenBounds: true,
+      // dynamicScreenSpaceErrorDensity: 10,
+      // dynamicScreenSpaceErrorFactor: 1,
+      dynamicScreenSpaceError: true
+    };
+    if (layer.metadata.ol3d_options !== undefined) {
+      Object.assign(cs3d_options, layer.metadata.ol3d_options);
+    }
+    var heightOffset = 0;
+    var longOffset = 0;
+    var latOffset = 0;
+    var minimumZoomDistance = this.isMeshLayer(layer) ? 150 : 5;
+    // var terrainProvider = this.terrainProvider;
+    if (cs3d_options.heightOffset !== undefined) {
+      heightOffset = cs3d_options.heightOffset;
+      delete cs3d_options.heightOffset;
+    }
+    if (cs3d_options.longOffset !== undefined) {
+      longOffset = cs3d_options.longOffset;
+      delete cs3d_options.longOffset;
+    }
+    if (cs3d_options.latOffset !== undefined) {
+      latOffset = cs3d_options.latOffset;
+      delete cs3d_options.latOffset;
+    }
+    if (cs3d_options.minimumZoomDistance !== undefined) {
+      minimumZoomDistance = cs3d_options.minimumZoomDistance;
+      delete cs3d_options.minimumZoomDistance;
+    }
+    //if (cs3d_options.noTerrainProvider !== undefined || this.isMeshLayer(layer)) {
+    // if (this.isMeshLayer(layer)) {
+    //   terrainProvider = this.noTerrainProvider;
+    // }
+
+    const tileset = new Cesium.Cesium3DTileset(cs3d_options);
 
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
     // Adjust a tileset's height from the globe's surface.
     const scene = this.ol3d.getCesiumScene();
-    if (layerName === 'wintermesh') {
-      scene.screenSpaceCameraController.minimumZoomDistance = 150;
-      //scene.terrainProvider = this.noTerrainProvider;
-      scene.terrainProvider = this.terrainProvider;
+    // scene.terrainProvider = terrainProvider;
+    scene.terrainProvider = this.terrainProvider;
+    // scene.screenSpaceCameraController.minimumZoomDistance = minimumZoomDistance;
+
+    if (heightOffset != 0 || longOffset != 0 || latOffset != 0) {
       tileset.readyPromise.then(function(tileset) {
-        // TODO: load tilset config from metadata
-        //const heightOffset = -372;
-        //const heightOffset = -47.8;
-        const heightOffset = 0;
         const boundingSphere = tileset.boundingSphere;
         const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
 
         const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0);
-        const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+        const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude + longOffset,
+                                                     cartographic.latitude + latOffset,
+                                                     heightOffset);
         const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
         tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
       }).otherwise(function(error) {
         console.log(error);
       });
-    } else {
-      scene.terrainProvider = this.terrainProvider;
-      scene.screenSpaceCameraController.minimumZoomDistance = 0;
     }
+
+    this.updateMinimumZoomDistance(this.getActive3dLayers())
 
     if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
       this.setMode('MESH');
@@ -343,6 +380,49 @@ const exports = class extends ngeoOlcsManager {
           'all mesh layers have been deselected.')
       this.notify_(msg, appNotifyNotificationType.WARNING);
     }
+    this.updateMinimumZoomDistance(this.getActive3dLayers())
+  }
+
+  getMinZoomDistanceFromLayer(layer) {
+    const opt = layer.metadata.ol3d_options;
+    if (opt !== undefined && opt.minimumZoomDistance !== undefined) {
+      return opt.minimumZoomDistance;
+    } else {
+      return this.isMeshLayer(layer) ? 50 : 5;
+    }
+  }
+
+  updateMinimumZoomDistance(layers) {
+    const defaultMinimumZoomDistance = this.getMode() == "MESH" ? 50 : 5;
+    if (layers.length == 0) return;
+    const minZoomDistance = Math.max(
+      defaultMinimumZoomDistance,
+      ...layers.map(l => this.getMinZoomDistanceFromLayer(l))
+    );
+    const scene = this.ol3d.getCesiumScene();
+    scene.screenSpaceCameraController.minimumZoomDistance = minZoomDistance;
+    // const height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
+    // const groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
+    // // const cameraPos = Cesium.Cartographic.fromCartesian(scene.camera.position);
+    // // const ground2H = scene.globe.getHeight(new Cesium.Cartographic(cameraPos.longitude, cameraPos.latitude, 0));
+    // const relativeHeight = height - groundLevel;
+    // if (relativeHeight  < minZoomDistance) {
+    //   const unitHeightDiff = height - scene.globe.ellipsoid.cartesianToCartographic(
+    //     Cesium.Cartesian3.add(scene.camera.position, scene.camera.direction, new Cesium.Cartesian3())
+    //   ).height;
+    //   // set limit angle to not move too far back in order to move up sufficienty
+    //   // min angle in radians : alpha ~ sin(alpha)
+    //   const minAngle = 0.25;
+    //   const distToMoveUp = minZoomDistance - relativeHeight;
+    //   var distToMoveBack = distToMoveUp / unitHeightDiff;
+    //   if (unitHeightDiff < minAngle) {
+    //     // scene.camera.moveUp(distToMoveUp);
+    //     scene.camera.moveUp(distToMoveUp * unitHeightDiff / minAngle);
+    //     scene.camera.moveBackward(distToMoveUp / minAngle);
+    //   } else {
+    //     scene.camera.moveBackward(distToMoveBack);
+    //   }
+    // }
   }
 
   /**
@@ -433,11 +513,14 @@ const exports = class extends ngeoOlcsManager {
         }
         this.restore_2D_layers();
         this.removeMeshLayers();
+        const scene = this.ol3d.getCesiumScene();
+        // scene.terrainProvider = this.TerrainProvider;
         if (doInit) {
           this.remove3DLayers();
           this.init3dTiles();
         }
       }
+      this.updateMinimumZoomDistance(this.getActive3dLayers())
     } else {
       if (this.currentBgLayer !== undefined) {
         this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
