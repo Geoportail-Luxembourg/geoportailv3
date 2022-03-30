@@ -20,7 +20,7 @@ Feel free to visit our [GitHub repository](https://github.com/Geoportail-Luxembo
 
 All the needed resources are loaded by including the following js script.
 ```html
-<script src="https://apiv3.geoportail.lu/apiv4loader.js" type="text/javascript"></script>
+<script src="https://apiv4.geoportail.lu/apiv4loader.js" type="text/javascript"></script>
 ```
 
 The script automatically includes the Geoportail V4 libraries as well as the OpenLayers and proj4js libraries. Thus there is no need to include them again.
