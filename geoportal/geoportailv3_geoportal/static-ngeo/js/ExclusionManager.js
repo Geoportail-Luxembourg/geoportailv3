@@ -111,7 +111,7 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
     }
     return all;
   }, []);
-  this.lux3dMgr_.getActive3dLayers().forEach(l => layers.push(l));
+  this.lux3dMgr_.getWrappedActive3dLayers().forEach(l => layers.push(l));
 
   var len = layers.length;
   var i;
