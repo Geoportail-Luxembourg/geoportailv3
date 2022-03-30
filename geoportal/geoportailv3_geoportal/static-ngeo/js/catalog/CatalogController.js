@@ -93,16 +93,8 @@ const exports = function($scope, appThemes, appTheme,
        */
       (function(evt) {
         this.setTree_();
+        this.set3dTree_();
       }), this);
-
-  $scope.$watch(
-    () => {
-      if (!this.map.get('ol3dm')) return;
-      return this.map.get('ol3dm').is3dEnabled();
-    },
-    enabled => {
-      this.set3dTree_();
-    })
 
   $scope.$watch(function() {
     return this.appTheme_.getCurrentTheme();
@@ -156,7 +148,7 @@ exports.prototype.getActive = function(layertreeController) {
  */
 exports.prototype.set3dTree_ = function() {
   if (this.lux3dTree.children == undefined) {
-    this.lux3dTree = this.map.get('ol3dm').tree3D;
+    this.lux3dTree = this.appThemes_.tree3D;
   }
 };
 
