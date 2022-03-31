@@ -225,11 +225,7 @@ exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
   if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e._url.includes(node.layer)) !== -1) {
-      olcs.remove3dLayer(node.layer);
-    } else {
-      olcs.add3dTile(node)
-    }
+    olcs.toggleLayer(node);
   } else {
     var layer = this.getLayerFunc_(node);
     var map = this['map'];
