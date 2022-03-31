@@ -42,13 +42,15 @@ const Service = class {
 
   }
 
+  initManager(manager) {
+    this.manager_ = manager;
+  }
+
   /**
    * @export
    * @param {olcs.contrib.Manager} manager Manager.
    */
   initialize(manager) {
-    this.manager_ = manager;
-
     this.manager_.on('load', () => {
       this.cameraToState_();
     });

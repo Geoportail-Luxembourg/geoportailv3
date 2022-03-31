@@ -196,7 +196,7 @@ const exports = class extends ngeoOlcsManager {
 
     if (layers_3d) {
       const layerNames = layers_3d.split(',');
-      layerNames.forEach(layerName => this.add3dTile(this.availableTiles3dLayers_.find(l => l.layer == layerName)));
+      this.availableTiles3dLayers_.filter(l => layerNames.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
   }
 
