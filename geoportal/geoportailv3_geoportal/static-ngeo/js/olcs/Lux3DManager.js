@@ -197,23 +197,14 @@ const exports = class extends ngeoOlcsManager {
   }
 
   init3dTilesFromLocation() {
+
+    this.setMode('3D');
+
     const layers_3d = this.ngeoLocation_.getParam('3d_layers');
+
     if (layers_3d) {
-      const layers = layers_3d.split(',');
-      this.availableTiles3dLayers_.filter(e => (layers.indexOf(e.layer) >= 0)).forEach(this.add3dTile.bind(this));
-      if (layers.indexOf('wintermesh') >= 0) {
-        this.setMode('MESH');
-      } else {
-        this.setMode('3D');
-      }
-    }
-    this.$rootScope_.$watch(function() {
-      return this.activeTiles3dLayers_.length;
-    }.bind(this), function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
-      }
-    }.bind(this));
+      const layerNames = layers_3d.split(',');
+      layerNames.forEach(layerName => this.add3dTile(this.availableTiles3dLayers_.find(l => l.layer == layerName)));
   }
 
   /***
@@ -281,6 +272,7 @@ const exports = class extends ngeoOlcsManager {
       return;
     }
     this.activeTiles3dLayers_.push(layerName);
+    this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
     let base_url = layer.url;
     // TODO set ipv6 url for IOS
     const url = base_url + '/' + layerName + '/tileset.json';
@@ -355,9 +347,9 @@ const exports = class extends ngeoOlcsManager {
     this.updateMinimumZoomDistance(this.getActive3dLayers())
 
     if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
-      this.setMode('MESH');
-      this.onToggle(false);
+      this.setMode("MESH");
     }
+
     /** @type {ngeox.BackgroundEvent} */
     const event = new ngeoCustomEvent('add', {
       newLayer: new Wrap3dLayer(layer)
@@ -370,6 +362,7 @@ const exports = class extends ngeoOlcsManager {
     if (idx >= 0) {
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
+      this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
       this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
     }
     if (checkNoMeshes && this.getMode() == 'MESH' && this.getActiveMeshLayers().length == 0) {
@@ -381,6 +374,18 @@ const exports = class extends ngeoOlcsManager {
       this.notify_(msg, appNotifyNotificationType.WARNING);
     }
     this.updateMinimumZoomDistance(this.getActive3dLayers())
+  }
+
+  toggleLayer(layer) {
+    let layerName = layer.layer
+    if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
+      this.remove3dLayer(layer.layer);
+    } else {
+      if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
+        this.toggleMesh(false);
+      }
+      this.add3dTile(layer);
+    }
   }
 
   getMinZoomDistanceFromLayer(layer) {
@@ -532,12 +537,12 @@ const exports = class extends ngeoOlcsManager {
     }
   }
 
-  toggleMesh() {
+  toggleMesh(doInit = true) {
     if (this.getMode() === '3D' && this.is3dEnabled()) {
       this.setMode('MESH');
       this.onToggle(false);
     } else {
-      this.toggleMode('MESH');
+      this.toggleMode('MESH', doInit);
     }
   }
   toggle3dTerrain() {
@@ -548,10 +553,10 @@ const exports = class extends ngeoOlcsManager {
       this.toggleMode('3D');
     }
   }
-  toggleMode(mode) {
+  toggleMode(mode, doInit = true) {
     this.setMode(mode);
     this.toggle3d().then(function() {
-      this.onToggle(true);
+      this.onToggle(doInit);
     }.bind(this));
   }
 
