@@ -1433,7 +1433,6 @@ MainController.prototype.createMap_ = function() {
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
 MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
-  // [minx, miny, maxx, maxy]
   console.assert(this.map_ !== null && this.map_ !== undefined);
   return new appOlcsLux3DManager(cesiumURL, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
