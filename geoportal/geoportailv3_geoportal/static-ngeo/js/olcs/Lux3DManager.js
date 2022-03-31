@@ -33,7 +33,6 @@ class Wrap3dLayer {
 const exports = class extends ngeoOlcsManager {
   /**
    * @param {string} cesiumUrl Cesium URL.
-   * @param {ol.Extent} cameraExtentInRadians The Luxembourg extent.
    * @param {ol.Map} map The map.
    * @param {ngeo.statemanager.Location} ngeoLocation The location service.
    * @param {angular.Scope} $rootScope The root scope.
@@ -43,13 +42,10 @@ const exports = class extends ngeoOlcsManager {
    * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
    *     manager.
    */
-  constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
+  constructor(cesiumUrl, map, ngeoLocation, $rootScope,
               tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
               appNotify, gettextCatalog, appThemes) {
-    super(cesiumUrl, $rootScope, {
-      map,
-      cameraExtentInRadians
-    });
+    super(cesiumUrl, $rootScope, {map});
     /**
      * @type {angular.Scope}
      * @private
@@ -68,7 +64,7 @@ const exports = class extends ngeoOlcsManager {
     this.blankLayer_ = appBlankLayer;
 
     this.notify_ = appNotify;
-    this.gettextCatalog = gettextCatalog
+    this.gettextCatalog = gettextCatalog;
     /**
      * @private
      * @type {ngeo.statemanager.Location}
@@ -102,10 +98,6 @@ const exports = class extends ngeoOlcsManager {
       this.fogDensity = parseFloat(ngeoLocation.getParam('fog_density'));
     }
 
-    /**
-     * @const {ol.Extent}
-     */
-    this.luxCameraExtentInRadians = cameraExtentInRadians;
 
     /**
      * Array of 3D tiles set used for buildings/vegetation
@@ -205,6 +197,7 @@ const exports = class extends ngeoOlcsManager {
     if (layers_3d) {
       const layerNames = layers_3d.split(',');
       layerNames.forEach(layerName => this.add3dTile(this.availableTiles3dLayers_.find(l => l.layer == layerName)));
+    }
   }
 
   /***

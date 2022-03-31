@@ -981,7 +981,6 @@ const MainController = function(
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
   this.ol3dm_.on('load', () => {
     this.ol3dm_.init3dTilesFromLocation();
-    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
   });
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
@@ -1436,15 +1435,7 @@ MainController.prototype.createMap_ = function() {
 MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
   // [minx, miny, maxx, maxy]
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  const cameraExtentInRadians = (this.ngeoLocation_.hasParam('3d_lon')
-                                 && this.ngeoLocation_.hasParam('3d_lon')
-                                 && this.ngeoLocation_.hasParam('3d_lat')
-                                 && this.ngeoLocation_.hasParam('3d_elevation')
-                                 && this.ngeoLocation_.hasParam('3d_heading')
-                                 && this.ngeoLocation_.hasParam('3d_pitch')) ?
-        undefined :
-        [5.31, 49.38, 6.64, 50.21].map(toRadians);
-  return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
+  return new appOlcsLux3DManager(cesiumURL, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
                                  this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
