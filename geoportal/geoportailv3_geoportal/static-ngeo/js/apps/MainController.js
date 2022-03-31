@@ -983,7 +983,7 @@ const MainController = function(
     this.ol3dm_.init3dTilesFromLocation();
   });
 
-  this.ngeoOlcsService_.initialize(this.ol3dm_);
+  this.ngeoOlcsService_.initManager(this.ol3dm_);
 
   this.initLanguage_();
 
@@ -1060,8 +1060,6 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
-            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
-
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1077,7 +1075,10 @@ const MainController = function(
     this['ageLayers'].splice(0, this['ageLayers'].length);
     this.appThemes_.get3DTree().then(
       tree3D => {
+        this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
+
         this.ol3dm_.setTree(tree3D);
+        this.ngeoOlcsService_.initialize(this.ol3dm_);
       }
     );
     this.appThemes_.getFlatCatalog().then(
