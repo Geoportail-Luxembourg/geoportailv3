@@ -10,6 +10,7 @@ import os
 import json
 import pytz
 import dateutil
+import copy
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -698,6 +699,7 @@ class Getfeatureinfo(object):
         return {'type': 'Feature',
                 'geometry': geometry,
                 'fid': layer_fid,
+                'id': fid,
                 'attributes': attributes,
                 'alias': alias}
 
@@ -1033,6 +1035,26 @@ class Getfeatureinfo(object):
 
         return features
 
+    def chargy_attributes(self, features):
+        modified_features = []
+        for feature in features:
+            if 'attributes' in feature and \
+               'chargingdevice' in feature['attributes']:
+                chargingdevice = json.loads(feature['attributes']['chargingdevice'].replace("&quot;", "\""))
+                del feature['attributes']['chargingdevice']
+                for connector in chargingdevice['connectors']:
+                    feature['attributes']['connector_name'] = connector['name']
+                    feature['attributes']['connector_maxchspeed'] = connector['maxchspeed']
+                    feature['attributes']['connector_description'] = connector['description']
+                    modified_features.append(copy.deepcopy(feature))
+
+            
+
+        return modified_features    
+
+
+        return features
+
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3_geoportal.PF
@@ -1083,7 +1105,20 @@ class Getfeatureinfo(object):
             if cur_id not in ids:
                 ids.append(cur_id)
                 geometry = geojson_loads(row['st_asgeojson'])
-                if geometry['type'] == "LineString" or\
+                only_points = False
+                if geometry['type'] == "Point":
+                    session = self._get_session("mymaps")
+                    query = "select count(*) as cnt\
+                            , sum(ST_Length(geometry)) as length FROM\
+                             public.feature_with_map_with_colors where\
+                             category_id = %(category_id)d and map_id = '%(map_id)s'\
+                             and ST_GeometryType(geometry) != 'ST_Point'"\
+                            % {'category_id': category_id, 'map_id': map_id}
+                    res = session.execute(query).first()
+                    only_points = (res['cnt'] == 0)
+
+                if not only_points or\
+                   geometry['type'] == "LineString" or\
                    geometry['type'] == "MultiLineString":
                     session = self._get_session("mymaps")
                     query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
@@ -1106,6 +1141,9 @@ class Getfeatureinfo(object):
                                             attributes, ""))
                 else:
                     attributes = dict(row)
+                    if geometry['type'] == "Point":
+                        if 'feature_name' in attributes:
+                            attributes['name'] = attributes['feature_name']
                     self.remove_attributes(attributes,
                                            attributes_to_remove,
                                            "geometry")
@@ -1436,6 +1474,7 @@ class Getfeatureinfo(object):
                                         attributes_to_remove,
                                         columns_order, 'geom', alias)
                     features.append(f)
+                i = i + 1
         return features
 
     def _get_url_with_token(self, url):
