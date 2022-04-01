@@ -89,6 +89,38 @@ lux.wmtsCrossOrigin = 'anonymous';
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {Promise} the promise containing html;
+ * @export
+ */
+lux.getLegendHtml = function(layer) {
+    var localMetadata = /** @type {Object.<string, string>} */
+        (layer.get('metadata'));
+
+    var queryParams = {'lang': lux.lang};
+
+    if (localMetadata != undefined && 'legend_name' in localMetadata) {
+        queryParams['name'] = localMetadata['legend_name'];
+    }
+    var id = layer.get('id');
+    if (id != undefined) {
+        queryParams['id'] = id;
+    }
+    // handle high resolution screens
+    if (window.devicePixelRatio > 1) {
+      try {
+        queryParams['dpi'] = this.$window_.devicePixelRatio * 96;
+      } catch(e) {
+        console.log(e);
+      }
+    }
+    var url = lux.htmlLegendUrl + '?' + (new URLSearchParams(queryParams)).toString();
+    return fetch(url).then(function(resp) {
+      return (resp.text().then(function(text) {return text;}));
+    });
+}
+
+/**
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
  * <li>Mymaps service</li>
@@ -125,6 +157,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.profileUrl = url + lux.profileUrl;
   lux.exportCsvUrl = url + lux.exportCsvUrl;
   lux.printUrl = url + lux.printUrl;
+  lux.htmlLegendUrl = url + lux.htmlLegendUrl;
   lux.pagUrl = url + lux.pagUrl;
   lux.baseUrl = url;
 };

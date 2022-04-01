@@ -72,23 +72,24 @@ def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[
             # the parameter token_check_url allows to check the token directly on the
             # destination url, by default the check is performed on the token issuing url
             # TODO: disable systematic token check below in prod, enable only in dev
-            token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token['token']}).encode()
-            if token_check_url is None:
-                token_check_request = urllib.request.Request(config['arcgis_token_url'], data=token_check_data)
-            else:
-                token_check_request = urllib.request.Request(token_check_url, data=token_check_data)
-            try:
-                log.info(f"Check token at: {token_check_request.full_url}")
-                rep = urllib.request.urlopen(token_check_request, timeout=15)
-                check = json.load(rep)
-                if 'error' in check:
-                    log.error(f"Token refused by: {token_check_request.full_url} - "
-                              f"server answered {check['error']}")
+            if False:
+                token_check_data = urllib.parse.urlencode({'f': 'json', 'token': auth_token['token']}).encode()
+                if token_check_url is None:
+                    token_check_request = urllib.request.Request(config['arcgis_token_url'], data=token_check_data)
                 else:
-                    log.info(f"Token OK, answer: {check}")
-            except:
-                log.error(f"Failed token check at: {token_check_request.full_url}")
-            assert 'error' not in check
+                    token_check_request = urllib.request.Request(token_check_url, data=token_check_data)
+                try:
+                    log.info(f"Check token at: {token_check_request.full_url}")
+                    rep = urllib.request.urlopen(token_check_request, timeout=15)
+                    check = json.load(rep)
+                    if 'error' in check:
+                        log.error(f"Token refused by: {token_check_request.full_url} - "
+                                  f"server answered {check['error']}")
+                    else:
+                        log.info(f"Token OK, answer: {check}")
+                except:
+                    log.error(f"Failed token check at: {token_check_request.full_url}")
+                assert 'error' not in check
 
     return auth_token
 

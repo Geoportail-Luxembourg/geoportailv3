@@ -40,32 +40,23 @@ class RouterController(object):
             routing_success = False
             return HTTPBadRequest("Not enough waypoints (At least 2 required)")
         else:
-            # Use Graphhopper for bicycle routing, Mapquest for all other modes
-            if len(coords) <= 10 and transport_mode in [2]:
-                r = GraphhopperRouter(self.config['routing']['graphhopper'])
+            r = GraphhopperRouter(self.config['routing']['graphhopper'])
 
-                self.__setup_router(coords, lang, transport_mode, criteria,
-                                    avoid, prefer_bike_road, bike_avoid_hills,
-                                    r)
-                try:
-                    r.execute()
-                except HTTPError as e:
-                    if e.code == 429:
-                        r = MapquestRouter(self.config['routing']['mapquest'])
-                        self.__setup_router(
-                            coords, lang, transport_mode,
-                            criteria, avoid, prefer_bike_road,
-                            bike_avoid_hills, r)
-                        r.execute()
-                    else:
-                        raise e
-
-            else:
-                r = MapquestRouter(self.config['routing']['mapquest'])
-                self.__setup_router(
-                    coords, lang, transport_mode, criteria,
-                    avoid, prefer_bike_road, bike_avoid_hills, r)
+            self.__setup_router(coords, lang, transport_mode, criteria,
+                                avoid, prefer_bike_road, bike_avoid_hills,
+                                r)
+            try:
                 r.execute()
+            except HTTPError as e:
+                if e.code == 429:
+                    r = MapquestRouter(self.config['routing']['mapquest'])
+                    self.__setup_router(
+                        coords, lang, transport_mode,
+                        criteria, avoid, prefer_bike_road,
+                        bike_avoid_hills, r)
+                    r.execute()
+                else:
+                    raise e
 
             if r.geom and len(r.geom) > 0:
                 routing_success = True
