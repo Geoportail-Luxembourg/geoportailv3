@@ -206,7 +206,6 @@ const exports = class extends ngeoOlcsManager {
       // URL parameters are asynchronous and it is not deterministic which one is ready first
       this.activeTiles3dLayersPreload_ = layers_3d.split(',');
       this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
-      // TODO: do toggle do switch off background on URL load
     }
   }
 
@@ -351,6 +350,7 @@ const exports = class extends ngeoOlcsManager {
 
     if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
       this.setMode("MESH");
+      this.disable_2D_layers_and_terrain()
     }
 
     /** @type {ngeox.BackgroundEvent} */
@@ -491,6 +491,26 @@ const exports = class extends ngeoOlcsManager {
     }.bind(this));
   }
 
+  disable_2D_layers_and_terrain() {
+    if (this.currentBgLayer === undefined) {
+      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+      this.disable_2D_layers();
+      this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+    }
+  }
+
+  restore_2D_layers_and_terrain() {
+    this.restore_2D_layers_and_background();
+  }
+
+  restore_2D_layers_and_background() {
+    if (this.currentBgLayer !== undefined) {
+      this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+      this.currentBgLayer = undefined;
+    }
+    this.restore_2D_layers();
+  }
+
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
     this.map.getLayers().getArray().forEach(l => {if (l != this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
@@ -505,9 +525,7 @@ const exports = class extends ngeoOlcsManager {
   onToggle(doInit) {
     if (this.is3dEnabled()) {
       if (this.mode_ === 'MESH') {
-        this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
-        this.disable_2D_layers();
-        this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+        this.disable_2D_layers_and_terrain();
         if (doInit) {
           this.remove3DLayers(false);
         }
@@ -515,11 +533,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dMeshes();
         }
       } else {
-        if (this.currentBgLayer !== undefined) {
-          this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
-          this.currentBgLayer = undefined;
-        }
-        this.restore_2D_layers();
+        this.restore_2D_layers_and_terrain();
         this.removeMeshLayers();
         const scene = this.ol3d.getCesiumScene();
         // scene.terrainProvider = this.TerrainProvider;
@@ -530,12 +544,8 @@ const exports = class extends ngeoOlcsManager {
       }
       this.updateMinimumZoomDistance(this.getActive3dLayers())
     } else {
-      if (this.currentBgLayer !== undefined) {
-        this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
-        this.currentBgLayer = undefined;
-      }
+      this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
-      this.restore_2D_layers();
       this.ngeoLocation_.deleteParam('3d_layers');
     }
   }
