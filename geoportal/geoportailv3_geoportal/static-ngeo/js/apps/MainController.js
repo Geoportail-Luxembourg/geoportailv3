@@ -983,7 +983,7 @@ const MainController = function(
     this.ol3dm_.init3dTilesFromLocation();
   });
 
-  this.ngeoOlcsService_.initManager(this.ol3dm_);
+  this.ngeoOlcsService_.initialize(this.ol3dm_);
 
   this.initLanguage_();
 
@@ -1078,7 +1078,6 @@ const MainController = function(
         this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
 
         this.ol3dm_.setTree(tree3D);
-        this.ngeoOlcsService_.initialize(this.ol3dm_);
       }
     );
     this.appThemes_.getFlatCatalog().then(

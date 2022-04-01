@@ -121,6 +121,7 @@ const exports = class extends ngeoOlcsManager {
      * @type {Array<string>}
      */
     this.activeTiles3dLayers_ = [];
+    this.activeTiles3dLayersPreload_ = [];
 
     /**
      * @private
@@ -179,7 +180,13 @@ const exports = class extends ngeoOlcsManager {
   setTree(tree) {
     this.tree3D = tree;
     let allCh = this.appThemes_.getAllChildren_(tree.children, tree, []);
-    allCh.forEach(el => this.addAvailableLayers(el));
+    allCh.forEach(el => {
+      this.addAvailableLayers(el);
+      if (this.activeTiles3dLayersPreload_.includes(el.layer)) {
+        this.add3dTile(el);
+      }
+    });
+    this.activeTiles3dLayersPreload_ = [];
   }
 
   addAvailableLayers(layer) {
@@ -195,8 +202,11 @@ const exports = class extends ngeoOlcsManager {
     const layers_3d = this.ngeoLocation_.getParam('3d_layers');
 
     if (layers_3d) {
-      const layerNames = layers_3d.split(',');
-      this.availableTiles3dLayers_.filter(l => layerNames.includes(l.layer)).forEach(l => this.add3dTile(l));
+      // the memorization of preload 3D layers is needed because tree/theme loading and 3D activation from
+      // URL parameters are asynchronous and it is not deterministic which one is ready first
+      this.activeTiles3dLayersPreload_ = layers_3d.split(',');
+      this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
+      // TODO: do toggle do switch off background on URL load
     }
   }
 
