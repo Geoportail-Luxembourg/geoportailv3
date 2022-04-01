@@ -384,6 +384,7 @@
       >
       </ngeo-offline>
       <app-backgroundselector
+        ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>

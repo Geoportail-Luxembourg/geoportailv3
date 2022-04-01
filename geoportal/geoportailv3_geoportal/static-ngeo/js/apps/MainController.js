@@ -175,6 +175,7 @@ import '../../less/geoportailv3.less';
  import appStateManager from '../StateManager.js';
  import appTheme from '../Theme.js';
  import appThemes from '../Themes.js';
+ import app3dLayer from '../backgroundlayer/Service3dLayer.js';
  import appMvtStylingService from '../mvtstyling/MvtStylingService.js';
 
  //const appThemesResponse = goog.require('app.ThemesResponse');
@@ -979,9 +980,6 @@ const MainController = function(
    * @export
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
-  this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTilesFromLocation();
-  });
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
 
@@ -1078,6 +1076,13 @@ const MainController = function(
         this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
 
         this.ol3dm_.setTree(tree3D);
+        this.ol3dm_.load().then(
+          () => {
+            appLayerPermalinkManager.initBgLayers_().then(
+              () => this.ol3dm_.init3dTilesFromLocation()
+            );
+          }
+        );
       }
     );
     this.appThemes_.getFlatCatalog().then(
