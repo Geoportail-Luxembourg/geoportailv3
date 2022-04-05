@@ -172,6 +172,8 @@ const exports = class extends ngeoOlcsManager {
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
       this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
+      // prevent rendering of parts of 3D objects hidden by terrain
+      scene.globe.depthTestAgainstTerrain = true;
       scene.terrainProvider = this.noTerrainProvider;
     }
     return ol3d;
@@ -207,6 +209,7 @@ const exports = class extends ngeoOlcsManager {
       this.activeTiles3dLayersPreload_ = layers_3d.split(',');
       this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
+    this.ol3d.getCesiumScene().terrainProvider = this.terrainProvider;
   }
 
   /***
@@ -350,6 +353,8 @@ const exports = class extends ngeoOlcsManager {
 
     if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
       this.setMode("MESH");
+      // prevent the mesh from being hidden by parts of the (blank/white) terrain
+      scene.globe.depthTestAgainstTerrain = false;
       this.disable_2D_layers_and_terrain()
     }
 
@@ -492,6 +497,8 @@ const exports = class extends ngeoOlcsManager {
   }
 
   disable_2D_layers_and_terrain() {
+    // prevent the mesh from being hidden by parts of the (blank/white) terrain
+    this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = false;
     if (this.currentBgLayer === undefined) {
       this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
       this.disable_2D_layers();
@@ -500,6 +507,8 @@ const exports = class extends ngeoOlcsManager {
   }
 
   restore_2D_layers_and_terrain() {
+    // prevent rendering of parts of 3D objects hidden by terrain
+    this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = true;
     this.restore_2D_layers_and_background();
   }
 
