@@ -110,6 +110,8 @@ const exports = class extends ngeoOlcsManager {
     this.tree3D = {};
     this.appThemes_ = appThemes;
 
+    this.zoomLevelTimer;
+
     /**
      * @private
      * @type {Array<string>}
@@ -209,6 +211,7 @@ const exports = class extends ngeoOlcsManager {
       this.activeTiles3dLayersPreload_ = layers_3d.split(',');
       this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
+    this.scheduleMinimumZoomDistanceUpdate()
     this.ol3d.getCesiumScene().terrainProvider = this.terrainProvider;
   }
 
@@ -300,7 +303,6 @@ const exports = class extends ngeoOlcsManager {
     var heightOffset = 0;
     var longOffset = 0;
     var latOffset = 0;
-    var minimumZoomDistance = this.isMeshLayer(layer) ? 150 : 5;
     // var terrainProvider = this.terrainProvider;
     if (cs3d_options.heightOffset !== undefined) {
       heightOffset = cs3d_options.heightOffset;
@@ -315,7 +317,7 @@ const exports = class extends ngeoOlcsManager {
       delete cs3d_options.latOffset;
     }
     if (cs3d_options.minimumZoomDistance !== undefined) {
-      minimumZoomDistance = cs3d_options.minimumZoomDistance;
+      // remove custom option unknown by Cesium
       delete cs3d_options.minimumZoomDistance;
     }
     //if (cs3d_options.noTerrainProvider !== undefined || this.isMeshLayer(layer)) {
@@ -331,7 +333,6 @@ const exports = class extends ngeoOlcsManager {
     const scene = this.ol3d.getCesiumScene();
     // scene.terrainProvider = terrainProvider;
     scene.terrainProvider = this.terrainProvider;
-    // scene.screenSpaceCameraController.minimumZoomDistance = minimumZoomDistance;
 
     if (heightOffset != 0 || longOffset != 0 || latOffset != 0) {
       tileset.readyPromise.then(function(tileset) {
@@ -349,7 +350,7 @@ const exports = class extends ngeoOlcsManager {
       });
     }
 
-    this.updateMinimumZoomDistance(this.getActive3dLayers())
+    this.scheduleMinimumZoomDistanceUpdate()
 
     if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
       this.setMode("MESH");
@@ -381,7 +382,7 @@ const exports = class extends ngeoOlcsManager {
           'all mesh layers have been deselected.')
       this.notify_(msg, appNotifyNotificationType.WARNING);
     }
-    this.updateMinimumZoomDistance(this.getActive3dLayers())
+    this.scheduleMinimumZoomDistanceUpdate()
   }
 
   toggleLayer(layer) {
@@ -405,14 +406,26 @@ const exports = class extends ngeoOlcsManager {
     }
   }
 
-  updateMinimumZoomDistance(layers) {
-    const defaultMinimumZoomDistance = this.getMode() == "MESH" ? 50 : 5;
-    if (layers.length == 0) return;
+  scheduleMinimumZoomDistanceUpdate() {
+    if (this.zoomLevelTimer) {
+      clearTimeout(this.zoomLevelTimer);
+    }
+    // delay min zoom calculation because loading of multiple layers or exclusion rules would lead to
+    // multiple computation
+    this.zoomLevelTimer = setTimeout(this.updateMinimumZoomDistance, 50, this);
+  }
+
+  updateMinimumZoomDistance(parentScope) {
+    if (!parentScope.is3dEnabled()) return;
+    const layers = parentScope.getActive3dLayers()
+    // default min zoom for mesh : 50m, for 3d: 5m (unless overridden in metadata)
+    const defaultMinimumZoomDistance = parentScope.getMode() == "MESH" ? 50 : 5;
+
     const minZoomDistance = Math.max(
       defaultMinimumZoomDistance,
-      ...layers.map(l => this.getMinZoomDistanceFromLayer(l))
+      ...layers.map(l => parentScope.getMinZoomDistanceFromLayer(l))
     );
-    const scene = this.ol3d.getCesiumScene();
+    const scene = parentScope.ol3d.getCesiumScene();
     scene.screenSpaceCameraController.minimumZoomDistance = minZoomDistance;
     // const height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
     // const groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
@@ -551,7 +564,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dTiles();
         }
       }
-      this.updateMinimumZoomDistance(this.getActive3dLayers())
+      this.scheduleMinimumZoomDistanceUpdate()
     } else {
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
