@@ -629,6 +629,13 @@ exports.prototype.importFeatures_ = function(features) {
           clonedFeature.setGeometry(line);
           featuresToSave.push(clonedFeature);
         });
+      } else if (curGeometry.getType() === olGeomGeometryType.GEOMETRY_COLLECTION) {
+        var geometries = (curGeometry).getGeometries()
+        geometries.forEach(function(geom) {
+          var clonedFeature = feature.clone();
+          clonedFeature.setGeometry(geom);
+          featuresToSave.push(clonedFeature);
+        });
       } else {
         featuresToSave.push(feature);
       }
