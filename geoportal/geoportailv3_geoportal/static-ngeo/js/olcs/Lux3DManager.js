@@ -427,11 +427,11 @@ const exports = class extends ngeoOlcsManager {
     );
     const scene = parentScope.ol3d.getCesiumScene();
     scene.screenSpaceCameraController.minimumZoomDistance = minZoomDistance;
-    const height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
-    const groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
+    var height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
+    var groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
     // const cameraPos = Cesium.Cartographic.fromCartesian(scene.camera.position);
     // const ground2H = scene.globe.getHeight(new Cesium.Cartographic(cameraPos.longitude, cameraPos.latitude, 0));
-    const relativeHeight = height - groundLevel;
+    var relativeHeight = height - groundLevel;
     if (relativeHeight  < minZoomDistance) {
       const unitHeightDiff = height - scene.globe.ellipsoid.cartesianToCartographic(
         Cesium.Cartesian3.add(scene.camera.position, scene.camera.direction, new Cesium.Cartesian3())
@@ -440,14 +440,30 @@ const exports = class extends ngeoOlcsManager {
       // min angle in radians : alpha ~ sin(alpha)
       const minAngle = 0.25;
       const distToMoveUp = minZoomDistance - relativeHeight;
-      var distToMoveBack = distToMoveUp / unitHeightDiff;
+      const destPosition = new Cesium.Cartesian3();
+      const vectorToMove = new Cesium.Cartesian3()
       if (unitHeightDiff < minAngle) {
-        // scene.camera.moveUp(distToMoveUp);
-        scene.camera.moveUp(distToMoveUp * unitHeightDiff / minAngle);
-        scene.camera.moveBackward(distToMoveUp / minAngle);
+        // move back
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.direction, -distToMoveUp / minAngle, vectorToMove);
+        Cesium.Cartesian3.add(scene.camera.position, vectorToMove, destPosition);
+        // move up
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.up, distToMoveUp * (1 - unitHeightDiff / minAngle), vectorToMove);
+        Cesium.Cartesian3.add(destPosition, vectorToMove, destPosition);
       } else {
-        scene.camera.moveBackward(distToMoveBack);
+        // move back
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.direction, -distToMoveUp / unitHeightDiff, vectorToMove);
+        Cesium.Cartesian3.add(scene.camera.position, vectorToMove, destPosition);
       }
+      height = scene.globe.ellipsoid.cartesianToCartographic(destPosition).height;
+      groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(destPosition));
+      relativeHeight = height - groundLevel;
+      // if terrain is hit when moving backwards, move up again
+      if (relativeHeight  < minZoomDistance) {
+        // move up sufficiently above terrain
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.up, minZoomDistance - relativeHeight, vectorToMove);
+        Cesium.Cartesian3.add(destPosition, vectorToMove, destPosition);
+      }
+      scene.camera.flyTo({destination: destPosition, orientation: {direction: scene.camera.direction, up: scene.camera.up}});
     }
   }
 
