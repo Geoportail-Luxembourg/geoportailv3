@@ -427,28 +427,28 @@ const exports = class extends ngeoOlcsManager {
     );
     const scene = parentScope.ol3d.getCesiumScene();
     scene.screenSpaceCameraController.minimumZoomDistance = minZoomDistance;
-    // const height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
-    // const groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
-    // // const cameraPos = Cesium.Cartographic.fromCartesian(scene.camera.position);
-    // // const ground2H = scene.globe.getHeight(new Cesium.Cartographic(cameraPos.longitude, cameraPos.latitude, 0));
-    // const relativeHeight = height - groundLevel;
-    // if (relativeHeight  < minZoomDistance) {
-    //   const unitHeightDiff = height - scene.globe.ellipsoid.cartesianToCartographic(
-    //     Cesium.Cartesian3.add(scene.camera.position, scene.camera.direction, new Cesium.Cartesian3())
-    //   ).height;
-    //   // set limit angle to not move too far back in order to move up sufficienty
-    //   // min angle in radians : alpha ~ sin(alpha)
-    //   const minAngle = 0.25;
-    //   const distToMoveUp = minZoomDistance - relativeHeight;
-    //   var distToMoveBack = distToMoveUp / unitHeightDiff;
-    //   if (unitHeightDiff < minAngle) {
-    //     // scene.camera.moveUp(distToMoveUp);
-    //     scene.camera.moveUp(distToMoveUp * unitHeightDiff / minAngle);
-    //     scene.camera.moveBackward(distToMoveUp / minAngle);
-    //   } else {
-    //     scene.camera.moveBackward(distToMoveBack);
-    //   }
-    // }
+    const height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
+    const groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
+    // const cameraPos = Cesium.Cartographic.fromCartesian(scene.camera.position);
+    // const ground2H = scene.globe.getHeight(new Cesium.Cartographic(cameraPos.longitude, cameraPos.latitude, 0));
+    const relativeHeight = height - groundLevel;
+    if (relativeHeight  < minZoomDistance) {
+      const unitHeightDiff = height - scene.globe.ellipsoid.cartesianToCartographic(
+        Cesium.Cartesian3.add(scene.camera.position, scene.camera.direction, new Cesium.Cartesian3())
+      ).height;
+      // set limit angle to not move too far back in order to move up sufficienty
+      // min angle in radians : alpha ~ sin(alpha)
+      const minAngle = 0.25;
+      const distToMoveUp = minZoomDistance - relativeHeight;
+      var distToMoveBack = distToMoveUp / unitHeightDiff;
+      if (unitHeightDiff < minAngle) {
+        // scene.camera.moveUp(distToMoveUp);
+        scene.camera.moveUp(distToMoveUp * unitHeightDiff / minAngle);
+        scene.camera.moveBackward(distToMoveUp / minAngle);
+      } else {
+        scene.camera.moveBackward(distToMoveBack);
+      }
+    }
   }
 
   /**
