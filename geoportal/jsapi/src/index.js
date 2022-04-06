@@ -128,7 +128,7 @@ lux.getLegendHtml = function(layer) {
  * <li>Geocoding service</li>
  * <li>Reverse geocoding service</li>
  * </lu>
- * @param {string | null} url Base url to services. Default is //apiv3.geoportail.lu/
+ * @param {string | null} url Base url to services. Default is //apiv4.geoportail.lu/
  * @param {string | undefined} requestScheme The request scheme. Default is http.
  * @export
  */
@@ -141,7 +141,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_fr.json';
-    url = 'https://apiv3.geoportail.lu/';
+    url = 'https://apiv4.geoportail.lu/';
   } else {
     lux.layersUrl = wsBaseUrl + lux.layersUrl;
     // lux.layersUrl = url + lux.layersUrl;
