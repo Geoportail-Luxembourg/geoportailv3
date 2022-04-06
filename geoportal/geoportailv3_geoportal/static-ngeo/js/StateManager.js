@@ -139,6 +139,7 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
       (this.initialState_.hasOwnProperty('fid') &&
       this.initialState_['fid'].length > 0))) {
     this.initialState_['bgLayer'] = 'basemap_2015_global';
+    this.ngeoLocation_.updateParams({'bgLayer': 'basemap_2015_global'});
     var msg = this.gettextCatalog_.getString(
         'Aucune couche n\'étant définie pour cette carte,' +
         ' une couche de fond a automatiquement été ajoutée.');

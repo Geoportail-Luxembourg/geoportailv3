@@ -538,6 +538,9 @@ exports.prototype.initBgLayers_ = function() {
           ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) && parseInt(stateBgLayerOpacity, 0) === 0)) {
         if (this.initialVersion_ === 2 && stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
           stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+          if (stateBgLayerLabel === undefined) {
+            stateBgLayerLabel = "basemap_2015_global";
+          }
         } else if (this.initialVersion_ === 2 && parseInt(stateBgLayerOpacity, 0) === 0) {
           stateBgLayerLabel = 'orthogr_2013_global';
         }
