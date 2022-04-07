@@ -1,6 +1,6 @@
 ﻿<h1>{{layers.layerLabel | translate}}</h1>
 
-<div class="poi-feature">
+<div class="poi-feature" ng-if="layers.features !== undefefined && layers.features.length > 0">
   <app-pagreport app-pagreport-staging="true"
     app-pagreport-ids="ctrl.joinAttributes(layers.features, 'OBJECTID', ',')">
 </div>
