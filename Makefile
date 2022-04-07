@@ -148,4 +148,4 @@ reload:
 
 .PHONY: rebuild-js-api
 rebuild-js-api:
-	docker-compose exec geoportal /app/jsapi/rebuild_api.sh
+	docker exec -w /app/jsapi/ geoportailv3_geoportal_1 /app/jsapi/rebuild_api.sh

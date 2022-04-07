@@ -40,9 +40,13 @@ function service($http, ngeoLocation, shorturlServiceUrl) {
         location.search.includes('applogin=yes');
 
         if (isApp) {
-            url = url.replace('localforage=android', '')
-            url = url.replace('localforage=ios', '')
-            url = url.replace('applogin=yes', '')
+            url = url.replace('localforage=android', '');
+            url = url.replace('localforage=ios', '');
+            url = url.replace('applogin=yes', '');
+            url = url.replace('ipv6=true', '');
+            url = url.replace('embeddedserver=127.0.0.1%3A8765', '');
+            url = url.replace('embeddedserverprotocol=https', '');
+            url = url.replace('embeddedserverprotocol=http', '');
         }
         var req = $.param({
           'url': url
