@@ -121,17 +121,17 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
   var layersToRemove = [];
   for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
-    if (layer2 == layer1 || layer2.get('metadata') === undefined ||
-        layer2.get('metadata')['exclusion'] === undefined ||
+    if ((layer2 == layer1 || layer2.get('metadata') === undefined) ||
+        (layer2.get('metadata')['exclusion'] === undefined) ||
         // check contents (layerX.layer_) for 3d layers which are inside a wrapper class
-        (layer1.layer_ !== undefined && layer2.layer_ !== undefined && layer1.layer_ == layer2.layer_)) {
+        ((layer1.layer_ !== undefined) && (layer2.layer_ !== undefined) && (layer1.layer_ === layer2.layer_))) {
       continue;
     }
 
     // check exclusion with current baselayer
     var exclusion2 = layer2.get('metadata')['exclusion'];
     opacity = layer2.getOpacity();
-    if (this.intersects_(exclusion1, exclusion2) && opacity > 0) {
+    if (this.intersects_(exclusion1, exclusion2) && (opacity > 0)) {
       // layer to exclude is not the current base layer
       var currentBgLayer = this.backgroundLayerMgr_.get(map);
       if (layer2 !== currentBgLayer) {
