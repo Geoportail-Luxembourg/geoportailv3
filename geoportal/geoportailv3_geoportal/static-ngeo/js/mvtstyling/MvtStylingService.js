@@ -102,7 +102,12 @@ class MvtStylingService {
                     console.log(`Load mvt style for ${label} from serial uuid`);
                     this.isCustomStyle = this.isCustomStyleSetter(label, true);
                     const style_url = `${this.getvtstyleUrl_}?id=${serial}`
-                    config.style = style_url;
+                    fetch(style_url).then(function(resp) {
+                      if (resp.code == 200) {
+                        config.style = style_url;
+                      }
+                      return config;
+                    });
                     return Promise.resolve(config);
                 } else {
                     console.log(`Default mvt style for ${label}`);
@@ -345,9 +350,8 @@ class MvtStylingService {
         const label = layer.get('label');
         const keyword = getKeywordForLayer(label);
         let id = window.localStorage.getItem(label);
-
         if (id == null) return getDefaultMapBoxStyleUrl(keyword);
-        return this.getvtstyleUrl_ + '?id=' + id;
+        return this.getvtstyleUrl_ + '?id=' + id + "&default=" + getDefaultMapBoxStyleUrl(keyword);
     }
 
     removeStyles(bgLayer) {
