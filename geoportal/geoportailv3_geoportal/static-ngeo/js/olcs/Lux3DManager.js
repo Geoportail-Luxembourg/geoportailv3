@@ -167,7 +167,7 @@ const exports = class extends ngeoOlcsManager {
     const isIpv6 = location.search.includes('ipv6=true');
     const domain = (isIpv6) ? 'app.geoportail.lu' : 'geoportail.lu';
 
-    const url = 'https://3dtiles.' + domain + '/tiles';
+    const url = 'https://acts3.' + domain + '/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles';
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
       this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});

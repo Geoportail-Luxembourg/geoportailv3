@@ -54,7 +54,7 @@ import d3Elevation from '@geoblocks/d3profile';
  *
  * @api
  */
-export default class MyMap {
+class MyMap {
 
   /**
    * @param {MyMapOptions} options Options.
@@ -1218,3 +1218,4 @@ export default class MyMap {
     return points.concat(lines, others);
   }
 }
+export default MyMap;

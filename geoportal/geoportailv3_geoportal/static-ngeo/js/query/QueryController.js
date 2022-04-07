@@ -1093,6 +1093,9 @@ exports.prototype.highlightFeatures_ = function(features, fit) {
         extent = extentExtend(extent,
             jsonFeatures[i].getGeometry().getExtent());
         var curFeature = jsonFeatures[i];
+        if (curFeature.getId() == null) {
+          curFeature.setId(undefined);
+        }
         if (curFeature.getGeometry().getType() ==
             olGeomGeometryType.GEOMETRY_COLLECTION) {
           var geomCollection = /** @type {ol.geom.GeometryCollection} */
@@ -1361,22 +1364,41 @@ exports.prototype.orderAffaire = function(numCommune, numMesurage) {
  * Show tracing Geometry
  * @param {string} geom Geoson multilinestring string in 3857.
  * @param {string} color The line color. If undefined then use the default one.
+ * @param {number} width The line width. If undefined then use the default one.
  * @export
  */
-exports.prototype.showGeom = function(geom, color) {
+exports.prototype.showGeom = function(geom, color, width) {
   this.featureLayer_.getSource().clear();
+  this.highlightFeatures_(this.lastHighlightedFeatures_, false);
   if (geom !== undefined) {
     var feature = /** @type {ol.Feature} */
       ((new olFormatGeoJSON()).readFeature(geom));
     if (color !== undefined) {
       feature.set('color', color);
     }
+    if (width !== undefined) {
+      feature.set('width', width);
+    }
     this.featureLayer_.getSource().addFeature(feature);
     this.map_.getView().fit(feature.getGeometry().getExtent());
   }
-  this.highlightFeatures_(this.lastHighlightedFeatures_, false);
 };
 
+/**
+ * Open the legend panel.
+ * @export
+ */
+exports.prototype.openLegendPanel = function() {
+  this['legendsOpen'] = true;
+};
+
+/**
+ * Close the legend panel.
+ * @export
+ */
+exports.prototype.closeLegendPanel = function() {
+  this['legendsOpen'] = false;
+};
 
 appModule.controller('AppQueryController',
                       exports);
