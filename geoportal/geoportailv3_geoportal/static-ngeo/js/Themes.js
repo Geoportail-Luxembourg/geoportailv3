@@ -230,7 +230,7 @@ class Themes extends olEventsEventTarget {
       for (var i = 0; i < themes.length; i++) {
         const theme = themes[i];
         const theme_ol3d_type = theme.metadata.ol3d_type;
-        if (theme_ol3d_type != null && theme_ol3d_type != 'terrain') {
+        if ((theme_ol3d_type !== undefined) && (theme_ol3d_type !== 'terrain')) {
           arrayExtend(layers3D, this.getAllChildren_(theme.children, theme, root.ogcServers));
           tree3D.children =  tree3D.children.concat(theme.children);
         } else {
@@ -291,9 +291,9 @@ class Themes extends olEventsEventTarget {
         }
         // enable inheritance of 3d type from theme to items
         const element_ol3d_type = element.metadata.ol3d_type;
-        if (element_ol3d_type == null) {
+        if (element_ol3d_type === undefined) {
           const theme_ol3d_type = theme.metadata.ol3d_type;
-          if (theme_ol3d_type != null) {
+          if (theme_ol3d_type !== undefined) {
             element.metadata.ol3d_type = theme_ol3d_type;
           }
         }

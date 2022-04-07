@@ -93,7 +93,6 @@ const exports = function($scope, appThemes, appTheme,
        */
       (function(evt) {
         this.setTree_();
-        // this.set3dTree_();
       }), this);
 
   $scope.$watch(
@@ -102,7 +101,7 @@ const exports = function($scope, appThemes, appTheme,
       return this.map.get('ol3dm').is3dEnabled();
     },
     enabled => {
-      if (enabled && this.lux3dTree === undefined) {
+      if (enabled && (this.lux3dTree === undefined)) {
         this.lux3dTree = this.map.get('ol3dm').tree3D;
       }
     }

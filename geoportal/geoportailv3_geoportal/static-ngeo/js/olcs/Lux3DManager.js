@@ -21,10 +21,10 @@ class Wrap3dLayer {
     return 1;
   }
   get (key) {
-    if (key == "label") {
+    if (key === "label") {
       return this.layer_.name;
     }
-    else if (key == "metadata") {
+    else if (key === "metadata") {
       return this.layer_.metadata;
     }
   }
@@ -144,7 +144,7 @@ const exports = class extends ngeoOlcsManager {
    * @override
    */
   instantiateOLCesium() {
-    console.assert(this.map !== null && this.map !== undefined);
+    console.assert((this.map !== null) && (this.map !== undefined));
     const map = /** @type {!ol.Map} */ (this.map);
     const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+0200'));
     const time = () => niceIlluminationDate;
@@ -224,11 +224,11 @@ const exports = class extends ngeoOlcsManager {
   }
 
   isMeshLayer(layer) {
-    return layer.metadata.ol3d_type == 'mesh';
+    return layer.metadata.ol3d_type === 'mesh';
   }
   getActiveMeshLayers() {
     return this.activeTiles3dLayers_.map(
-      lName => this.availableTiles3dLayers_.find(l => l.layer == lName)
+      lName => this.availableTiles3dLayers_.find(l => l.layer === lName)
     ).filter(l => this.isMeshLayer(l));
   }
   removeMeshLayers() {
@@ -237,7 +237,7 @@ const exports = class extends ngeoOlcsManager {
 
   getActive3dLayers() {
     return this.activeTiles3dLayers_.map(
-      lName => this.availableTiles3dLayers_.find(l => l.layer == lName)
+      lName => this.availableTiles3dLayers_.find(l => l.layer === lName)
     );
   }
 
@@ -248,14 +248,14 @@ const exports = class extends ngeoOlcsManager {
   }
 
   isDefault3dDataLayer(layer) {
-    const isData = layer.metadata.ol3d_type == 'data';
-    const isDefault = layer.metadata.ol3d_defaultlayer == true;
-    const isDefaultData = (layer.metadata.ol3d_type == 'data') && (layer.metadata.ol3d_defaultlayer == true);
-    return layer.metadata.ol3d_type == 'data' && layer.metadata.ol3d_defaultlayer == true;
+    const isData = layer.metadata.ol3d_type === 'data';
+    const isDefault = layer.metadata.ol3d_defaultlayer === true;
+    const isDefaultData = (layer.metadata.ol3d_type === 'data') && (layer.metadata.ol3d_defaultlayer === true);
+    return (layer.metadata.ol3d_type === 'data') && (layer.metadata.ol3d_defaultlayer === true);
   }
 
   isDefaultMeshLayer(layer) {
-    return layer.metadata.ol3d_type == 'mesh' && layer.metadata.ol3d_defaultlayer == true;
+    return (layer.metadata.ol3d_type === 'mesh') && (layer.metadata.ol3d_defaultlayer === true);
   }
 
   /**
@@ -331,7 +331,7 @@ const exports = class extends ngeoOlcsManager {
     // scene.terrainProvider = terrainProvider;
     scene.terrainProvider = this.terrainProvider;
 
-    if (heightOffset != 0 || longOffset != 0 || latOffset != 0) {
+    if ((heightOffset != 0) || (longOffset != 0) || (latOffset != 0)) {
       tileset.readyPromise.then(function(tileset) {
         const boundingSphere = tileset.boundingSphere;
         const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
@@ -349,7 +349,7 @@ const exports = class extends ngeoOlcsManager {
 
     this.scheduleMinimumZoomDistanceUpdate()
 
-    if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
+    if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
       this.setMode("MESH");
       // prevent the mesh from being hidden by parts of the (blank/white) terrain
       scene.globe.depthTestAgainstTerrain = false;
@@ -371,7 +371,7 @@ const exports = class extends ngeoOlcsManager {
       this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
       this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
     }
-    if (checkNoMeshes && this.getMode() == 'MESH' && this.getActiveMeshLayers().length == 0) {
+    if (checkNoMeshes && (this.getMode() === 'MESH') && (this.getActiveMeshLayers().length === 0)) {
       this.setMode('3D');
       this.onToggle(false);
       const msg = this.gettextCatalog.getString(
@@ -387,7 +387,7 @@ const exports = class extends ngeoOlcsManager {
     if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
       this.remove3dLayer(layer.layer);
     } else {
-      if (this.isMeshLayer(layer) && this.getMode() !== 'MESH') {
+      if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
         this.toggleMesh(false);
       }
       this.add3dTile(layer);
@@ -396,7 +396,7 @@ const exports = class extends ngeoOlcsManager {
 
   getMinZoomDistanceFromLayer(layer) {
     const opt = layer.metadata.ol3d_options;
-    if (opt !== undefined && opt.minimumZoomDistance !== undefined) {
+    if ((opt !== undefined) && (opt.minimumZoomDistance !== undefined)) {
       return opt.minimumZoomDistance;
     } else {
       return this.isMeshLayer(layer) ? 50 : 5;
@@ -416,7 +416,7 @@ const exports = class extends ngeoOlcsManager {
     if (!parentScope.is3dEnabled()) return;
     const layers = parentScope.getActive3dLayers()
     // default min zoom for mesh : 50m, for 3d: 5m (unless overridden in metadata)
-    const defaultMinimumZoomDistance = parentScope.getMode() == "MESH" ? 50 : 5;
+    const defaultMinimumZoomDistance = (parentScope.getMode() === "MESH") ? 50 : 5;
 
     const minZoomDistance = Math.max(
       defaultMinimumZoomDistance,
@@ -548,12 +548,12 @@ const exports = class extends ngeoOlcsManager {
 
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
-    this.map.getLayers().getArray().forEach(l => {if (l != this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
+    this.map.getLayers().getArray().forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
     this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
   }
 
   restore_2D_layers() {
-    this.previous_2D_layers.forEach(l => {if (l != this.backgroundLayerMgr_.get(this.map)) this.map.addLayer(l)});
+    this.previous_2D_layers.forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.map.addLayer(l)});
     this.previous_2D_layers = [];
   }
 
@@ -586,7 +586,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   toggleMesh(doInit = true) {
-    if (this.getMode() === '3D' && this.is3dEnabled()) {
+    if ((this.getMode() === '3D') && this.is3dEnabled()) {
       this.setMode('MESH');
       this.onToggle(false);
     } else {
@@ -594,7 +594,7 @@ const exports = class extends ngeoOlcsManager {
     }
   }
   toggle3dTerrain() {
-    if (this.getMode() === 'MESH' && this.is3dEnabled()) {
+    if ((this.getMode() === 'MESH') && this.is3dEnabled()) {
       this.setMode('3D');
       this.onToggle(false);
     } else {
