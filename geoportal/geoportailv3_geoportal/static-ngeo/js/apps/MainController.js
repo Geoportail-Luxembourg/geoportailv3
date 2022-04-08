@@ -175,7 +175,6 @@ import '../../less/geoportailv3.less';
  import appStateManager from '../StateManager.js';
  import appTheme from '../Theme.js';
  import appThemes from '../Themes.js';
- import app3dLayer from '../backgroundlayer/Service3dLayer.js';
  import appMvtStylingService from '../mvtstyling/MvtStylingService.js';
 
  //const appThemesResponse = goog.require('app.ThemesResponse');
