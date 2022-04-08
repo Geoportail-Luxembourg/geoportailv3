@@ -126,6 +126,7 @@ class Themes extends olEventsEventTarget {
 
     this.flatCatalog = null;
     this.layers3D = [];
+    this.tree3D = {children: []};
 
     /**
      * @type {app.Mvtstyling}
@@ -228,13 +229,23 @@ class Themes extends olEventsEventTarget {
       const root = /** @type {app.ThemesResponse} */ (resp.data);
       const themes = root.themes;
       const flatCatalogue = [];
+      const layers3D = [];
+      const tree3D = {children: []};
       for (var i = 0; i < themes.length; i++) {
         const theme = themes[i];
-        const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
-        arrayExtend(flatCatalogue, children);
+        const theme_ol3d_type = theme.metadata.ol3d_type;
+        if ((theme_ol3d_type !== undefined) && (theme_ol3d_type !== 'terrain')) {
+          arrayExtend(layers3D, this.getAllChildren_(theme.children, theme, root.ogcServers));
+          tree3D.children =  tree3D.children.concat(theme.children);
+        } else {
+          const children = this.getAllChildren_(theme.children, theme, root.ogcServers);
+          arrayExtend(flatCatalogue, children);
+        }
       }
 
       this.flatCatalog = flatCatalogue;
+      this.layers3D = layers3D;
+      this.tree3D = tree3D;
 
       this.dispatchEvent(appEventsThemesEventType.LOAD);
       return root;
@@ -269,13 +280,8 @@ class Themes extends olEventsEventTarget {
     for (var i = 0; i < elements.length; i++) {
       const element = elements[i];
       if (element.hasOwnProperty('children')) {
-        if (element.name !== '3d Layers') {
-          arrayExtend(array, this.getAllChildren_(
-              element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-        } else {
-          arrayExtend(this.layers3D, this.getAllChildren_(
-              element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
-        }
+        arrayExtend(array, this.getAllChildren_(
+          element.children, theme, ogcServers, element.ogcServer || lastOgcServer));
       } else {
         // Rewrite url to match the behaviour of c2cgeoportal 1.6
         const ogcServer = element.ogcServer || lastOgcServer;
@@ -287,7 +293,15 @@ class Themes extends olEventsEventTarget {
             element.url = def.credential ? null : def.url;
           }
         }
-        element.theme = theme;
+        // enable inheritance of 3d type from theme to items
+        const element_ol3d_type = element.metadata.ol3d_type;
+        if (element_ol3d_type === undefined) {
+          const theme_ol3d_type = theme.metadata.ol3d_type;
+          if (theme_ol3d_type !== undefined) {
+            element.metadata.ol3d_type = theme_ol3d_type;
+          }
+        }
+        element.theme = theme.name;
         array.push(element);
       }
     }
@@ -309,6 +323,9 @@ class Themes extends olEventsEventTarget {
    */
   get3DLayers() {
     return this.promise_.then(() => this.layers3D);
+  };
+  get3DTree() {
+    return this.promise_.then(() => this.tree3D);
   };
 
 }
