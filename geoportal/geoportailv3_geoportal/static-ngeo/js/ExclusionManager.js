@@ -35,6 +35,8 @@ const exports = function(gettextCatalog, ngeoBackgroundLayerMgr,
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
+  this.lux3dMgr_ = null;
+
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -109,6 +111,8 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
     }
     return all;
   }, []);
+  this.lux3dMgr_.getWrappedActive3dLayers().forEach(l => layers.push(l));
+
   var len = layers.length;
   var i;
   var layer2;
@@ -117,22 +121,30 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
   var layersToRemove = [];
   for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
-    if (layer2 == layer1 || layer2.get('metadata') === undefined ||
-        layer2.get('metadata')['exclusion'] === undefined) {
+    if ((layer2 == layer1 || layer2.get('metadata') === undefined) ||
+        (layer2.get('metadata')['exclusion'] === undefined) ||
+        // check contents (layerX.layer_) for 3d layers which are inside a wrapper class
+        ((layer1.layer_ !== undefined) && (layer2.layer_ !== undefined) && (layer1.layer_ === layer2.layer_))) {
       continue;
     }
 
     // check exclusion with current baselayer
     var exclusion2 = layer2.get('metadata')['exclusion'];
     opacity = layer2.getOpacity();
-    if (this.intersects_(exclusion1, exclusion2) && opacity > 0) {
+    if (this.intersects_(exclusion1, exclusion2) && (opacity > 0)) {
       // layer to exclude is not the current base layer
       var currentBgLayer = this.backgroundLayerMgr_.get(map);
       if (layer2 !== currentBgLayer) {
         layersToRemove.push(
             gettextCatalog.getString(/** @type {string} */(layer2.get('label')))
         );
-        map.removeLayer(layer2);
+        if (layer2.get('metadata').ol3d_type === undefined) {
+          // 2D layer case
+          map.removeLayer(layer2);
+        } else {
+          // 3D layer case
+          this.lux3dMgr_.remove3dLayer(layer2.layer_.layer);
+        }
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_.getLayer());
         msg = gettextCatalog.getString(
@@ -169,8 +181,14 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
 /**
  * @param {ol.Map} map The OpenLayers map.
  */
-exports.prototype.init = function(map) {
+exports.prototype.init = function(map, lux3dMgr) {
+  this.lux3dMgr_ = lux3dMgr;
   var layerOpacityListenerKeys = {};
+  this.lux3dMgr_.on('add', function(e) {
+    var newLayer = e.detail.newLayer;
+    this.checkForLayerExclusion_(map, newLayer);
+  }.bind(this));
+
   this.backgroundLayerMgr_.on('change', function(e) {
     var curBgLayer = this.backgroundLayerMgr_.get(map);
     this.checkForLayerExclusion_(map, curBgLayer);

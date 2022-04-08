@@ -175,6 +175,7 @@ import '../../less/geoportailv3.less';
  import appStateManager from '../StateManager.js';
  import appTheme from '../Theme.js';
  import appThemes from '../Themes.js';
+ import app3dLayer from '../backgroundlayer/Service3dLayer.js';
  import appMvtStylingService from '../mvtstyling/MvtStylingService.js';
 
  //const appThemesResponse = goog.require('app.ThemesResponse');
@@ -627,6 +628,7 @@ const MainController = function(
    * @private
    */
   this.window_ = $window;
+  if (this.window_._paq === undefined) this.window_._paq = [];
 
   /**
    * @type {app.Notify}
@@ -978,10 +980,6 @@ const MainController = function(
    * @export
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
-  this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTilesFromLocation();
-    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
-  });
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
 
@@ -991,7 +989,7 @@ const MainController = function(
 
   this.manageSelectedLayers_($scope);
 
-  appExclusionManager.init(this.map_);
+  appExclusionManager.init(this.map_, this.ol3dm_);
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
@@ -1060,8 +1058,6 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
-            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
-
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1075,12 +1071,20 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DLayers().then(
-      layers3D => {
-      layers3D.forEach(catItem => {
-        this.ol3dm_.addAvailableLayers(catItem);
-      });
-    });
+    this.appThemes_.get3DTree().then(
+      tree3D => {
+        this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
+
+        this.ol3dm_.setTree(tree3D);
+        this.ol3dm_.load().then(
+          () => {
+            appLayerPermalinkManager.initBgLayers_().then(
+              () => this.ol3dm_.init3dTilesFromLocation()
+            );
+          }
+        );
+      }
+    );
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1435,11 +1439,10 @@ MainController.prototype.createMap_ = function() {
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
 MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
-  // [minx, miny, maxx, maxy]
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
-  return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
+  return new appOlcsLux3DManager(cesiumURL, this.map_, this.ngeoLocation_,
+                                 $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
+                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
