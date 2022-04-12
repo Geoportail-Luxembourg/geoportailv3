@@ -34,7 +34,7 @@
     var mymapsList = {};
     function showMymaps(ids) {
       ids.forEach(function (id) {
-        var elem = $('#map_' + id);
+        var elem = $('#map_' + id).height("158px");
         if (isElementInViewport(elem) && elem.children().length == 0) {
           var curMap = new lux.Map({
             target: 'map_' + id,
