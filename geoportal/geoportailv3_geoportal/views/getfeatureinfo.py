@@ -61,10 +61,11 @@ class Getfeatureinfo(object):
         if (luxgetfeaturedefinition is not None and
             luxgetfeaturedefinition.rest_url is not None and
                 len(luxgetfeaturedefinition.rest_url) > 0):
+            id_attribute = self.request.params.get('id_attribute', luxgetfeaturedefinition.id_column)
             features = self._get_external_data(
                 luxgetfeaturedefinition.layer,
                 luxgetfeaturedefinition.rest_url,
-                luxgetfeaturedefinition.id_column,
+                id_attribute,
                 None, fid, None,
                 luxgetfeaturedefinition.attributes_to_remove,
                 luxgetfeaturedefinition.columns_order,
