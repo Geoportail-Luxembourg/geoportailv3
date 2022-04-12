@@ -11,7 +11,7 @@ To help the developers, some examples and use cases are available on our [demo p
 
 A catalog of public layers is available on the [List of layers page](./examples/iterate_layers_api.html).
 
-A catalog of public mymaps is available on the [List of public Mymaps page.](./examples/public_mymaps.html).
+A catalog of public mymaps is available on the [List of public Mymaps page](./examples/public_mymaps.html).
 
 The Geoportail.lu V4 API is built on top of the [OpenLayers API](https://openlayers.org/en/v6.9.0/apidoc/)
 The Geoportail.lu V4 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.
@@ -20,10 +20,10 @@ Feel free to visit our [GitHub repository](https://github.com/Geoportail-Luxembo
 
 All the needed resources are loaded by including the following js script.
 ```html
-<script src="https://apiv3.geoportail.lu/apiv4loader.js" type="text/javascript"></script>
+<script src="https://apiv4.geoportail.lu/apiv4loader.js" type="text/javascript"></script>
 ```
 
-The script automatically includes the Geoportail V4 libraries as well as the OpenLayers libraries. Thus there is no need to include it again.
+The script automatically includes the Geoportail V4 libraries as well as the OpenLayers and proj4js libraries. Thus there is no need to include them again.
 
 The core API object is a [lux.Map](module-map-Map.html) that extends an OpenLayers [ol.Map](https://openlayers.org/en/v6.9.0/apidoc/module-ol_Map-Map.html). This is the main entry point to create a basic map.
 

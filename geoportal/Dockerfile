@@ -28,11 +28,11 @@ RUN mv /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
 COPY . /app
 
 # jsapi generation
-ADD ./jsapi /etc/apiv3/
-WORKDIR /etc/apiv3
+ADD ./jsapi /etc/apiv4/
+WORKDIR /etc/apiv4
 RUN node --version
 RUN npm install --no-optional && npm cache clear --force
-RUN /etc/apiv3/rebuild_api.sh
+RUN /etc/apiv4/rebuild_api.sh
 
 WORKDIR /app
 # sad fix, to allow webpack's file-loader to find files with query string & hash added
@@ -99,7 +99,7 @@ COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/stati
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/not_used/build/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/NO_CACHE/build/
 
-#COPY --from=builder /etc/apiv3/* /etc/apiv3/
+#COPY --from=builder /etc/apiv4/* /etc/apiv4/
 RUN mkdir -p /app/geoportailv3_geoportal/jsapi/build/
 COPY --from=builder /app/geoportailv3_geoportal/jsapi/build/apidoc /app/geoportailv3_geoportal/jsapi/build/apidoc
 COPY --from=builder /app/geoportailv3_geoportal/jsapi/webfonts /app/geoportailv3_geoportal/jsapi/webfonts
