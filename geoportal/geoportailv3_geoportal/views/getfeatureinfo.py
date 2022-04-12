@@ -203,14 +203,14 @@ class Getfeatureinfo(object):
             for field in poi_fields:
                 sep = "{{"
                 end_sep = "}}"
-                if render_type == 'apiv3':
+                if render_type == 'apiv4':
                     sep = "${"
                     end_sep = "}"
                 content = content.replace(
                     "${%(field)s}" % ({'field': field}),
                     (sep + "feature['attributes']['%(field)s']" + end_sep)
                     % ({'field': field}))
-            if render_type != 'apiv3':
+            if render_type != 'apiv4':
                 response = "<h1>{{layers['layerLabel'] | translate}}</h1>\
                            <div class=\"poi-feature\"\
                            ng-repeat=\"feature in layers['features']\">%s\
@@ -604,7 +604,7 @@ class Getfeatureinfo(object):
                     try:
                         DBSession.rollback()
                         url_remote = urllib.request.urlopen(
-                            l_template + "&render=apiv3", None, 15)
+                            l_template + "&render=apiv4", None, 15)
                         data = url_remote.read()
                     except Exception as e:
                         log.exception(e)
