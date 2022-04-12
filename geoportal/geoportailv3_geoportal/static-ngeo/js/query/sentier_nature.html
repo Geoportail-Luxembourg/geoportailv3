@@ -6,7 +6,7 @@
       <div ng-if="ctrl.hasAttributes(feature)">
         <label translate>Longueur du parcours</label> : <span>{{feature.attributes.formatted_length }}</span>
         <div ng-if="ctrl.hasFeatureAttribute(feature, 'link')">
-          <a class="btn btn-default" ng-href="{{ctrl.proxyresourceUrl}}?fid={{feature.fid}}&attribute=link" target="_blank" translate>Télécharger la brochure</a>
+          <a class="btn btn-default" ng-href="{{ctrl.proxyresourceUrl}}?fid={{layers.layer}}_{{feature.attributes.objectid}}&attribute=link&id_attribute=objectid" target="_blank" translate>Télécharger la brochure</a>
         </div>
       </div>
       <div class='query-profile' ng-show="feature.attributes.showProfile.active">
@@ -18,9 +18,7 @@
       <div ng-if="!ctrl.hasAttributes(feature)">
         <span translate>Aucune information disponible pour cette couche</span>
       </div>
-      <div ng-if="ctrl.hasValidFID(feature)">
-        <span><a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
-      </div>
+      <span><a class="fid-link no-print" href="?fid={{layers.layer}}_{{feature.attributes.id_qr}}" target="_blank" translate>Lien direct vers cet objet</a></span>
     </div>
   </div>
 </div>
