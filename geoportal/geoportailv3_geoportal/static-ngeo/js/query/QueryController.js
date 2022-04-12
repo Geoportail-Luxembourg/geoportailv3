@@ -824,19 +824,8 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
               /** @type {app.query.ShowProfile} */ ({active: true});
           this.getProfile_(validGeom.geom, validGeom.id)
         .then(function(profile) {
-          this.responses_.forEach(function(item) {
-            if (item['has_profile']) {
-              item['features'].forEach(
-                        function(feature) {
-                          if (feature['fid'] === profile[0]['id']) {
-                            feature['attributes']['showProfile'] =
-                                /** @type {app.query.ShowProfile} */
-                                ({active: true});
-                            feature['attributes']['profile'] = profile;
-                          }
-                        }, this);
-            }
-          }, this);
+          feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
+          feature['attributes']['profile'] = profile;
         }.bind(this));
         }
       }, this);
