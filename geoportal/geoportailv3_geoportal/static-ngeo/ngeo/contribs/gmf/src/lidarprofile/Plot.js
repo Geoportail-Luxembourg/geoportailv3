@@ -152,6 +152,7 @@ const exports = class {
     const containerEl = d3.select('.gmf-lidarprofile-container').node();
     const containerWidth = containerEl.getBoundingClientRect().width;
     const containerHeight = containerEl.getBoundingClientRect().height;
+    console.log("Container width", containerWidth, margin.left, margin.right)
     this.width_ = containerWidth - (margin.left + margin.right);
     this.height_ = containerHeight - (margin.top + margin.bottom);
 
@@ -214,6 +215,8 @@ const exports = class {
 
     svg.selectAll('*').remove();
 
+    console.log("width: ", this.width_, margin.left)
+    console.log("height: ", this.height_, margin.top, margin.bottom)
     svg.attr('width', this.width_ + margin.left)
       .attr('height', this.height_ + margin.top + margin.bottom);
 

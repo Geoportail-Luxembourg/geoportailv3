@@ -25,7 +25,7 @@ function debounce(func, timeout = 300){
 
 const gettextCatalog = { getString: str => str }
 
-const exports = class {
+export class LidarManager {
 
   /**
    * Provides a service to manage a D3js component to be used to draw an lidar point cloud profile chart.
@@ -485,6 +485,3 @@ const exports = class {
   }
 
 };
-
-
-export default exports;
