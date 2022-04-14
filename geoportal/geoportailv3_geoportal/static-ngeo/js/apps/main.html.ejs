@@ -104,7 +104,7 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container">
+    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -388,9 +388,23 @@
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
     </div>
+
   </div>
+
     <!-- Begin bottom bar -->
     <footer class="footer" ng-show="::!mainCtrl.embedded">
+<!--       <div class="gmf-lidarprofile-container"> -->
+<!--           <div class="lidarprofile"> -->
+<!--               <div class="lidar-error"></div> -->
+<!--               <canvas class="lidar-canvas"></canvas> -->
+<!--               <svg class="lidar-svg" style="fill: #ffff00;position:absolute;z-index:1;"></svg> -->
+<!--           </div> -->
+<!--           <div class="lidar-legend"> -->
+<!--               <div class="width-info"></div> -->
+<!--               <div class="lod-info"></div> -->
+<!--               <div class="lidar-info"></div> -->
+<!--           </div> -->
+<!--       </div> -->
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"

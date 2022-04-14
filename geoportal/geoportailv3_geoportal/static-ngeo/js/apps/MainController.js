@@ -500,7 +500,7 @@ const MainController = function(
     this.resetSelectedSimpleData();
     // Then we select this item
     selectedItem['selected'] = true;
-  
+
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
@@ -823,9 +823,10 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['lidarOpen'] = false;
+  this['lidarOpen'] = true;
 
   // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
+  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
   $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
 
   /**
