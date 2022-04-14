@@ -42,13 +42,14 @@ class LuxThemes(Theme):
     def _wms_layers_internal(self):
         layers = {}
         for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
-            for sublayer in layer.layers.split(","):
-                layers[layer.name + '__' + sublayer] = {
-                    "info": {
-                        "name": layer.name + '__' + sublayer,
-                    },
-                    "children": []
-                }
+            if layer.layers is not None:
+                for sublayer in layer.layers.split(","):
+                    layers[layer.name + '__' + sublayer] = {
+                        "info": {
+                            "name": layer.name + '__' + sublayer,
+                        },
+                        "children": []
+                    }
 
         return {"layers": layers}, set()
 
