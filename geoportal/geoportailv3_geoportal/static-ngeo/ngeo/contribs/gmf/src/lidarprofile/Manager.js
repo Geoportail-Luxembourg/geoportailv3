@@ -4,6 +4,7 @@
 import gmfLidarprofileMeasure from './Measure.js';
 import gmfLidarprofilePlot from './Plot.js';
 import gmfLidarprofileUtils from './Utils.js';
+import ngeoDownloadCsv from 'ngeo/download/Csv.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olOverlay from 'ol/Overlay.js';
 import olSourceVector from 'ol/source/Vector.js';
@@ -132,6 +133,7 @@ export class LidarManager {
      * @type {gmf.lidarprofile.Utils}
      */
     this.utils = new gmfLidarprofileUtils();
+
   }
 
   /**

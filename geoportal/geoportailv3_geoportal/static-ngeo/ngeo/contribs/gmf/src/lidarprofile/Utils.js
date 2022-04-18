@@ -260,13 +260,13 @@ const exports = class {
       const row = {};
       for (const key in point) {
         const value = point[key];
-        if (key == 'altitude') {
-          row[key] = value.toFixed(4);
-        } else if (key == 'color_packed' || key == 'coords') {
-          row[key] = value.join(' ');
-        } else {
-          row[key] = value;
-        }
+          if (key == 'altitude') {
+            row[key] = value ? value.toFixed(4) : null;
+          } else if (key == 'color_packed' || key == 'coords') {
+            row[key] = value ? value.join(' ') : null;
+          } else {
+            row[key] = value;
+          }
       }
       return row;
     });

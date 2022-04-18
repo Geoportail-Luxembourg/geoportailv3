@@ -2,13 +2,11 @@ import {customElement, property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {html} from 'lit';
 import i18next from 'i18next';
-
 import DrawInteraction from 'ol/interaction/Draw.js';
 import VectorSource from 'ol/source/Vector.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import LineString from 'ol/geom/LineString';
 import GeoJSON from 'ol/format/GeoJSON'
-
 import {LuxBaseElement} from '../LuxBaseElement';
 import {LidarManager} from '../../ngeo/contribs/gmf/src/lidarprofile/Manager';
 import { getConfig } from '../../ngeo/contribs/gmf/src/lidarprofile/config'
@@ -29,6 +27,11 @@ export class GmfLidarPanel extends LuxBaseElement {
     @property({type: Boolean})
     drawActive: boolean = false;
 
+    @property({type: Object})
+    config: object = getConfig();
+
+    private classifications: [] = this.config.serverConfig.classification_colors;
+
     private drawInteraction: DrawInteraction;
     private vectorLayer: VectorLayer;
     private coordinates: LineString;
@@ -48,7 +51,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.drawInteraction.on('drawend', (event) => {
             this.drawActive = false;
             this.coordinates = event.feature.getGeometry();
-            console.log(event.feature.getGeometry().getCoordinates());
+            this.generatePlot();
         });
     }
 
@@ -80,8 +83,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.drawInteraction.setActive(this.drawActive);
     }
 
-    exportCsv() {
-        console.log("Export CSV :", this.coordinates);
+    generatePlot() {
         const format = new GeoJSON({
             featureProjection: 'EPSG:3857',
             dataProjection: 'EPSG:4326'
@@ -114,19 +116,32 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.coordinates = lineFeature;
         console.log("Export CSV :", lineFeature);
 
-        this.manager.init(getConfig(), window.map)
-        this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2056'))
-        this.manager.getProfileByLOD([], 0, true, getConfig().serverConfig.minLOD);
+        this.manager.init(this.config, window.map);
+        this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2056'));
+        this.manager.clearBuffer();
+        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
+    }
+    exportCsv() {
+        console.log("Export CSV :");
+        const points = this.manager.utils.getFlatPointsByDistance(this.manager.profilePoints) || {};
+        const csvData = this.manager.utils.getCSVData(points);
+        let headerColumns = Object.keys(points[0]);
+        headerColumns = headerColumns.map((column) => {
+            return {'name': column};
+        });
+
     }
 
     exportPng() {
         console.log("Export PNG :", this.coordinates);
-
+        this.manager.utils.downloadProfileAsImageFile(getConfig().clientConfig);
     }
 
     resetProfiles() {
         this.vectorLayer.getSource().clear();
         this.coordinates = null;
+        this.manager.clearBuffer();
+        this.manager.getProfileByLOD([], 0, true, 0);
     }
 
     render() {
@@ -136,6 +151,17 @@ export class GmfLidarPanel extends LuxBaseElement {
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
             </div>
             <div>
+                <div>Classes</div>
+                  ${Object.values(this.classifications).map((classification) =>
+            html`
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" @click=${() => this.toggleClassificationCheck(classification)} checked="${classification.visible === 1}">
+                        <span translate>${classification.name}</span>
+                    </label>
+                </div>`)}
+            </div>
+            <div>
                 <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
                 <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
             </div>
@@ -143,6 +169,11 @@ export class GmfLidarPanel extends LuxBaseElement {
                 <button class="btn btn-default" @click="${() => this.resetProfiles()}">${i18next.t('Reset Profiles')}</button>
             </div>
         `;
+    }
+
+    toggleClassificationCheck(classification) {
+        classification.visible = (classification.visible + 1) % 2;
+        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
     }
 
     createRenderRoot() {
