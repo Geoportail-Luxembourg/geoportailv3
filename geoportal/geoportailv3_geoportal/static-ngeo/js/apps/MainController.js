@@ -193,6 +193,7 @@ import '../../less/geoportailv3.less';
 
 import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
+import '../lidar-plot/lidar-plot.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
@@ -823,10 +824,9 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['lidarOpen'] = true;
+  this['lidarOpen'] = false;
 
   // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
-  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
   $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
 
   /**

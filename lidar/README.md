@@ -12,3 +12,4 @@ This folder contains all config for the [pytree](https://github.com/sitn/pytree)
 
 
 ¹: For the curious one, when you save a file, his inode is modified, docker bind inode when bind mount is used.
+http://localhost:5000/profile/get?minLOD=0&maxLOD=5&width=10&coordinates={2538600.0,1181474.0},{2539187.0,1181062.0}&pointCloud=luxembourg&attributes=%27
