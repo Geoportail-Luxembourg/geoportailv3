@@ -4,6 +4,7 @@ from c2cgeoportal_commons.models.main import Theme as ThemeModel
 from c2cgeoportal_geoportal.views.theme import Theme
 from c2cgeoportal_geoportal.lib.caching import get_region, invalidate_region
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
+from c2cgeoportal_commons import models
 import logging
 
 log = logging.getLogger(__name__)
@@ -83,7 +84,23 @@ class LuxThemes(Theme):
 
     @view_config(route_name="lux_themes", renderer="json")
     def lux_themes(self):
-        return super().themes()
+        themes = super().themes()
+        sets = self.request.params.get("set", "all")
+        if sets in ("all", "3d"):
+            themes["lux_3d"] = self.get_lux_3d_layers()
+        return themes
+
+    def get_lux_3d_layers(self):
+        lux_3d_layers = {}
+        interface = self.request.params.get("interface", "desktop")
+        layers = self._layers(interface)
+        terrain_layer = (models.DBSession.query(models.main.Layer)
+                         .filter(models.main.Metadata.name == "ol3d_type",
+                                 models.main.Metadata.value == "terrain",
+                                 models.main.Layer.id == models.main.Metadata.item_id)).one()
+        if terrain_layer.name in layers:
+            lux_3d_layers["terrain_url"] = terrain_layer.url + terrain_layer.layer
+        return lux_3d_layers
 
     @staticmethod
     def is_mixed(_):
