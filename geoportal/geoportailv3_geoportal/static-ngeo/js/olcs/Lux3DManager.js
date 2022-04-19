@@ -160,22 +160,29 @@ const exports = class extends ngeoOlcsManager {
     if (this.ngeoLocation_.hasParam('tile_coordinates')) {
       scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
     }
+    return ol3d;
+  }
+
+  setTerrain(url) {
     // for performance, limit terrain levels to be loaded
     const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
     const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
     const rectangle = this.getCameraExtentRectangle();
+    if (url === undefined) {
+      url = "https://acts3.geoportail.lu/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles";
+    }
     const isIpv6 = location.search.includes('ipv6=true');
-    const domain = (isIpv6) ? 'app.geoportail.lu' : 'geoportail.lu';
-
-    const url = 'https://acts3.' + domain + '/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles';
+    if (isIpv6) {
+      url = url.replace('geoportail.lu', 'app.geoportail.lu');
+    }
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
       this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
+      const scene = this.ol3d.getCesiumScene();
       // prevent rendering of parts of 3D objects hidden by terrain
       scene.globe.depthTestAgainstTerrain = true;
       scene.terrainProvider = this.noTerrainProvider;
     }
-    return ol3d;
   }
 
   setTree(tree) {

@@ -1070,11 +1070,12 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DTree().then(
-      tree3D => {
+    this.appThemes_.get3D().then(
+      struct3D => {
+        this.ol3dm_.setTerrain(struct3D.terrain);
         this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
 
-        this.ol3dm_.setTree(tree3D);
+        this.ol3dm_.setTree(struct3D.tree);
         this.ol3dm_.load().then(
           () => {
             appLayerPermalinkManager.initBgLayers_().then(
