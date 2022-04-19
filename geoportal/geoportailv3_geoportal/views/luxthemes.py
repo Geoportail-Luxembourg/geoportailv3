@@ -99,7 +99,10 @@ class LuxThemes(Theme):
                                  models.main.Metadata.value == "terrain",
                                  models.main.Layer.id == models.main.Metadata.item_id)).one()
         if terrain_layer.name in layers:
-            lux_3d_layers["terrain_url"] = terrain_layer.url + terrain_layer.layer
+            if terrain_layer.url[-1] == "/":
+                lux_3d_layers["terrain_url"] = terrain_layer.url + terrain_layer.layer
+            else:
+                lux_3d_layers["terrain_url"] = terrain_layer.url + "/" + terrain_layer.layer
         return lux_3d_layers
 
     @staticmethod
