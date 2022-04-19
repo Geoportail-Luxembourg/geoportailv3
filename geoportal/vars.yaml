@@ -173,6 +173,9 @@ vars:
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
         wmtsUrl: '{WMTSURL}'
+        ipv6Substitution:
+          regularServerRoot: geoportail.lu
+          ipv6ServerRoot: app.geoportail.lu
       dynamic_constants:
         cacheVersion: cache_version
         langUrls: lang_urls
