@@ -89,3 +89,5 @@ The other parameters can be any parameters accepted by [Cesium tilesets](https:/
 
 For example for use of a mesh with vertical offset of 47.8m, you can define the following metadata: `ol3d_options: {"heightOffset": -47.8}`
 
+To configure a 3D terrain definition, add a new WMTS layer with the metadata `ol3d_type:terrain` The complete root URL for the terrain tile server will be concatenated from the fields `GetCapabilities URL` and `WMTS layer name` with an additional slash (/) if needed.
+There shall be one terrain defition per interface (eg. desktop, main) otherwise the request to the DB fails (the query checks for `one()` object, if several layers are found, the query will fail.
