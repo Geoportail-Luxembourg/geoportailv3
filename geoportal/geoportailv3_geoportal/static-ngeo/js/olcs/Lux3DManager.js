@@ -42,7 +42,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
    *     manager.
    */
-  constructor(cesiumUrl, map, ngeoLocation, $rootScope,
+  constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
               tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
               appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {map});
@@ -70,6 +70,8 @@ const exports = class extends ngeoOlcsManager {
      * @type {ngeo.statemanager.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
+
+    this.ipv6Substitution_ =  ipv6Substitution;
 
     /*
      * A factor used to increase the screen space error of terrain tiles when they are partially in fog. The effect is to reduce
@@ -173,7 +175,7 @@ const exports = class extends ngeoOlcsManager {
     }
     const isIpv6 = location.search.includes('ipv6=true');
     if (isIpv6) {
-      url = url.replace('geoportail.lu', 'app.geoportail.lu');
+      url = url.replace(this.ipv6Substitution_.regularServerRoot, this.ipv6Substitution_.ipv6ServerRoot);
     }
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
