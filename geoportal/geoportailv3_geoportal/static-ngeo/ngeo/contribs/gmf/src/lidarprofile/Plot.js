@@ -152,8 +152,8 @@ const exports = class {
     const containerEl = d3.select('.gmf-lidarprofile-container').node();
     const containerWidth = containerEl.getBoundingClientRect().width;
     const containerHeight = containerEl.getBoundingClientRect().height;
-    this.width_ = containerWidth - (margin.left + margin.right);
-    this.height_ = containerHeight - (margin.top + margin.bottom);
+    this.width_ = Math.max(containerWidth - (margin.left + margin.right), 0);
+    this.height_ = Math.max(containerHeight - (margin.top + margin.bottom), 0);
 
     this.material = this.manager_.config.serverConfig.default_attribute;
 
