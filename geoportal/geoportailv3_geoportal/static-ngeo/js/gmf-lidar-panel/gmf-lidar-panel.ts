@@ -48,6 +48,9 @@ export class GmfLidarPanel extends LuxBaseElement {
             type: 'LineString'
         });
         this.drawInteraction.setActive(false);
+        this.drawInteraction.on('drawstart', (event) => {
+            if (this.coordinates) this.resetProfiles()
+        })
         this.drawInteraction.on('drawend', (event) => {
             this.drawActive = false;
             this.coordinates = event.feature.getGeometry();
@@ -76,6 +79,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                 this.vectorLayer.getSource().clear();
                 map.removeInteraction(this.drawInteraction);
                 map.removeLayer(this.vectorLayer);
+                if (this.coordinates) this.resetProfiles()
             }
         }
     }
@@ -164,9 +168,6 @@ export class GmfLidarPanel extends LuxBaseElement {
             <div>
                 <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
                 <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
-            </div>
-            <div>
-                <button class="btn btn-default" @click="${() => this.resetProfiles()}">${i18next.t('Reset Profiles')}</button>
             </div>
         `;
     }
