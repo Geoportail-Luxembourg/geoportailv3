@@ -10,6 +10,12 @@ import {axisBottom, axisLeft} from 'd3-axis';
 import {scaleLinear} from 'd3-scale';
 import {event as d3Event, mouse, select} from 'd3-selection';
 import {zoom} from 'd3-zoom';
+import proj4 from 'proj4';
+import {register} from 'ol/proj/proj4';
+
+proj4.defs("EPSG:2056","+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
+register(proj4);
+
 const d3 = {
   axisBottom,
   axisLeft,
@@ -347,9 +353,9 @@ const exports = class {
       el.innerHTML = html;
 
       this.manager_.cartoHighlight.setElement(el);
-      this.manager_.cartoHighlight.setPosition([p.coords[0], p.coords[1]]);
+      const lidarPointGeom = new olGeomPoint([p.coords[0], p.coords[1]]).transform('EPSG:2056', 'EPSG:3857');
+      this.manager_.cartoHighlight.setPosition(lidarPointGeom.getCoordinates());
       this.manager_.lidarPointHighlight.getSource().clear();
-      const lidarPointGeom = new olGeomPoint([p.coords[0], p.coords[1]]);
       const lidarPointFeature = new olFeature(lidarPointGeom);
       if (typeof (pointClassification.color) !== undefined) {
 
