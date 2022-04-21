@@ -159,7 +159,7 @@ const exports = class {
 
     canvas.attr('height', this.height_)
       .attr('width', this.width_)
-      .style('background-color', 'black')
+      .style('background-color', 'white')
       .style('z-index', 0)
       .style('position', 'absolute')
       .style('margin-left', `${margin.left.toString()}px`)
