@@ -22,8 +22,8 @@ export class LidarPlot extends LuxBaseElement {
     //clear legend and profile when opening plot
     updated(changedProperties: Map<string, any>) {
         if (changedProperties.has('active') && this.active === true) {
-            document.querySelector('.lidar-canvas').style.backgroundColor = 'inherit';
             document.querySelector('.lidar-legend').innerHTML = this.legendContent();
+            document.querySelector('.lidarprofile').innerHTML = this.profileContent();
         }
     }
 
@@ -33,16 +33,17 @@ export class LidarPlot extends LuxBaseElement {
             <div class="lidar-info"></div>`
     }
 
+    profileContent() {
+        return `<div class="lidar-error"></div>
+            <canvas class="lidar-canvas"></canvas>
+            <svg class="lidar-svg" style="fill: #ffff00;position:absolute;z-index:1;"></svg>`
+    }
+
     render() {
         return html`
             <div class="gmf-lidarprofile-container" class="panel">
-                <div class="lidar-legend">
-                </div>    
-                <div class="lidarprofile">
-                    <div class="lidar-error"></div>
-                    <canvas class="lidar-canvas"></canvas>
-                    <svg class="lidar-svg" style="fill: #ffff00;position:absolute;z-index:1;"></svg>
-                </div>
+                <div class="lidar-legend"></div>
+                <div class="lidarprofile"></div>
             </div>
         `;
     }
