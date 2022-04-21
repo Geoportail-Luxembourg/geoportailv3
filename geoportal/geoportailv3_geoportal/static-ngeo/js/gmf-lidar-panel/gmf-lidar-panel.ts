@@ -148,26 +148,58 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager.clearBuffer();
     }
 
+    setMeasureActive(): void {
+        if (!this.manager.measure) {
+          throw new Error('Missing profile.measure');
+        }
+        this.manager.measure.clearMeasure();
+        this.manager.measure.setMeasureActive();
+    }
+
+    clearMeasure(): void {
+        if (!this.manager.measure) {
+          throw new Error('Missing profile.measure');
+        }
+        this.manager.measure.clearMeasure();
+      }
+
     render() {
         return html`
             <div>
                 <button class="btn btn-default ${classMap({active: this.drawActive})}"
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
-            </div>
-            <div>
-                <div>Classes</div>
-                  ${Object.values(this.classifications).map((classification) =>
-            html`
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" @click=${() => this.toggleClassificationCheck(classification)} checked="${classification.visible === 1}">
-                        <span translate>${classification.name}</span>
-                    </label>
-                </div>`)}
-            </div>
-            <div>
-                <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
-                <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
+                <div class="${classMap({hidden: !this.coordinates})}">
+                    <div>
+                        <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
+                        <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
+                    </div>
+                    <hr/>
+                    <div>
+                        <button
+                            class="btn btn-default"
+                            @click=${() => this.setMeasureActive()}
+                            >
+                            ${i18next.t('Take measure')}
+                        </button>
+                        <button
+                            class="btn btn-default"
+                            @click=${() => this.clearMeasure()}
+                            >
+                            <span class="fa fa-eraser"></span>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div>Classes</div>
+                    ${Object.values(this.classifications).map((classification) =>
+                html`
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" @click=${() => this.toggleClassificationCheck(classification)} checked="${classification.visible === 1}">
+                            <span translate>${classification.name}</span>
+                        </label>
+                    </div>`)}
+                </div>
             </div>
         `;
     }
