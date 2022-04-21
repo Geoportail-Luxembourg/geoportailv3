@@ -146,7 +146,6 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.vectorLayer.getSource().clear();
         this.coordinates = null;
         this.manager.clearBuffer();
-        this.manager.getProfileByLOD([], 0, true, 0);
     }
 
     render() {
