@@ -94,15 +94,18 @@ class LuxThemes(Theme):
         lux_3d_layers = {}
         interface = self.request.params.get("interface", "desktop")
         layers = self._layers(interface)
-        terrain_layer = (models.DBSession.query(models.main.Layer)
-                         .filter(models.main.Metadata.name == "ol3d_type",
-                                 models.main.Metadata.value == "terrain",
-                                 models.main.Layer.id == models.main.Metadata.item_id)).one()
-        if terrain_layer.name in layers:
-            if terrain_layer.url[-1] == "/":
-                lux_3d_layers["terrain_url"] = terrain_layer.url + terrain_layer.layer
-            else:
-                lux_3d_layers["terrain_url"] = terrain_layer.url + "/" + terrain_layer.layer
+        try:
+            terrain_layer = (models.DBSession.query(models.main.Layer)
+                             .filter(models.main.Metadata.name == "ol3d_type",
+                                     models.main.Metadata.value == "terrain",
+                                     models.main.Layer.id == models.main.Metadata.item_id)).one()
+            if terrain_layer.name in layers:
+                if terrain_layer.url[-1] == "/":
+                    lux_3d_layers["terrain_url"] = terrain_layer.url + terrain_layer.layer
+                else:
+                    lux_3d_layers["terrain_url"] = terrain_layer.url + "/" + terrain_layer.layer
+        except:
+            pass
         return lux_3d_layers
 
     @staticmethod
