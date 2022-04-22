@@ -327,6 +327,17 @@ class Themes extends olEventsEventTarget {
   get3DTree() {
     return this.promise_.then(() => this.tree3D);
   };
+  get3DTerrain() {
+    return this.promise_.then((data) => data.lux_3d.terrain_url);
+  };
+  get3D() {
+    return this.promise_.then((data) => {
+      return {
+        tree: this.tree3D,
+        terrain: data.lux_3d.terrain_url
+      };
+    });
+  };
 
 }
 

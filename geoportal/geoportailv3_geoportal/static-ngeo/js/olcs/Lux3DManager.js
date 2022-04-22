@@ -42,7 +42,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
    *     manager.
    */
-  constructor(cesiumUrl, map, ngeoLocation, $rootScope,
+  constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
               tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
               appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {map});
@@ -70,6 +70,9 @@ const exports = class extends ngeoOlcsManager {
      * @type {ngeo.statemanager.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
+
+    this.ipv6Substitution_ =  ipv6Substitution;
+    this.terrainUrl = undefined;
 
     /*
      * A factor used to increase the screen space error of terrain tiles when they are partially in fog. The effect is to reduce
@@ -160,22 +163,42 @@ const exports = class extends ngeoOlcsManager {
     if (this.ngeoLocation_.hasParam('tile_coordinates')) {
       scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
     }
-    // for performance, limit terrain levels to be loaded
-    const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
-    const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
-    const rectangle = this.getCameraExtentRectangle();
-    const isIpv6 = location.search.includes('ipv6=true');
-    const domain = (isIpv6) ? 'app.geoportail.lu' : 'geoportail.lu';
-
-    const url = 'https://acts3.' + domain + '/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles';
-    if (!this.ngeoLocation_.hasParam('no_terrain')) {
-      this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
-      this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
-      // prevent rendering of parts of 3D objects hidden by terrain
-      scene.globe.depthTestAgainstTerrain = true;
-      scene.terrainProvider = this.noTerrainProvider;
+    if (this.terrainUrl !== undefined) {
+      this.defineTerrain(ol3d);
     }
     return ol3d;
+  }
+
+  setTerrain(url) {
+    if (url === undefined) {
+      url = "https://acts3.geoportail.lu/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles";
+    }
+    const isIpv6 = location.search.includes('ipv6=true');
+    if (isIpv6) {
+      url = url.replace(this.ipv6Substitution_.regularServerRoot, this.ipv6Substitution_.ipv6ServerRoot);
+    }
+    this.terrainUrl = url;
+    // try setting a terrain provider - this call fails if Cesium is not yet loaded
+    try {
+      this.defineTerrain(this.ol3d);
+    }
+    catch(e) {}
+  }
+
+  defineTerrain(ol3d) {
+    if (!this.ngeoLocation_.hasParam('no_terrain')) {
+      // for performance, limit terrain levels to be loaded
+      const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
+      const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
+      const rectangle = this.getCameraExtentRectangle();
+      const url = this.terrainUrl
+      this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
+      this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
+      const scene = ol3d.getCesiumScene();
+      // prevent rendering of parts of 3D objects hidden by terrain
+      scene.globe.depthTestAgainstTerrain = true;
+      scene.terrainProvider = this.TerrainProvider;
+    }
   }
 
   setTree(tree) {

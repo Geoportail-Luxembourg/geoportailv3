@@ -385,7 +385,7 @@ const MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
+  appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
@@ -978,7 +978,7 @@ const MainController = function(
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
-  this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL, ipv6Substitution, $rootScope);
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
 
@@ -1070,11 +1070,12 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DTree().then(
-      tree3D => {
+    this.appThemes_.get3D().then(
+      struct3D => {
+        this.ol3dm_.setTerrain(struct3D.terrain);
         this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
 
-        this.ol3dm_.setTree(tree3D);
+        this.ol3dm_.setTree(struct3D.tree);
         this.ol3dm_.load().then(
           () => {
             appLayerPermalinkManager.initBgLayers_().then(
@@ -1437,9 +1438,9 @@ MainController.prototype.createMap_ = function() {
  * @param {angular.Scope} $rootScope The root scope
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
-MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
+MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitution, $rootScope) {
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  return new appOlcsLux3DManager(cesiumURL, this.map_, this.ngeoLocation_,
+  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
                                  this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
