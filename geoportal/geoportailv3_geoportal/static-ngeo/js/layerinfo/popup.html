@@ -42,9 +42,7 @@
 </dl>
 <p ng-if="content.isError" translate>The metadata is right now not available</p>
 <h4 translate>Legend</h4>
-<iframe ng-if="content.hasLegend" width="100%" height="300" frameborder="0" ng-src="{{content.legendUrl}}">
-</iframe>
-<img ng-if="content.hasImageLegend" ng-src="{{content.legendUrl}}">
-
-<p ng-if="!content.hasLegend && !content.hasImageLegend" translate>The legend is not available for this layer</p>
+<div ng-bind-html="content.legendHTML">
+</div>
+<p ng-if="!content.hasLegend" translate>The legend is not available for this layer</p>
 </div>
