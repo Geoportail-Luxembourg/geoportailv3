@@ -103,6 +103,7 @@ function factory(requestScheme, wmtsUrl) {
     });
 
     layer.set('label', name);
+    layer.type = 'TILE';
     ngeoMiscDecorate.layer(layer);
 
     return layer;

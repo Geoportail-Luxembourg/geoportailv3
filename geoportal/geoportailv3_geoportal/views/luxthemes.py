@@ -3,7 +3,7 @@ from c2cgeoportal_commons.models import DBSession
 from c2cgeoportal_commons.models.main import Theme as ThemeModel
 from c2cgeoportal_geoportal.views.theme import Theme
 from c2cgeoportal_geoportal.lib.caching import get_region, invalidate_region
-from c2cgeoportal_geoportal.lib.wmstparsing import parse_extent
+from c2cgeoportal_geoportal.lib.wmstparsing import parse_extent, TimeInformation
 from c2cgeoportal_commons import models
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
@@ -71,18 +71,43 @@ class LuxThemes(Theme):
         layers_name=None,
         **kwargs,
     ):
-        # if group.name == "infrastrucktur_une_kommunikation":
-        #     import pdb; pdb.set_trace()
 
-        return super()._group(path, group, layers, depth, min_levels, mixed, time_,
-                              dim, wms_layers, layers_name, **kwargs)
+        g, errors = super()._group(path, group, layers, depth, min_levels, mixed, time_,
+                                   dim, wms_layers, layers_name, **kwargs)
+        if g is not None:
+            time_config = g.get('metadata', {}).get('time_config', '')
+            if time_config == 'time_group':
+                time_layer_info = {}
+                time_positions = []
+                if time_ is None:
+                    time = TimeInformation()
+                for c in g['children']:
+                    tc = json.loads(c.get('metadata', {}).get('time_config', '{}'))
+                    if tc:
+                        time_layer_info[c['id']] = tc
+                        time_positions.append(tc['time'])
+                for c in g['children']:
+                    if c['id'] in time_layer_info:
+                        extent = parse_extent(time_positions, time_layer_info[c['id']]['time'])
+                        time_layer_info[c['id']]['current_time'] = extent.to_dict()['minDefValue']
+                        time_layer_info[c['id']]['layer_name'] = c['layer']
+                        time.merge(c, extent, 'value', 'slider')
+                for c in g['children']:
+                    if c['id'] in time_layer_info:
+                        c['metadata']['time_layers'] = {
+                            str(v['current_time']): str(v['layer_name'])
+                            for k, v in time_layer_info.items()
+                        }
+                        c["time"] = time.to_dict()
+                        c['time']['minDefValue'] = time_layer_info[c['id']]['current_time']
+                g["time"] = time.to_dict()
+        return g, errors
 
     @cache_region.cache_on_arguments()
     def _wms_layers_internal(self):
         layers = {}
         for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
             if layer.time_mode != 'disabled' and layer.rest_url is not None and len(layer.rest_url) > 0:
-                # import pdb; pdb.set_trace()
                 query_params = {'f': 'pjson'}
                 if layer.use_auth:
                     auth_token = get_arcgis_token(self.request, log)
@@ -135,12 +160,20 @@ class LuxThemes(Theme):
 
     @staticmethod
     def _merge_time(time_, layer_theme, layer, wms):
+        def _fix_duration(wms):
+            for k in wms['layers']:
+                if isinstance(wms['layers'][k]['timepositions'], list):
+                    if wms['layers'][k]['timepositions'][0][-1] == '0':
+                        wms['layers'][k]['timepositions'][0] = wms['layers'][k]['timepositions'][0][:-1] + 'PT600S'
+
+        try:
+            _fix_duration(wms)
+        except:
+            pass  # no time info to be fixed
         if isinstance(layer, LuxLayerInternalWMS):
             errors = set()
             for ll in layer.layers.split(','):
                 try:
-                    # if layer.name == 'parz':
-                    # import pdb; pdb.set_trace()
                     wms_obj = wms["layers"][layer.name + '__' + ll]
                     if wms_obj.get("timepositions", None):
                         extent = parse_extent(
