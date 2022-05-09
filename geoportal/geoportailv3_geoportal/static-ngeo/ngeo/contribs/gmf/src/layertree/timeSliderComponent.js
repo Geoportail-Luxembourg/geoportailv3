@@ -205,8 +205,8 @@ exports.Controller_.prototype.init = function() {
 exports.Controller_.prototype.getTimeValueList_ = function() {
   const wmsTime = this.time;
   let timeValueList = null;
-  const minDate = new Date(this.minValue);
-  const maxDate = new Date(this.maxValue);
+  const minDate = new Date(wmsTime.minValue);
+  const maxDate = new Date(wmsTime.maxValue);
 
   if (wmsTime.values) {
     timeValueList = [];
