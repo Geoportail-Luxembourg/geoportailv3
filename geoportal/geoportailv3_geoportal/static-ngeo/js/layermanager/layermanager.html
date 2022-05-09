@@ -34,13 +34,9 @@
       time="layer.get('time')"
       on-date-selected="ctrl.setTime(layer, time)">
     </ngeo-date-picker>
-    {{layer.get('time')}}
-
-      <!-- gmf-time-slider-time="layer.get('time')" -->
     <gmf-time-slider
       ng-if="layer.get('time').widget === 'slider'"
-      ng-init="time_dummy = {'minValue':'2014-08-31T12:43:47Z','maxValue':'9999-12-31T23:59:59Z','interval':[0,1,0,0],'resolution':'second','mode':'value','widget':'slider'}"
-      gmf-time-slider-time="time_dummy"
+      gmf-time-slider-time="layer.get('time')"
       gmf-time-slider-on-date-selected="ctrl.setTime(layer, time)">
     </gmf-time-slider>
   </li>
