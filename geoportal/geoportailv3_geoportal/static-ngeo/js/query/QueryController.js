@@ -832,10 +832,15 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
     }
   }, this);
   this.clearQueryResult_(this.QUERYPANEL_);
-  this.content = this.responses_;
+  this.content = this.responses_.filter(function(item, index, arr) {
+    if ('features' in item && item.features.length > 0) {
+      return true;
+    }
+    return false;
+  }, this);
   if (this.responses_.length > 0) {
     this['infoOpen'] = openInfoPanel;
-  }  else {
+  } else {
     this['infoOpen'] = false;
   }
   this.lastHighlightedFeatures_ = [];
