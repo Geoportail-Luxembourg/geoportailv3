@@ -107,6 +107,7 @@
     "phantomjs-prebuilt": "2.1.16",
     "proj4": "2.4.4",
     "raven-js": "3.24.2",
+    "save-csv": "^4.1.0",
     "source-map-loader": "0.2.4",
     "svg2ttf": "4.1.0",
     "ttf2eot": "2.0.0",
