@@ -271,6 +271,12 @@ export class LidarManager {
    * @private
    */
   queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot) {
+    if (!this.config) {
+      throw new Error('Missing config');
+    }
+    if (!this.config.serverConfig) {
+      throw new Error('Missing config.serverConfig');
+    }
     const gettextCatalog = this.gettextCatalog;
     const lodInfo = d3.select('.gmf-lidarprofile-container .lod-info');
     if (this.config.serverConfig.debug) {
@@ -284,22 +290,33 @@ export class LidarManager {
     const url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}
       &maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=`;
 
-    fetch(url, {
-      headers: {
-        'Content-Type': 'text/plain; charset=x-user-defined'
-      },
-    }).then(
-      response => response.arrayBuffer()
-    ).then((response) => {
-      if (this.config.serverConfig.debug) {
-        let html = lodInfo.html();
-        const lodTxt = gettextCatalog.getString('LOD: ');
-        const loadedTxt = gettextCatalog.getString('loaded');
-        html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
-        lodInfo.html(html);
-      }
-      this.processBuffer_(response, iter, distanceOffset, lastLOD, resetPlot);
-    }).catch(console.error)
+    const options = {
+      method: 'GET',
+      headers: {'Content-Type': 'text/plain; charset=x-user-defined'},
+      responseType: 'arraybuffer',
+    };
+
+    fetch(url, options)
+      .then((resp) => resp.arrayBuffer())
+      .then((data) => {
+        if (!this.config) {
+          throw new Error('Missing config');
+        }
+        if (!this.config.serverConfig) {
+          throw new Error('Missing config.serverConfig');
+        }
+        if (this.config.serverConfig.debug) {
+          let html = lodInfo.html();
+          const lodTxt = i18next.t('LOD: ');
+          const loadedTxt = i18next.t('loaded');
+          html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
+          lodInfo.html(html);
+        }
+        this.processBuffer_(data, iter, distanceOffset, lastLOD, resetPlot);
+      })
+      .catch((err) => {
+        throw `Error on pytree query: ${err.message}`;
+      });
   }
 
   /**
