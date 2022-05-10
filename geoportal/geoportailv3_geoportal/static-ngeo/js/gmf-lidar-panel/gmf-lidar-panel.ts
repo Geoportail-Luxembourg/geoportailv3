@@ -13,6 +13,7 @@ import {LidarManager} from '../../ngeo/contribs/gmf/src/lidarprofile/Manager';
 import { getConfig } from '../../ngeo/contribs/gmf/src/lidarprofile/config'
 import proj4 from 'proj4';
 import {register} from 'ol/proj/proj4';
+import saveCsv from 'save-csv/save-csv.min';
 
 proj4.defs("EPSG:2056","+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
 
@@ -93,7 +94,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         //     featureProjection: 'EPSG:3857',
         //     dataProjection: 'EPSG:4326'
         // })
-        // const lineFeature = format.readFeature( {
+        // const lineFeaturebs = format.readFeature( {
         //     "type": "Feature",
         //     "properties": {},
         //     "geometry": {
@@ -118,23 +119,22 @@ export class GmfLidarPanel extends LuxBaseElement {
         //         ]
         //     }
         // })
-        // this.coordinates = lineFeature;
-        // console.log("Export CSV :", lineFeature);
+        this.coordinates = lineFeature;
+        console.log("Export CSV :", lineFeature);
 
         this.manager.init(this.config, window.map);
-        this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2056'));
+        this.manager.setLine(lineFeaturebs.clone().getGeometry().transform('EPSG:3857', 'EPSG:2056'));
         this.manager.clearBuffer();
         this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
     }
     exportCsv() {
-        console.log("Export CSV :");
         const points = this.manager.utils.getFlatPointsByDistance(this.manager.profilePoints) || {};
         const csvData = this.manager.utils.getCSVData(points);
         let headerColumns = Object.keys(points[0]);
         headerColumns = headerColumns.map((column) => {
             return {'name': column};
         });
-
+        saveCsv(csvData, {filename: 'export-lidar.csv'});
     }
 
     exportPng() {
@@ -160,6 +160,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         if (!this.manager.measure) {
           throw new Error('Missing profile.measure');
         }
+        this.vectorLayer.getSource().clear();
         this.manager.measure.clearMeasure();
       }
 
