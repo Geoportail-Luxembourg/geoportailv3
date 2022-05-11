@@ -1321,7 +1321,7 @@ MainController.prototype.enable3dCallback_ = function(active) {
   this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  if (piwik != undefined ) {
+  if (piwik != undefined) {
     piwik.push(['setDocumentTitle', 'enable3d']);
     piwik.push(['trackPageView']);
   }
@@ -1509,7 +1509,7 @@ MainController.prototype.manageSelectedLayers_ =
           for (var i = 0; i < nbLayersAdded; i++) {
             var layer = this['selectedLayers'][i];
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            if (piwik != undefined ) {
+            if (piwik != undefined) {
               piwik.push(['setDocumentTitle',
                 'LayersAdded/' + layer.get('label')
               ]);
@@ -1629,8 +1629,10 @@ MainController.prototype.sidebarOpen = function() {
  */
 MainController.prototype.trackOpenVTEditor = function (documentTitle) {
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setDocumentTitle', documentTitle]);
-  piwik.push(['trackPageView']);
+  if (piwik != undefined) {
+    piwik.push(['setDocumentTitle', documentTitle]);
+    piwik.push(['trackPageView']);
+  }
 };
 
 
@@ -1650,7 +1652,7 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this['lang'] = lang;
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  if (piwik != undefined ) {
+  if (piwik != undefined) {
     piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
     if (track) {
       piwik.push(['trackPageView']);

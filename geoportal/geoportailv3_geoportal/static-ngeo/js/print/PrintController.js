@@ -633,8 +633,9 @@ exports.prototype.print = function(format) {
         '.geoportail.lu/print/' +
         layout.replace(' ', '/');
       var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
-      piwik.push(['trackLink', piwikUrl, 'download']);
-
+      if (piwik != undefined) {
+        piwik.push(['trackLink', piwikUrl, 'download']);
+      }
       // add feature overlay layer to print spec
       var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
       var resolution = map.getView().getResolution();
