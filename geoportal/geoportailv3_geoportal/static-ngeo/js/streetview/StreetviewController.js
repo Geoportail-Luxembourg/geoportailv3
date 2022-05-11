@@ -251,10 +251,12 @@ exports.prototype.$onInit = function() {
     if (this.isActive()) {
       this.loadGoogleapis_().then(function() {
         var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-        piwik.push(['setDocumentTitle',
-          'activateStreetview'
-        ]);
-        piwik.push(['trackPageView']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle',
+            'activateStreetview'
+          ]);
+          piwik.push(['trackPageView']);
+        }
         if (this.streetViewService_ === null) {
           this.streetViewService_ = new google.maps.StreetViewService();
         }
