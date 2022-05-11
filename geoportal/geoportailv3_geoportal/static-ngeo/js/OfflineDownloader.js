@@ -46,12 +46,13 @@ const OfflineDownloader = class extends Downloader {
    */
   save(extent, map) {
     var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-    piwik.push([
-      'setDocumentTitle',
-      'saveOfflineMap'
-    ]);
-    piwik.push(['trackPageView']);
-
+    if (piwik != undefined) {
+      piwik.push([
+        'setDocumentTitle',
+        'saveOfflineMap'
+      ]);
+      piwik.push(['trackPageView']);
+    }
     // Keep a reference to the original mapbox layer
     let mapBoxLayer = null;
     const bgLayer = this.backgroundLayerMgr_.get(map);
