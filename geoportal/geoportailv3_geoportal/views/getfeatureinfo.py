@@ -115,12 +115,17 @@ class Getfeatureinfo(object):
                 url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
-                url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+                if luxgetfeaturedefinition.use_auth:
+                    auth_token = get_arcgis_token(self.request, log)
+                    url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
+                else:
+                    url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
                 pdf_id = None
                 pdf_name = None
                 try:
-                    f = urllib.request.urlopen(url1, None, timeout)
-                    data = f.read()
+                    url_request = urllib.request.Request(url1)
+                    result = read_request_with_token(url_request, self.request, log)
+                    data = result.data
                     attachmentInfos = json.loads(data)["attachmentInfos"]
                     for info in attachmentInfos:
                         if info["contentType"] == "application/pdf":
@@ -130,11 +135,16 @@ class Getfeatureinfo(object):
                     return HTTPBadRequest()
                 if pdf_name is None or pdf_id is None:
                     return HTTPBadRequest()
-                url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
+                if luxgetfeaturedefinition.use_auth:
+                    auth_token = get_arcgis_token(self.request, log)
+                    url2 = url + "%(id)s/attachments/%(pdf_id)s%(token)s" %{'id': id, 'pdf_id': pdf_id, 'token':('?token='+auth_token['token'])}
+                else:
+                    url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
                 try:
-                    f = urllib.request.urlopen(url2, None, timeout)
-                    data = f.read()
+                    url_request = urllib.request.Request(url2)
+                    result = read_request_with_token(url_request, self.request, log)
+                    data = result.data
                 except:
                     log.error(url2)
                     return HTTPBadRequest()
@@ -990,14 +1000,15 @@ class Getfeatureinfo(object):
             id = feature['attributes'][id_attr]
             url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
             try:
-                f = urllib.request.urlopen(url1, None, timeout)
-                data = f.read()
+                url_request = urllib.request.Request(url1)
+                result = read_request_with_token(url_request, self.request, log)
+                data = result.data
+
                 data_json = json.loads(data)
                 if "attachmentInfos" in data_json:
                     attachmentInfos = data_json["attachmentInfos"]
                     for info in attachmentInfos:
-                        if info["contentType"] == "application/pdf":
-                            feature['attributes']['has_sketch'] = True
+                        feature['attributes']['has_sketch'] = True
             except Exception as e:
                 log.exception(e)
                 feature['attributes']['has_sketch'] = False
