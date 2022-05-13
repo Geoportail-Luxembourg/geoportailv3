@@ -4,14 +4,21 @@
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, '')">
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
-        <span ng-if="!ctrl.isEmpty(entry['value']) && entry['key'] != 'has_sketch'">
+        <span ng-if="!ctrl.isEmpty(entry['value']) && (entry['key'] != 'has_sketch' && entry['key'] != 'sketches')">
           <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label> 
           <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
           <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
         </span>
       </div>
+
       <label translate>Attachment</label> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
-        <a class="no-print" target='_blank' download href='{{ctrl.getDownloadPdfUrl()}}?fid={{feature.fid}}' translate>Obtenir le fichier</a></span>
+      <ul>
+      <li ng-repeat="sketch in feature.attributes.sketches">
+        <a class="no-print" target='_blank' download href='{{ctrl.getDownloadPdfUrl()}}?fid={{feature.fid}}&sketch_id={{sketch.id}}' translate>{{sketch.name}}</a>
+      </li>
+      </ul>
+      </span>
+
       <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Fichier indisponible</span><br>
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">
         <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
