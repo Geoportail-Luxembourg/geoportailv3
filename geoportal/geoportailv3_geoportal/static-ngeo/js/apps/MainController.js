@@ -18,6 +18,8 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
+import i18next from 'i18next';
+
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
@@ -188,6 +190,9 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/MediumStyleController.js';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
+
+import '../lux-iframe-preview/lux-iframe-preview.ts';
+import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
@@ -380,7 +385,7 @@ const MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
+  appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
@@ -622,6 +627,7 @@ const MainController = function(
    * @private
    */
   this.window_ = $window;
+  if (this.window_._paq === undefined) this.window_._paq = [];
 
   /**
    * @type {app.Notify}
@@ -818,6 +824,14 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['lidarOpen'] = false;
+
+  // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
+  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
+
+  /**
+   * @type {boolean}
+   */
   this['layersOpen'] = false;
 
   /**
@@ -964,11 +978,7 @@ const MainController = function(
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
-  this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
-  this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTilesFromLocation();
-    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
-  });
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL, ipv6Substitution, $rootScope);
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
 
@@ -978,7 +988,7 @@ const MainController = function(
 
   this.manageSelectedLayers_($scope);
 
-  appExclusionManager.init(this.map_);
+  appExclusionManager.init(this.map_, this.ol3dm_);
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
@@ -1047,8 +1057,6 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
-            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
-
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1062,12 +1070,21 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DLayers().then(
-      layers3D => {
-      layers3D.forEach(catItem => {
-        this.ol3dm_.addAvailableLayers(catItem);
-      });
-    });
+    this.appThemes_.get3D().then(
+      struct3D => {
+        this.ol3dm_.setTerrain(struct3D.terrain);
+        this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
+
+        this.ol3dm_.setTree(struct3D.tree);
+        this.ol3dm_.load().then(
+          () => {
+            appLayerPermalinkManager.initBgLayers_().then(
+              () => this.ol3dm_.init3dTilesFromLocation()
+            );
+          }
+        );
+      }
+    );
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1400,6 +1417,10 @@ MainController.prototype.createMap_ = function() {
     })
   });
 
+  // FIXME: this is a hack to make the map avaialble to the web components.
+  // To be changed to use `ng-prop` when available (angular > 1.7).
+  this.window_.map = map;
+
   map.on('moveend', e => {
     const rotation = map.getView().getRotation();
     this.ngeoLocation_.updateParams({
@@ -1417,12 +1438,11 @@ MainController.prototype.createMap_ = function() {
  * @param {angular.Scope} $rootScope The root scope
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
-MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
-  // [minx, miny, maxx, maxy]
+MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitution, $rootScope) {
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
-  return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
+  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
+                                 $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
+                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
@@ -1605,7 +1625,7 @@ MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
-      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = false;
+      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
 };
 
 
@@ -1617,7 +1637,7 @@ MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
       this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
-      this['vectorEditorOpen'];
+      this['vectorEditorOpen'] || this['lidarOpen'];
 };
 
 
@@ -1650,6 +1670,8 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this.locale_.NUMBER_FORMATS.GROUP_SEP = ' ';
   this['lang'] = lang;
+
+  i18next.changeLanguage(lang);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {

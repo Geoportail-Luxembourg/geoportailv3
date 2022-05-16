@@ -21,6 +21,7 @@
 
 import $ from 'jquery';
 import angular from 'angular';
+import {setupI18n} from '../localize/i18n';
 
 /**
  * @private
@@ -65,6 +66,7 @@ function bootstrap(module) {
     for (const name in dynamic.constants) {
       module.constant(name, dynamic.constants[name]);
     }
+    setupI18n();
 
     angular.bootstrap(document, [`App${interface_}`]);
   });

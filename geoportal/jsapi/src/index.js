@@ -1,21 +1,50 @@
-goog.provide('lux');
-
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.proj');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.WMTS');
-goog.require('ol.source.WMTSRequestEncoding');
-goog.require('ol.string');
-goog.require('ol.tilegrid.WMTS');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageWMS');
-goog.require('ol.coordinate');
+import LuxMap from './map.js';
+import {get as getProjection, transform as transformCoordinate} from 'ol/proj';
+import TileLayer from 'ol/layer/Tile';
+import WMTSSource from 'ol/source/WMTS';
+import {padNumber} from 'ol/string';
+import WMTSTileGrid from 'ol/tilegrid/WMTS';
+import ImageLayer from 'ol/layer/Image';
+import ImageWMSSource from 'ol/source/ImageWMS';
+import LineString from 'ol/geom/LineString';
+import {format as formatCoordinate} from 'ol/coordinate';
 
 /**
- * @type {string}
+ * @typedef {Object} GeocodeOptions
+ * @property {string} num  The house number.
+ * @property {string} street The street name.
+ * @property {string} zip The postal code.
+ * @property {string} locality The locality name.
+ * @property {string} queryString The complete address into one string.
  */
-lux.htmlLegendUrl = "legends/get_html";
+
+/**
+ * @typedef {Object} GeocodeResponse
+ * @property {number} easting
+ * @property {number} northing
+ */
+
+/**
+ * @typedef {Object} ReverseGeocodeResult
+ * @property {number} distance The distance in meter between the coordinate and the found address.
+ * @property {ol.geom.Geometry} geom The location of the found address.
+ * @property {string} id_caclr_bat The internal id of the batiment.
+ * @property {string} id_caclr_street The internal id of the street.
+ * @property {string} locality The locality of the found address.
+ * @property {string} number The house number.
+ * @property {string} postal_code The postal code of the locality.
+ * @property {string} street The street name.
+ */
+
+/**
+ * @typedef {Object} ReverseGeocodeResponse
+ * @property {Array<ReverseGeocodeResult>} results
+ * @property {Object} request
+ */
+
+const lux = {};
+
+lux.Map = LuxMap;
 
 /**
  * @type {string}
@@ -99,7 +128,7 @@ lux.getLegendHtml = function(layer) {
  * <li>Geocoding service</li>
  * <li>Reverse geocoding service</li>
  * </lu>
- * @param {string | null} url Base url to services. Default is //apiv3.geoportail.lu/
+ * @param {string | null} url Base url to services. Default is //apiv4.geoportail.lu/
  * @param {string | undefined} requestScheme The request scheme. Default is http.
  * @export
  */
@@ -112,7 +141,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_fr.json';
-    url = 'https://apiv3.geoportail.lu/';
+    url = 'https://apiv4.geoportail.lu/';
   } else {
     lux.layersUrl = wsBaseUrl + lux.layersUrl;
     // lux.layersUrl = url + lux.layersUrl;
@@ -302,7 +331,7 @@ lux.buildPopupLayout = function(html, closeCallback, title) {
     content.style.maxHeight = 'none';
   }
 
-  if (typeof html == 'string') {
+  if (typeof html === 'string') {
     content.innerHTML = html;
   } else {
     content.appendChild(html);
@@ -323,7 +352,7 @@ lux.buildPopupLayout = function(html, closeCallback, title) {
     header.appendChild(closeBtn);
     elements.push(header);
 
-    ol.events.listen(closeBtn, ol.events.EventType.CLICK, closeCallback);
+    closeBtn.addEventListener('click', closeCallback);
   }
 
   elements.push(content);
@@ -351,7 +380,7 @@ lux.intersects = function(one, two) {
  * @param {Object} config The layer's config.
  * @param {number} opacity The layer's opacity.
  * @param {boolean} visible The layer's visibility.
- * @return {ol.layer.Tile} The layer.
+ * @return {TileLayer} The layer.
  */
 lux.WMTSLayerFactory = function(config, opacity, visible) {
   var format = config['imageType'];
@@ -375,14 +404,14 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
     retinaExtension +
     '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
-  var projection = ol.proj.get('EPSG:3857');
+  var projection = getProjection('EPSG:3857');
   var extent = projection.getExtent();
 
-  var layer = new ol.layer.Tile({
+  var layer = new TileLayer({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
-    source: new ol.source.WMTS({
+    source: new WMTSSource({
       crossOrigin: lux.wmtsCrossOrigin,
       url: url,
       attributions: [''],
@@ -390,9 +419,9 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
       layer: config['name'],
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
       format: format,
-      requestEncoding: ol.source.WMTSRequestEncoding.REST,
+      requestEncoding: 'REST',
       projection: projection,
-      tileGrid: new ol.tilegrid.WMTS({
+      tileGrid: new WMTSTileGrid({
         origin: [
           -20037508.3428, 20037508.3428
         ],
@@ -424,7 +453,7 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
  * @param {Object} config The layer's config.
  * @param {number} opacity The layer's opacity.
  * @param {boolean} visible The layer's visibility.
- * @return {ol.layer.Image} The layer.
+ * @return {ImageLayer} The layer.
  */
 lux.WMSLayerFactory = function(config, opacity, visible) {
   var url = config.url || 'https://map.geoportail.lu/ogcproxywms?';
@@ -436,11 +465,11 @@ lux.WMSLayerFactory = function(config, opacity, visible) {
       'LAYERS': config['layers']
     }
   };
-  var layer = new ol.layer.Image({
+  var layer = new ImageLayer({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
-    source: new ol.source.ImageWMS(optSource),
+    source: new ImageWMSSource(optSource),
     opacity: opacity,
     visible: visible
   });
@@ -450,10 +479,10 @@ lux.WMSLayerFactory = function(config, opacity, visible) {
 
 /**
  * It geocodes an address. The found position is transmitted to the callback function as parameter.
- * @param {luxx.GeocodeOptions} obj The hash object representing the address to geocode.
+ * @param {GeocodeOptions} obj The hash object representing the address to geocode.
  * @param {function(ol.Coordinate)} cb The callback to call. Called with the
  *     position in EPSG:2169 (LUREF) of the geocoded address.
- * @return {Promise.<luxx.GeocodeResponse>} Promise that returns the geocoding response.
+ * @return {Promise.<GeocodeResponse>} Promise that returns the geocoding response.
  * @example
  * lux.geocode({
  *   queryString: '54 avenue gaston diderich 1420 luxembourg'
@@ -479,11 +508,11 @@ lux.geocode = function(obj, cb) {
   var url = document.createElement('A');
   url.href = lux.geocodeUrl;
 
-  goog.asserts.assertObject(obj);
+  console.assert(obj);
   Object.keys(obj).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + obj[key];
   });
-  return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
+  return /** @type {Promise.<GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     if (json.results.length > 0) {
@@ -501,8 +530,8 @@ lux.geocode = function(obj, cb) {
  * @param {ol.Coordinate} coordinate The coordinates to look for an address.
  *     Coordinates must be given in EPSG:2169.
  * @param {function(Object)} cb The callback function to call.
- *    Called with the address represented by [luxx.ReverseGeocodeResult](luxx.html#ReverseGeocodeResult).
- * @return {Promise.<luxx.ReverseGeocodeResponse>} Promise that returns the reverse geocoding response.
+ *    Called with the address represented by [ReverseGeocodeResult](luxx.html#ReverseGeocodeResult).
+ * @return {Promise.<ReverseGeocodeResponse>} Promise that returns the reverse geocoding response.
  * @example
  * lux.reverseGeocode([75979,75067], function(address) {
  *   var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
@@ -518,14 +547,14 @@ lux.reverseGeocode = function(coordinate, cb) {
   url.href = lux.reverseGeocodeUrl;
   url.search = 'easting=' + coordinate[0] + '&northing=' + coordinate[1];
 
-  return /** @type {Promise.<luxx.ReverseGeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
+  return /** @type {Promise.<ReverseGeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(
       /**
-       * @param {luxx.ReverseGeocodeResponse} json The JSON.
+       * @param {ReverseGeocodeResponse} json The JSON.
        */
       function(json) {
-        goog.asserts.assert(json.count, 'No result found');
+        console.assert(json.count, 'No result found');
         if (cb !== undefined) {
           cb.call(null, json.results[0]);
         }
@@ -546,16 +575,16 @@ lux.coordinateString_ = function(coordinate, sourceEpsgCode,
   var str = '';
   if (targetEpsgCode === 'EPSG:3263*') {
     var lonlat = /** @type {ol.Coordinate} */
-        (ol.proj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+        (transformCoordinate(coordinate, sourceEpsgCode, 'EPSG:4326'));
     targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
   }
 
-  coordinate = ol.proj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+  coordinate = transformCoordinate(coordinate, sourceEpsgCode, targetEpsgCode);
 
   switch (targetEpsgCode) {
     default:
     case 'EPSG:2169':
-      str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
+      str = formatCoordinate(coordinate, '{x} E | {y} N', 0);
       break;
     case 'EPSG:4326':
       if (opt_DMS) {
@@ -569,14 +598,14 @@ lux.coordinateString_ = function(coordinate, sourceEpsgCode,
         var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
         str = xhdmm + ' | ' + yhdmm;
       } else {
-        str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
+        str = formatCoordinate(coordinate, ' {x} E | {y} N', 5);
       }
       break;
     case 'EPSG:32632':
-      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+      str = formatCoordinate(coordinate, '{x} | {y} (UTM32N)', 0);
       break;
     case 'EPSG:32631':
-      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+      str = formatCoordinate(coordinate, '{x} | {y} (UTM31N)', 0);
       break;
   }
   return str;
@@ -620,8 +649,8 @@ lux.degreesToStringHDMS_ = function(degrees, hemispheres) {
   var normalizedDegrees = ((degrees + 180) % 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   return Math.floor(x / 3600) + '\u00b0 ' +
-      ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      ol.string.padNumber(Math.floor(x % 60), 2) + ',' +
+      padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+      padNumber(Math.floor(x % 60), 2) + ',' +
       Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
       '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
@@ -639,7 +668,7 @@ lux.degreesToStringHDMm_ = function(degrees, hemispheres) {
   var m = (dd - Math.floor(dd)) * 60;
 
   var res = Math.floor(dd) + '\u00b0 ' +
-      ol.string.padNumber(Math.floor(m), 2) + ',' +
+      padNumber(Math.floor(m), 2) + ',' +
       Math.floor((m - Math.floor(m)) * 100000) +
       '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   return res;
@@ -679,7 +708,7 @@ lux.generatePagRepport = function(ids, mail, eula) {
 /**
  * Set the center of the current view in EPSG:2169.
  * @param {ol.geometry.Geometry} geometry The geometry to check.
- * @return {true} True if self intercting otherwise false.
+ * @return {true} True if self intersecting otherwise false.
  * @export
  * @api
  */
@@ -687,18 +716,18 @@ lux.isSelfIntersecting = function(geometry) {
   var coordinates;
   var segments = [];
   var intersect = false;
-
   if (geometry.getType() === 'LineString') {
     coordinates = geometry.getCoordinates();
   }
   if (geometry.getType() === 'Polygon') {
     coordinates = geometry.getCoordinates()[0];
+    coordinates.pop();
   }
-  for (var iSegement=0; iSegement < coordinates.length-1; iSegement++) {
-    segments.push(new ol.geom.LineString([coordinates[iSegement], coordinates[iSegement + 1]]));
+  for (var iSegement = 0; iSegement < coordinates.length - 1; iSegement++) {
+    segments.push(new LineString([coordinates[iSegement], coordinates[iSegement + 1]]));
   }
-  for (var i=0; i < segments.length-1; i++) {
-    for(var j = i + 2; j < segments.length; j++) {
+  for (var i = 0; i < segments.length - 1; i++) {
+    for (var j = i + 2; j < segments.length; j++) {
       if (!(geometry.getType() === 'Polygon' && i == 0 && j == segments.length - 1)) {
         if (lux.segmentsIntersect_(segments[i], segments[j])) {
           intersect = true;
@@ -733,18 +762,20 @@ lux.segmentsIntersect_ = function(seg1, seg2) {
   var n1 = (x22_21 * y11_21) - (y22_21 * x11_21);
   var n2 = (x12_11 * y11_21) - (y12_11 * x11_21);
 
-  if(d == 0) {
+  if (d === 0) {
       // parallel
-      if(n1 == 0 && n2 == 0) {
+      if (n1 === 0 && n2 === 0) {
           // coincident
           intersection = true;
       }
   } else {
       var along1 = n1 / d;
       var along2 = n2 / d;
-      if(along1 >= 0 && along1 <= 1 && along2 >=0 && along2 <= 1) {
+      if (along1 >= 0 && along1 <= 1 && along2 >= 0 && along2 <= 1) {
         intersection = true;
       }
   }
   return intersection;
 };
+
+export default lux;

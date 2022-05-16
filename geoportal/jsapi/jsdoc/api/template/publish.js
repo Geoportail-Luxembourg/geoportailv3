@@ -1,6 +1,4 @@
 /*global env: true */
-'use strict';
-
 var doop = require('jsdoc/util/doop');
 var fs = require('jsdoc/fs');
 var helper = require('jsdoc/util/templateHelper');
@@ -10,12 +8,11 @@ var taffy = require('taffydb').taffy;
 var template = require('jsdoc/template');
 var util = require('util');
 var jsdocType = require("jsdoc/tag/type")
-var jsdocOl3 = require('/etc/apiv3/.build/jsdocOl3.js');
+var jsdocOpenLayers = require('./jsdocOpenLayers.js');
 
 var htmlsafe = helper.htmlsafe;
 var linkto = helper.linkto;
 var resolveAuthorLinks = helper.resolveAuthorLinks;
-var scopeToPunc = helper.scopeToPunc;
 var hasOwnProp = Object.prototype.hasOwnProperty;
 
 var data;
@@ -344,7 +341,7 @@ function linktoExternal(longName, name) {
  * @return {string} The HTML for the navigation sidebar.
  */
 function buildNav(members) {
-    var nav = '<h2><a href="index.html">Geoportail V3 API</a></h2>';
+    var nav = '<h2><a href="index.html">Geoportail V4 API</a></h2>';
     var seen = {};
     var seenTutorials = {};
     var modules = {};
@@ -371,7 +368,7 @@ function buildNav(members) {
     });
 
     directives.forEach(function(directive) {
-        // remove the injected paramters
+        // remove the injected parameters
         directive.params = [];
     });
 
@@ -444,7 +441,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     var globalUrl = helper.getUniqueFilename('global');
     helper.registerLink('global', globalUrl);
 
-    jsdocOl3.registerOl3Link(helper);
+    jsdocOpenLayers.registerOpenLayersLink(helper);
 
     // Add standard types
     helper.registerLink('Object', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object');
@@ -455,9 +452,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     helper.registerLink('number', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number');
     helper.registerLink('Array', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array');
     helper.registerLink('function', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function');
-
-    // Add typeahead types
-    helper.registerLink('TypeaheadDataset', 'https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#datasets');
+    helper.registerLink('Element', 'https://developer.mozilla.org/en-US/docs/Web/API/Element');
 
     // set up templating
     view.layout = conf.default.layoutFile ?
@@ -713,7 +708,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     var files = find({kind: 'file'}),
         packages = find({kind: 'package'});
 
-    generate('Geoportail V3 API',
+    generate('Geoportail V4 API',
         packages.concat(
             [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}]
         ).concat(files),

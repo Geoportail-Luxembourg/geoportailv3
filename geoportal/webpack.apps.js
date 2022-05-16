@@ -31,13 +31,11 @@ plugins.push(
   })
 );
 
-const babelPresets = [['env',{
-  "targets": {
-    "browsers": ["last 2 versions", "Firefox ESR", "ie 11"],
-  },
-  "modules": false,
-  "loose": true,
-}]]
+const babelPresets = [require.resolve('@babel/preset-env'), {
+  targets: {
+    browsers: ['> 0.5% in CH', '> 0.5% in FR', 'Firefox ESR', 'ie 11'],
+  }
+}]
 
 // Transform code to ES2015 and annotate injectable functions with an $inject array.
 const projectRule = {
@@ -45,8 +43,10 @@ const projectRule = {
   use: {
     loader: 'babel-loader',
     options: {
-      presets: babelPresets,
-      plugins: ['@camptocamp/babel-plugin-angularjs-annotate'],
+      babelrc: false,
+      comments: false,
+      presets: [babelPresets],
+      plugins: ['babel-plugin-angularjs-annotate'],
     }
   },
 };

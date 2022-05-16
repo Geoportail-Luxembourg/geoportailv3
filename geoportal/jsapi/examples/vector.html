@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="../../geoportailv3/static/build/apiv3.css">
+    <link rel="stylesheet" href="../dist/apiv4.css">
     <style>
       #mapContainer {
         position: relative;
@@ -19,8 +19,6 @@
   <body>
     <div id="mapContainer"></div>
     <div id="layerManager"></div>
-    <script src="../../node_modules/proj4/dist/proj4.js"></script>
-    <script src="../../node_modules/whatwg-fetch/fetch.js"></script>
-    <script src="/@?main=vector.js"></script>
+    <script src="vector.js" type="module"></script>
   </body>
 </html>

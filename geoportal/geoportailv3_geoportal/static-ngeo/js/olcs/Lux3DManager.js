@@ -2,16 +2,37 @@
  * @module app.olcs.Lux3DManager
  */
 import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
+import ngeoCustomEvent from 'ngeo/CustomEvent.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+
 
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
 
 
+class Wrap3dLayer {
+  // Wrapper class for 3D layers so that they behave partly like OL layers.
+  // This (limited) methods of this wrapper class (get, getOpacity) are used in the exclusion manager
+  constructor(layer) {
+    this.layer_ = layer;
+  }
+  getOpacity() {
+    return 1;
+  }
+  get (key) {
+    if (key === "label") {
+      return this.layer_.name;
+    }
+    else if (key === "metadata") {
+      return this.layer_.metadata;
+    }
+  }
+}
+
 const exports = class extends ngeoOlcsManager {
   /**
    * @param {string} cesiumUrl Cesium URL.
-   * @param {ol.Extent} cameraExtentInRadians The Luxembourg extent.
    * @param {ol.Map} map The map.
    * @param {ngeo.statemanager.Location} ngeoLocation The location service.
    * @param {angular.Scope} $rootScope The root scope.
@@ -21,12 +42,10 @@ const exports = class extends ngeoOlcsManager {
    * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
    *     manager.
    */
-  constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
-    tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr) {
-    super(cesiumUrl, $rootScope, {
-      map,
-      cameraExtentInRadians
-    });
+  constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
+              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
+              appNotify, gettextCatalog, appThemes) {
+    super(cesiumUrl, $rootScope, {map});
     /**
      * @type {angular.Scope}
      * @private
@@ -44,11 +63,16 @@ const exports = class extends ngeoOlcsManager {
      */
     this.blankLayer_ = appBlankLayer;
 
+    this.notify_ = appNotify;
+    this.gettextCatalog = gettextCatalog;
     /**
      * @private
      * @type {ngeo.statemanager.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
+
+    this.ipv6Substitution_ =  ipv6Substitution;
+    this.terrainUrl = undefined;
 
     /*
      * A factor used to increase the screen space error of terrain tiles when they are partially in fog. The effect is to reduce
@@ -77,16 +101,19 @@ const exports = class extends ngeoOlcsManager {
       this.fogDensity = parseFloat(ngeoLocation.getParam('fog_density'));
     }
 
-    /**
-     * @const {ol.Extent}
-     */
-    this.luxCameraExtentInRadians = cameraExtentInRadians;
 
     /**
      * Array of 3D tiles set used for buildings/vegetation
      * @type {Array<Cesium.Cesium3DTileset>}
      */
     this.tilesets3d = [];
+
+    this.previous_2D_layers = [];
+
+    this.tree3D = {};
+    this.appThemes_ = appThemes;
+
+    this.zoomLevelTimer;
 
     /**
      * @private
@@ -99,6 +126,7 @@ const exports = class extends ngeoOlcsManager {
      * @type {Array<string>}
      */
     this.activeTiles3dLayers_ = [];
+    this.activeTiles3dLayersPreload_ = [];
 
     /**
      * @private
@@ -119,7 +147,7 @@ const exports = class extends ngeoOlcsManager {
    * @override
    */
   instantiateOLCesium() {
-    console.assert(this.map !== null && this.map !== undefined);
+    console.assert((this.map !== null) && (this.map !== undefined));
     const map = /** @type {!ol.Map} */ (this.map);
     const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+0200'));
     const time = () => niceIlluminationDate;
@@ -135,23 +163,54 @@ const exports = class extends ngeoOlcsManager {
     if (this.ngeoLocation_.hasParam('tile_coordinates')) {
       scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
     }
-    // for performance, limit terrain levels to be loaded
-    const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
-    const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
-    const rectangle = this.getCameraExtentRectangle();
-    const terrainToDisplay = this.ngeoLocation_.getParam('3d_terrain') || 'own';
-    const isIpv6 = location.search.includes('ipv6=true');
-    const domain = (isIpv6) ? 'app.geoportail.lu' : 'geoportail.lu';
-
-    const url = terrainToDisplay === 'own' ?
-      'https://acts3.' + domain + '/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles' :
-      'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
-    if (!this.ngeoLocation_.hasParam('no_terrain')) {
-      this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
-      this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
-      scene.terrainProvider = this.noTerrainProvider;
+    if (this.terrainUrl !== undefined) {
+      this.defineTerrain(ol3d);
     }
     return ol3d;
+  }
+
+  setTerrain(url) {
+    if (url === undefined) {
+      url = "https://acts3.geoportail.lu/3d-data/3d-tiles/terrain3D/lidar_2019_terrain/3DTiles";
+    }
+    const isIpv6 = location.search.includes('ipv6=true');
+    if (isIpv6) {
+      url = url.replace(this.ipv6Substitution_.regularServerRoot, this.ipv6Substitution_.ipv6ServerRoot);
+    }
+    this.terrainUrl = url;
+    // try setting a terrain provider - this call fails if Cesium is not yet loaded
+    try {
+      this.defineTerrain(this.ol3d);
+    }
+    catch(e) {}
+  }
+
+  defineTerrain(ol3d) {
+    if (!this.ngeoLocation_.hasParam('no_terrain')) {
+      // for performance, limit terrain levels to be loaded
+      const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
+      const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
+      const rectangle = this.getCameraExtentRectangle();
+      const url = this.terrainUrl
+      this.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
+      this.noTerrainProvider = new Cesium.EllipsoidTerrainProvider({});
+      const scene = ol3d.getCesiumScene();
+      // prevent rendering of parts of 3D objects hidden by terrain
+      scene.globe.depthTestAgainstTerrain = true;
+      scene.terrainProvider = this.TerrainProvider;
+    }
+  }
+
+  setTree(tree) {
+    this.tree3D = tree;
+    let allCh = this.appThemes_.getAllChildren_(tree.children, tree, []);
+    allCh.forEach(el => {
+      this.addAvailableLayers(el);
+      if (this.activeTiles3dLayersPreload_.includes(el.layer)) {
+        this.add3dTile(el);
+      }
+    });
+    this.activeTiles3dLayersPreload_ = [];
   }
 
   addAvailableLayers(layer) {
@@ -161,35 +220,65 @@ const exports = class extends ngeoOlcsManager {
   }
 
   init3dTilesFromLocation() {
+
+    this.setMode('3D');
+
     const layers_3d = this.ngeoLocation_.getParam('3d_layers');
+
     if (layers_3d) {
-      const layers = layers_3d.split(',');
-      this.availableTiles3dLayers_.filter(e => (layers.indexOf(e.layer) >= 0)).map(e => e.layer).forEach(this.add3dTile.bind(this));
-      if (layers.indexOf('wintermesh') >= 0) {
-        this.setMode('MESH');
-      } else {
-        this.setMode('3D');
-      }
+      // the memorization of preload 3D layers is needed because tree/theme loading and 3D activation from
+      // URL parameters are asynchronous and it is not deterministic which one is ready first
+      this.activeTiles3dLayersPreload_ = layers_3d.split(',');
+      this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
-    this.$rootScope_.$watch(function() {
-      return this.activeTiles3dLayers_.length;
-    }.bind(this), function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
-      }
-    }.bind(this));
+    this.scheduleMinimumZoomDistanceUpdate()
+    this.ol3d.getCesiumScene().terrainProvider = this.terrainProvider;
   }
 
   /***
    * Initialize 3D tiles layers (buildings/vegetation)
    * @param {boolean} visible Initial visibility of 3D tiles.
    */
-  init3dTiles(visible) {
-    if (this.mode_ === 'MESH') {
-      this.availableTiles3dLayers_.filter(e => e.layer === 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
-    } else {
-      this.availableTiles3dLayers_.filter(e => e.layer !== 'wintermesh').map(e => e.layer).forEach(this.add3dTile.bind(this));
-    }
+  init3dMeshes() {
+    this.availableTiles3dLayers_.filter(e => this.isDefaultMeshLayer(e)).forEach(this.add3dTile.bind(this));
+  }
+  init3dTiles() {
+    this.availableTiles3dLayers_.filter(e => this.isDefault3dDataLayer(e)).forEach(this.add3dTile.bind(this));
+  }
+
+  isMeshLayer(layer) {
+    return layer.metadata.ol3d_type === 'mesh';
+  }
+  getActiveMeshLayers() {
+    return this.activeTiles3dLayers_.map(
+      lName => this.availableTiles3dLayers_.find(l => l.layer === lName)
+    ).filter(l => this.isMeshLayer(l));
+  }
+  removeMeshLayers() {
+    this.getActiveMeshLayers().forEach(l => this.remove3dLayer(l.layer));
+  }
+
+  getActive3dLayers() {
+    return this.activeTiles3dLayers_.map(
+      lName => this.availableTiles3dLayers_.find(l => l.layer === lName)
+    );
+  }
+
+  getWrappedActive3dLayers() {
+    return this.getActive3dLayers().map(
+      l => new Wrap3dLayer(l)
+    );
+  }
+
+  isDefault3dDataLayer(layer) {
+    const isData = layer.metadata.ol3d_type === 'data';
+    const isDefault = layer.metadata.ol3d_defaultlayer === true;
+    const isDefaultData = (layer.metadata.ol3d_type === 'data') && (layer.metadata.ol3d_defaultlayer === true);
+    return (layer.metadata.ol3d_type === 'data') && (layer.metadata.ol3d_defaultlayer === true);
+  }
+
+  isDefaultMeshLayer(layer) {
+    return (layer.metadata.ol3d_type === 'mesh') && (layer.metadata.ol3d_defaultlayer === true);
   }
 
   /**
@@ -205,59 +294,196 @@ const exports = class extends ngeoOlcsManager {
     tileset.show = visible;
   }
 
-  add3dTile(layerName) {
+  add3dTile(layer) {
+    let layerName = layer.layer
     if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
       return;
     }
     this.activeTiles3dLayers_.push(layerName);
-    const url = this.tiles3dUrl_ + layerName + '/tileset.json';
+    this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
+    let base_url = layer.url;
+    // TODO set ipv6 url for IOS
+    const url = base_url + '/' + layerName + '/tileset.json';
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
-    const tileset = new Cesium.Cesium3DTileset({
+    const cs3d_options = {
       url: url,
-      skipLevelOfDetail: false,
+      skipLevelOfDetail: true,
       baseScreenSpaceError: 623,
       skipScreenSpaceErrorFactor: 8,
       skipLevels: 1,
       loadSiblings: true,
-      cullWithChildrenBounds: true
-    });
+      cullWithChildrenBounds: true,
+      // dynamicScreenSpaceErrorDensity: 10,
+      // dynamicScreenSpaceErrorFactor: 1,
+      dynamicScreenSpaceError: true
+    };
+    if (layer.metadata.ol3d_options !== undefined) {
+      Object.assign(cs3d_options, layer.metadata.ol3d_options);
+    }
+    var heightOffset = 0;
+    var longOffset = 0;
+    var latOffset = 0;
+    // var terrainProvider = this.terrainProvider;
+    if (cs3d_options.heightOffset !== undefined) {
+      heightOffset = cs3d_options.heightOffset;
+      delete cs3d_options.heightOffset;
+    }
+    if (cs3d_options.longOffset !== undefined) {
+      longOffset = cs3d_options.longOffset;
+      delete cs3d_options.longOffset;
+    }
+    if (cs3d_options.latOffset !== undefined) {
+      latOffset = cs3d_options.latOffset;
+      delete cs3d_options.latOffset;
+    }
+    if (cs3d_options.minimumZoomDistance !== undefined) {
+      // remove custom option unknown by Cesium
+      delete cs3d_options.minimumZoomDistance;
+    }
+    //if (cs3d_options.noTerrainProvider !== undefined || this.isMeshLayer(layer)) {
+    // if (this.isMeshLayer(layer)) {
+    //   terrainProvider = this.noTerrainProvider;
+    // }
+
+    const tileset = new Cesium.Cesium3DTileset(cs3d_options);
 
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
     // Adjust a tileset's height from the globe's surface.
     const scene = this.ol3d.getCesiumScene();
-    if (layerName === 'wintermesh') {
-      scene.screenSpaceCameraController.minimumZoomDistance = 150;
-      //scene.terrainProvider = this.noTerrainProvider;
-      scene.terrainProvider = this.terrainProvider;
+    // scene.terrainProvider = terrainProvider;
+    scene.terrainProvider = this.terrainProvider;
+
+    if ((heightOffset != 0) || (longOffset != 0) || (latOffset != 0)) {
       tileset.readyPromise.then(function(tileset) {
-        //const heightOffset = -372;
-        //const heightOffset = -47.8;
-        const heightOffset = 0;
         const boundingSphere = tileset.boundingSphere;
         const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
 
         const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0);
-        const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+        const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude + longOffset,
+                                                     cartographic.latitude + latOffset,
+                                                     heightOffset);
         const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
         tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
       }).otherwise(function(error) {
         console.log(error);
       });
-    } else {
-      scene.terrainProvider = this.terrainProvider;
-      scene.screenSpaceCameraController.minimumZoomDistance = 0;
     }
 
+    this.scheduleMinimumZoomDistanceUpdate()
+
+    if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
+      this.setMode("MESH");
+      // prevent the mesh from being hidden by parts of the (blank/white) terrain
+      scene.globe.depthTestAgainstTerrain = false;
+      this.disable_2D_layers_and_terrain()
+    }
+
+    /** @type {ngeox.BackgroundEvent} */
+    const event = new ngeoCustomEvent('add', {
+      newLayer: new Wrap3dLayer(layer)
+    });
+    this.dispatchEvent(event);
   }
 
-  remove3dLayer(layerName) {
-    const layer = this.tilesets3d.find(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
-    if (layer !== undefined) {
-      const idx = this.tilesets3d.findIndex(e => e._url.includes('3dtiles/' + layerName + '/tileset.json'));
-      this.tilesets3d.splice(idx, 1);
+  remove3dLayer(layerName, checkNoMeshes = true) {
+    const idx = this.activeTiles3dLayers_.indexOf(layerName);
+    if (idx >= 0) {
+      let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
-      this.ol3d.getCesiumScene().primitives.remove(layer);
+      this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
+      this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
+    }
+    if (checkNoMeshes && (this.getMode() === 'MESH') && (this.getActiveMeshLayers().length === 0)) {
+      this.setMode('3D');
+      this.onToggle(false);
+      const msg = this.gettextCatalog.getString(
+        '3D Mesh mode has been deactivated because ' +
+          'all mesh layers have been deselected.')
+      this.notify_(msg, appNotifyNotificationType.WARNING);
+    }
+    this.scheduleMinimumZoomDistanceUpdate()
+  }
+
+  toggleLayer(layer) {
+    let layerName = layer.layer
+    if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
+      this.remove3dLayer(layer.layer);
+    } else {
+      if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
+        this.toggleMesh(false);
+      }
+      this.add3dTile(layer);
+    }
+  }
+
+  getMinZoomDistanceFromLayer(layer) {
+    const opt = layer.metadata.ol3d_options;
+    if ((opt !== undefined) && (opt.minimumZoomDistance !== undefined)) {
+      return opt.minimumZoomDistance;
+    } else {
+      return this.isMeshLayer(layer) ? 50 : 5;
+    }
+  }
+
+  scheduleMinimumZoomDistanceUpdate() {
+    if (this.zoomLevelTimer) {
+      clearTimeout(this.zoomLevelTimer);
+    }
+    // delay min zoom calculation because loading of multiple layers or exclusion rules would lead to
+    // multiple computation
+    this.zoomLevelTimer = setTimeout(this.updateMinimumZoomDistance, 50, this);
+  }
+
+  updateMinimumZoomDistance(parentScope) {
+    if (!parentScope.is3dEnabled()) return;
+    const layers = parentScope.getActive3dLayers()
+    // default min zoom for mesh : 50m, for 3d: 5m (unless overridden in metadata)
+    const defaultMinimumZoomDistance = (parentScope.getMode() === "MESH") ? 50 : 5;
+
+    const minZoomDistance = Math.max(
+      defaultMinimumZoomDistance,
+      ...layers.map(l => parentScope.getMinZoomDistanceFromLayer(l))
+    );
+    const scene = parentScope.ol3d.getCesiumScene();
+    scene.screenSpaceCameraController.minimumZoomDistance = minZoomDistance;
+    var height = scene.globe.ellipsoid.cartesianToCartographic(scene.camera.position).height;
+    var groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(scene.camera.position));
+    // const cameraPos = Cesium.Cartographic.fromCartesian(scene.camera.position);
+    // const ground2H = scene.globe.getHeight(new Cesium.Cartographic(cameraPos.longitude, cameraPos.latitude, 0));
+    var relativeHeight = height - groundLevel;
+    if (relativeHeight  < minZoomDistance) {
+      const unitHeightDiff = height - scene.globe.ellipsoid.cartesianToCartographic(
+        Cesium.Cartesian3.add(scene.camera.position, scene.camera.direction, new Cesium.Cartesian3())
+      ).height;
+      // set limit angle to not move too far back in order to move up sufficienty
+      // min angle in radians : alpha ~ sin(alpha)
+      const minAngle = 0.25;
+      const distToMoveUp = minZoomDistance - relativeHeight;
+      const destPosition = new Cesium.Cartesian3();
+      const vectorToMove = new Cesium.Cartesian3()
+      if (unitHeightDiff < minAngle) {
+        // move back
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.direction, -distToMoveUp / minAngle, vectorToMove);
+        Cesium.Cartesian3.add(scene.camera.position, vectorToMove, destPosition);
+        // move up
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.up, distToMoveUp * (1 - unitHeightDiff / minAngle), vectorToMove);
+        Cesium.Cartesian3.add(destPosition, vectorToMove, destPosition);
+      } else {
+        // move back
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.direction, -distToMoveUp / unitHeightDiff, vectorToMove);
+        Cesium.Cartesian3.add(scene.camera.position, vectorToMove, destPosition);
+      }
+      height = scene.globe.ellipsoid.cartesianToCartographic(destPosition).height;
+      groundLevel = scene.globe.getHeight(Cesium.Cartographic.fromCartesian(destPosition));
+      relativeHeight = height - groundLevel;
+      // if terrain is hit when moving backwards, move up again
+      if (relativeHeight  < minZoomDistance) {
+        // move up sufficiently above terrain
+        Cesium.Cartesian3.multiplyByScalar(scene.camera.up, minZoomDistance - relativeHeight, vectorToMove);
+        Cesium.Cartesian3.add(destPosition, vectorToMove, destPosition);
+      }
+      scene.camera.flyTo({destination: destPosition, orientation: {direction: scene.camera.direction, up: scene.camera.up}});
     }
   }
 
@@ -313,40 +539,99 @@ const exports = class extends ngeoOlcsManager {
     this.mode_ = mode;
   }
 
-  remove3DLayers() {
+  remove3DLayers(checkNoMeshes = true) {
     this.availableTiles3dLayers_.map(e => e.layer).forEach(function(layer) {
-      this.remove3dLayer(layer);
+      this.remove3dLayer(layer, checkNoMeshes);
     }.bind(this));
   }
 
-  onToggle() {
+  disable_2D_layers_and_terrain() {
+    // prevent the mesh from being hidden by parts of the (blank/white) terrain
+    this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = false;
+    if (this.currentBgLayer === undefined) {
+      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+      this.disable_2D_layers();
+      this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+    }
+  }
+
+  restore_2D_layers_and_terrain() {
+    // prevent rendering of parts of 3D objects hidden by terrain
+    this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = true;
+    this.restore_2D_layers_and_background();
+  }
+
+  restore_2D_layers_and_background() {
+    if (this.currentBgLayer !== undefined) {
+      this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+      this.currentBgLayer = undefined;
+    }
+    this.restore_2D_layers();
+  }
+
+  disable_2D_layers() {
+    // push all active 2D layers into this.previous_2D_layers and deactivate them
+    this.map.getLayers().getArray().forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
+    this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
+  }
+
+  restore_2D_layers() {
+    this.previous_2D_layers.forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.map.addLayer(l)});
+    this.previous_2D_layers = [];
+  }
+
+  onToggle(doInit) {
     if (this.is3dEnabled()) {
       if (this.mode_ === 'MESH') {
-        this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
-        this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+        this.disable_2D_layers_and_terrain();
+        if (doInit) {
+          this.remove3DLayers(false);
+        }
+        if (this.getActiveMeshLayers().length == 0) {
+          this.init3dMeshes();
+        }
       } else {
-        if (this.currentBgLayer !== undefined) {
-          this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+        this.restore_2D_layers_and_terrain();
+        this.removeMeshLayers();
+        const scene = this.ol3d.getCesiumScene();
+        // scene.terrainProvider = this.TerrainProvider;
+        if (doInit) {
+          this.remove3DLayers();
+          this.init3dTiles();
         }
       }
-      this.init3dTiles();
+      this.scheduleMinimumZoomDistanceUpdate()
     } else {
-      if (this.currentBgLayer !== undefined) {
-        this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
-      }
-      this.remove3DLayers();
+      this.restore_2D_layers_and_background();
+      this.remove3DLayers(false);
       this.ngeoLocation_.deleteParam('3d_layers');
     }
   }
 
-  toggleMode(mode) {
+  toggleMesh(doInit = true) {
+    if ((this.getMode() === '3D') && this.is3dEnabled()) {
+      this.setMode('MESH');
+      this.onToggle(false);
+    } else {
+      this.toggleMode('MESH', doInit);
+    }
+  }
+  toggle3dTerrain() {
+    if ((this.getMode() === 'MESH') && this.is3dEnabled()) {
+      this.setMode('3D');
+      this.onToggle(false);
+    } else {
+      this.toggleMode('3D');
+    }
+  }
+  toggleMode(mode, doInit = true) {
     this.setMode(mode);
     this.toggle3d().then(function() {
-      this.onToggle();
+      this.onToggle(doInit);
     }.bind(this));
   }
 
-  is3DEnabled() {
+  is3dTerrainEnabled() {
     if (this.getMode() === '3D') {
       return this.is3dEnabled();
     }

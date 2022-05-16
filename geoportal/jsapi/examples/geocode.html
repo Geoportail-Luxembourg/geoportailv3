@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="../../geoportailv3/static/build/apiv3.css">
+    <link rel="stylesheet" href="../dist/apiv4.css">
     <style>
       #mapContainer {
         position: relative;
@@ -19,9 +19,6 @@
     <div id="mapContainer"></div>
     <p>Click on the map to get the address.</p>
     <div id="address"></div>
-    <script src="../../node_modules/proj4/dist/proj4.js"></script>
-    <script src="../../node_modules/whatwg-fetch/fetch.js"></script>
-    <script src="../../node_modules/promise-polyfill/promise.js"></script>
-    <script src="/@?main=geocode.js"></script>
+    <script src="geocode.js" type="module"></script>
   </body>
 </html>

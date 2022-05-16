@@ -6,9 +6,7 @@ const destDir = '/etc/static-ngeo/';
 const babelPresets = [[require.resolve('@babel/preset-env'), {
   targets: {
     browsers: ['> 0.5% in CH', '> 0.5% in FR', 'Firefox ESR', 'ie 11'],
-  },
-  modules: false,
-  loose: true
+  }
 }]];
 
 module.exports = (env, argv) => {
@@ -29,7 +27,7 @@ module.exports = (env, argv) => {
             plugins: [
               require.resolve('@babel/plugin-syntax-object-rest-spread'),
               require.resolve('@babel/plugin-transform-spread'),
-              require.resolve('@camptocamp/babel-plugin-angularjs-annotate'),
+              require.resolve('babel-plugin-angularjs-annotate'),
             ]
           }
         }

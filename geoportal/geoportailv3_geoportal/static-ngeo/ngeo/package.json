@@ -10,7 +10,8 @@
     "build-gmf-apps-profile": "TARGET=gmf-apps webpack --profile --json > profile.json",
     "serve-ngeo-examples": "DEV_SERVER=1 TARGET=ngeo-examples webpack-dev-server --port 3000 --progress --watch --bail --debug",
     "serve-gmf-examples": "DEV_SERVER=1 TARGET=gmf-examples webpack-dev-server --port 3000 --progress --watch --bail --debug",
-    "serve-gmf-apps": "DEV_SERVER=1 TARGET=gmf-apps webpack-dev-server --port 3000 --progress --watch --bail --debug"
+    "serve-gmf-apps": "DEV_SERVER=1 TARGET=gmf-apps webpack-dev-server --port 3000 --progress --watch --bail --debug",
+    "i18next-parse": "i18next --config buildtools/i18next-parser.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,14 @@
     "compile-catalog": "buildtools/compile-catalog.js"
   },
   "devDependencies": {
-    "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
+    "@babel/core": "7.16.0",
+    "@babel/plugin-proposal-class-properties": "7.16.0",
+    "@babel/plugin-proposal-decorators": "7.16.0",
+    "@babel/plugin-transform-typescript": "7.16.1",
+    "@babel/preset-env": "7.16.0",
+    "@babel/preset-typescript": "7.16.0",
     "@camptocamp/cesium": "1.45.0",
+    "@lit/reactive-element": "1.0.2",
     "angular": "1.7.0",
     "angular-animate": "1.7.0",
     "angular-dynamic-locale": "0.1.36",
@@ -38,9 +45,8 @@
     "angular-touch": "1.7.0",
     "angular-ui-date": "1.1.1",
     "angular-ui-slider": "0.4.0",
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.4",
-    "babel-preset-env": "1.6.1",
+    "babel-loader": "8.2.3",
+    "babel-plugin-angularjs-annotate": "0.10.0",
     "bootstrap": "3.3.7",
     "commander": "2.15.1",
     "console-control-strings": "1.1.0",
@@ -68,6 +74,9 @@
     "hard-source-webpack-plugin": "0.6.12",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
+    "i18next": "21.5.1",
+    "i18next-parser": "5.2.0",
+    "i18next-xhr-backend": "3.2.2",
     "istanbul-instrumenter-loader": "3.0.1",
     "jasmine-core": "2.99.0",
     "jquery": "3.3.1",
@@ -85,6 +94,9 @@
     "karma-jasmine": "1.1.1",
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "3.0.0",
+    "lit": "2.0.2",
+    "lit-element": "3.0.2",
+    "lit-html": "2.0.2",
     "less": "2.7.2",
     "less-loader": "4.1.0",
     "less-plugin-autoprefix": "1.5.1",
@@ -103,10 +115,10 @@
     "uglify-js": "3.3.27",
     "uglifyjs-webpack-plugin": "1.2.5",
     "url-loader": "1.0.1",
-    "webpack": "4.8.2",
-    "webpack-cli": "2.1.2",
-    "webpack-dev-server": "3.1.4",
-    "webpack-merge": "4.1.2"
+    "webpack": "4.46.0",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.2",
+    "webpack-merge": "5.8.0"
   },
   "dependencies": {
     "localforage": "^1.7.3"

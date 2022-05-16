@@ -1,32 +1,39 @@
-<p>The Geoportail.lu V3 API is a web delivered service platform delivering both data and functionality, enabling geographical information to be shown on a map.
-The Geoportail.lu V3 API enables the integration of geoportail functionalities in external web pages.
-Although the options for data processing are limited compared with “real” office GIS software, some targeted queries and analyses are possible.</p>
-<p><i>Important Note: For access to the Geoportail.lu V3 API on your own servers, you will need to request access to the ACT, specifying the server address you wish to grant access too.</i>
-For any assistance as well as for request access, please contact our support here : <a href="mailto:support@geoportail.lu">support@geoportail.lu</a></p>
-<p>To help the developers, some examples and use cases are available on our <a href="./examples/">demo page</a></p>
-<p>A catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
-<p>A catalog of public mymaps is available on the <a href="./examples/public_mymaps.html">List of public Mymaps page.</a></p>
-<p>The Geoportail.lu V3 API is built on top of the <a href="https://openlayers.org/en/v3.20.1/apidoc/" target="_blank">OpenLayers 3 API</a>.
-The Geoportail.lu V3 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.</p>
-<p>Feel free to visit our <a href="https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/geoportal/jsapi" target="_blank">Github repository</a> to have a look on our source code.</p>
-<p>All the needed resources are loaded by including the following js script.</p>
-<pre>
-&lt;script src="//apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"&gt;&lt;/script&gt;
-</pre>
-<p>The script automaticaly includes the Geoportail v3 libraries as well as the OpenLayers V3.x libraries. Thus there is no need to include it again.</p>
-<p>
-  The core API object is a [lux.Map](lux.Map.html) that extends an OpenLayers [ol.Map](https://openlayers.org/en/v3.20.1/apidoc/ol.Map.html). This is the main entry point to create a basic map.
-</p>
-<p>
-The main properties of a [lux.Map](lux.Map.html) are : 
-</p>
-<ul>
-<li><i>target</i> : The id or the html element where the map is displayed</li>
-<li><i>bgLayer</i> : The Id of the background layer.</li>
-<li><i>zoom</i> : The starting zoom level.</li>
-<li><i>position</i> : The central point of the map.</li>
-</ul>
-<p>Displaying a map is simple as shown by the following code : </p>
+The Geoportail.lu V4 API is a web delivered service platform delivering both data and functionality, enabling geographical information to be shown on a map.
+The Geoportail.lu V4 API enables the integration of geoportail functionalities in external web pages.
+Although the options for data processing are limited compared with “real” office GIS software, some targeted queries and analyses are possible.
+
+
+*Important Note: For access to the Geoportail.lu V4 API on your own servers, you will need to request access to the ACT, specifying the server address you wish to grant access too.*
+
+For any assistance as well as for request access, please contact our support here : <support@geoportail.lu>
+
+To help the developers, some examples and use cases are available on our [demo page](./examples)
+
+A catalog of public layers is available on the [List of layers page](./examples/iterate_layers_api.html).
+
+A catalog of public mymaps is available on the [List of public Mymaps page](./examples/public_mymaps.html).
+
+The Geoportail.lu V4 API is built on top of the [OpenLayers API](https://openlayers.org/en/v6.9.0/apidoc/)
+The Geoportail.lu V4 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.
+
+Feel free to visit our [GitHub repository](https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/geoportal/jsapi) to have a look on our source code.
+
+All the needed resources are loaded by including the following js script.
+```html
+<script src="https://apiv4.geoportail.lu/apiv4loader.js" type="text/javascript"></script>
+```
+
+The script automatically includes the Geoportail V4 libraries as well as the OpenLayers and proj4js libraries. Thus there is no need to include them again.
+
+The core API object is a [lux.Map](module-map-Map.html) that extends an OpenLayers [ol.Map](https://openlayers.org/en/v6.9.0/apidoc/module-ol_Map-Map.html). This is the main entry point to create a basic map.
+
+The main properties of a [lux.Map](module-map-Map.html) are:
+ - *target* : The id or the html element where the map is displayed
+ - *bgLayer* : The Id of the background layer.
+ - *zoom* : The starting zoom level.
+ - *position* : The central point of the map.
+
+Displaying a map is simple as shown by the following code:
 <pre><code>
 var map = new lux.Map({
   target: 'map1',
@@ -35,8 +42,8 @@ var map = new lux.Map({
   position: [75977, 75099]
 });
 </code></pre>
-<div id="map1" style="width:250px"></div>
-<script src="//apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"></script>
+<div id="map1" style="width:250px; height:250px;"></div>
+<script src="/apiv4loader.js"  type="text/javascript"></script>
 <script>
 var map = new lux.Map({
   target: 'map1',
@@ -44,4 +51,3 @@ var map = new lux.Map({
   zoom: 18,
   position: [75977, 75099]
 });</script>
-

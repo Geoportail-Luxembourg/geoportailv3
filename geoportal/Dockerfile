@@ -13,7 +13,7 @@ RUN apt-get -y upgrade
 RUN apt-get  install -y ca-certificates
 RUN mv /etc/apt/sources.list.d/nodesource.list.disabled /etc/apt/sources.list.d/nodesource.list
 RUN apt update && apt-get install libgnutls30
-RUN apt update && apt install openjdk-8-jdk-headless git -y && apt-get dist-upgrade -y
+RUN apt update && apt install git -y && apt-get dist-upgrade -y
 COPY package.json /app
 RUN npm set progress=false && \
     npm-packages --src=/app/package.json --dst=/tmp/npm-packages && \
@@ -28,18 +28,11 @@ RUN mv /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
 COPY . /app
 
 # jsapi generation
-RUN mkdir /etc/apiv3
-WORKDIR /etc/apiv3
+ADD ./jsapi /etc/apiv4/
+WORKDIR /etc/apiv4
 RUN node --version
-RUN mkdir -p /etc/apiv3/.build/externs && mkdir -p /etc/apiv3/build
-RUN curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js -o /etc/apiv3/.build/externs/angular-1.6.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js -o /etc/apiv3/.build/externs/angular-1.6-q_templated.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js -o /etc/apiv3/.build/externs/angular-1.6-http-promise_templated.js && \
-    curl -s https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js -o /etc/apiv3/.build/externs/jquery-1.9.js
-COPY ./jsapi/package.json /etc/apiv3/
 RUN npm install --no-optional && npm cache clear --force
-ADD ./jsapi /etc/apiv3/jsapi
-RUN /etc/apiv3/jsapi/rebuild_api.sh
+RUN /etc/apiv4/rebuild_api.sh
 
 WORKDIR /app
 # sad fix, to allow webpack's file-loader to find files with query string & hash added
@@ -56,6 +49,7 @@ RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 # put Cesium build in static-ngeo
 RUN mkdir /etc/static-ngeo/Cesium && cp -r /usr/lib/node_modules/cesium/Build/Cesium/* /etc/static-ngeo/Cesium/
+RUN cp -r /app/geoportailv3_geoportal/static-ngeo/ngeo/locales/ /etc/static-ngeo/
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
 
@@ -105,7 +99,7 @@ COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/stati
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/not_used/build/
 COPY --chown=www-data:www-data --from=builder /etc/static-ngeo/build/ /etc/static-ngeo/NO_CACHE/build/
 
-#COPY --from=builder /etc/apiv3/* /etc/apiv3/
+#COPY --from=builder /etc/apiv4/* /etc/apiv4/
 RUN mkdir -p /app/geoportailv3_geoportal/jsapi/build/
 COPY --from=builder /app/geoportailv3_geoportal/jsapi/build/apidoc /app/geoportailv3_geoportal/jsapi/build/apidoc
 COPY --from=builder /app/geoportailv3_geoportal/jsapi/webfonts /app/geoportailv3_geoportal/jsapi/webfonts
@@ -146,4 +140,5 @@ ENV VISIBLE_ENTRY_POINT=/ \
     GUNICORN_LOG_LEVEL=INFO \
     SQL_LOG_LEVEL=WARN \
     DOGPILECACHE_LOG_LEVEL=INFO \
-    OTHER_LOG_LEVEL=WARN
+    OTHER_LOG_LEVEL=WARN \
+    TEST=false

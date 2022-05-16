@@ -71,6 +71,13 @@ User management is handled by the LDAP, both in production and on the local mach
 The LDAP access is configured with the LDAP\_\* environment variables. See .env, docker-compose.yaml and geoportal/config.yaml.
 
 
+DB configuration
+----------------
+Setup of the database is done via the tools in the repo [lux_dev_db](https://github.com/camptocamp/luxembourg_dev_db) and an additional dump.
+
+You can find [some hints](doc/conf_db.md) about how to configure special features of the luxembourg via the DB.
+
+
 Debug c2cgeoportal
 ------------------
 

@@ -85,6 +85,12 @@
     overflow-x: hidden;
   }
 
+  #lidar .tab-content {
+    height: ~"calc(100% - 64px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   #infos .tab-content {
     // FIXME: use variables for the calculation
     height: ~"calc(100% - 64px)";
@@ -155,7 +161,6 @@
     }
   }
 
-
   .themes-switcher {
     overflow-y: auto;
     overflow-x: hidden;
@@ -164,6 +169,10 @@
     width:100%;
     -webkit-transition: none;
     transition: none;
+  }
+
+  .layer-trees {
+    position: relative;
   }
 
   .external-data-selector {

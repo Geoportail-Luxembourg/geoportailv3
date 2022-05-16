@@ -230,6 +230,16 @@
             </div>
           </div>
         </div>
+        <!-- Lidar -->
+        <div id="lidar" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'">
+            <h2 translate>Lidar</h2>
+            <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+              ✕
+            </button>
+            <div class="tab-content">
+              <gmf-lidar-panel></gmf-lidar-panel>
+            </div>
+          </div>
         <!-- Feedback -->
         <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
           <h2 translate>Feedback</h2>
@@ -375,6 +385,7 @@
       >
       </ngeo-offline>
       <app-backgroundselector
+        ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
@@ -400,6 +411,9 @@
         </li>
         <li ngeo-btn ng-model="mainCtrl.routingOpen" class="routing icon">
           <a href translate>Routing</a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.lidarOpen" class="measure icon">
+          <a href translate>Lidar</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.vectorEditorOpen" class="hidden">
           <a href translate>Vector Editor</a>
@@ -452,6 +466,8 @@
         </li>
       </ul>
     </footer>
+
+    <lux-iframe-preview></lux-iframe-preview>
 
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
         <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
