@@ -85,6 +85,8 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.ngeoLocation_ = ngeoLocation;
 
+  this.lux3dTree = undefined;
+
   listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
@@ -93,6 +95,18 @@ const exports = function($scope, appThemes, appTheme,
         this.setTree_();
       }), this);
 
+  $scope.$watch(
+    () => {
+      if (!this.map.get('ol3dm')) return;
+      return this.map.get('ol3dm').is3dEnabled();
+    },
+    enabled => {
+      if (enabled && (this.lux3dTree === undefined)) {
+        this.lux3dTree = this.map.get('ol3dm').tree3D;
+      }
+    }
+  )
+
   $scope.$watch(function() {
     return this.appTheme_.getCurrentTheme();
   }.bind(this), function(newVal, oldVal) {
@@ -100,42 +114,22 @@ const exports = function($scope, appThemes, appTheme,
       this.setTree_();
     }
   }.bind(this));
-
-  $scope.$watch(
-    () => {
-      if (!this.map.get('ol3dm')) return;
-      return this.map.get('ol3dm').is3dEnabled();
-    },
-    enabled => {
-      if (enabled === undefined) return;
-      if (enabled) {
-        this.tree.children.unshift({
-          id: -1,
-          name: "3d Layers",
-          metadata: {},
-          children: this.map.get('ol3dm').getAvailableLayers().map(
-            (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
-          ),
-          type: "Cesium",
-          ogcServer: "None",
-          mixed: true,
-          theme: this.appTheme_.getCurrentTheme()
-        })
-      } else {
-        if (this.tree !== undefined && this.tree !== null) {
-          const idx = this.tree.children.findIndex((e) => e.id === -1);
-          if (idx > -1) {
-            this['tree'].children.splice(idx, 1);
-          }
-        }
-      }
-    }
-  )
 };
 
 exports.prototype.is3dEnabled = function() {
   if (!this.map.get('ol3dm')) return false;
   return this.map.get('ol3dm').is3dEnabled();
+};
+
+
+exports.prototype.is3dTerrainEnabled = function() {
+  if (!this.map.get('ol3dm')) return false;
+  return this.map.get('ol3dm').is3dTerrainEnabled();
+};
+
+exports.prototype.is3dMeshEnabled = function() {
+  if (!this.map.get('ol3dm')) return false;
+  return this.map.get('ol3dm').isMeshEnabled();
 };
 
 
@@ -230,11 +224,7 @@ exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
   const olcs = this.map.get('ol3dm');
   if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e._url.includes(node.layer)) !== -1) {
-      olcs.remove3dLayer(node.layer);
-    } else {
-      olcs.add3dTile(node.layer)
-    }
+    olcs.toggleLayer(node);
   } else {
     var layer = this.getLayerFunc_(node);
     var map = this['map'];

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "commonjs",
+      "lib": ["es2020", "dom"],
+      "allowJs": true,
+      "baseUrl": ".",
+      "paths": {
+        "cesium/*": ["./node_modules/cesium/Source/*"]
+      }
+    },
+    "include": [
+        "js/**/*",
+        "./node_modules/cesium/Source/**/*"
+    ]
+  }

@@ -173,14 +173,14 @@ class JsapiEntry(Theme):
             cookie_domain = referrer["cookie_domain"]
             self.request.response.set_cookie(
                 cookie_name, value=cookie_value, domain=cookie_domain)
-        result = render('geoportailv3_geoportal:templates/api/apiv3loader.js',{},
+        result = render('geoportailv3_geoportal:templates/api/apiv4loader.js',{},
                 request=self.request)
         response = Response(result)
         response.content_type = 'application/javascript'
         return response
 
     @view_config(route_name='jsapiexample',
-                 renderer='geoportailv3_geoportal:templates/api/apiv3example.html')
+                 renderer='geoportailv3_geoportal:templates/api/apiv4example.html')
     def apiexample(self):
         return {}
     def _extract_layers_with_path(self, node, layers, came_from):

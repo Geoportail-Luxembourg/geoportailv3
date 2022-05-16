@@ -1,6 +1,5 @@
-goog.provide('lux.Piwik');
-
 /**
  * @typedef {{push: function(Array<string>)}}
  */
-lux.Piwik;
+const Piwik = undefined;
+export default Piwik;
