@@ -1,0 +1,17 @@
+lux-iframe-preview .modal.in {
+    display: flex !important;
+}
+
+lux-iframe-preview .modal-dialog {
+    width: auto;
+    display: inline-block;
+    max-width: 100%;
+}
+
+lux-iframe-preview iframe {
+    border: 1px solid #b2b2b2;
+}
+
+lux-iframe-preview .form-inline .form-control.custom-size-input {
+    width: 75px;
+}

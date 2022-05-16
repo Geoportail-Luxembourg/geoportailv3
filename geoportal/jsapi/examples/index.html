@@ -1,10 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "//www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>geoportail.lu API v3 samples</title>
+    <title>geoportail.lu API v4 samples</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="theme.css">
-    <script src="/apiv3loader.js"  type="text/javascript"></script>
+    <script src="/apiv4loader.js"  type="text/javascript"></script>
 </head>
 <body>
     <div class='titlebar'><h1>API Samples</h1></div>
@@ -104,7 +104,7 @@ var map2 = new lux.Map({
 
 map2.showMarker(
   {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
         </pre>
@@ -130,7 +130,7 @@ var map2a = new lux.Map({
 
 map2a.showMarker(
   {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: true,
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
@@ -159,7 +159,7 @@ var position2 = [75977, 75099];
 map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
         </pre>
@@ -184,7 +184,7 @@ var map2c = new lux.Map({
 
 map2c.showMarker(
   {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: true,
    target: info2c,
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
@@ -214,7 +214,7 @@ map2d.showMarker(
   {
   position: position2d2169,
   positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: false,
    target: info2d
 });
@@ -223,7 +223,7 @@ map2d.showMarker(
   position: position2d4326,
   positionSrs: 4326,
   positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: false,
    target: info2d
 });
@@ -245,7 +245,7 @@ map2d.showMarker(
 var map3 = new lux.Map({
   target: 'map3',
   bgLayer: 'streets_jpeg',
-  layers: [ '149','386','512' ],
+  layers: [ '149','1386','512' ],
   layerOpacities: [0.6,0.8,0.8],
   layerVisibilities: [true,true,false],
   layerManager: {
@@ -563,7 +563,7 @@ lux.geocode({
     position: position,
     autoCenter: true,
     positioning: 'center-center',
-    iconURL: '/proj/1.0/build/apidoc/examples/lion.png'
+    iconURL: 'lion.png'
   });
 });
 
@@ -668,7 +668,7 @@ var iconStyle = new ol.style.Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    src: '/proj/1.0/build/apidoc/examples/lion.png'
+    src: 'lion.png'
   }))
 });
 cadastreFeature.setStyle(iconStyle);
@@ -811,6 +811,9 @@ map17.on('click', function(evt) {
 
 <script type='text/javascript'>
 
+proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
+ol.proj.proj4.register(proj4);
+
 lux.setPopupSize([400, 150]);
 
 var map1 = new lux.Map({
@@ -860,10 +863,10 @@ var map2 = new lux.Map({
   position: position
 });
 
-map2.showMarker(
-  {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
-   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
+map2.showMarker({
+  positioning: 'center-center',
+  iconURL: 'lion.png',
+  html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
 
 
@@ -878,7 +881,7 @@ var map2a = new lux.Map({
 map2a.showMarker(
 
   {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: true,
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
@@ -895,7 +898,7 @@ var position2 = [75977, 75099];
 map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
 
@@ -908,7 +911,7 @@ var map2c = new lux.Map({
 
 map2c.showMarker(
   {positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: true,
    target: info2c,
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
@@ -927,7 +930,7 @@ map2d.showMarker(
   {
   position: position2d2169,
   positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: false,
    target: info2d
 });
@@ -936,7 +939,7 @@ map2d.showMarker(
   position: position2d4326,
   positionSrs: 4326,
   positioning: 'center-center',
-   iconURL: '/proj/1.0/build/apidoc/examples/lion.png',
+   iconURL: 'lion.png',
    click: false,
    target: info2d
 });
@@ -945,7 +948,7 @@ map2d.showMarker(
 var map3 = new lux.Map({
   target: 'map3',
   bgLayer     : 'streets_jpeg',
-  layers      : [ '149','386','512' ],
+  layers      : [ '149','1386','512' ],
   layerOpacities: [0.6,0.8, 0.8],
   layerVisibilities: [true,true,false],
   layerManager: {
@@ -1120,7 +1123,7 @@ lux.geocode({
     position: position,
     autoCenter: true,
     positioning: 'center-center',
-    iconURL: '/proj/1.0/build/apidoc/examples/lion.png'
+    iconURL: 'lion.png'
   });
 });
 
@@ -1174,7 +1177,7 @@ var iconStyle = new ol.style.Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    src: '/proj/1.0/build/apidoc/examples/lion.png'
+    src: 'lion.png'
   }))
 });
 cadastreFeature.setStyle(iconStyle);

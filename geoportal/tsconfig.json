@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
+      "target": "ES2020",
       "module": "system",
       "lib": ["es2017", "dom"],
+      "allowJs": true,
     },
     "include": [
       "geoportailv3_geoportal/static-ngeo/js/**/*.js",
+      "geoportailv3_geoportal/static-ngeo/js/**/*.ts",
     ],
 }

@@ -11,6 +11,6 @@ __pycache__/
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 /geoportal/geoportailv3_geoportal/locale/ngeo.pot
-
+/geoportal/geoportailv3_geoportal/jsapi
 # Generated with dev mode
 /geoportal/geoportailv3_geoportal/static/apihelp/index.html

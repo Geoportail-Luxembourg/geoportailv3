@@ -4,11 +4,11 @@ var isDebug = process.argv.some(function(argument) {
   return argument === '--debug';
 });
 
-const webpackMerge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commons = require('./buildtools/webpack.commons');
 let webpackConfig = commons.config();
-webpackConfig = webpackMerge(webpackConfig, require('./buildtools/webpack.dev'));
-webpackConfig = webpackMerge(webpackConfig, {
+webpackConfig = merge(webpackConfig, require('./buildtools/webpack.dev'));
+webpackConfig = merge(webpackConfig, {
   devtool: 'inline-source-map',
   module: {
     rules: [{
