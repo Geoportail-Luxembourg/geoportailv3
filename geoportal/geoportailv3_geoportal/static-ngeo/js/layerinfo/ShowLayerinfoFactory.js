@@ -142,9 +142,11 @@ function factory($http, $sce, $rootScope, $window,
                   if (localMetadata != undefined && 'legend_name' in localMetadata) {
                       queryParams['name'] = localMetadata['legend_name']
                   }
-                  var id = currentLayer.get('queryable_id');
-                  if (id != undefined) {
-                      queryParams['id'] = id;
+                  if (currentLayer !== null) {
+                    var id = currentLayer.get('queryable_id');
+                    if (id != undefined) {
+                        queryParams['id'] = id;
+                    }
                   }
                   if (Object.keys(queryParams).length > 0) {
                     queryParams['lang'] = gettextCatalog.currentLanguage;
