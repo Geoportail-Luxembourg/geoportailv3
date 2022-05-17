@@ -1701,7 +1701,11 @@ exports.prototype.afterReorder = function(feature, array) {
  * @export
  */
 exports.prototype.setDragHandler = function() {
-  $('.modal-dialog').draggable('option', 'handle', 'h4');
+  try {
+    $('.modal-dialog').draggable('option', 'handle', 'h4');
+  } catch(e) {
+    console.log(e);
+  }
 };
 
 appModule.controller('AppMymapsController', exports);
