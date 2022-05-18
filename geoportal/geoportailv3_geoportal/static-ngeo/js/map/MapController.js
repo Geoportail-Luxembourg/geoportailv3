@@ -21,6 +21,13 @@ import offlineUtils from 'ngeo/offline/utils.js';
  * @ngInject
  */
 const exports = function(appStateManager, ngeoDebounce) {
+
+  this.appStateManager_ = appStateManager;
+
+  this.ngeoDebounce_ = ngeoDebounce;
+};
+
+exports.prototype.$onInit = function() {
   var lurefToWebMercatorFn = getTransform('EPSG:2169', 'EPSG:3857');
 
   /** @type {ol.Map} */
@@ -28,9 +35,9 @@ const exports = function(appStateManager, ngeoDebounce) {
   var view = map.getView();
 
   /** @type {number} */
-  var version = appStateManager.getVersion();
+  var version = this.appStateManager_.getVersion();
 
-  var zoom = appStateManager.getInitialValue('zoom');
+  var zoom = this.appStateManager_.getInitialValue('zoom');
 
   /** @type {number} */
   var viewZoom;
@@ -41,10 +48,10 @@ const exports = function(appStateManager, ngeoDebounce) {
     viewZoom = 8;
   }
 
-  var x = appStateManager.getInitialValue('X');
-  var y = appStateManager.getInitialValue('Y');
-  var srs = appStateManager.getInitialValue('SRS');
-  appStateManager.deleteParam('SRS');
+  var x = this.appStateManager_.getInitialValue('X');
+  var y = this.appStateManager_.getInitialValue('Y');
+  var srs = this.appStateManager_.getInitialValue('SRS');
+  this.appStateManager_.deleteParam('SRS');
   /** @type {ol.Coordinate} */
   var viewCenter;
   if (x !== undefined && y !== undefined) {
@@ -61,14 +68,10 @@ const exports = function(appStateManager, ngeoDebounce) {
   view.setCenter(viewCenter);
   view.setZoom(viewZoom);
 
-  exports.updateState_(appStateManager, view);
-  var updateStateFunc = ngeoDebounce(
-      /**
-       * @param {ol.Object.Event} e Object event.
-       */
-      function(e) {
-        exports.updateState_(appStateManager, view);
-      }, 300, /* invokeApply */ true);
+  exports.updateState_(this.appStateManager_, view);
+  var updateStateFunc = this.ngeoDebounce_(() => {
+      exports.updateState_(this.appStateManager_, view);
+  }, 300, /* invokeApply */ true);
 
   view.on('propertychange', updateStateFunc);
   map.on('propertychange', function(event) {
@@ -92,8 +95,8 @@ const exports = function(appStateManager, ngeoDebounce) {
   ["", "webkit", "moz", "ms"].forEach(
       prefix => document.addEventListener(prefix + 'fullscreenchange', check, false)
   );
-};
 
+}
 
 /**
  * @const

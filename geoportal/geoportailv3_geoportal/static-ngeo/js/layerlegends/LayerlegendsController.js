@@ -33,11 +33,6 @@ import appModule from '../module.js';
  */
 const exports = function($http, $sce, $window, gettextCatalog,
     getPngLegendUrl, getHtmlLegendUrl, ngeoBackgroundLayerMgr) {
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -88,6 +83,9 @@ const exports = function($http, $sce, $window, gettextCatalog,
   this.gettextCatalog = gettextCatalog;
 };
 
+exports.prototype.$onInit = function() {
+   this.map_ = this['map'];
+}
 
 /**
  * @param {ol.layer.Layer} layer Layer.

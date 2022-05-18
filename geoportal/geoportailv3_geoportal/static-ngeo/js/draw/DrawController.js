@@ -46,7 +46,6 @@ import {getDistance as haversineDistance, getArea} from 'ol/sphere.js';
  * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {angular.$compile} $compile The compile provider.
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
  * @param {app.Activetool} appActivetool The activetool service.
@@ -59,7 +58,7 @@ import {getDistance as haversineDistance, getArea} from 'ol/sphere.js';
  */
 const exports = function($scope,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
-    appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
+    appMymaps, gettextCatalog, appNotify, $anchorScroll,
     appActivetool, appGetDevice, $http, getRouteUrl) {
   /**
    * @type {string}
@@ -225,7 +224,6 @@ const exports = function($scope,
 
   drawPoint.setActive(false);
   ngeoMiscDecorate.interaction(drawPoint);
-  this.map.addInteraction(drawPoint);
   listen(drawPoint, getChangeEventType(
       'active'),
       this.onChangeActive_, this);
@@ -244,7 +242,6 @@ const exports = function($scope,
 
   drawLabel.setActive(false);
   ngeoMiscDecorate.interaction(drawLabel);
-  this.map.addInteraction(drawLabel);
   listen(drawLabel, getChangeEventType(
       'active'),
       this.onChangeActive_, this);
@@ -266,7 +263,6 @@ const exports = function($scope,
 
   this.drawLine.setActive(false);
   ngeoMiscDecorate.interaction(this.drawLine);
-  this.map.addInteraction(this.drawLine);
   listen(this.drawLine, getChangeEventType(
       'active'),
       this.onChangeActive_, this);
@@ -287,7 +283,6 @@ const exports = function($scope,
 
   drawPolygon.setActive(false);
   ngeoMiscDecorate.interaction(drawPolygon);
-  this.map.addInteraction(drawPolygon);
   listen(drawPolygon, getChangeEventType(
       'active'),
       this.onChangeActive_, this);
@@ -308,7 +303,6 @@ const exports = function($scope,
 
   drawCircle.setActive(false);
   ngeoMiscDecorate.interaction(drawCircle);
-  this.map.addInteraction(drawCircle);
   listen(drawCircle, getChangeEventType(
       'active'),
       this.onChangeActive_, this);
@@ -355,11 +349,9 @@ const exports = function($scope,
     }.bind(this),
     style: null
   });
-  this.map.addInteraction(selectInteraction);
 
   this.drawnFeatures_.selectInteraction = selectInteraction;
   this.drawnFeatures_.selectInteraction.setActive(false);
-  appFeaturePopup.init(this.map);
 
   listen(appSelectedFeatures, olCollectionEventType.ADD,
       /**
@@ -416,7 +408,6 @@ const exports = function($scope,
         features: this.drawnFeatures_.getCollection()
       });
   this.drawnFeatures_.clipLineInteraction.setActive(false);
-  this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
   listen(this.drawnFeatures_.clipLineInteraction,
       'modifyend', this.onClipLineEnd_, this);
 
@@ -429,12 +420,10 @@ const exports = function($scope,
    * @private
    */
   this.modifyCircleInteraction_ = this.drawnFeatures_.modifyCircleInteraction;
-  this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
   listen(this.modifyCircleInteraction_,
       'modifyend', this.onFeatureModifyEnd_, this);
 
-  this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   listen(this.drawnFeatures_.modifyInteraction,
       'modifyend', this.onFeatureModifyEnd_, this);
 
@@ -442,7 +431,6 @@ const exports = function($scope,
     features: appSelectedFeatures
   });
   this.drawnFeatures_.translateInteraction.setActive(false);
-  this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
   listen(
       this.drawnFeatures_.translateInteraction, 'translateend',
@@ -454,9 +442,24 @@ const exports = function($scope,
       }), this);
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
+};
 
-  listen(this.map, 'keydown',
-      this.keyboardHandler_, this);
+exports.prototype.$onInit = function() {
+  this.map.addInteraction(this.drawPoint);
+  this.map.addInteraction(this.drawLabel);
+  this.map.addInteraction(this.drawLine);
+  this.map.addInteraction(this.drawPolygon);
+  this.map.addInteraction(this.drawCircle);
+
+  this.map.addInteraction(this.drawnFeatures_.selectInteraction);
+  this.featurePopup_.init(this.map);
+  this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
+  this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
+  this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
+  this.map.addInteraction(this.drawnFeatures_.translateInteraction);
+
+  listen(this.map, 'keydown', this.keyboardHandler_, this);
+
 
 };
 
