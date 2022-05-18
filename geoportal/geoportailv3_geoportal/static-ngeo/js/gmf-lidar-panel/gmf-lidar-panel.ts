@@ -90,40 +90,11 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
 
     generatePlot(lineFeature: Feature) {
-        // const format = new GeoJSON({
-        //     featureProjection: 'EPSG:3857',
-        //     dataProjection: 'EPSG:4326'
-        // })
-        // const lineFeaturebs = format.readFeature( {
-        //     "type": "Feature",
-        //     "properties": {},
-        //     "geometry": {
-        //         "type": "LineString",
-        //         "coordinates": [
-        //             [
-        //                 6.9495391845703125,
-        //                 47.03175858136222
-        //             ],
-        //             [
-        //                 6.9488525390625,
-        //                 47.02309964439266
-        //             ],
-        //             [
-        //                 6.960697174072266,
-        //                 47.02228048303955
-        //             ],
-        //             [
-        //                 6.963100433349609,
-        //                 47.01537562362976
-        //             ]
-        //         ]
-        //     }
-        // })
         this.coordinates = lineFeature;
         console.log("Export CSV :", lineFeature);
 
         this.manager.init(this.config, window.map);
-        this.manager.setLine(lineFeaturebs.clone().getGeometry().transform('EPSG:3857', 'EPSG:2056'));
+        this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
         this.manager.clearBuffer();
         this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
     }

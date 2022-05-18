@@ -84,6 +84,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this.map_ = this['map'];
 
+  this['lidarOpen'] = false;
+
   var sketchStyle_ = new olStyleStyle({
     fill: new olStyleFill({
       color: 'rgba(255, 255, 255, 0.4)'
@@ -218,6 +220,13 @@ const exports = function($scope, $q, $http, $compile, gettext,
       style: style
     });
 
+
+  // // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
+  // $scope.$watch(() => this['profileLidarOpen'], (val) => {
+  //   document.querySelector('gmf-lidar-panel').active = val
+  //   document.querySelector('lidar-plot').active = val
+  // })
+
   /**
    * @type {app.interaction.MeasureProfile}
    */
@@ -331,7 +340,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
             var el = measureAzimut.getTooltipElement();
             var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
             this['persistedFeature'].set('text',
-              this['persistedFeature'].get('text') + 
+              this['persistedFeature'].get('text') +
               '\nΔh : ' + parseInt(elevationOffset, 0) + 'm')
             layer.changed()
           }

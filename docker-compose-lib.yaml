@@ -302,7 +302,7 @@ services:
       - AWS_S3_ENDPOINT
 
   pytree:
-    image: camptocamp/pytree
+    image: camptocamp/pytree-update
     environment:
       - DEPLOY_ENV=PROD
     volumes:
