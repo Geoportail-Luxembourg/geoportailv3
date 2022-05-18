@@ -20,26 +20,29 @@ import appModule from '../module.js';
 /**
  * @ngInject
  * @constructor
- * @param {angular.$http} $http The angular http service.
  * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
  */
-const exports = function($http, ngeoDebounce, appGetElevation) {
-  var map = this['map'];
-
+const exports = function(ngeoDebounce, appGetElevation) {
   /**
    * @type {app.GetElevation}
    * @private
    */
   this.getElevation_ = appGetElevation;
 
+  this.ngeoDebounce_ = ngeoDebounce;
+
   /**
    * @type {string}
    */
   this['elevation'] = '';
 
+};
+
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
   // 2D
-  map.on('pointermove', ngeoDebounce((e) => {
+  this.map_.on('pointermove', this.ngeoDebounce_((e) => {
     if (!this['active'] || !e.coordinate) {
       return;
     }
@@ -47,8 +50,8 @@ const exports = function($http, ngeoDebounce, appGetElevation) {
       elevation => this['elevation'] = elevation['formattedElevation']
     );
   }, 300, true));
-};
 
+};
 
 appModule.controller('AppElevationController',
     exports);
