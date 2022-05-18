@@ -1,5 +1,5 @@
 export const getConfig = () => ({
-  "pytreeLidarprofileJsonUrl":"https://sitn.ne.ch/pytree/",
+  "pytreeLidarprofileJsonUrl":"http://localhost:5000/",
   "loaded":false,
   "clientConfig":{
     "autoWidth":true,
@@ -13,7 +13,7 @@ export const getConfig = () => ({
     "pointSum":0,
     "tolerance":5
   },
-  "serverConfig": 
+  "serverConfig":
     {
     "classification_colors": {
       "2": {
@@ -87,7 +87,7 @@ export const getConfig = () => ({
     "default_attribute": "CLASSIFICATION",
     "default_color": "RGB(250,150,150)",
     "default_point_attribute": "CLASSIFICATION",
-    "default_point_cloud": "sitn2016",
+    "default_point_cloud": "luxembourg",
     "initialLOD": 6,
     "max_levels": {
       "25": {
