@@ -237,10 +237,10 @@
               ✕
             </button>
             <div class="tab-content">
-              <gmf-lidar-panel></gmf-lidar-panel>
+              <gmf-lidar-panel ng-prop-map="mainCtrl.map" ng-prop-active="mainCtrl.lidarOpen"></gmf-lidar-panel>
             </div>
           </div>
-        <!-- Feedback -->
+          <!-- Feedback -->
         <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
           <h2 translate>Feedback</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
