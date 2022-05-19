@@ -188,7 +188,7 @@ const exports = function(
       this.appActivetool_.streetviewActive = false;
       this['hiddenContent'] = false;
       this.stateManager_.updateState({'crosshair': false});
-      var mapCenterCoordinate = this['map'].getView().getCenter();
+      var mapCenterCoordinate = this.map_.getView().getCenter();
       this.stateManager_.updateState({
         'X': parseInt(mapCenterCoordinate[0], 0),
         'Y': parseInt(mapCenterCoordinate[1], 0)
@@ -306,73 +306,6 @@ const exports = function(
    */
   this.clickCoordinate = null;
 
-  // Load infowindow if crosshair variable is set
-  var urlLocationInfo = appStateManager.getInitialValue('crosshair');
-  if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
-      urlLocationInfo === 'true') {
-    var x = parseInt(appStateManager.getInitialValue('X'), 0);
-    var y = parseInt(appStateManager.getInitialValue('Y'), 0);
-    var version = this.stateManager_.getVersion();
-    var srs = appStateManager.getInitialValue('SRS');
-    if (srs === undefined) {
-      if (version === 3) {
-        srs = 'EPSG:3857';
-      } else {
-        srs = 'EPSG:2169';
-      }
-    }
-
-
-    if (x !== undefined && y !== undefined) {
-      var coordinate = version === 3 ?
-          /** @type {ol.Coordinate} */ (transform([x, y], srs,
-              this['map'].getView().getProjection())) :
-          /** @type {ol.Coordinate} */ (transform([y, x], srs,
-              this['map'].getView().getProjection()));
-      this.setClickCordinate_(coordinate);
-      this.loadInfoPane_();
-      if (!this.appGetDevice_.testEnv('xs')) {
-        this['open'] = true;
-        this['hiddenContent'] = false;
-      } else {
-        this['hiddenContent'] = true;
-      }
-    }
-  }
-  if (this.ngeoLocation_.getParam('address') !== undefined) {
-    this.appThemes_.getFlatCatalog().then(function(flatCatalog) {
-      var node = flatCatalog.find(
-        function(catalogLayer) {
-          return catalogLayer['name'] === 'addresses';
-        }, this);
-      if (node !== undefined && node  !== null) {
-        var layer = this.getLayerFunc_(node);
-        if (this['map'].getLayers().getArray().indexOf(layer) <= 0) {
-          this['map'].addLayer(layer);
-        }
-      }
-    }.bind(this));
-    var address = this.ngeoLocation_.getParam('address');
-    console.assert(address !== undefined);
-    this.geocode_.geocode(/** @type{string} */ (address)).then(function(data) {
-      var results = data['results'];
-      if (results !== undefined && results.length > 0) {
-        var coordinates = /** @type {ol.Coordinate} */
-            (transform(
-                results[0]['geom']['coordinates'], 'EPSG:2169',
-                this['map'].getView().getProjection()));
-        this['map'].getView().setZoom(17);
-        this['map'].getView().setCenter(coordinates);
-        this.setClickCordinate_(coordinates);
-        if (!this.appGetDevice_.testEnv('xs')) {
-          this['open'] = true;
-          this['hiddenContent'] = false;
-        } else {
-          this['hiddenContent'] = true;
-        }
-      }
-    }.bind(this));
-  }
   $scope.$watch(function() {
     return this.clickCoordinate;
   }.bind(this), function(newVal, oldVal) {
@@ -391,6 +324,73 @@ exports.prototype.$onInit = function() {
   this.lidarExtent_ = transformExtent(this.bboxLidar_, this.bboxSrsLidar_, this.map_.getView().getProjection());
 
   this.map_.addLayer(this.featureLayer_);
+
+  // Load infowindow if crosshair variable is set
+  var urlLocationInfo = this.stateManager_.getInitialValue('crosshair');
+  if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
+      urlLocationInfo === 'true') {
+    var x = parseInt(this.stateManager_.getInitialValue('X'), 0);
+    var y = parseInt(this.stateManager_.getInitialValue('Y'), 0);
+    var version = this.stateManager_.getVersion();
+    var srs = this.stateManager_.getInitialValue('SRS');
+    if (srs === undefined) {
+      if (version === 3) {
+        srs = 'EPSG:3857';
+      } else {
+        srs = 'EPSG:2169';
+      }
+    }
+    if (x !== undefined && y !== undefined) {
+      var coordinate = version === 3 ?
+          /** @type {ol.Coordinate} */ (transform([x, y], srs,
+              this.map_.getView().getProjection())) :
+          /** @type {ol.Coordinate} */ (transform([y, x], srs,
+              this.map_.getView().getProjection()));
+      this.setClickCordinate_(coordinate);
+      this.loadInfoPane_();
+      if (!this.appGetDevice_.testEnv('xs')) {
+        this['open'] = true;
+        this['hiddenContent'] = false;
+      } else {
+        this['hiddenContent'] = true;
+      }
+    }
+  }
+  if (this.ngeoLocation_.getParam('address') !== undefined) {
+    this.appThemes_.getFlatCatalog().then(function(flatCatalog) {
+      var node = flatCatalog.find(
+        function(catalogLayer) {
+          return catalogLayer['name'] === 'addresses';
+        }, this);
+      if (node !== undefined && node  !== null) {
+        var layer = this.getLayerFunc_(node);
+        if (this.map_.getLayers().getArray().indexOf(layer) <= 0) {
+          this.map_.addLayer(layer);
+        }
+      }
+    }.bind(this));
+    var address = this.ngeoLocation_.getParam('address');
+    console.assert(address !== undefined);
+    this.geocode_.geocode(/** @type{string} */ (address)).then(function(data) {
+      var results = data['results'];
+      if (results !== undefined && results.length > 0) {
+        var coordinates = /** @type {ol.Coordinate} */
+            (transform(
+                results[0]['geom']['coordinates'], 'EPSG:2169',
+                this.map_.getView().getProjection()));
+        this.map_.getView().setZoom(17);
+        this.map_.getView().setCenter(coordinates);
+        this.setClickCordinate_(coordinates);
+        if (!this.appGetDevice_.testEnv('xs')) {
+          this['open'] = true;
+          this['hiddenContent'] = false;
+        } else {
+          this['hiddenContent'] = true;
+        }
+      }
+    }.bind(this));
+  }
+
 
   listen(this.map_, olMapBrowserEventType.POINTERDOWN, function(event) {
     if (!this.appSelectedFeatures_.getLength()) {
