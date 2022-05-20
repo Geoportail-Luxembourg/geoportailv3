@@ -12,6 +12,7 @@ import {LuxBaseElement} from '../LuxBaseElement';
 
 @customElement('gmf-lidar-panel')
 export class GmfLidarPanel extends LuxBaseElement {
+    @property({type: Object}) map;
 
     @property({type: Boolean})
     active: boolean = false;
@@ -50,17 +51,15 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
 
     onActiveChange() {
-        // FIXME: this should be a property passed to the component with `ng-prop`
-        const map = window.map;
-        if (map) {
+        if (this.map) {
             if (this.active) {
-                map.addLayer(this.vectorLayer);
-                map.addInteraction(this.drawInteraction);
+                this.map.addLayer(this.vectorLayer);
+                this.map.addInteraction(this.drawInteraction);
             } else {
                 this.drawActive = false;
                 this.vectorLayer.getSource().clear();
-                map.removeInteraction(this.drawInteraction);
-                map.removeLayer(this.vectorLayer);
+                this.map.removeInteraction(this.drawInteraction);
+                this.map.removeLayer(this.vectorLayer);
             }
         }
     }

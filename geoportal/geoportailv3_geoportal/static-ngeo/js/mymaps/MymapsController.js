@@ -107,18 +107,6 @@ const exports = function($scope, $compile, $sce,
   this.appTheme_ = appTheme;
 
   /**
-   * @type {Array}
-   * @private
-   */
-  this.selectedLayers_ = this['selectedLayers'];
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
-  /**
    * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
@@ -183,7 +171,6 @@ const exports = function($scope, $compile, $sce,
    * @export
    */
   this.featuresList = appDrawnFeatures.getArray();
-  this.map.addLayer(appDrawnFeatures.getLayer());
 
   /**
    * @type {app.draw.DrawnFeatures}
@@ -425,6 +412,11 @@ const exports = function($scope, $compile, $sce,
   );
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+  this.map_.addLayer(this.drawnFeatures_.getLayer());
+  this.selectedLayers_ = this['selectedLayers'];
+}
 
 /**
  * Returns if the map is in the clip line mode.

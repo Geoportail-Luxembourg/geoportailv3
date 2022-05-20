@@ -24,9 +24,8 @@ import Fill from 'ol/style/Fill.js';
 import Select from 'ol/interaction/Select.js';
 import Modify from 'ol/interaction/Modify.js';
 import {listen} from 'ol/events.js';
-import {getCenter, containsCoordinate} from 'ol/extent';
+import {getCenter} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import {includes as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
@@ -143,12 +142,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @export
    */
   this.appRouting = appRouting;
-
-  /**
-   * @type {ol.Map}
-   * @export
-   */
-  this.map = this['map'];
 
   /**
    * @type {angularGettext.Catalog}
@@ -308,6 +301,11 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @private
    */
   this.modyfyFeaturesCollection_ = new Collection();
+  this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
+};
+
+exports.prototype.$onInit = function() {
+     this.map = this['map'];
 
   /**
    * Due to https://github.com/openlayers/openlayers/issues/7483
@@ -359,7 +357,6 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.source.Vector}
    * @private
    */
-  this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
   listen(this.appRouting.routeFeatures, 'add',
     this.showRoute_, this);

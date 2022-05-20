@@ -824,10 +824,7 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['lidarOpen'] = false;
-
-  // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
-  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
+   this['lidarOpen'] = false;
 
   /**
    * @type {boolean}
