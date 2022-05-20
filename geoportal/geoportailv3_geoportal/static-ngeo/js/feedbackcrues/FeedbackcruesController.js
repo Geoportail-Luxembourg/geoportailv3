@@ -24,6 +24,9 @@ const exports = function($scope, $http, appNotify, appUserManager,
     gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackCruesUrl,
     appDrawnFeatures) {
 
+
+  this.scope_ = $scope;
+
   /**
    * @type {app.draw.DrawnFeatures}
    * @private
@@ -95,18 +98,28 @@ const exports = function($scope, $http, appNotify, appUserManager,
    */
   this.url = '';
 
-  $scope.$watch(
+  this.scope_.$watch(() => this['sidebarActive'], newVal => {
+    if (newVal) {
+      this['active'] = false;
+    }
+  });
+};
+
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+
+  this.scope_.$watch(
     () => this['active'], newVal => {
     if (newVal === true) {
       if (this.appUserManager_.isAuthenticated()) {
         this.email = this.appUserManager_.getEmail();
       }
-      this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
+      this.bgLayer = this.backgroundLayerMgr_.get(this.map_);
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', function(event) {
+      this.scope_.$on('ngeoLocationChange', function(event) {
         this.setUrl_();
-        this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
+        this.bgLayer = this.backgroundLayerMgr_.get(this.map_);
       }.bind(this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
@@ -114,11 +127,6 @@ const exports = function($scope, $http, appNotify, appUserManager,
     }
   });
 
-  $scope.$watch(() => this['sidebarActive'], newVal => {
-    if (newVal) {
-      this['active'] = false;
-    }
-  });
 };
 
 /**
@@ -149,7 +157,7 @@ exports.prototype.sendReport = function() {
   }
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
-    featureProjection: this['map'].getView().getProjection()
+    featureProjection: this.map_.getView().getProjection()
   });
 
   var req = {

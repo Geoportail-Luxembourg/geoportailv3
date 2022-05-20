@@ -48,7 +48,6 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {string} qrServiceUrl The qr service url.
  * @param {string} previewMesurementUrl The preview service url.
  * @param {app.LotChasse} appLotChasse The selected lot de chasse.
- * @param {app.StateManager} appStateManager The state service.
  * @export
  * @ngInject
  */
@@ -59,7 +58,10 @@ const exports = function($sce, $timeout, $scope, $http,
     appThemes, appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl,
     appExport, appActivetool, appSelectedFeatures, appDrawnFeatures,
     appAuthtktCookieName, appNotify, downloadresourceUrl, qrServiceUrl,
-    previewMesurementUrl, appLotChasse, appStateManager) {
+    previewMesurementUrl, appLotChasse) {
+
+
+  this.timeout_ = $timeout;
   /**
    * @type {string}
    * @private
@@ -282,12 +284,6 @@ const exports = function($sce, $timeout, $scope, $http,
   this.downloadsketchUrl_ = downloadsketchUrl;
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
-  /**
    * @type {boolean}
    * @private
    */
@@ -296,7 +292,7 @@ const exports = function($sce, $timeout, $scope, $http,
   /**
    * @type {angular.$q.Promise|undefined}
    */
-  var holdPromise;
+  this.holdPromise;
 
   /**
    * @type {boolean}
@@ -314,7 +310,6 @@ const exports = function($sce, $timeout, $scope, $http,
     zIndex: 1000,
     'altitudeMode': 'clampToGround'
   });
-  this.map_.addLayer(this.featureLayer_);
   var defaultFill = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
@@ -380,116 +375,6 @@ const exports = function($sce, $timeout, $scope, $http,
     }
   }.bind(this));
 
- listen(this.map_.getLayers(),
-      'remove',
-      /**
-       * @param {ol.Collection.Event} e Collection event.
-       */
-      function(e) {
-        if (this['appSelector'] == this.QUERYPANEL_) {
-          this.clearQueryResult_(undefined);
-        }
-      }, this);
-
-
- listen(this.map_,
-      'pointerdown', function(evt) {
-        this.isLongPress_ = false;
-        this.startPixel_ = evt.pixel;
-        this.pointerDownTime_ = new Date().getTime();
-
-        $timeout.cancel(holdPromise);
-      }, this);
-
- listen(this.map_,
-      'pointerup', function(evt) {
-        $timeout.cancel(holdPromise);
-        var tempTime = new Date().getTime();
-        if ((tempTime - this.pointerUpTime_) <= 499) {
-          return;
-        }
-        this.pointerUpTime_ = tempTime;
-        this.stopPixel_ = evt.pixel;
-        if (!this.isLongPress_ &&
-            !(evt.originalEvent instanceof MouseEvent)) {
-          if (this.pointerUpTime_ - this.pointerDownTime_ > 499) {
-            this.isLongPress_ = true;
-          }
-        }
-        if (this.isLongPress_ || evt.originalEvent.which === 3) {
-          this.isLongPress_ = false;
-          return;
-        }
-        if (this['routingOpen'] ||
-            this.drawnFeatures_.modifyInteraction.getActive() ||
-            this.drawnFeatures_.modifyCircleInteraction.getActive() ||
-            this.appActivetool_.isActive() || this.isQuerying_) {
-          return;
-        }
-        holdPromise = $timeout(function() {
-          var found = false;
-          var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
-              this.drawnFeatures_.getCollection().getLength() > 0;
-          if (isQueryMymaps) {
-            this.selectedFeatures_.clear();
-            var result = this.selectMymapsFeature_(evt.pixel);
-            if (result) {
-              found = true;
-            }
-          }
-          if (!found) {
-            var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
-            var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
-            if (deltaX + deltaY < 6) {
-              this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
-              this.startPixel_ = null;
-              this.stopPixel_ = null;
-            }
-          }
-        }.bind(this), 500, false);
-      }, this);
-
- listen(this.map_, 'pointermove',
-      function(evt) {
-        if (evt.dragging || this.isQuerying_) {
-          return;
-        }
-        if (this.appActivetool_.isActive()) {
-          this.map_.getViewport().style.cursor = '';
-        } else {
-          var pixel = this.map_.getEventPixel(evt.originalEvent);
-          var hit = false;
-          try {
-            hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
-              if (layer !== undefined && layer !== null) {
-                var metadata = layer.get('metadata');
-                if (metadata !== undefined && metadata !== null) {
-                  if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
-                    return true;
-                  }
-                }
-              }
-              return false;
-            }, this, function(layer) {
-              if (!layer.getSource()) {
-                return false;
-              }
-              return true;
-            });
-          } catch (error) {
-            hit = false;
-          }
-          this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
-        }
-      }, this);
-
-  this['map'].getViewport()
-    .addEventListener('contextmenu', function(event) {
-      event.preventDefault(); // disable right-click menu on browsers
-      $timeout.cancel(holdPromise);
-      this.isLongPress_ = true;
-    }.bind(this));
-
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
 
@@ -500,9 +385,122 @@ const exports = function($sce, $timeout, $scope, $http,
 };
 
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+  this.map_.addLayer(this.featureLayer_);
+
+  this.map_.getViewport()
+  .addEventListener('contextmenu', function(event) {
+    event.preventDefault(); // disable right-click menu on browsers
+    this.timeout_.cancel(this.holdPromise);
+    this.isLongPress_ = true;
+  }.bind(this));
+
+  listen(this.map_.getLayers(),
+  'remove',
+  /**
+   * @param {ol.Collection.Event} e Collection event.
+   */
+  function(e) {
+    if (this['appSelector'] == this.QUERYPANEL_) {
+      this.clearQueryResult_(undefined);
+    }
+  }, this);
+
+  listen(this.map_, 'pointerdown', function(evt) {
+    this.isLongPress_ = false;
+    this.startPixel_ = evt.pixel;
+    this.pointerDownTime_ = new Date().getTime();
+
+    this.timeout_.cancel(this.holdPromise);
+  }, this);
+
+listen(this.map_, 'pointerup', function(evt) {
+    this.timeout_.cancel(this.holdPromise);
+    var tempTime = new Date().getTime();
+    if ((tempTime - this.pointerUpTime_) <= 499) {
+      return;
+    }
+    this.pointerUpTime_ = tempTime;
+    this.stopPixel_ = evt.pixel;
+    if (!this.isLongPress_ &&
+        !(evt.originalEvent instanceof MouseEvent)) {
+      if (this.pointerUpTime_ - this.pointerDownTime_ > 499) {
+        this.isLongPress_ = true;
+      }
+    }
+    if (this.isLongPress_ || evt.originalEvent.which === 3) {
+      this.isLongPress_ = false;
+      return;
+    }
+    if (this['routingOpen'] ||
+        this.drawnFeatures_.modifyInteraction.getActive() ||
+        this.drawnFeatures_.modifyCircleInteraction.getActive() ||
+        this.appActivetool_.isActive() || this.isQuerying_) {
+      return;
+    }
+    this.holdPromise = this.timeout_(function() {
+      var found = false;
+      var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
+          this.drawnFeatures_.getCollection().getLength() > 0;
+      if (isQueryMymaps) {
+        this.selectedFeatures_.clear();
+        var result = this.selectMymapsFeature_(evt.pixel);
+        if (result) {
+          found = true;
+        }
+      }
+      if (!found) {
+        var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
+        var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
+        if (deltaX + deltaY < 6) {
+          this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
+          this.startPixel_ = null;
+          this.stopPixel_ = null;
+        }
+      }
+    }.bind(this), 500, false);
+  }, this);
+
+  listen(this.map_, 'pointermove', function(evt) {
+    if (evt.dragging || this.isQuerying_) {
+      return;
+    }
+    if (this.appActivetool_.isActive()) {
+      this.map_.getViewport().style.cursor = '';
+    } else {
+      var pixel = this.map_.getEventPixel(evt.originalEvent);
+      var hit = false;
+      try {
+        hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
+          if (layer !== undefined && layer !== null) {
+            var metadata = layer.get('metadata');
+            if (metadata !== undefined && metadata !== null) {
+              if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
+                return true;
+              }
+            }
+          }
+          return false;
+        }, this, function(layer) {
+          if (!layer.getSource()) {
+            return false;
+          }
+          return true;
+        });
+      } catch (error) {
+        hit = false;
+      }
+      this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
+    }
+  }, this);
+
+}
+
+
 /**
  * @param {Array<number>} pixel The pixel.
- * @return {boolean} True if someting is selected.
+ * @return {boolean} True if something is selected.
  * @private
  */
 exports.prototype.selectMymapsFeature_ = function(pixel) {
