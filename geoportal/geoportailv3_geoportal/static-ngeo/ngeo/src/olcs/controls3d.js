@@ -200,16 +200,7 @@ const Controller = class {
    */
   zoom(delta) {
     const view = this.ol3dm.getOlView();
-    const cur = view.getResolution();
-    const newResolution = view.constrainResolution(cur, delta);
-    if (view.getAnimating()) {
-      view.cancelAnimations();
-    }
-    view.animate({
-      resolution: newResolution,
-      duration: 250,
-      easing: olEasing.easeOut
-    });
+    view.adjustZoom(delta);
   }
 };
 
