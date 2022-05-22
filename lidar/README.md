@@ -2,7 +2,7 @@ This folder contains all config for the [pytree](https://github.com/sitn/pytree)
 
 ## Docker
 
-* Build image for Pytree `docker build -t camptocamp/pytree .`
+* Build image for Pytree `docker build -t pytree .`
 
 ## Dev
 
