@@ -14,6 +14,9 @@ import proj4 from 'proj4';
 import {register} from 'ol/proj/proj4';
 
 proj4.defs("EPSG:2056","+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
+proj4.defs("EPSG:2169","+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-193,13.7,-39.3,-0.41,-2.933,2.688,0.43 +units=m +no_defs");
+
+
 register(proj4);
 
 const d3 = {
@@ -353,7 +356,7 @@ const exports = class {
       el.innerHTML = html;
 
       this.manager_.cartoHighlight.setElement(el);
-      const lidarPointGeom = new olGeomPoint([p.coords[0], p.coords[1]]).transform('EPSG:2056', 'EPSG:3857');
+      const lidarPointGeom = new olGeomPoint([p.coords[0], p.coords[1]]).transform('EPSG:2169', 'EPSG:3857');
       this.manager_.cartoHighlight.setPosition(lidarPointGeom.getCoordinates());
       this.manager_.lidarPointHighlight.getSource().clear();
       const lidarPointFeature = new olFeature(lidarPointGeom);
