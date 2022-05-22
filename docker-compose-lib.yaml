@@ -302,7 +302,9 @@ services:
       - AWS_S3_ENDPOINT
 
   pytree:
-    image: pytree-update
+    build:
+      context: ./lidar
+      dockerfile: Dockerfile
     environment:
       - DEPLOY_ENV=PROD
     volumes:
