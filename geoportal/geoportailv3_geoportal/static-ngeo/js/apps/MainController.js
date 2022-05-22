@@ -830,6 +830,10 @@ const MainController = function(
   $scope.$watch(() => this['lidarOpen'], (val) => {
     document.querySelector('gmf-lidar-panel').active = val
     document.querySelector('lidar-plot').active = val
+    if (val) {
+      this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['printOpen'] = this['shareOpen'] =
+        this['legendsOpen'] = this['routingOpen'] = false;
+    }
   })
 
   /**

@@ -91,7 +91,6 @@ export class GmfLidarPanel extends LuxBaseElement {
 
     generatePlot(lineFeature: Feature) {
         this.coordinates = lineFeature;
-        console.log("Export CSV :", lineFeature);
 
         this.manager.init(this.config, window.map);
         this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
@@ -109,7 +108,6 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
 
     exportPng() {
-        console.log("Export PNG :", this.coordinates);
         this.manager.utils.downloadProfileAsImageFile(getConfig().clientConfig);
     }
 
@@ -131,9 +129,17 @@ export class GmfLidarPanel extends LuxBaseElement {
         if (!this.manager.measure) {
           throw new Error('Missing profile.measure');
         }
-        this.vectorLayer.getSource().clear();
         this.manager.measure.clearMeasure();
-      }
+    }
+
+    clearAll(): void {
+        this.clearMeasure();
+        this.vectorLayer.getSource().clear();
+        this.manager.cartoHighlight.setPosition(undefined);
+        this.manager.setLine(null);
+        this.manager.clearBuffer();
+        this.manager.clearRect();
+    }
 
     render() {
         return html`
@@ -161,6 +167,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                         </button>
                     </div>
                 </div>
+                <hr/>
                 <div>
                     <div>Classes</div>
                     ${Object.values(this.classifications).map((classification) =>

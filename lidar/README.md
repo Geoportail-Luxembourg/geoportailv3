@@ -13,8 +13,10 @@ This folder contains all config for the [pytree](https://github.com/sitn/pytree)
 
 **note** since is mounted directly into the container, modifying `pytree.yml` once the container is started won't be taken into account¹.
 
+## Api call example
+
+`wget http://localhost:5000/profile/get?minLOD=7%20%20%20%20%20%20&maxLOD=8&width=5&coordinates={77848.09,%2074821.8},{77968.23,%2074680.25},{78225.7,%2074720.37}&pointCloud=luxembourg&attributes=`
 
 
 ¹: For the curious one, when you save a file, his inode is modified, docker bind inode when bind mount is used.
 
-http://localhost:5000/profile/get?minLOD=0&maxLOD=5&width=10&coordinates={2538600.0,1181474.0},{2539187.0,1181062.0}&pointCloud=luxembourg&attributes=%27
