@@ -157,6 +157,20 @@ export class LidarManager {
     }
   }
 
+  clearRect() {
+    const canvas = d3.select('.gmf-lidarprofile-container .lidar-canvas');
+    const canvasEl = canvas.node();
+    const ctx = canvasEl.getContext('2d');
+    ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
+    canvas.selectAll('*').remove();
+    d3.select('.gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
+    this.profilePoints = this.getEmptyProfilePoints_();
+    this.line_;
+    this.plot = new gmfLidarprofilePlot(this);
+    this.measure = new gmfLidarprofileMeasure(this);
+    this.setMap(map);
+  }
+
 
   /**
    * Set the line for the profile
