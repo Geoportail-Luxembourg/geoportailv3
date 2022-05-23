@@ -386,7 +386,7 @@ const MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
+  appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
@@ -628,6 +628,7 @@ const MainController = function(
    * @private
    */
   this.window_ = $window;
+  if (this.window_._paq === undefined) this.window_._paq = [];
 
   /**
    * @type {app.Notify}
@@ -824,17 +825,7 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['lidarOpen'] = false;
-
-  // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
-  $scope.$watch(() => this['lidarOpen'], (val) => {
-    document.querySelector('gmf-lidar-panel').active = val
-    document.querySelector('lidar-plot').active = val
-    if (val) {
-      this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['printOpen'] = this['shareOpen'] =
-        this['legendsOpen'] = this['routingOpen'] = false;
-    }
-  })
+   this['lidarOpen'] = false;
 
   /**
    * @type {boolean}
@@ -985,11 +976,7 @@ const MainController = function(
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
-  this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
-  this.ol3dm_.on('load', () => {
-    this.ol3dm_.init3dTilesFromLocation();
-    //this.ol3dm_.init3dTiles(this.tiles3dVisible);
-  });
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL, ipv6Substitution, $rootScope);
 
   this.ngeoOlcsService_.initialize(this.ol3dm_);
 
@@ -999,7 +986,7 @@ const MainController = function(
 
   this.manageSelectedLayers_($scope);
 
-  appExclusionManager.init(this.map_);
+  appExclusionManager.init(this.map_, this.ol3dm_);
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
@@ -1068,8 +1055,6 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
-            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
-
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1083,12 +1068,21 @@ const MainController = function(
             }
           });
     this['ageLayers'].splice(0, this['ageLayers'].length);
-    this.appThemes_.get3DLayers().then(
-      layers3D => {
-      layers3D.forEach(catItem => {
-        this.ol3dm_.addAvailableLayers(catItem);
-      });
-    });
+    this.appThemes_.get3D().then(
+      struct3D => {
+        this.ol3dm_.setTerrain(struct3D.terrain);
+        this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
+
+        this.ol3dm_.setTree(struct3D.tree);
+        this.ol3dm_.load().then(
+          () => {
+            appLayerPermalinkManager.initBgLayers_().then(
+              () => this.ol3dm_.init3dTilesFromLocation()
+            );
+          }
+        );
+      }
+    );
     this.appThemes_.getFlatCatalog().then(
       flatCatalogue => {
       flatCatalogue.forEach(catItem => {
@@ -1129,6 +1123,26 @@ const MainController = function(
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
+      } else {
+        this['lidarOpen'] = false;
+      }
+    });
+    $scope.$watch(() => {
+      return this['mymapsOpen'] || this['infosOpen'] ||
+        this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
+        this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+        this['vectorEditorOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['lidarOpen'] = false;
+      }
+    });
+    $scope.$watch(() => {
+      return this['lidarOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['printOpen'] = this['shareOpen'] =
+          this['legendsOpen'] = this['routingOpen'] = false;
       }
     });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
@@ -1342,9 +1356,10 @@ MainController.prototype.enable3dCallback_ = function(active) {
   this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setDocumentTitle', 'enable3d']);
-  piwik.push(['trackPageView']);
-
+  if (piwik != undefined ) {
+    piwik.push(['setDocumentTitle', 'enable3d']);
+    piwik.push(['trackPageView']);
+  }
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
@@ -1441,12 +1456,11 @@ MainController.prototype.createMap_ = function() {
  * @param {angular.Scope} $rootScope The root scope
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
-MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
-  // [minx, miny, maxx, maxy]
+MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitution, $rootScope) {
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
-  return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
-    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_, this.backgroundLayerMgr_);
+  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
+                                 $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
+                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
@@ -1533,10 +1547,12 @@ MainController.prototype.manageSelectedLayers_ =
           for (var i = 0; i < nbLayersAdded; i++) {
             var layer = this['selectedLayers'][i];
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            piwik.push(['setDocumentTitle',
-              'LayersAdded/' + layer.get('label')
-            ]);
-            piwik.push(['trackPageView']);
+            if (piwik != undefined ) {
+              piwik.push(['setDocumentTitle',
+                'LayersAdded/' + layer.get('label')
+              ]);
+              piwik.push(['trackPageView']);
+            }
           }
         }
       }.bind(this));
@@ -1642,6 +1658,13 @@ MainController.prototype.sidebarOpen = function() {
       this['vectorEditorOpen'] || this['lidarOpen'];
 };
 
+MainController.prototype.sidebarOpen = function() {
+  return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
+    this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
+    this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+    this['vectorEditorOpen'] || this['lidarOpen'];
+};
+
 
 /**
  * Track Vector Tiles Editor.
@@ -1674,9 +1697,11 @@ MainController.prototype.switchLanguage = function(lang, track) {
   i18next.changeLanguage(lang);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
-  if (track) {
-    piwik.push(['trackPageView']);
+  if (piwik != undefined ) {
+    piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
+    if (track) {
+      piwik.push(['trackPageView']);
+    }
   }
 };
 

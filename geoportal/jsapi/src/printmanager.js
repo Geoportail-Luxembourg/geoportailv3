@@ -162,7 +162,7 @@ encodeXYZLayer_(arr, url) {
   if (styleName === 'topomap' || styleName === 'roadmap' ||
     styleName === 'topomap_gray' || styleName === 'roadmap_jsapi') {
     const object = {
-      'baseURL': 'https://wms.geoportail.lu/opendata/service',
+      'baseURL': 'https://wms.geoportail.lu/vectortiles_wms_4_print/service',
       'imageFormat': 'image/' + imageExtension,
       'layers': [styleName === 'roadmap_jsapi' ? 'roadmap_luxonly' : styleName],
       'customParams': {

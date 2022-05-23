@@ -140,12 +140,12 @@ def get_user(request, username):
         conn.unbind()
     try:
         # Loading the plain c2cgeoportal role used for authentication.
-        user.roles = DBSession.query(Role).filter_by(id=roletheme)
+        user.roles = DBSession.query(Role).filter_by(id=roletheme).all()
     except Exception as e:
-        # Fallback to the "Tous publics" role
-        user.roles = DBSession.query(Role).filter_by(id=0)
         log.exception(e)
-
+    if len(user.roles) == 0:
+        # Fallback to the "Tous publics" role
+        user.roles = DBSession.query(Role).filter_by(id=0).all()
     # todo: check if this is sufficiently precise or if a request in static."User" is needed ?
     user.settings_role = user.roles[0]
 
