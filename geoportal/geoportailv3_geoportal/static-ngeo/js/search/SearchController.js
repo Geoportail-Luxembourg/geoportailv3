@@ -262,7 +262,8 @@ const exports = function($scope, $window, $compile,
         keys: ['translatedName'],
         threshold: 0.4,
         distance: 100,
-        includeScore: true
+        includeScore: true,
+        maxPatternLength: 100
       });
 
   $scope.$on('gettextLanguageChanged', function(evt) {
