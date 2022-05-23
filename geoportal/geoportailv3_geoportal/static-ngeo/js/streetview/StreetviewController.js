@@ -85,13 +85,6 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    */
   this.element_ = $element;
 
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
   /**
    * @type {angular.Scope}
    * @private
@@ -219,6 +212,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
 };
 
 exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
   this.map_.addInteraction(this.selectSingleClick_);
   this.selectSingleClick_.on('select', function(e) {
     if (e.target.getFeatures().getLength() !== 0) {

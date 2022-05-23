@@ -22,7 +22,6 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
-import olCollectionEventType from 'ol/CollectionEventType.js';
 
 /**
  * @constructor
@@ -40,13 +39,14 @@ import olCollectionEventType from 'ol/CollectionEventType.js';
  */
 const exports = function($scope, appThemes, appTheme,
     appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager, ngeoLocation) {
+
+  this.scope_ = $scope;
+
   /**
    * @type {app.StateManager}
    * @private
    */
   this.appStateManager_ = appStateManager;
-
-  this.map_ = this['map']
 
   /**
    * @type {ol.Extent}
@@ -85,6 +85,8 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.ngeoLocation_ = ngeoLocation;
 
+  this.lux3dTree = undefined;
+
   listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
@@ -93,7 +95,7 @@ const exports = function($scope, appThemes, appTheme,
         this.setTree_();
       }), this);
 
-  $scope.$watch(function() {
+  this.scope_.$watch(function() {
     return this.appTheme_.getCurrentTheme();
   }.bind(this), function(newVal, oldVal) {
     if (newVal !== oldVal) {
@@ -101,41 +103,39 @@ const exports = function($scope, appThemes, appTheme,
     }
   }.bind(this));
 
-  $scope.$watch(
+};
+
+exports.prototype.$onInit = function() {
+  this.map_ = this['map']
+
+  this.scope_.$watch(
     () => {
-      if (!this.map.get('ol3dm')) return;
-      return this.map.get('ol3dm').is3dEnabled();
+      if (!this.map_.get('ol3dm')) return;
+      return this.map_.get('ol3dm').is3dEnabled();
     },
     enabled => {
       if (enabled === undefined) return;
-      if (enabled) {
-        this.tree.children.unshift({
-          id: -1,
-          name: "3d Layers",
-          metadata: {},
-          children: this.map.get('ol3dm').getAvailableLayers().map(
-            (elem, i) => ({ id: i, name: elem.name, layer: elem.layer, metadata: elem.metadata})
-          ),
-          type: "Cesium",
-          ogcServer: "None",
-          mixed: true,
-          theme: this.appTheme_.getCurrentTheme()
-        })
-      } else {
-        if (this.tree !== undefined && this.tree !== null) {
-          const idx = this.tree.children.findIndex((e) => e.id === -1);
-          if (idx > -1) {
-            this['tree'].children.splice(idx, 1);
-          }
-        }
-      }
+      if (enabled && (this.lux3dTree === undefined)) {
+        this.lux3dTree = this.map.get('ol3dm').tree3D;
+      } 
     }
   )
 };
 
 exports.prototype.is3dEnabled = function() {
+  if (!this.map_.get('ol3dm')) return false;
+  return this.map_.get('ol3dm').is3dEnabled();
+};
+
+
+exports.prototype.is3dTerrainEnabled = function() {
   if (!this.map.get('ol3dm')) return false;
-  return this.map.get('ol3dm').is3dEnabled();
+  return this.map.get('ol3dm').is3dTerrainEnabled();
+};
+
+exports.prototype.is3dMeshEnabled = function() {
+  if (!this.map.get('ol3dm')) return false;
+  return this.map.get('ol3dm').isMeshEnabled();
 };
 
 
@@ -151,7 +151,7 @@ exports.prototype.getLayer = function(node) {
 };
 
 exports.prototype.getActive = function(layertreeController) {
-  const layer3dmanager = this.map.get('ol3dm')
+  const layer3dmanager = this.map_.get('ol3dm')
   if (layer3dmanager) {
     if (layer3dmanager.getActiveLayerName().find(e => e === layertreeController.node.layer)) {
       return true
@@ -194,16 +194,15 @@ exports.prototype.setThemeZooms = function(tree) {
       var resolutions = tree['metadata']['resolutions'];
       maxZoom = resolutions.length + 7;
     }
-  
-    var map = this['map'];
-    var currentView = map.getView();
+
+    var currentView = this.map_.getView();
 
     let rotation = 0;
     if (this.ngeoLocation_.getParam('rotation') !== undefined) {
       rotation = Number(this.ngeoLocation_.getParam('rotation'));
     }
 
-    map.setView(new olView({
+    this.map_.setView(new olView({
       maxZoom: maxZoom,
       minZoom: 8,
       extent: this.maxExtent_,
@@ -215,7 +214,7 @@ exports.prototype.setThemeZooms = function(tree) {
     }));
   }
   this.scales_.setMaxZoomLevel(maxZoom);
-  var viewZoom = this['map'].getView().getZoom();
+  var viewZoom = this.map_.getView().getZoom();
   this.appStateManager_.updateState({
     'zoom': viewZoom
   });
@@ -228,16 +227,12 @@ exports.prototype.setThemeZooms = function(tree) {
  */
 exports.prototype.toggle = function(node) {
   // is it an openlayers layer of a cesium layer
-  const olcs = this.map.get('ol3dm');
+  const olcs = this.map_.get('ol3dm');
   if (olcs.getAvailableLayerName().indexOf(node.layer) !== -1) {
-    if (olcs.tilesets3d.findIndex(e => e._url.includes(node.layer)) !== -1) {
-      olcs.remove3dLayer(node.layer);
-    } else {
-      olcs.add3dTile(node.layer)
-    }
+    olcs.toggleLayer(node);
   } else {
     var layer = this.getLayerFunc_(node);
-    var map = this['map'];
+    var map = this.map_;
     if (map.getLayers().getArray().indexOf(layer) >= 0) {
       map.removeLayer(layer);
     } else {

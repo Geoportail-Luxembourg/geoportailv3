@@ -29,7 +29,6 @@ import {intersects} from 'ol/extent.js';
  * service.
  * @param {app.StateManager} appStateManager The state manager service.
  * @param {string} qrServiceUrl The qr service url.
- * @param {string} appLocationinfoTemplateUrl The template url.
  * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @param {app.GetDevice} appGetDevice The device service.
@@ -41,7 +40,6 @@ import {intersects} from 'ol/extent.js';
  * @param {string} lidarDemoUrl Url to the demo of lidar.
  * @param {app.Routing} appRouting The routing service.
  * @param {angular.$sce} $sce Angular $sce service.
- * @param {app.locationinfo.LocationInfoOverlay} appLocationInfoOverlay The overlay.
  * @param {app.Activetool} appActivetool The activetool service.
  * @param {app.UserManager} appUserManager
  * @ngInject
@@ -49,11 +47,20 @@ import {intersects} from 'ol/extent.js';
 const exports = function(
         $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
-        qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
+        qrServiceUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
-        appRouting, $sce, appLocationInfoOverlay, appActivetool,
+        appRouting, $sce, appActivetool,
         appUserManager) {
+
+  this.bboxLidar_ = bboxLidar;
+
+  this.bboxSrsLidar_ = bboxSrsLidar;
+
+  this.appSelectedFeatures_ = appSelectedFeatures;
+
+  this.timeout_ = $timeout;
+
   /**
    * @type {app.UserManager}
    * @private
@@ -78,12 +85,6 @@ const exports = function(
    */
   this.lidarDemoUrl_ = lidarDemoUrl;
 
-  /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.lidarExtent_ = transformExtent(
-    bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
 
   /**
    * @type {app.Routing}
@@ -143,7 +144,6 @@ const exports = function(
     zIndex: 1000,
     'altitudeMode': 'clampToGround'
   });
-  this['map'].addLayer(this.featureLayer_);
   var defaultFill = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
@@ -188,7 +188,7 @@ const exports = function(
       this.appActivetool_.streetviewActive = false;
       this['hiddenContent'] = false;
       this.stateManager_.updateState({'crosshair': false});
-      var mapCenterCoordinate = this['map'].getView().getCenter();
+      var mapCenterCoordinate = this.map_.getView().getCenter();
       this.stateManager_.updateState({
         'X': parseInt(mapCenterCoordinate[0], 0),
         'Y': parseInt(mapCenterCoordinate[1], 0)
@@ -293,12 +293,12 @@ const exports = function(
   /**
    * @type {Object<number, number>}
    */
-  var startPixel = null;
+  this.startPixel = null;
 
   /**
    * @type {angular.$q.Promise|undefined}
    */
-  var holdPromise;
+  this.holdPromise;
 
   /**
    * @type {ol.Coordinate}
@@ -306,14 +306,33 @@ const exports = function(
    */
   this.clickCoordinate = null;
 
+  $scope.$watch(function() {
+    return this.clickCoordinate;
+  }.bind(this), function(newVal, oldVal) {
+    if (newVal == oldVal) {
+      return;
+    }
+    this.loadInfoPane_();
+  }.bind(this));
+};
+
+
+
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+
+  this.lidarExtent_ = transformExtent(this.bboxLidar_, this.bboxSrsLidar_, this.map_.getView().getProjection());
+
+  this.map_.addLayer(this.featureLayer_);
+
   // Load infowindow if crosshair variable is set
-  var urlLocationInfo = appStateManager.getInitialValue('crosshair');
+  var urlLocationInfo = this.stateManager_.getInitialValue('crosshair');
   if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
       urlLocationInfo === 'true') {
-    var x = parseInt(appStateManager.getInitialValue('X'), 0);
-    var y = parseInt(appStateManager.getInitialValue('Y'), 0);
+    var x = parseInt(this.stateManager_.getInitialValue('X'), 0);
+    var y = parseInt(this.stateManager_.getInitialValue('Y'), 0);
     var version = this.stateManager_.getVersion();
-    var srs = appStateManager.getInitialValue('SRS');
+    var srs = this.stateManager_.getInitialValue('SRS');
     if (srs === undefined) {
       if (version === 3) {
         srs = 'EPSG:3857';
@@ -321,14 +340,12 @@ const exports = function(
         srs = 'EPSG:2169';
       }
     }
-
-
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
           /** @type {ol.Coordinate} */ (transform([x, y], srs,
-              this['map'].getView().getProjection())) :
+              this.map_.getView().getProjection())) :
           /** @type {ol.Coordinate} */ (transform([y, x], srs,
-              this['map'].getView().getProjection()));
+              this.map_.getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
       if (!this.appGetDevice_.testEnv('xs')) {
@@ -347,8 +364,8 @@ const exports = function(
         }, this);
       if (node !== undefined && node  !== null) {
         var layer = this.getLayerFunc_(node);
-        if (this['map'].getLayers().getArray().indexOf(layer) <= 0) {
-          this['map'].addLayer(layer);
+        if (this.map_.getLayers().getArray().indexOf(layer) <= 0) {
+          this.map_.addLayer(layer);
         }
       }
     }.bind(this));
@@ -360,9 +377,9 @@ const exports = function(
         var coordinates = /** @type {ol.Coordinate} */
             (transform(
                 results[0]['geom']['coordinates'], 'EPSG:2169',
-                this['map'].getView().getProjection()));
-        this['map'].getView().setZoom(17);
-        this['map'].getView().setCenter(coordinates);
+                this.map_.getView().getProjection()));
+        this.map_.getView().setZoom(17);
+        this.map_.getView().setCenter(coordinates);
         this.setClickCordinate_(coordinates);
         if (!this.appGetDevice_.testEnv('xs')) {
           this['open'] = true;
@@ -373,65 +390,55 @@ const exports = function(
       }
     }.bind(this));
   }
-  $scope.$watch(function() {
-    return this.clickCoordinate;
-  }.bind(this), function(newVal, oldVal) {
-    if (newVal == oldVal) {
-      return;
-    }
-    this.loadInfoPane_();
-  }.bind(this));
 
-  listen(this['map'], olMapBrowserEventType.POINTERDOWN,
+
+  listen(this.map_, olMapBrowserEventType.POINTERDOWN, function(event) {
+    if (!this.appSelectedFeatures_.getLength()) {
+      if (event.originalEvent.which === 3) { // if right mouse click
+        this.setClickCordinate_(event.originalEvent);
+        this['open'] = true;
+        this.openInPointerDown_ = true;
+      } else if (!(event.originalEvent instanceof MouseEvent)) {
+        // if touch input device
+        this.timeout_.cancel(this.holdPromise);
+        this.startPixel = event.pixel;
+        var that = this;
+        this.holdPromise = this.timeout_(function() {
+          that.setClickCordinate_(event.originalEvent);
+          that['open'] = true;
+        }, 500, false);
+      }
+    }
+  }.bind(this), this);
+
+  listen(this.map_, olMapBrowserEventType.POINTERUP,
     function(event) {
-      if (!appSelectedFeatures.getLength()) {
-        if (event.originalEvent.which === 3) { // if right mouse click
-          this.setClickCordinate_(event.originalEvent);
-          this['open'] = true;
-          this.openInPointerDown_ = true;
-        } else if (!(event.originalEvent instanceof MouseEvent)) {
-          // if touch input device
-          $timeout.cancel(holdPromise);
-          startPixel = event.pixel;
-          var that = this;
-          holdPromise = $timeout(function() {
-            that.setClickCordinate_(event.originalEvent);
-            that['open'] = true;
-          }, 500, false);
+      this.timeout_.cancel(this.holdPromise);
+      this.startPixel = null;
+    }.bind(this), this);
+
+  listen(this.map_, 'pointermove',
+    function(event) {
+      if (this.startPixel) {
+        var pixel = event.pixel;
+        var deltaX = Math.abs(this.startPixel[0] - pixel[0]);
+        var deltaY = Math.abs(this.startPixel[1] - pixel[1]);
+        if (deltaX + deltaY > 6) {
+          this.timeout_.cancel(this.holdPromise);
+          this.startPixel = null;
         }
       }
     }.bind(this), this);
 
-  listen(this['map'], olMapBrowserEventType.POINTERUP,
-      function(event) {
-        $timeout.cancel(holdPromise);
-        startPixel = null;
-      }.bind(this), this);
-
-  listen(this['map'], 'pointermove',
-      function(event) {
-        if (startPixel) {
-          var pixel = event.pixel;
-          var deltaX = Math.abs(startPixel[0] - pixel[0]);
-          var deltaY = Math.abs(startPixel[1] - pixel[1]);
-          if (deltaX + deltaY > 6) {
-            $timeout.cancel(holdPromise);
-            startPixel = null;
-          }
-        }
-      }.bind(this), this);
-
-  this['map'].getViewport()
-    .addEventListener('contextmenu', function(event) {
-      event.preventDefault(); // disable right-click menu on browsers
-      if (!this.openInPointerDown_) {
-        this.setClickCordinate_(event);
-        this['open'] = true;
-      }
-      this.openInPointerDown_ = false;
-    }.bind(this));
-
-};
+  this.map_.getViewport().addEventListener('contextmenu', function(event) {
+    event.preventDefault(); // disable right-click menu on browsers
+    if (!this.openInPointerDown_) {
+      this.setClickCordinate_(event);
+      this['open'] = true;
+    }
+    this.openInPointerDown_ = false;
+  }.bind(this));
+}
 
 
 /**
@@ -442,7 +449,7 @@ exports.prototype.updateLocation_ = function(coordinate) {
   this['location'] = {};
   for (var key in this.projections_) {
     var value = this.projections_[key];
-    var sourceEpsgCode = this['map'].getView().getProjection().getCode();
+    var sourceEpsgCode = this.map_.getView().getProjection().getCode();
     if (key === 'EPSG:4326:DMS') {
       this['location'][value] = this.coordinateString_(
           coordinate, sourceEpsgCode, 'EPSG:4326', true, false);
@@ -482,12 +489,12 @@ exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
     this.clickCoordinate = eventOrCoordinate;
   } else {
     eventOrCoordinate.preventDefault();
-    this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
+    this.clickCoordinate = this.map_.getEventCoordinate(eventOrCoordinate);
   }
   this.clickCoordinateLuref_ = transform(
-    this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
+    this.clickCoordinate, this.map_.getView().getProjection(), 'EPSG:2169');
   this.clickCoordinate4326_ = transform(
-    this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
+    this.clickCoordinate, this.map_.getView().getProjection(), 'EPSG:4326');
 };
 
 
