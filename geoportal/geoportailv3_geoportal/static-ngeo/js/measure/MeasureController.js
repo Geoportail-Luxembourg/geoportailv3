@@ -19,7 +19,6 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
-import draw from '../draw/DrawController.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import {transform} from 'ol/proj.js';
@@ -30,7 +29,6 @@ import olStyleText from 'ol/style/Text.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
-import olFeature from 'ol/Feature.js';
 import { fromCircle } from 'ol/geom/Polygon';
 
 
@@ -77,12 +75,6 @@ const exports = function($scope, $q, $http, $compile, gettext,
    * @private
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
 
   this['lidarOpen'] = false;
 
@@ -197,7 +189,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   });
   var style = generateStyle(style_)
 
-  const layer = new olLayerVector({
+  this['layer'] = new olLayerVector({
     role: 'MeasureController',
     source: new olSourceVector(),
     style: style,
@@ -205,8 +197,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       hidden: true
     }
   });
-  layer.setZIndex(1000);
-  this.map_.addLayer(layer)
+  this['layer'].setZIndex(1000);
 
   var helpMsg = gettext('Click to start drawing profile');
   var contMsg = gettext('Click to continue drawing the line<br>' +
@@ -220,20 +211,12 @@ const exports = function($scope, $q, $http, $compile, gettext,
       style: style
     });
 
-
-  // // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
-  // $scope.$watch(() => this['profileLidarOpen'], (val) => {
-  //   document.querySelector('gmf-lidar-panel').active = val
-  //   document.querySelector('lidar-plot').active = val
-  // })
-
   /**
    * @type {app.interaction.MeasureProfile}
    */
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
   ngeoMiscDecorate.interaction(measureProfile);
-  this.map_.addInteraction(measureProfile);
 
   helpMsg = gettext('Click to start drawing length');
   var measureLength = new ngeoInteractionMeasureLength(
@@ -243,7 +226,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
       style: style,
-      layer: layer
+      layer: this['layer']
     });
 
   /**
@@ -258,16 +241,10 @@ const exports = function($scope, $q, $http, $compile, gettext,
 
   measureLength.setActive(false);
   ngeoMiscDecorate.interaction(measureLength);
-  this.map_.addInteraction(measureLength);
 
   helpMsg = gettext('Click to start drawing area');
   contMsg = gettext('Click to continue drawing the polygon<br>' +
       'Double-click or click last point to finish');
-
-  /**
-   * @type {ol.layer.Vector}
-   */
-  this['layer'] = layer
 
   /**
    * @type {ol.Feature}
@@ -281,12 +258,12 @@ const exports = function($scope, $q, $http, $compile, gettext,
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
       style: style,
-      layer: layer
+      layer: this['layer'],
     });
 
   this['removeFeatures'] = function() {
-    this['persistedFeature'] = undefined
-    layer.getSource().clear()
+    this['persistedFeature'] = undefined;
+    this['layer'].getSource().clear();
   }
 
   /**
@@ -296,7 +273,6 @@ const exports = function($scope, $q, $http, $compile, gettext,
 
   measureArea.setActive(false);
   ngeoMiscDecorate.interaction(measureArea);
-  this.map_.addInteraction(measureArea);
 
   helpMsg = gettext('Click to start drawing azimut');
   contMsg = gettext('Click to finish');
@@ -308,7 +284,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
       style: style,
-      layer: layer
+      layer: this['layer']
     });
 
   /**
@@ -318,7 +294,6 @@ const exports = function($scope, $q, $http, $compile, gettext,
 
   measureAzimut.setActive(false);
   ngeoMiscDecorate.interaction(measureAzimut);
-  this.map_.addInteraction(measureAzimut);
 
   listen(measureAzimut, 'measureend',
       function(evt) {
@@ -342,7 +317,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
             this['persistedFeature'].set('text',
               this['persistedFeature'].get('text') +
               '\nΔh : ' + parseInt(elevationOffset, 0) + 'm')
-            layer.changed()
+            this['layer'].changed()
           }
         }.bind(this));
       }.bind(this));
@@ -412,6 +387,16 @@ const exports = function($scope, $q, $http, $compile, gettext,
     this.onChangeActive_, this);
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+  this.map_.addLayer(this['layer']);
+
+  this.map_.addInteraction(this['measureProfile']);
+  this.map_.addInteraction(this['measureLength']);
+  this.map_.addInteraction(this['measureArea']);
+  this.map_.addInteraction(this['measureAzimut']);
+
+};
 
 /**
  * @param {ol.Object.Event} event The event.

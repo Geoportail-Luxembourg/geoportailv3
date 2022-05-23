@@ -69,12 +69,6 @@ const exports = function(gettextCatalog, $http, appWmsHelper,
   this.appWmtsHelper_ = appWmtsHelper;
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
-  /**
    * @type {angular.$http}
    * @private
    */
@@ -145,6 +139,9 @@ const exports = function(gettextCatalog, $http, appWmsHelper,
   this.loadWmsUrls();
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+};
 
 /**
  * @return {Array<Object>} An array of predefined wms url.

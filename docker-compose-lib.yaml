@@ -189,6 +189,11 @@ services:
       - OTHER_LOG_LEVEL
       - DOGPILECACHE_LOG_LEVEL
       - LOG_TYPE
+      - ARCGIS_TOKEN_URL
+      - ARCGIS_TOKEN_VALIDITY
+      - ARCGIS_TOKEN_REFERER
+      - ARCGIS_USER
+      - ARCGIS_PASS
 
   tools:
     image: camptocamp/geomapfish-tools:2.5.0.139

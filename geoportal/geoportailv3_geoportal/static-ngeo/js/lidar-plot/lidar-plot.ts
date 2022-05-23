@@ -42,8 +42,10 @@ export class LidarPlot extends LuxBaseElement {
     render() {
         return html`
             <div class="gmf-lidarprofile-container" class="panel">
-                <div class="lidar-legend"></div>
-                <div class="lidarprofile"></div>
+                <div class="lidar-legend">
+                </div>
+                <div class="lidarprofile">
+                </div>
             </div>
         `;
     }

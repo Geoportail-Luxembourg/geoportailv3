@@ -55,6 +55,34 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="670" y="10" width="40" height="40" uuid="41bcfc7a-08af-4824-af4d-488bd11079df"/>
+				<subreportExpression><![CDATA[$P{northArrowSubReport}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement mode="Opaque" x="531" y="448" width="184" height="57" backcolor="rgba(255, 255, 255, 0.74509805)" uuid="6e1026b4-c5de-48b6-893e-717132e0b3a6"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{scaleTitle}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement mode="Transparent" x="531" y="459" width="182" height="40" backcolor="#FFFFFF" uuid="d8dd099c-7489-4edb-aa4d-e49323d9a4c2">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportExpression><![CDATA[$P{scalebarSubReport}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement mode="Transparent" x="637" y="448" width="71" height="40" backcolor="rgba(255, 255, 255, 0.45882353)" uuid="cd12e4a3-cdc1-4104-b1aa-214961f53873"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{scale}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 </jasperReport>

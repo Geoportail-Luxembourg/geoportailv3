@@ -175,6 +175,7 @@
                        app-query-layers-open="mainCtrl.layersOpen"
                        app-query-routing-open="mainCtrl.routingOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
+                       app-query-legends-open="mainCtrl.legendsOpen"
                        app-query-language="mainCtrl.lang"
                        app-query-feedback-anf-open="mainCtrl.feedbackAnfOpen"
                        app-query-feedback-crues-open="mainCtrl.feedbackCruesOpen"
@@ -236,10 +237,10 @@
               ✕
             </button>
             <div class="tab-content">
-              <gmf-lidar-panel></gmf-lidar-panel>
+              <gmf-lidar-panel ng-prop-map="mainCtrl.map" ng-prop-active="mainCtrl.lidarOpen"></gmf-lidar-panel>
             </div>
           </div>
-        <!-- Feedback -->
+          <!-- Feedback -->
         <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
           <h2 translate>Feedback</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
@@ -384,6 +385,7 @@
       >
       </ngeo-offline>
       <app-backgroundselector
+        ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
@@ -393,7 +395,7 @@
 
     <!-- Begin bottom bar -->
     <footer class="footer" ng-show="::!mainCtrl.embedded">
-        <lidar-plot ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'"></lidar-plot>
+        <lidar-plot ng-prop-active="mainCtrl.lidarOpen" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'"></lidar-plot>
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"

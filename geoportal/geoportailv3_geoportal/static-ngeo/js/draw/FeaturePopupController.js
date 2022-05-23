@@ -228,7 +228,7 @@ const exports = function($scope, $sce, appFeaturePopup,
    * @type {ol.Map}
    * @export
    */
-  this.map = this['map'] || this.appFeaturePopup_.map;
+  this.map;
 
   this.unwatch1_ = $scope.$watch(function() {
     return this.editingAttributes;
@@ -306,6 +306,9 @@ const exports = function($scope, $sce, appFeaturePopup,
 
 };
 
+exports.prototype.$onInit = function() {
+  this.map = this['map'] || this.appFeaturePopup_.map;
+};
 
 /**
  * @param {number} radius The circle radius in meter.

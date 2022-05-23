@@ -22,6 +22,7 @@ register(proj4);
 
 @customElement('gmf-lidar-panel')
 export class GmfLidarPanel extends LuxBaseElement {
+    @property({type: Object}) map;
 
     @property({type: Boolean})
     active: boolean = false;
@@ -70,17 +71,15 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
 
     onActiveChange() {
-        // FIXME: this should be a property passed to the component with `ng-prop`
-        const map = window.map;
-        if (map) {
+        if (this.map) {
             if (this.active) {
-                map.addLayer(this.vectorLayer);
-                map.addInteraction(this.drawInteraction);
+                this.map.addLayer(this.vectorLayer);
+                this.map.addInteraction(this.drawInteraction);
             } else {
                 this.drawActive = false;
                 this.vectorLayer.getSource().clear();
-                map.removeInteraction(this.drawInteraction);
-                map.removeLayer(this.vectorLayer);
+                this.map.removeInteraction(this.drawInteraction);
+                this.map.removeLayer(this.vectorLayer);
                 if (this.coordinates) this.resetProfiles()
             }
         }
@@ -92,7 +91,7 @@ export class GmfLidarPanel extends LuxBaseElement {
     generatePlot(lineFeature: Feature) {
         this.coordinates = lineFeature;
 
-        this.manager.init(this.config, window.map);
+        this.manager.init(this.config, this.map);
         this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
         this.manager.clearBuffer();
         this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);

@@ -89,9 +89,13 @@ exports.prototype.setUrl_ =
         location.search.includes('applogin=yes');
 
       if (isApp) {
-        this.url = this.url.replace('localforage=android', '')
-        this.url = this.url.replace('localforage=ios', '')
-        this.url = this.url.replace('applogin=yes', '')
+        this.url = this.url.replace('localforage=android', '');
+        this.url = this.url.replace('localforage=ios', '');
+        this.url = this.url.replace('applogin=yes', '');
+        this.url = this.url.replace('ipv6=true', '');
+        this.url = this.url.replace('embeddedserver=127.0.0.1%3A8765', '');
+        this.url = this.url.replace('embeddedserverprotocol=https', '');
+        this.url = this.url.replace('embeddedserverprotocol=http', '');
       }
       if (this['onlyMymaps']) {
         this.url = this.url.replace(location.search, '')

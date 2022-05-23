@@ -174,7 +174,7 @@ export function getElevation(coordinate) {
  * @property {ol.Coordinate} [position] Position of the marker. If not set, the marker is displayed at the center of the map.
  * @property {string|number} [positionSrs=2169] The projection of the position coordinates.
  * @property {boolean} [autoCenter] Tells whether the map should be recentered to the marker position.
- * @property {string} [iconURL='https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png'] URL to an image.
+ * @property {string} [iconURL='https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png'] URL to an image.
  * @property {string} [positioning] Positioning of the icon. See {@link https://openlayers.org/en/latest/apidoc/ol.html#.OverlayPositioning}
  * @property {string} [html] If set, HTML code or simple text that will be displayed when clicking on the marker.
  * @property {boolean} [click] If set, the popup is displayed when clicking the marker.
@@ -265,7 +265,7 @@ function findLayerByName_(name, layers) {
  * @export
  * @api
  */
-export default class Map extends OpenLayersMap {
+class Map extends OpenLayersMap {
 
   /**
    * @param {MapOptions} options Map options.
@@ -834,7 +834,7 @@ export default class Map extends OpenLayersMap {
    * elsewhere in the stack, use `getLayers()` and the methods available on
    * {@link Collection}.
    * @param {ol.layer.Base} layer Layer.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
    * @export
    * @api
    */
@@ -906,7 +906,7 @@ export default class Map extends OpenLayersMap {
         }
       }
     });
-    var piwikUrl = 'http://apiv3.geoportail.lu/print/' + curLayout.replace(' ', '/');
+    var piwikUrl = 'http://apiv4.geoportail.lu/print/' + curLayout.replace(' ', '/');
     window['_paq'].push(['trackLink', piwikUrl, 'download']);
     dataOwners = dataOwners.filter(function(item, pos, self) {
       return self.indexOf(item) == pos;
@@ -1027,7 +1027,7 @@ export default class Map extends OpenLayersMap {
       'dataOwner': dataOwners.join(' '),
       'dateText': dateText,
       'url': longUrl,
-      'qrimage': 'https://apiv3.geoportail.lu/qr?url=' + longUrl
+      'qrimage': 'https://apiv4.geoportail.lu/qr?url=' + longUrl
     });
     return spec;
   }
@@ -1276,7 +1276,7 @@ export default class Map extends OpenLayersMap {
       }
     }
     image.src = options.iconURL ||
-      'https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png';
+      'https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/icon.png';
     element.appendChild(image);
 
     var position;
@@ -1508,7 +1508,7 @@ export default class Map extends OpenLayersMap {
    * @param {string|number} layer The layer id.
    * @param {number=} opt_opacity The layer opacity. Default is 1.
    * @param {boolean=} opt_visibility The layer visibility. Default is true.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
    * @export
    * @api
    */
@@ -1522,12 +1522,12 @@ export default class Map extends OpenLayersMap {
 
   /**
    * It adds a simple background selector control into a specific html element.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example3}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example3}
    * @param {Element|string} target Dom element or id of the element to render
    * bgSelector in.
    * @param {Array<string|number>|undefined} bglayers Array of overlay layer identifiers.
    * 'blank' acts as blank layer.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html?background}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html?background}
    * @export
    * @api
    */
@@ -1730,7 +1730,7 @@ export default class Map extends OpenLayersMap {
 
   /**
    * It adds the search control into an html element.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
    * @param {Element|string} target Dom element or id of the element to render search widget in.
    * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
    * @param {function(Event, String, Element)=} onSelect Optional function called when result is selected.
@@ -2022,7 +2022,7 @@ export default class Map extends OpenLayersMap {
 
   /**
    * It displays a GPX file on the map.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
    * @param {string} url Url to the GPX file.
    * @param {VectorOptions=} opt_options Options.
    * @return {Promise} The vector layer promise.
@@ -2077,7 +2077,7 @@ export default class Map extends OpenLayersMap {
 
   /**
    * It displays a KML file on the map.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
    * @param {string} url Url to the KML file.
    * @param {VectorOptions=} opt_options Options.
    * @export
@@ -2280,7 +2280,7 @@ export default class Map extends OpenLayersMap {
 
   /**
    * It loads a MyMaps layer.
-   * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example8}.
+   * @see {@link https://apiv4.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example8}.
    * @example
    * var map8 = new lux.Map({
    *   target: 'map8',
@@ -2770,3 +2770,4 @@ export default class Map extends OpenLayersMap {
     }
   }
 }
+export default Map;
