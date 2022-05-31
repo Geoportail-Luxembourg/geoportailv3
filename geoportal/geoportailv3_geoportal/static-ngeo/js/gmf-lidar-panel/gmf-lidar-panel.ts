@@ -2,6 +2,8 @@ import {customElement, property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {html} from 'lit';
 import i18next from 'i18next';
+import Style from 'ol/style/Style';
+import Stroke from 'ol/style/Stroke';
 import DrawInteraction from 'ol/interaction/Draw.js';
 import VectorSource from 'ol/source/Vector.js';
 import VectorLayer from 'ol/layer/Vector.js';
@@ -42,9 +44,16 @@ export class GmfLidarPanel extends LuxBaseElement {
     constructor() {
         super();
         this.manager = new LidarManager()
+        this.lineStyle = new Style({
+            stroke: new Stroke({
+                color: '#ffcc33',
+                width: 3,
+            }),
+        });
         this.vectorLayer = new VectorLayer({
             source: new VectorSource(),
-            zIndex: 1000
+            zIndex: 1000,
+            style: this.lineStyle
         });
         this.drawInteraction = new DrawInteraction({
             source: this.vectorLayer.getSource(),
