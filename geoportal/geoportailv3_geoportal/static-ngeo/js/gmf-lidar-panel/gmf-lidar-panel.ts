@@ -61,7 +61,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         });
         this.drawInteraction.setActive(false);
         this.drawInteraction.on('drawstart', (event) => {
-            if (this.coordinates) this.resetProfiles()
+            if (this.coordinates) this.clearProfile()
         })
         this.drawInteraction.on('drawend', (event) => {
             this.drawActive = false;
@@ -89,7 +89,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                 this.vectorLayer.getSource().clear();
                 this.map.removeInteraction(this.drawInteraction);
                 this.map.removeLayer(this.vectorLayer);
-                if (this.coordinates) this.resetProfiles()
+                if (this.coordinates) this.clearProfile()
             }
         }
     }
@@ -119,10 +119,21 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager.utils.downloadProfileAsImageFile(getConfig().clientConfig);
     }
 
-    resetProfiles() {
+    /**
+     * Clear profile from map
+     */
+    clearProfile(): void {
         this.vectorLayer.getSource().clear();
         this.coordinates = null;
         this.manager.clearBuffer();
+    }
+
+    /**
+     * Reload and reset the plot to original extent for the current profile (reloads data)
+     */
+    resetPlot(): void {
+        this.manager.clearBuffer();
+        this.manager.getProfileByLOD([], 0, true, 0);
     }
 
     setMeasureActive(): void {
@@ -163,6 +174,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                     <div>
                         <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
                         <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
+                        <button class="btn btn-default" @click=${() => this.resetPlot()}><span class="fa fa-refresh"></span></button>
                     </div>
                     <hr/>
                     <div>
