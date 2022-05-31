@@ -1141,7 +1141,7 @@ const MainController = function(
       return this['lidarOpen'];
     }, newVal => {
       if (newVal) {
-        this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['printOpen'] = this['shareOpen'] =
+        this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['infosOpen'] = this['printOpen'] = this['shareOpen'] =
           this['legendsOpen'] = this['routingOpen'] = false;
       }
     });
