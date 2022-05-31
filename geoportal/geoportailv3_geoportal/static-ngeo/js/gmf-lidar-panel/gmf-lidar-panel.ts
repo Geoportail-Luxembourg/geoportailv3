@@ -28,7 +28,7 @@ export class GmfLidarPanel extends LuxBaseElement {
     active: boolean = false;
 
     @property({type: Boolean})
-    drawActive: boolean = false;
+    drawActive: boolean = true;
 
     @property({type: Object})
     config: object = getConfig();
@@ -76,7 +76,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                 this.map.addLayer(this.vectorLayer);
                 this.map.addInteraction(this.drawInteraction);
             } else {
-                this.drawActive = false;
+                this.drawActive = true;
                 this.vectorLayer.getSource().clear();
                 this.map.removeInteraction(this.drawInteraction);
                 this.map.removeLayer(this.vectorLayer);
@@ -143,8 +143,13 @@ export class GmfLidarPanel extends LuxBaseElement {
     render() {
         return html`
             <div>
-                <button class="btn btn-default ${classMap({active: this.drawActive})}"
+                <p>
+                    <button class="btn btn-default ${classMap({active: this.drawActive})}"
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
+                </p>
+                <p class="${classMap({hidden: !this.drawActive})}">
+                    <em class="small">${i18next.t('Dessiner une ligne sur la carte pour afficher le profil LIDAR correspondant. Utilisez un double-clic pour terminer le profil.')}</em>
+                </p>
                 <div class="${classMap({hidden: !this.coordinates})}">
                     <div>
                         <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
