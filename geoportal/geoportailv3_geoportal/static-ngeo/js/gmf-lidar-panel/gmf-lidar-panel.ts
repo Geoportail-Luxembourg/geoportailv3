@@ -28,6 +28,9 @@ export class GmfLidarPanel extends LuxBaseElement {
     @property({type: Object})
     config: object = getConfig();
 
+    @property({type: Boolean})
+    measureActive: boolean = false;
+
     private classifications: [] = this.config.serverConfig.classification_colors;
 
     private drawInteraction: DrawInteraction;
@@ -129,6 +132,15 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager.getProfileByLOD([], 0, true, 0);
     }
 
+    toggleMeasure(): void {
+        this.measureActive = !this.measureActive;
+        if (this.measureActive) {
+            this.setMeasureActive();
+        } else {
+            this.clearMeasure();
+        }
+    }
+
     setMeasureActive(): void {
         if (!this.manager.measure) {
           throw new Error('Missing profile.measure');
@@ -172,8 +184,8 @@ export class GmfLidarPanel extends LuxBaseElement {
                     <hr/>
                     <div>
                         <button
-                            class="btn btn-default"
-                            @click=${() => this.setMeasureActive()}
+                            class="btn btn-default ${classMap({active: this.measureActive})}"
+                            @click=${() => this.toggleMeasure()}
                             >
                             ${i18next.t('Take measure')}
                         </button>
