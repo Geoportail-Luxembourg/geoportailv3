@@ -163,7 +163,7 @@ vars:
         gmfExternalOGCServers: []
         gmfSearchActions: []
         lidarDemoUrl: https://lidar.geoportail.lu
-        maxExtent: [2.6, 44.7, 8.6, 51]
+        maxExtent: [2.6, 47.7, 8.6, 51]
         remoteProxyWms: false
         requestScheme: https
         sentryUrl: ''
