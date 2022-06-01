@@ -65,9 +65,11 @@ const exports = class {
       mileage_start += segLine.getLength();
 
     });
-
+    //return clippedLine in original projection to request new lidar data
+    const clippedLineLidarProjection = clippedLine.clone();
     const feat = new olFeature({
-      geometry: clippedLine
+      //transform clippedLine to map projection
+      geometry: clippedLine.transform('EPSG:2169', 'EPSG:3857')
     });
 
     const lineStyle = new olStyleStyle({
@@ -144,7 +146,7 @@ const exports = class {
     );
 
     return {
-      clippedLine: clippedLine.getCoordinates(),
+      clippedLine: clippedLineLidarProjection.getCoordinates(),
       distanceOffset: dLeft,
       bufferGeom: feat,
       bufferStyle: styles
