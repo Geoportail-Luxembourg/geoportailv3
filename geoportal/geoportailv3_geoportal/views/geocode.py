@@ -84,12 +84,19 @@ class Geocode(object):
             res = geojson_loads(urllib.request.urlopen(request_url).read())
             if 'address' in res:
                 address = res['address']
+            locality = address['town'] if 'town' in address else ""
+            if len(locality) == 0:
+                locality = address['city'] if 'city' in address else ""
+            if len(locality) == 0:
+                locality = address['municipality'] if 'municipality' in address else ""
+            if  len(locality) == 0:
+                locality = address['village'] if 'village' in address else ""
             results.append({"id_caclr_locality": None,
                             "id_caclr_street": None,
                             "id_caclr_bat": None,
                             "street": address['road'] if 'road' in address else "",
                             "number": address['house_number'] if 'house_number' in address else "",
-                            "locality": address['town'] if 'town' in address else "",
+                            "locality": locality,
                             "postal_code": address['postcode'] if 'postcode' in address else "",
                             "country": address['country'] if 'country' in address else "",
                             "country_code": address['country_code'] if 'country_code' in address else "",
