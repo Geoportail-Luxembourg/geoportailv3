@@ -1,8 +1,14 @@
 {
+  "Classes": "",
   "Copy": "",
   "custom": "",
+  "Draw a lidar profile": "",
+  "Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.": "",
   "Embed map": "",
+  "Export CSV": "",
+  "Export PNG": "",
   "large": "",
   "medium": "",
-  "small": ""
+  "small": "",
+  "Take measure": ""
 }
