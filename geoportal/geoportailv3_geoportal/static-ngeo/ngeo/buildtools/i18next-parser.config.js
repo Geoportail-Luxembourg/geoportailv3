@@ -7,4 +7,5 @@ module.exports = {
   output: 'locales/$NAMESPACE.$LOCALE.json',
   createOldCatalogs: false,
   sort: true,
+  keySeparator: false,
 };

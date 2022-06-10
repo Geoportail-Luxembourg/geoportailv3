@@ -173,7 +173,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
                 </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
-                    <em class="small">${i18next.t('Dessiner une ligne sur la carte pour afficher le profil LIDAR correspondant. Utilisez un double-clic pour terminer le profil.')}</em>
+                    <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>
                 </p>
                 <div class="${classMap({hidden: !this.coordinates})}">
                     <div>
@@ -199,7 +199,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                 </div>
                 <hr/>
                 <div>
-                    <div>Classes</div>
+                    <div>${i18next.t('Classes')}</div>
                     ${Object.values(this.classifications).map((classification) =>
                 html`
                     <div class="checkbox">

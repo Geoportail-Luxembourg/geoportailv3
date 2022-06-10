@@ -1,8 +1,14 @@
 {
+  "Classes": "Classes",
   "Copy": "Copier",
   "custom": "Taille personnalisée",
+  "Draw a lidar profile": "Dessiner un profil lidar",
+  "Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.": "Dessiner une ligne sur la carte pour afficher le profil LIDAR correspondant. Utilisez un double-clic pour terminer le profil.",
   "Embed map": "Intégrer la carte",
+  "Export CSV": "",
+  "Export PNG": "",
   "large": "Grande",
   "medium": "Moyenne",
-  "small": "Petite"
+  "small": "Petite",
+  "Take measure": "Mesurer"
 }
