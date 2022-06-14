@@ -1303,11 +1303,12 @@ class Map extends OpenLayersMap {
     }
     var canvasContext = document.createElement('canvas').getContext('2d');
     if (options.onClick) {
-      listen(element, EventType.CLICK, options.onClick);
+      listen(element, MapBrowserEventType.CLICK, options.onClick);
     }
     if (options.html) {
       var popup;
-      var showPopupEvent = options.click ? EventType.CLICK : EventType.MOUSEMOVE;
+      var showPopupEvent = options.click ? MapBrowserEventType.CLICK : MapBrowserEventType.POINTERMOVE;
+
       listen(element, showPopupEvent, (function (event) {
         var curMarker = markerOverlay.getElement().firstChild;
         var isTransparent = false;
@@ -1354,7 +1355,7 @@ class Map extends OpenLayersMap {
       }).bind(this));
 
       if (!options.click) {
-        listen(element, EventType.MOUSEOUT, function () {
+        listen(element, MapBrowserEventType.POINTEROUT, function () {
           if (options.target) {
             el.innerHTML = '';
             return;
