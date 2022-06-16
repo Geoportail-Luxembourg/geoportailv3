@@ -23,6 +23,7 @@ import olStyleText from 'ol/style/Text.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import {get as getProj, transform} from 'ol/proj.js';
+import olcsCore from 'olcs/core.js';
 
 /**
  * @constructor
@@ -1609,10 +1610,10 @@ exports.prototype.createStyleFunction = function(curMap) {
                 url: arrowModelUrl,
                 // Adding a tiny translation along Z would allow the arrows not to sink into the terrain.
                 // However it does not work, the model is always clamped to the ground.
-                modelMatrix: olcs.core.createMatrixAtCoordinates(center, rotation),
+                modelMatrix: olcsCore.createMatrixAtCoordinates(center, rotation),
                 heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
                 minimumPixelSize: 80,
-                color: olcs.core.convertColorToCesium(modelColor)
+                color: olcsCore.convertColorToCesium(modelColor)
                 // It would be great to have a silouhette around the 3d arrow to better distinguish it from the underlying line.
                 // But for some reason Cesium is throwing an error with the model we are using.
                 // silhouetteColor: Cesium.Color.WHITE,
