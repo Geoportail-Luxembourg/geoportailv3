@@ -205,7 +205,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" @click=${() => this.toggleClassificationCheck(classification)} checked="${classification.visible === 1}">
-                            <span translate>${classification.name}</span>
+                            <span>${classification.name[`${i18next.language}`]}</span>
                         </label>
                     </div>`)}
                 </div>

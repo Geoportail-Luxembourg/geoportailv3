@@ -16,72 +16,116 @@ export const getConfig = () => ({
   "serverConfig":
     {
     "classification_colors": {
+      "0": {
+        "color": "120, 120, 120",
+        "name": {
+          "fr": "points non classifiés",
+          "en": "unclassified points",
+          "de": "nicht klassifizierte Punkte",
+          "lb": "onklass\u00e9iert Punkten",
+        },          
+        "value": "unclassified points",
+        "visible": 1
+      },
       "2": {
         "color": "160, 82, 40",
-        "name": "sol",
-        "value": "sol",
+        "name": {
+          "fr": "sol",
+          "en": "ground",
+          "de": "Boden",
+          "lb": "Buedem",
+        },
+        "value": "ground",
+        "visible": 1
+      },
+      "3": {
+        "color": "0, 240, 0",
+        "name": {
+          "fr": "v\u00e9g\u00e9tation basse",
+          "en": "low vegetation",
+          "de": "niedrige Vegetation",
+          "lb": "niddereg Vegetatioun",
+        },
+        "value": "low vegetation",
         "visible": 1
       },
       "4": {
         "color": "0, 204, 0",
-        "name": "v\u00e9g\u00e9tation <2m",
-        "value": "v\u00e9g\u00e9tation <2m",
+        "name": {
+          "fr": "v\u00e9g\u00e9tation moyenne",
+          "en": "average vegetation",
+          "de": "mittlere Vegetation",
+          "lb": "m\u00e9ttel Vegetatioun",
+        },
+        "value": "average vegetation",
         "visible": 1
       },
       "5": {
         "color": "0, 150, 0",
-        "name": "v\u00e9g\u00e9tation >2m",
-        "value": "v\u00e9g\u00e9tation >2m",
+        "name": {
+          "fr": "v\u00e9g\u00e9tation haute",
+          "en": "high vegetation",
+          "de": "hohe Vegetation",
+          "lb": "h\u00e9ich Vegetatioun",
+        },
+        "value": "high vegetation",
         "visible": 1
       },
       "6": {
         "color": "255, 170, 0",
-        "name": "toits b\u00e2timents",
-        "value": "toits b\u00e2timents",
+        "name": {
+          "fr": "b\u00e2timents",
+          "en": "buildings",
+          "de": "Geb\u00e4ude",
+          "lb": "Gebai",
+        },
+        "value": "buildings",
         "visible": 1
       },
-      "14": {
-        "color": "255, 255, 0",
-        "name": "lignes a\u00e9riennes",
-        "value": "lignes a\u00e9riennes",
+      "7": {
+        "color": "0, 0, 0",
+        "name": {
+          "fr": "points bas (bruit)",
+          "en": "low points (noise)",
+          "de": "niedrige Punkte",
+          "lb": "niddereg Punkten",
+        },          
+        "value": "low points (noise)",
         "visible": 1
       },
-      "17": {
+      "9": {
+        "color": "60, 130, 250",
+        "name": {
+          "fr": "eau",
+          "en": "water",
+          "de": "Wasser",
+          "lb": "Waasser",
+        },
+        "value": "water",
+        "visible": 1
+      },
+      "13": {
         "color": "255, 0, 0",
-        "name": "ponts",
-        "value": "ponts",
+        "name": {
+          "fr": "ponts, passerelles, viaducs",
+          "en": "bridges",
+          "de": "Br\u00fccken",
+          "lb": "Br\u00e9cke",
+        },
+        "value": "bridges",
         "visible": 1
       },
-      "22": {
-        "color": "120, 120, 120",
-        "name": "fa\u00e7ades b\u00e2timents",
-        "value": "fa\u00e7ades b\u00e2timents",
+      "15": {
+        "color": "255, 255, 0",
+        "name": {
+          "fr": "lignes \u00e0 haute tension",
+          "en": "high voltage lines",
+          "de": "Hochspannungsleitung",
+          "lb": "h\u00e9ich Volt Linn",
+        },
+        "value": "high voltage lines",
         "visible": 1
       },
-      "23": {
-        "color": "120, 120, 120",
-        "name": "murs",
-        "value": "murs",
-        "visible": 1
-      },
-      "40": {
-        "color": "140, 180, 250",
-        "name": "sol sous lac (lidar)",
-        "value": "sol sous lac (lidar)",
-        "visible": 1
-      },
-      "41": {
-        "color": "60, 130, 250",
-        "name": "surface lac (429.3m)",
-        "value": "surface lac (429.3m)",
-        "visible": 1
-      },
-      "42": {
-        "color": "60, 130, 250",
-        "name": "sol sous lac (sonar)",
-        "value": "sol sous lac (sonar)",
-        "visible": 1
-      }
     },
     "debug": false,
     "default_attribute": "CLASSIFICATION",
