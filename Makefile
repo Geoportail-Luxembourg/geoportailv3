@@ -56,6 +56,7 @@ docker-build-ldap:
 
 DOCKER_COMPOSE_PROJECT ?= geoportailv3
 DOCKER_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_geoportal_1
+DOCKER_WEBPACK_DEV_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_webpack_dev_server_1
 APP_JS_FILES = $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
 APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
 APP_HTML_FILES += $(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
@@ -96,6 +97,16 @@ update-pots-tooltips:
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
+# use DOCKER_WEBPACK_DEV_CONTAINER for npm dependencies
+.PHONY: extract-web-component-translations
+extract-web-component-translations:
+	# Parse web component templates and extract i18next strings to translation files
+	docker exec $(DOCKER_WEBPACK_DEV_CONTAINER) bash -c "npm run i18next-parse --prefix geoportailv3_geoportal/static-ngeo/ngeo;"
+
+.PHONY: load-web-component-translations
+load-web-component-translations:
+	# Copy updated translation files to app
+	docker cp geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales $(DOCKER_CONTAINER):/etc/static-ngeo/
 
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
 
