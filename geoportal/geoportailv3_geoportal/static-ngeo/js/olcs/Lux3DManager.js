@@ -571,12 +571,23 @@ const exports = class extends ngeoOlcsManager {
 
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
-    this.map.getLayers().getArray().forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.previous_2D_layers.push(l)});
+    this.map.getLayers().getArray().forEach(l => {
+      if (l !== this.backgroundLayerMgr_.get(this.map)) {
+        this.previous_2D_layers.push(l)
+      }
+    });
     this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
   }
 
   restore_2D_layers() {
-    this.previous_2D_layers.forEach(l => {if (l !== this.backgroundLayerMgr_.get(this.map)) this.map.addLayer(l)});
+    this.previous_2D_layers.forEach(l => {
+      if (l !== this.backgroundLayerMgr_.get(this.map)) {
+        //hack: opacity is reset during add map
+        let opacity = l.getOpacity();
+        this.map.addLayer(l)
+        l.setOpacity(opacity);
+      }
+    });
     this.previous_2D_layers = [];
   }
 
