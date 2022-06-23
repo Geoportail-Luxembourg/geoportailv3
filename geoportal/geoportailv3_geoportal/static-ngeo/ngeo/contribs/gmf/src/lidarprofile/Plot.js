@@ -10,6 +10,7 @@ import {axisBottom, axisLeft} from 'd3-axis';
 import {scaleLinear} from 'd3-scale';
 import {event as d3Event, mouse, select} from 'd3-selection';
 import {zoom} from 'd3-zoom';
+import i18next from 'i18next';
 
 const d3 = {
   axisBottom,
@@ -389,23 +390,25 @@ const exports = class {
 
     const distance = point.distance;
     const altitude = point.altitude;
-    const classification = gettextCatalog.getString(classification_color.name);
+    const classification = classification_color.name 
+      ? classification_color.name[i18next.language]
+      : [];
     const intensity = point.intensity;
 
     if (distance !== undefined) {
-      const distanceTxt = gettextCatalog.getString('Distance: ');
+      const distanceTxt = i18next.t('Distance: ');
       html.push(`${distanceTxt + number(distance, distDecimal)}`);
     }
     if (altitude !== undefined) {
-      const altitudeTxt = gettextCatalog.getString('Altitude: ');
+      const altitudeTxt = i18next.t('Altitude: ');
       html.push(`${altitudeTxt + number(altitude, distDecimal)}`);
     }
     if (classification.length > 0) {
-      const classificationTxt = gettextCatalog.getString('Classification: ');
+      const classificationTxt = i18next.t('Classification: ');
       html.push(`${classificationTxt + classification}`);
     }
     if (intensity !== undefined) {
-      const intensityTxt = gettextCatalog.getString('Intensity: ');
+      const intensityTxt = i18next.t('Intensity: ');
       html.push(`${intensityTxt + number(intensity, 0)}`);
     }
 

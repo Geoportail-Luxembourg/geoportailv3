@@ -12,6 +12,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleStyle from 'ol/style/Style.js';
 import {select} from 'd3-selection';
+import i18next from 'i18next';
 const d3 = {
   select,
 };
@@ -255,7 +256,7 @@ export class LidarManager {
       profileWidth = this.config.serverConfig.width;
     }
 
-    const profileWidthTxt = gettextCatalog.getString('Profile width: ');
+    const profileWidthTxt = i18next.t('Profile width: ');
     d3.select('.gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
 
     for (let i = 0; i < maxLODWith.maxLOD; i++) {
@@ -295,7 +296,7 @@ export class LidarManager {
     const lodInfo = d3.select('.gmf-lidarprofile-container .lod-info');
     if (this.config.serverConfig.debug) {
       let html = lodInfo.html();
-      const loadingLodTxt = gettextCatalog.getString('Loading LOD: ');
+      const loadingLodTxt = i18next.t('Loading LOD: ');
       html += `${loadingLodTxt} ${minLOD}-${maxLOD}...<br>`;
       lodInfo.html(html);
     }
@@ -460,10 +461,10 @@ export class LidarManager {
    */
   getHTMLError_() {
     const gettextCatalog = this.gettextCatalog;
-    const errorInfoTxt = gettextCatalog.getString('Lidar profile service error');
-    const errorOfflineTxt = gettextCatalog.getString('It might be offline');
-    const errorOutsideTxt = gettextCatalog.getString('Or did you attempt to draw a profile outside data extent?');
-    const errorNoPointError = gettextCatalog.getString('Or did you attempt to draw such a small profile that no point was returned?');
+    const errorInfoTxt = i18next.t('Lidar profile service error');
+    const errorOfflineTxt = i18next.t('It might be offline');
+    const errorOutsideTxt = i18next.t('Or did you attempt to draw a profile outside data extent?');
+    const errorNoPointError = i18next.t('Or did you attempt to draw such a small profile that no point was returned?');
     return `
       <div class="lidarprofile-error">
       <p class="bold">${errorInfoTxt}</p>
