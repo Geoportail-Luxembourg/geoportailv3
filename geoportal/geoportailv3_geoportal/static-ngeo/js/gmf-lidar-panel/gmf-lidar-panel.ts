@@ -183,6 +183,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                     </div>
                     <hr/>
                     <div>
+                        <p>${i18next.t('Measure distances on the profile below')}</p>
                         <button
                             class="btn btn-default ${classMap({active: this.measureActive})}"
                             @click=${() => this.toggleMeasure()}
