@@ -42,6 +42,7 @@ const exports = class {
    * @export
    */
   clearMeasure() {
+    this.manager_.plot.activateZoom();
     this.pStart_ = {};
     this.pEnd_ = {};
 
@@ -62,6 +63,7 @@ const exports = class {
    * @export
    */
   setMeasureActive() {
+    this.manager_.plot.deactivateZoom();
     const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     svg.style('cursor', 'pointer');
     svg.on('click', this.measureHeigt.bind(this));

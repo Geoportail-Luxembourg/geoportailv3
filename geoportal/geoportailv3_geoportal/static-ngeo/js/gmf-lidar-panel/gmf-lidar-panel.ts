@@ -153,6 +153,7 @@ export class GmfLidarPanel extends LuxBaseElement {
         if (!this.manager.measure) {
           throw new Error('Missing profile.measure');
         }
+        this.measureActive = false;
         this.manager.measure.clearMeasure();
     }
 
@@ -183,19 +184,24 @@ export class GmfLidarPanel extends LuxBaseElement {
                     </div>
                     <hr/>
                     <div>
-                        <p>${i18next.t('Measure distances on the profile below')}</p>
-                        <button
-                            class="btn btn-default ${classMap({active: this.measureActive})}"
-                            @click=${() => this.toggleMeasure()}
-                            >
-                            ${i18next.t('Take measure')}
-                        </button>
-                        <button
-                            class="btn btn-default"
-                            @click=${() => this.clearMeasure()}
-                            >
-                            <span class="fa fa-eraser"></span>
-                        </button>
+                        <p>
+                            <button
+                                class="btn btn-default ${classMap({active: this.measureActive})}"
+                                @click=${() => this.toggleMeasure()}
+                                >
+                                ${i18next.t('Take measure')}
+                            </button>
+                            <button
+                                class="btn btn-default"
+                                @click=${() => this.clearMeasure()}
+                                >
+                                <span class="fa fa-eraser"></span>
+                            </button>
+                        </p>
+                        <p class="small">
+                            ${i18next.t('Measure distances on the profile below.')}
+                            <em>${i18next.t('(Deactivates zoom and pan on the profile!)')}</em>
+                        </p>
                     </div>
                 </div>
                 <hr/>

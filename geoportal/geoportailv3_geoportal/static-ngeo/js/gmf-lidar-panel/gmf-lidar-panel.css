@@ -1,9 +1,6 @@
 gmf-lidar-panel > div {
     padding: 10px;
 }
-gmf-lidar-panel > div > div{
-    padding: 10px 0;
-}
 
 hr {
     margin: 10px 0 !important;

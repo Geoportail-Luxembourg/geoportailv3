@@ -91,6 +91,18 @@ const exports = class {
      * @private
      */
     this.moved_ = false;
+
+    /**
+     * @type {Function}
+     * @private
+     */
+    this.zoom_;
+
+    /**
+     * @type {Selection}
+     * @private
+     */
+    this.svg_;
   }
 
 
@@ -198,28 +210,28 @@ const exports = class {
       this.scaleY['range']([this.height_, 0]);
     }
 
-    const zoom = d3.zoom()
+    this.zoom_ = d3.zoom()
       .scaleExtent([-10, 100])
       .translateExtent([[0, 0], [this.width_, this.height_]])
       .extent([[0, 0], [this.width_, this.height_]])
       .on('zoom', this.zoomed.bind(this));
 
-    zoom.on('end', this.zoomEnd.bind(this));
+    this.zoom_.on('end', this.zoomEnd.bind(this));
 
     this.previousDomainX = this.scaleX['domain']();
     this.updateScaleX = this.scaleX;
     this.updateScaleY = this.scaleY;
 
-    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
+    this.svg_ = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
 
-    svg.call(zoom).on('dblclick.zoom', null);
+    this.svg_.call(this.zoom_).on('dblclick.zoom', null);
 
-    svg.selectAll('*').remove();
+    this.svg_.selectAll('*').remove();
 
-    svg.attr('width', this.width_ + margin.left)
+    this.svg_.attr('width', this.width_ + margin.left)
       .attr('height', this.height_ + margin.top + margin.bottom);
 
-    svg.on('mousemove', () => {
+    this.svg_.on('mousemove', () => {
       this.pointHighlight.bind(this)();
     });
 
@@ -228,25 +240,38 @@ const exports = class {
     const yAxis = d3.axisLeft(this.scaleY)
       .tickSize(-this.width_);
 
-    svg.select('.y.axis').selectAll('g.tick line').style('stroke', '#b7cff7');
+    this.svg_.select('.y.axis').selectAll('g.tick line').style('stroke', '#b7cff7');
 
-    svg.append('g')
+    this.svg_.append('g')
       .attr('class', 'y axis')
       .call(yAxis);
 
-    svg.append('g')
+    this.svg_.append('g')
       .attr('class', 'x axis')
       .call(xAxis);
 
-    svg.select('.y.axis').attr('transform', `translate(${margin.left}, ${margin.top})`);
-    svg.select('.x.axis').attr('transform', `translate(${margin.left}, ${this.height_ + margin.top})`);
+    this.svg_.select('.y.axis').attr('transform', `translate(${margin.left}, ${margin.top})`);
+    this.svg_.select('.x.axis').attr('transform', `translate(${margin.left}, ${this.height_ + margin.top})`);
 
-    svg.select('.y.axis').selectAll('g.tick line')
+    this.svg_.select('.y.axis').selectAll('g.tick line')
       .style('opacity', '0.5')
       .style('stroke', '#b7cff7');
 
   }
 
+  /**
+   * Activate zoom on plot canvas.
+   */
+  activateZoom() {
+    this.svg_.call(this.zoom_);
+  }
+
+  /**
+   * Deactivate zoom on plot canvas.
+   */
+  deactivateZoom() {
+    this.svg_.on(".zoom", null);
+  }
 
   /**
    * Update the plot data at the end of the zoom process

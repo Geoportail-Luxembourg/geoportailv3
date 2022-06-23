@@ -1,4 +1,5 @@
 {
+  "(Deactivates zoom and pan on the profile!)": "",
   "Altitude: ": "",
   "Classes": "",
   "Classification: ": "",
@@ -17,7 +18,7 @@
   "loaded": "",
   "Loading LOD: ": "",
   "LOD: ": "",
-  "Measure distances on the profile below": "",
+  "Measure distances on the profile below.": "",
   "medium": "",
   "Or did you attempt to draw a profile outside data extent?": "",
   "Or did you attempt to draw such a small profile that no point was returned?": "",
