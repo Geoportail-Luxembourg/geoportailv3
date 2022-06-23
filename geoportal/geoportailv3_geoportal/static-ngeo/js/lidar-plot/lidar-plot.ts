@@ -13,6 +13,10 @@ export class LidarPlot extends LuxBaseElement {
         super();
     }
 
+    closeLidar() {
+        this.dispatchEvent(new CustomEvent('close-lidar'));
+    }
+
     //clear legend and profile when opening plot
     updated(changedProperties: Map<string, any>) {
         if (changedProperties.has('active') && this.active === true) {
@@ -40,6 +44,7 @@ export class LidarPlot extends LuxBaseElement {
                 </div>
                 <div class="lidarprofile">
                 </div>
+                <div class="close" @click="${() => this.closeLidar()}">&times;</div>
             </div>
         `;
     }
