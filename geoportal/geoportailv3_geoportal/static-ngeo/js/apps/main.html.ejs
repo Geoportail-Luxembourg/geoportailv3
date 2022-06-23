@@ -395,7 +395,7 @@
 
     <!-- Begin bottom bar -->
     <footer class="footer" ng-show="::!mainCtrl.embedded">
-        <lidar-plot ng-prop-active="mainCtrl.lidarOpen" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'"></lidar-plot>
+        <lidar-plot ng-prop-active="mainCtrl.lidarOpen" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'" ng-on-close-lidar="mainCtrl.closeSidebar()"></lidar-plot>
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"
