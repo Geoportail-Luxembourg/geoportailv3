@@ -105,15 +105,11 @@ Translations
 
 The translation workflow is as follows:
 - make update-pots # Replace pot files with new ones using a running composition
+- make update-web-component-translations # extract i18next strings from web component templates to translation files (using a running webpack_dev_server container from docker-compose.override)
 - make update-translations # push new pots to transifex
 - make pull-translations # retrieve pos from transifex
 - #commit updated po files
 - make build # build image using updated po files
-
-Web components (current workflow):
-- make extract-web-component-translations # extract i18next strings from web component templates to translation files
-- translate files in `geoportailv3_geoportal/static-ngeo/ngeo/locales` (potentially integrate translation step with transifex here)
-- make load-web-component-translations # allows to copy updated translation files to app during dev (translations are also copied during build process)
 
 Updating c2cgeoportal
 ---------------------
