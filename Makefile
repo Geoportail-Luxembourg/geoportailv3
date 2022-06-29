@@ -97,15 +97,15 @@ update-pots-tooltips:
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
-# use DOCKER_WEBPACK_DEV_CONTAINER for npm dependencies
-.PHONY: extract-web-component-translations
-extract-web-component-translations:
+.PHONY: update-web-component-translations
+update-web-component-translations:
 	# Parse web component templates and extract i18next strings to translation files
+	# make sure $(DOCKER_WEBPACK_DEV_CONTAINER) (from docker-compose.override) is running for npm dependencies
 	docker exec $(DOCKER_WEBPACK_DEV_CONTAINER) bash -c "npm run i18next-parse --prefix geoportailv3_geoportal/static-ngeo/ngeo;"
 
 .PHONY: load-web-component-translations
 load-web-component-translations:
-	# Copy updated translation files to app
+	# Copy updated translation files to app during dev (translations are also copied during build process)
 	docker cp geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales $(DOCKER_CONTAINER):/etc/static-ngeo/
 
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build

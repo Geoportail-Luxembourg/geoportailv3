@@ -24,3 +24,12 @@ file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoport
 source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 source_lang = frp
 type = PO
+
+[geoportailv3-lu.geoportailv3-webcomponents]
+source_file = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.en.json
+source_lang = en
+type = KEYVALUEJSON
+trans.en = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.en.json
+trans.fr = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.fr.json
+trans.de = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.de.json
+trans.lb = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.lb.json
