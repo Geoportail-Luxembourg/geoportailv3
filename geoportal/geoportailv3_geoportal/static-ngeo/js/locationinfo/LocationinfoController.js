@@ -577,6 +577,31 @@ exports.prototype.getCyclomediaUrl = function() {
   return undefined;
 };
 
+
+/**
+ * @return {boolean} True if we want to show Images Obliques button.
+ * @export
+ */
+exports.prototype.isImagesObliquesAvailable = function() {
+  if (this.appUserManager_.getRoleId() == '1') {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * @return {string} The image oblique url.
+ * @export
+ */
+exports.prototype.getImagesObliquesUrl = function() {
+  if (this.clickCoordinateLuref_ !== undefined) {
+    return 'https://geo2orbit.geoportail.lu/publication/viewer?x='+this.clickCoordinateLuref_[0]+'&y='+this.clickCoordinateLuref_[1]+'&crs=2169';
+  }
+  return undefined;
+};
+
+
 /**
  * @param {string} dest The destination parameter .
  * @return {*} The url to mobility from field.
