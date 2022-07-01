@@ -89,10 +89,11 @@ exports.prototype.setCurrentTheme = function(themeId) {
     piwikSiteId = this.piwikSiteIdLookup_[exports.DEFAULT_THEME_];
   }
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setSiteId', piwikSiteId]);
-  piwik.push(['setDocumentTitle', themeId]);
-  piwik.push(['trackPageView']);
-
+  if (piwik != undefined) {
+    piwik.push(['setSiteId', piwikSiteId]);
+    piwik.push(['setDocumentTitle', themeId]);
+    piwik.push(['trackPageView']);
+  }
   this.setLocationPath_(this.currentTheme_);
 };
 

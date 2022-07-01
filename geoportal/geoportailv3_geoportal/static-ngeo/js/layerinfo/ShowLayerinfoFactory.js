@@ -20,11 +20,13 @@ import appModule from '../module.js';
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
  * @param {string} geonetworkBaseUrl catalog base server url.
+ * @param {string} getHtmlLegendUrl The url.
  * @return {app.layerinfo.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
-function factory($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl) {
+function factory($http, $sce, $rootScope, $window,
+    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl,
+    getHtmlLegendUrl) {
     const isIpv6 = location.search.includes('ipv6=true');
     const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
@@ -42,6 +44,12 @@ function factory($http, $sce, $rootScope,
    * @type {ol.layer.Layer}
    */
   var currentLayer = null;
+  /**
+   * @type {string}
+   * @private
+   */
+  var getHtmlLegendUrl_ = getHtmlLegendUrl;
+  var $window_ = $window;
 
   $rootScope.$on('gettextLanguageChanged', function() {
     if (currentLayer !== null && popup.getOpen()) {
@@ -129,18 +137,36 @@ function factory($http, $sce, $rootScope,
                       content['layerMetadata']['responsibleParty'] = [content['layerMetadata']['responsibleParty']];
                     }
                   }
-                  if ('legend_name' in localMetadata) {
-                    var currentLanguage = gettextCatalog.currentLanguage;
-                    currentLanguage =
-                    currentLanguage === 'lb' ? 'lu' : currentLanguage;
-                    content['legendUrl'] = $sce.trustAsResourceUrl(
-                        '//wiki.' + domain + '/doku.php?id=' +
-                        currentLanguage + ':legend:' +
-                        localMetadata['legend_name'] + '&do=export_html'
-                    );
-                    content['hasLegend'] = true;
-                  }
+                  var queryParams = {};
 
+                  if (localMetadata != undefined && 'legend_name' in localMetadata) {
+                      queryParams['name'] = localMetadata['legend_name']
+                  }
+                  if (currentLayer !== null) {
+                    var id = currentLayer.get('queryable_id');
+                    if (id != undefined) {
+                        queryParams['id'] = id;
+                    }
+                  }
+                  if (Object.keys(queryParams).length > 0) {
+                    queryParams['lang'] = gettextCatalog.currentLanguage;
+                    // handle high resolution screens
+                    if ($window_.devicePixelRatio > 1) {
+                      queryParams['dpi'] = $window_.devicePixelRatio * 96;
+                    }
+                    var untrustedLegendUrl = getHtmlLegendUrl_ + '?' + (new URLSearchParams(queryParams)).toString();
+                    content['legendUrl'] = $sce.trustAsResourceUrl(untrustedLegendUrl);
+                    content['hasLegend'] = false;
+                    $http.get(untrustedLegendUrl).then(
+                            function(resp) {
+                              content['legendHTML'] = $sce.trustAsHtml(resp.data);
+                              if (resp.data.length > 0) {
+                                content['hasLegend'] = true;
+                              }
+                            }.bind(this));
+                  } else {
+                    content['hasLegend'] = false;
+                  }
                   return content;
                 }.bind(this));
       }

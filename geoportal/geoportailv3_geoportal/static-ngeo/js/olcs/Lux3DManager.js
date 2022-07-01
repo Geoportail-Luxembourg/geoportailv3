@@ -608,8 +608,8 @@ const exports = class extends ngeoOlcsManager {
         // scene.terrainProvider = this.TerrainProvider;
         if (doInit) {
           this.remove3DLayers();
-          this.init3dTiles();
         }
+        this.init3dTiles();
       }
       this.scheduleMinimumZoomDistanceUpdate()
     } else {
