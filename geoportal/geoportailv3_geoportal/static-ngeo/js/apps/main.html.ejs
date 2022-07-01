@@ -364,7 +364,7 @@
       </div>
     <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
-      <app-map app-map-map="::mainCtrl.map"></app-map>
+      <app-map app-map-map="::mainCtrl.map" app-map-offline-mode="::mainCtrl.offlineMode"></app-map>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
       <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
            app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
@@ -375,7 +375,7 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
-      <ngeo-offline
+      <!-- <ngeo-offline
           ngeo-offline-map="::mainCtrl.map"
           ngeo-offline-mask-margin="::100"
           ngeo-offline-min-zoom="::12"
@@ -383,7 +383,7 @@
           ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
           ng-show="!mainCtrl.embedded"
       >
-      </ngeo-offline>
+      </ngeo-offline> -->
       <app-backgroundselector
         ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
