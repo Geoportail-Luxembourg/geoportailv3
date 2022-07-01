@@ -1,0 +1,20 @@
+<div class="ol-control ol-toggleOffline-bar">
+  <div class="ol-unselectable ol-control" ng-class="{'ol-control-on' : (ctrl.isOpened && (ctrl.fullOfflineActive || ctrl.selectOfflineActive))}">
+    <button type="button" ng-click="ctrl.toggleSelector()">Off</button>
+  </div>
+  <div ng-if="ctrl.isOpened == true" class="ol-unselectable ol-control ol-toggleFullOffline"
+     ng-class="{'ol-control-on' : ctrl.fullOfflineActive}">
+  <button type="button" ng-click="ctrl.toggleFullOffline()">Lux</button>
+  </div>
+  <div ng-if="ctrl.isOpened == true" class="ol-unselectable ol-control ol-toggleSelectOffline"
+     ng-class="{'ol-control-on' : ctrl.selectOfflineActive}" ng-click="ctrl.toggleSelectOffline()">
+      <ngeo-offline
+        ngeo-offline-map="ctrl.map"
+        ngeo-offline-mask-margin="::100"
+        ngeo-offline-min-zoom="::12"
+        ngeo-offline-max-zoom="::16"
+        ng-class="{'offline-mode': ctrl.offlineMode.isEnabled()}"
+      >
+      </ngeo-offline>
+  </div>
+</div>

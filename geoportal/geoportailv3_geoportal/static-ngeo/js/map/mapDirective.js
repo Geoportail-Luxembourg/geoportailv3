@@ -19,7 +19,8 @@ import appModule from '../module.js';
 const exports = function(appMapTemplateUrl) {
   return {
     scope: {
-      'map': '=appMapMap'
+      'map': '=appMapMap',
+      'offlineMode': '=appMapOfflineMode'
     },
     bindToController: true,
     controller: 'AppMapController',
