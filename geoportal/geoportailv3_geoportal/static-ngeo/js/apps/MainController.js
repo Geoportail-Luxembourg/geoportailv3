@@ -167,6 +167,7 @@ import '../../less/geoportailv3.less';
  import appMymaps from '../Mymaps.js';
 
  import appMymapsOffline from '../MymapsOffline.js';
+ import appToggleOffline from '../offline/toggleOffline.js';
  import appOlcsToggle3d from '../olcs/toggle3d.js';
  import appOlcsExtent from '../olcs/Extent.js';
  import appProjections from '../projections.js';
