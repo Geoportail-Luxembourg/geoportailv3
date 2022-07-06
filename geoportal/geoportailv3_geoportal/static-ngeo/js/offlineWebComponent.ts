@@ -12,6 +12,9 @@ import {styleMap} from 'lit/directives/style-map.js';
 @customElement('lux-offline')
 export class LuxOffline extends LuxBaseElement {
 
+    @property({type: Boolean})
+    disabled: boolean = false;
+
     @state()
     private menuDisplayed;
 
@@ -44,75 +47,73 @@ export class LuxOffline extends LuxBaseElement {
 
     renderMenu() {
         return html`
-<div class="offline-btns">
-<div class="offline-btn btn btn-primary" @click="${this.checkTiles}">
-  check background offline data
-</div>
-<br>
-<div class="offline-btn btn btn-primary" @click="${this.showInfo}">
-  show offline data info
-</div>
-<br>
-${this.constructor.offlinePackages.map((definition) =>
-    this.renderOfflinePackageItem(definition.title, definition.packageName))}
-</div>
-`;
+          <div class="offline-btns">
+            <div class="offline-btn btn btn-primary" @click="${this.checkTiles}">
+              check background offline data
+            </div>
+            <br>
+            <div class="offline-btn btn btn-primary" @click="${this.showInfo}">
+              show offline data info
+            </div>
+            <br>
+            ${this.constructor.offlinePackages.map((definition) =>
+              this.renderOfflinePackageItem(definition.title, definition.packageName))}
+          </div>
+          `;
     }
 
     renderOfflinePackageItem(title, packageName) {
         return html`
-<div class="offline-btn btn btn-primary" id="PUT-${packageName}" @click="${this.alterTiles}">
-  update ${title}
-</div>
-<div class="offline-btn btn btn-primary" id="DELETE-${packageName}" @click="${this.alterTiles}">
-  delete ${title}
-</div>
-<br>
-`;
+          <div class="offline-btn btn btn-primary" id="PUT-${packageName}" @click="${this.alterTiles}">
+            update ${title}
+          </div>
+          <div class="offline-btn btn btn-primary" id="DELETE-${packageName}" @click="${this.alterTiles}">
+            delete ${title}
+          </div>
+          <br>
+          `;
     }
 
     renderInfo() {
         return html`
-            <div class="modal" tabindex="-1" role="dialog">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">${i18next.t('Offline package info')}</h4>
+          <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">${i18next.t('Offline package info')}</h4>
+                </div>
+                <div class="modal-body">
+                  <div>
+                    <p><pre ng-style="{'font-size':'8px'}"> ${this.statusDict} </pre></p>
                   </div>
-                  <div class="modal-body">
-    <div>
-      <p><pre ng-style="{'font-size':'8px'}"> ${this.statusDict} </pre></p>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>    
-`;
+                </div>
+              </div>
+            </div>
+          </div>
+              `;
     }
 
     render() {
         return html`
-<div class="db-button">
-  <span>
-    <div class="no-data webcomponent" @click="${this.toggleMenu}"></div>
-  </span>
-</div>
-${this.menuDisplayed?this.renderMenu():""}
-${this.renderInfo()}
+          <div class="db-button">
+            <span>
+              <button ?disabled="${this.disabled}" class="no-data offline-wc" @click="${this.toggleMenu}"></button>
+            </span>
+          </div>
+        ${this.menuDisplayed?this.renderMenu():""}
+        ${this.renderInfo()}
         `;
     }
 
-    checkTiles()
-    {
+    checkTiles() {
         console.log("check");
         let checkPromise = fetch(this.baseURL + "/check");
         checkPromise.then(response => response.text()).then(text => this.statusDict = text);
         this.showInfo()
     }
 
-    showInfo()
-    {
+    showInfo() {
         $(this.modal).modal('show');
     }
 
