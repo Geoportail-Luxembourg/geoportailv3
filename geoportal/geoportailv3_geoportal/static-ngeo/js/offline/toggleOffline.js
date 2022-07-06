@@ -9,37 +9,23 @@
 
  class Controller {
  
-   constructor() {
-     /**
-      * @type {boolean}
-      */
-     this.isOpened = false;
-      /**
-      * @type {boolean}
-      */
-      this.fullOfflineActive = false;
-      /**
-      * @type {boolean}
-      */
-      this.selectOfflineActive = false;
-   }
+    /**
+   * @ngInject
+   * @param {app.offline.Bar} appOfflineBar The service.
+   */
+  constructor(appOfflineBar) {
+    this.offlineBar = appOfflineBar;
+ }
    /**
     * @export
     */
-   toggleSelector() {
-     this.isOpened = !this.isOpened;
-     if (!this.isOpened) {
-      this.fullOfflineActive = false;
-      this.selectOfflineActive = false;
-     }
+   toggleBar() {
+     this.offlineBar.toggleBar();
    }
- 
-   toggleFullOffline() {
-      this.fullOfflineActive = !this.fullOfflineActive;
-   }
-   toggleSelectOffline() {
-      this.selectOfflineActive = !this.selectOfflineActive;
-   }
+
+   isBarOpen() {
+    return this.offlineBar.isBarOpen();
+  }
  }
  
  
@@ -51,10 +37,7 @@
  const exports = function(appOfflineBarTemplateUrl) {
    return {
      restrict: 'E',
-     scope: {
-      'map': '=appOfflinebarMap',
-      'offlineMode': '=appOfflinebarOfflineMode'
-    },
+     scope: {},
      controller: Controller,
      controllerAs: 'ctrl',
      bindToController: true,
