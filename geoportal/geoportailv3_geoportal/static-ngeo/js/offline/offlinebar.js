@@ -7,16 +7,31 @@
 
   constructor() {
     this.barOpen_ = false;
+    this.ngeoOffline_ = false;
+    this.fullOffline_ = false;
   }
 
   isBarOpen() {
     return this.barOpen_;
+  }
+  isNgeoOfflineActive() {
+    return this.ngeoOffline_;
+  }
+  isFullOfflineActive() {
+    return this.fullOffline_;
   }
 
   toggleBar() {
     this.barOpen_ = !this.barOpen_;
   }
 
+  toggleNgeoOffline() {
+    this.ngeoOffline_ = !this.ngeoOffline_;
+  }
+
+  toggleFullOffline() {
+    this.fullOffline_ = !this.fullOffline_;
+  }
 };
 
 /**
