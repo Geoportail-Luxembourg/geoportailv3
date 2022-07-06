@@ -213,6 +213,7 @@ exports.Controller = class {
      * @export
      */
     this.displayAlertLoadData = false;
+    this.displayStatusData = true;
 
     /**
      * Whether the "no layer" modal is displayed.
@@ -260,7 +261,9 @@ exports.Controller = class {
      * @type {number}
      * @export
      */
-    this.estimatedLoadDataSize;
+      this.estimatedLoadDataSize;
+
+      this.statusDict;
 
     /**
      * @type {boolean}
@@ -342,6 +345,22 @@ exports.Controller = class {
     this.downloading = true;
     this.ngeoOfflineServiceManager_.save(extent, this.map);
   }
+
+    checkTiles(selection) {
+        this.ngeoOfflineServiceManager_.checkTiles(selection).then(response => response.text()).then(text => this.statusDict = text);
+        this.displayAlertLoadData = true;
+        return this.statusDict;
+    }
+
+    updateTiles(selection) {
+        const tileUpdate = this.ngeoOfflineServiceManager_.updateTiles(selection).then(res => res.text());
+        return tileUpdate;
+    }
+
+    deleteTiles(selection) {
+        const tileDelete = this.ngeoOfflineServiceManager_.deleteTiles(selection).then(res => res.text());
+        return tileDelete;
+    }
 
 
   /**

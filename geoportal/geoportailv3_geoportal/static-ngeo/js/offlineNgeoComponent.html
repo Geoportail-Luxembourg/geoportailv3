@@ -7,9 +7,66 @@
   </span>
 </div>
 
-<div ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="validate-extent btn btn-primary">
-  <div ng-if="!$ctrl.downloading" ng-click="$ctrl.computeSizeAndDisplayAlertLoadData()" translate>Save map</div>
-  <div ng-if="$ctrl.downloading" ng-click="$ctrl.askAbortDownload()" translate>Abort</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.checkTiles()">
+  check background offline data
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.displayAlertLoadData = !$ctrl.displayAlertLoadData">
+  show status
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-geoportail-lu')" ng-style="{top:'15rem',left:'2rem'}">
+  update roadmap
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('omt-topo-geoportail-lu')"
+      ng-style="{top:'19rem',left:'2rem'}">
+  update topomap
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('contours-lu')"
+      ng-style="{top:'23rem',left:'2rem'}">
+  update contours
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('hillshade-lu')"
+      ng-style="{top:'27rem',left:'2rem'}">
+  update hilllshade
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('resources')"
+      ng-style="{top:'31rem',left:'2rem'}">
+  update resources
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('fonts')"
+      ng-style="{top:'35rem',left:'2rem'}">
+  update fonts
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.updateTiles('sprites')"
+      ng-style="{top:'39rem',left:'2rem'}">
+  update sprites
+</div>
+
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-geoportail-lu')" ng-style="{top:'15rem',left:'22rem'}">
+  delete roadmap
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('omt-topo-geoportail-lu')"
+      ng-style="{top:'19rem',left:'22rem'}">
+  delete topomap
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('contours-lu')"
+      ng-style="{top:'23rem',left:'22rem'}">
+  delete contours
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('hillshade-lu')"
+      ng-style="{top:'27rem',left:'22rem'}">
+  delete hilllshade
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('resources')"
+      ng-style="{top:'31rem',left:'22rem'}">
+  delete resources
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('fonts')"
+      ng-style="{top:'35rem',left:'22rem'}">
+  delete fonts
+</div>
+<div  ng-if="$ctrl.selectingExtent && !$ctrl.networkStatus.isDisconnected()" class="offline2-btn btn btn-primary" ng-click="$ctrl.deleteTiles('sprites')"
+      ng-style="{top:'39rem',left:'22rem'}">
+  delete sprites
 </div>
 
 
@@ -62,23 +119,14 @@
 
 <ngeo-modal ng-model="$ctrl.displayAlertLoadData">
   <div class="modal-header">
-    <h4 class="modal-title" translate>Warning</h4>
+    <h4 class="modal-title" translate>Offline Status</h4>
   </div>
   <div class="modal-body">
-      <div ng-if="!$ctrl.map.superHackIsItOKToSaveOffline()">
-        <p translate>Choose another background layer to be able to save map for offline usage.</p>
-      </div>
-      <div ng-if="$ctrl.map.superHackIsItOKToSaveOffline()">
-        <p translate>~{{$ctrl.estimatedLoadDataSize}}MB of maps will be downloaded - Don't lock your device or navigate away from this site during the download process. Deactivate "private" mode of your browser.</p>
-        <button type="button" class="validate btn btn-primary"
-                data-dismiss="modal"
-                ng-click="$ctrl.validateExtent()"
-                translate>Ok
-        </button>
-      </div>
+    <div>
+      <p><pre ng-style="{'font-size':'8px'}"> {{$ctrl.statusDict}} </pre></p>
       <button type="button" class="delete btn btn-default"
               data-dismiss="modal"
-              translate>Cancel
+              translate>Close
       </button>
   </div>
 </ngeo-modal>

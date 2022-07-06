@@ -4,6 +4,7 @@
 import appModule from './module.js';
 import Downloader from 'ngeo/offline/Downloader.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import TilesOffline from './offline/TilesOffline.js';
 
 /**
  * @extends {ngeo.offline.Downloader}
@@ -17,7 +18,7 @@ const OfflineDownloader = class extends Downloader {
    * @param {import('./offline/MapboxOffline').default} appMapBoxOffline The MapBox offline service.
    * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The ngeo background manager.
    */
-  constructor(ngeoOfflineConfiguration, appMymapsOffline, $window, appMapBoxOffline,ngeoBackgroundLayerMgr) {
+  constructor(ngeoOfflineConfiguration, appMymapsOffline, $window, appMapBoxOffline, appTilesOffline, ngeoBackgroundLayerMgr) {
     super(ngeoOfflineConfiguration);
     /**
      * @type {app.MymapsOffline}
@@ -26,6 +27,8 @@ const OfflineDownloader = class extends Downloader {
     this.appMymapsOffline_ = appMymapsOffline;
 
     this.appMapBoxOffline_ = appMapBoxOffline;
+
+    this.appTileOffline_ = appTilesOffline;
 
     this.configuration_ = ngeoOfflineConfiguration;
 
@@ -37,6 +40,19 @@ const OfflineDownloader = class extends Downloader {
      */
     this.window_ = $window;
   }
+
+    checkTiles(selection) {
+        return this.appTileOffline_.checkTiles(selection);
+    }
+
+    updateTiles(selection) {
+        return this.appTileOffline_.updateTiles(selection);
+    }
+
+    deleteTiles(selection) {
+        return this.appTileOffline_.deleteTiles(selection);
+    }
+
 
   /**
    * @param {ol.Extent} extent The extent to download.
