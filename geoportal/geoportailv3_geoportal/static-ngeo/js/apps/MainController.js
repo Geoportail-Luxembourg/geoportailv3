@@ -129,6 +129,7 @@ import '../../less/geoportailv3.less';
  import appQueryCasiporeportController from '../query/CasiporeportController.js';
  import appQueryPdsreportDirective from '../query/pdsreportDirective.js';
  import appQueryPdsreportController from '../query/PdsreportController.js';
+ import appOfflineBar from '../offline/offlinebar.js'
 
  //const appQueryQueryStyles = goog.require('app.query.QueryStyles');
  import appQueryQueryDirective from '../query/queryDirective.js';
@@ -387,8 +388,8 @@ const MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
   appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus,
+    appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
   /**
@@ -707,6 +708,12 @@ const MainController = function(
    * @private
    */
   this.networkStatus_ = ngeoNetworkStatus;
+
+  /**
+  * @type {ngeo.offline.Mode}
+  * @export
+  */
+  this.offlineBar = appOfflineBar;
 
   /**
    * @type {ngeo.offline.Mode}
