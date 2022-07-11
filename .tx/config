@@ -1,26 +1,26 @@
 [main]
 host = https://www.transifex.com
 
-[geoportailv3-lu.geoportailv3-client]
+[o:geoportail:p:geoportailv3-lu:r:geoportailv3-client]
 file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-client.po
 source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 source_lang = frp
-type = PO
+type        = PO
 
-[geoportailv3-lu.geoportailv3-server]
-file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-server.po
-source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
-source_lang = frp
-type = PO
-
-[geoportailv3-lu.geoportailv3-tooltips]
-file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
-source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
-source_lang = frp
-type = PO
-
-[geoportailv3-lu.geoportailv3-legends]
+[o:geoportail:p:geoportailv3-lu:r:geoportailv3-legends]
 file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-legends.po
 source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 source_lang = frp
-type = PO
+type        = PO
+
+[o:geoportail:p:geoportailv3-lu:r:geoportailv3-server]
+file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-server.po
+source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
+source_lang = frp
+type        = PO
+
+[o:geoportail:p:geoportailv3-lu:r:geoportailv3-tooltips]
+file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
+source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
+source_lang = frp
+type        = PO
