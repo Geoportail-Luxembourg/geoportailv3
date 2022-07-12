@@ -53,6 +53,7 @@ const exports = function(
         appRouting, $sce, appActivetool,
         appUserManager) {
 
+  this.scope_ = $scope;
   this.bboxLidar_ = bboxLidar;
 
   this.bboxSrsLidar_ = bboxSrsLidar;
@@ -398,14 +399,15 @@ exports.prototype.$onInit = function() {
         this.setClickCordinate_(event.originalEvent);
         this['open'] = true;
         this.openInPointerDown_ = true;
-      } else if (!(event.originalEvent instanceof MouseEvent)) {
-        // if touch input device
+        this.scope_.$digest();
+      } else if (event.originalEvent.pointerType == "touch") {
         this.timeout_.cancel(this.holdPromise);
         this.startPixel = event.pixel;
         var that = this;
         this.holdPromise = this.timeout_(function() {
           that.setClickCordinate_(event.originalEvent);
           that['open'] = true;
+          that.scope_.$digest();
         }, 500, false);
       }
     }
