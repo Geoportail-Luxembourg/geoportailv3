@@ -417,7 +417,7 @@ class Geocode(object):
         if numero is None:
             numero = ""
 
-        caclr_rue = ""
+        caclr_loca = ""
         if hasattr(feature, 'id_caclr_loca'):
             caclr_loca = feature.id_caclr_loca
         if caclr_loca is None:
