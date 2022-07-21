@@ -583,10 +583,7 @@ exports.prototype.getCyclomediaUrl = function() {
  * @export
  */
 exports.prototype.isImagesObliquesAvailable = function() {
-  if (this.appUserManager_.getRoleId() == '1') {
-    return true;
-  }
-  return false;
+  return true;
 };
 
 
