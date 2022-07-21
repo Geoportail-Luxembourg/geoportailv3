@@ -348,7 +348,7 @@ lux.Map = function(options) {
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     // background layers selector
     if (options.bgSelector && options.bgSelector.target) {
-      this.addBgSelector(options.bgSelector.target);
+      this.addBgSelector(options.bgSelector.target, undefined, options.bgSelector.type);
     }
     delete options.bgSelector;
 
@@ -1438,16 +1438,20 @@ lux.findLayerByName_ = function(name, layers) {
  * bgSelector in.
  * @param {Array<string|number>|undefined} bglayers Array of overlay layer identifiers.
  * 'blank' acts as blank layer.
+ * @param {string|undefined} elementType The kind of element we want to create.
+ * values are 'select' or 'radio'.
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html?background}
  * @export
  * @api
  */
-lux.Map.prototype.addBgSelector = function(target, bglayers) {
+lux.Map.prototype.addBgSelector = function(target, bglayers, elementType) {
   this.layersPromise.then(function() {
     if (!this.layersConfig) {
       return;
     }
-
+    if (elementType === undefined) {
+      elementType = 'select';
+    }
     var el = typeof target === 'string' ?
         document.getElementById(target) :
         target;
@@ -1459,7 +1463,6 @@ lux.Map.prototype.addBgSelector = function(target, bglayers) {
     container.classList.add('lux-bg-selector');
     var select = document.createElement('select');
     select.classList.add('lux-bg-selector-select');
-
     var conf = this.layersConfig;
     var backgrounds = Object.keys(conf).filter(function(l) {
       if (bglayers === undefined) {
@@ -1474,57 +1477,136 @@ lux.Map.prototype.addBgSelector = function(target, bglayers) {
     });
     var active = this.getLayers().item(0).get('name');
     backgrounds.forEach(function(background) {
-      var option = document.createElement('option');
-      option.value = background.id;
-      option.innerText = lux.translate(background.name);
+      if (elementType === 'select') {
+        var option = document.createElement('option');
+        option.value = background.id;
+        option.innerText = lux.translate(background.name);
 
-      if (active == background.name) {
-        option.setAttribute('selected', 'selected');
+        if (active == background.name) {
+          option.setAttribute('selected', 'selected');
+        }
+        select.appendChild(option);
       }
-      select.appendChild(option);
-    });
+      if (elementType === 'radio') {
+        var radioEl = document.createElement('input');
+        radioEl.setAttribute('type', 'radio');
+        radioEl.id = background.id;
+        radioEl.value = lux.translate(background.name);
+        if (active == background.name) {
+          radioEl.setAttribute('checked', 'checked');
+        }
+        radioEl.name = 'lux-bg-selector-select-id';
+        container.appendChild(radioEl);
+        var labelEl = document.createElement('label');
+        labelEl.setAttribute('for', background.id);
+        labelEl.innerText =  lux.translate(background.name);
+        container.appendChild(labelEl);
+        radioEl.addEventListener('change', function(src) {
+          if (this.mvtLayer_ !== undefined) {
+            this.mvtLayer_.setVisible(false);
+          }
+          if (this.layersConfig[src.target.id] && this.layersConfig[src.target.id].name === 'basemap_2015_global') {
+            if (this.mvtLayer_ === undefined) {
+              this.mvtLayer_ = this.MVTLayerFactory_();
+            }
+            this.getLayers().setAt(0, this.mvtLayer_);
+            this.mvtLayer_.setVisible(true);
+          } else if (src.target.id === 'blank') {
+            this.getLayers().setAt(0, this.blankLayer_);
+          } else {
+            this.getLayers().setAt(
+              0, lux.WMTSLayerFactory(this.layersConfig[src.target.id], 1, true)
+            );
+          }
+        }.bind(this));
+      }
+    }.bind(this));
     var showBlankLayer = true;
     if (bglayers !== undefined && bglayers.indexOf('blank') == -1) {
         showBlankLayer = false;
     }
+    var blankOption = undefined;
+    var radioEl = undefined;
     if (showBlankLayer) {
         // add blank layer
-        var blankOption = document.createElement('option');
-        blankOption.value = 'blank';
-        blankOption.innerText = lux.translate('blank');
-        if (active == 'blank') {
-          blankOption.setAttribute('selected', 'selected');
+        if (elementType === 'select') {
+          blankOption = document.createElement('option');
+          blankOption.value = 'blank';
+          blankOption.innerText = lux.translate('blank');
+          if (active == 'blank') {
+            blankOption.setAttribute('selected', 'selected');
+          }
+          select.appendChild(blankOption);
         }
-        select.appendChild(blankOption);
+        if (elementType === 'radio') {
+          radioEl = document.createElement('input');
+          radioEl.setAttribute('type', 'radio');
+          radioEl.id = 'blank';
+          radioEl.name = 'lux-bg-selector-select-id';
+          radioEl.value = lux.translate('blank');
+          if (active == 'blank') {
+            radioEl.setAttribute('checked', 'checked');
+          }
+          container.appendChild(radioEl);
+          var labelEl = document.createElement('label');
+          labelEl.setAttribute('for', 'blank');
+          labelEl.innerText =  lux.translate('blank');
+          container.appendChild(labelEl);
+          radioEl.addEventListener('change', function(src) {
+            if (this.mvtLayer_ !== undefined) {
+              this.mvtLayer_.setVisible(false);
+            }
+            if (this.layersConfig[src.target.id] && this.layersConfig[src.target.id].name === 'basemap_2015_global') {
+              if (this.mvtLayer_ === undefined) {
+                this.mvtLayer_ = this.MVTLayerFactory_();
+              }
+              this.getLayers().setAt(0, this.mvtLayer_);
+              this.mvtLayer_.setVisible(true);
+            } else if (src.target.id === 'blank') {
+              this.getLayers().setAt(0, this.blankLayer_);
+            } else {
+              this.getLayers().setAt(
+                0, lux.WMTSLayerFactory(this.layersConfig[src.target.id], 1, true)
+              );
+            }
+          }.bind(this));
+        }
     }
-    container.appendChild(select);
+    if (elementType === 'select') {
+      container.appendChild(select);
+    }
     el.appendChild(container);
-
-    select.addEventListener('change', function() {
-      if (this.mvtLayer_ !== undefined) {
-        this.mvtLayer_.setVisible(false);
-      }
-      if (this.layersConfig[select.value] && this.layersConfig[select.value].name === 'basemap_2015_global') {
-        if (this.mvtLayer_ === undefined) {
-          this.mvtLayer_ = this.MVTLayerFactory_();
+    if (elementType === 'select') {
+      select.addEventListener('change', function() {
+        if (this.mvtLayer_ !== undefined) {
+          this.mvtLayer_.setVisible(false);
         }
-        this.getLayers().setAt(0, this.mvtLayer_);
-        this.mvtLayer_.setVisible(true);
-      } else if (select.value === 'blank') {
-        this.getLayers().setAt(0, this.blankLayer_);
-      } else {
-        this.getLayers().setAt(
-          0, lux.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
-        );
-      }
-    }.bind(this));
-
+        if (this.layersConfig[select.value] && this.layersConfig[select.value].name === 'basemap_2015_global') {
+          if (this.mvtLayer_ === undefined) {
+            this.mvtLayer_ = this.MVTLayerFactory_();
+          }
+          this.getLayers().setAt(0, this.mvtLayer_);
+          this.mvtLayer_.setVisible(true);
+        } else if (select.value === 'blank') {
+          this.getLayers().setAt(0, this.blankLayer_);
+        } else {
+          this.getLayers().setAt(
+            0, lux.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
+          );
+        }
+      }.bind(this));
+    }
     // update the selector if blank layer is set (after exclusion)
     ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
         function(event) {
           var layer = this.getLayers().getArray()[0];
           if (layer == this.blankLayer_) {
-            blankOption.setAttribute('selected', 'selected');
+            if (blankOption !== undefined) {
+              blankOption.setAttribute('selected', 'selected');
+            }
+            if (radioEl !== undefined) {
+              radioEl.setAttribute('checked', 'checked');
+            }
           }
         }, this);
 
