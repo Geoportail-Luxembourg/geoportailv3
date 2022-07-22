@@ -593,7 +593,7 @@ exports.prototype.isImagesObliquesAvailable = function() {
  */
 exports.prototype.getImagesObliquesUrl = function() {
   if (this.clickCoordinateLuref_ !== undefined) {
-    return 'https://geo2orbit.geoportail.lu/publication/viewer?x='+this.clickCoordinateLuref_[0]+'&y='+this.clickCoordinateLuref_[1]+'&crs=2169';
+    return 'https://oblique.geoportail.lu/publication/viewer?x='+this.clickCoordinateLuref_[0]+'&y='+this.clickCoordinateLuref_[1]+'&crs=2169';
   }
   return undefined;
 };
