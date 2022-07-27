@@ -1,8 +1,11 @@
 {
   "Copy": "",
   "custom": "",
+  "Delete offline data": "Offline Daten herunterladen",
   "Embed map": "",
+  "Full offline (only available on mobile)": "Full offline (nur mobile App)",
   "large": "",
   "medium": "",
-  "small": ""
+  "small": "",
+  "Update offline data": "Offline Daten löschen"
 }

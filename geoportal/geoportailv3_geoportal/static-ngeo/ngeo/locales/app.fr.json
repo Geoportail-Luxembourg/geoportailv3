@@ -1,8 +1,11 @@
 {
   "Copy": "Copier",
   "custom": "Taille personnalisée",
+  "Delete offline data": "Supprimer données hors connexion",
   "Embed map": "Intégrer la carte",
+  "Full offline (only available on mobile)": "Full offline (seulement mobile)",
   "large": "Grande",
   "medium": "Moyenne",
-  "small": "Petite"
+  "small": "Petite",
+  "Update offline data": "Mettre à jour données hors connexion"
 }
