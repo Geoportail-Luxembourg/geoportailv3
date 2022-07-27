@@ -1,13 +1,7 @@
-import 'jquery';
-import 'bootstrap/js/modal.js';
-
 import i18next from 'i18next';
-
 import {LuxBaseElement} from './LuxBaseElement';
 import {html} from 'lit';
-import {customElement, state, query, property} from 'lit/decorators.js';
-import {styleMap} from 'lit/directives/style-map.js';
-
+import {customElement, state, property} from 'lit/decorators.js';
 
 @customElement('lux-offline')
 export class LuxOffline extends LuxBaseElement {
@@ -19,13 +13,15 @@ export class LuxOffline extends LuxBaseElement {
     private menuDisplayed;
 
     @state()
-    private infoDisplayed;
+    private tilePackages = {
+      ALL: [],
+      IN_PROGRESS: [],
+      UPDATE_AVAILABLE: [],
+      UP_TO_DATE: []
+    };
 
     @state()
-    private statusDict;
-
-    @query('.modal')
-    private modal: HTMLElement;
+    private status;
 
     constructor() {
         super();
@@ -33,102 +29,114 @@ export class LuxOffline extends LuxBaseElement {
         const server = searchParams.get('embeddedserver');
         const proto = searchParams.get('embeddedserverprotocol') || 'http';
         this.baseURL = (server ? `${proto}://${server}` : "http://localhost:8766/map/")
+        if (server) {
+          this.checkTiles()
+        } else {
+          this.disabled = true;
+        }
     }
-
-    static offlinePackages = [
-        {title: 'roadmap', packageName: 'omt-geoportail-lu'},
-        {title: 'topomap', packageName: 'omt-topo-geoportail-lu'},
-        {title: 'contours', packageName: 'contours-lu'},
-        {title: 'hillshade', packageName: 'hillshade-lu'},
-        {title: 'resources', packageName: 'resources'},
-        {title: 'fonts', packageName: 'fonts'},
-        {title: 'sprites', packageName: 'sprites'}
-    ]
 
     renderMenu() {
         return html`
           <div class="offline-btns">
-            <div class="offline-btn btn btn-primary" @click="${this.checkTiles}">
-              check background offline data
+            <div class="offline-btn btn btn-primary" @click="${this.updateTiles}" ?disabled="${this.status!=="UPDATE_AVAILABLE"}">
+            ${i18next.t('Update offline data')}
+            ${this.status==="IN_PROGRESS"
+              ? html `<i class="fa fa-circle-o-notch fa-spin"></i>`
+              : ''
+            }
             </div>
             <br>
-            <div class="offline-btn btn btn-primary" @click="${this.showInfo}">
-              show offline data info
+            <div class="offline-btn btn btn-primary" @click="${this.deleteTiles}" ?disabled="${this.status==="IN_PROGRESS"}">
+              ${i18next.t('Delete offline data')}
             </div>
             <br>
-            ${this.constructor.offlinePackages.map((definition) =>
-              this.renderOfflinePackageItem(definition.title, definition.packageName))}
           </div>
           `;
-    }
-
-    renderOfflinePackageItem(title, packageName) {
-        return html`
-          <div class="offline-btn btn btn-primary" id="PUT-${packageName}" @click="${this.alterTiles}">
-            update ${title}
-          </div>
-          <div class="offline-btn btn btn-primary" id="DELETE-${packageName}" @click="${this.alterTiles}">
-            delete ${title}
-          </div>
-          <br>
-          `;
-    }
-
-    renderInfo() {
-        return html`
-          <div class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">${i18next.t('Offline package info')}</h4>
-                </div>
-                <div class="modal-body">
-                  <div>
-                    <p><pre ng-style="{'font-size':'8px'}"> ${this.statusDict} </pre></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-              `;
     }
 
     render() {
         return html`
           <div class="db-button">
             <span>
-              <button ?disabled="${this.disabled}" class="no-data offline-wc" @click="${this.toggleMenu}"></button>
+              <button ?disabled="${this.disabled}" class="no-data offline-wc" @click="${this.toggleMenu}"
+                title="${i18next.t('Full offline (only available on mobile)')}"></button>
             </span>
           </div>
         ${this.menuDisplayed?this.renderMenu():""}
-        ${this.renderInfo()}
         `;
     }
 
-    checkTiles() {
-        console.log("check");
-        let checkPromise = fetch(this.baseURL + "/check");
-        checkPromise.then(response => response.text()).then(text => this.statusDict = text);
-        this.showInfo()
-    }
-
-    showInfo() {
-        $(this.modal).modal('show');
-    }
-
-    alterTiles(e) {
-        let eventId = e.target.id;
-        let separatorPos = eventId.indexOf('-');
-        let method = eventId.substring(0, separatorPos);
-        let packageName = eventId.substring(separatorPos+1);
-        console.log(method + " " + packageName);
-        let alterPromise = fetch(this.baseURL + "/map/" + packageName, {method})
-        alterPromise.then(res => res.text());
-    }
-
     toggleMenu() {
-        this.menuDisplayed = !this.menuDisplayed;
+      this.menuDisplayed = !this.menuDisplayed;
+    }
+
+    checkTiles() {
+      fetch(this.baseURL + "/check")
+        .then((response) => response.json())
+        .then((statusJson) => this.getStatus(statusJson))
+    }
+
+    getStatus(tiles) {
+      this.tilePackages = {
+        ALL: [],
+        IN_PROGRESS: [],
+        UPDATE_AVAILABLE: [],
+        UP_TO_DATE: []
+      }
+      for(const tileKey in tiles) {
+        this.tilePackages.ALL.push(tileKey);
+        if (tiles[tileKey].status === "IN_PROGRESS") {
+          this.tilePackages.IN_PROGRESS.push(tileKey);
+        } else if (tiles[tileKey].current < tiles[tileKey].available) {
+          this.tilePackages.UPDATE_AVAILABLE.push(tileKey);
+        } else {
+          this.tilePackages.UP_TO_DATE.push(tileKey);
+        }
+      }
+      if (this.tilePackages.IN_PROGRESS.length > 0) {
+        this.status = 'IN_PROGRESS'
+      } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
+        this.status = 'UPDATE_AVAILABLE'
+      } else {
+        this.status = 'UP_TO_DATE'
+      }
+    }
+
+    updateTiles() {
+      this.tilePackages.UPDATE_AVAILABLE.forEach(tilePackage => {
+        this.sendRequest(tilePackage, 'PUT')
+      })
+    }
+
+    deleteTiles() {
+      this.tilePackages.ALL.forEach(tilePackage => {
+        this.sendRequest(tilePackage, 'DELETE')
+      })
+  }
+
+    sendRequest(tiles: string, method: string) {
+      fetch(this.baseURL + "/map/" + tiles, {method})
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Success:', data);
+          if (method === 'PUT') {
+            this.checkTilesByInterval()
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    checkTilesByInterval() {
+      this.status = 'IN_PROGRESS'
+      const checkInterval = setInterval(()=> {
+        this.checkTiles();
+        if (this.status !== 'IN_PROGRESS') {
+          clearInterval(checkInterval);
+        }
+      }, 500)
     }
 
     createRenderRoot() {
