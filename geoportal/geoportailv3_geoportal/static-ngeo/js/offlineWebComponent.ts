@@ -99,23 +99,23 @@ export class LuxOffline extends LuxBaseElement {
         }
       }
       if (this.tilePackages.IN_PROGRESS.length > 0) {
-        this.status = 'IN_PROGRESS'
+        this.status = 'IN_PROGRESS';
       } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
-        this.status = 'UPDATE_AVAILABLE'
+        this.status = 'UPDATE_AVAILABLE';
       } else {
-        this.status = 'UP_TO_DATE'
+        this.status = 'UP_TO_DATE';
       }
     }
 
     updateTiles() {
       this.tilePackages.UPDATE_AVAILABLE.forEach(tilePackage => {
-        this.sendRequest(tilePackage, 'PUT')
+        this.sendRequest(tilePackage, 'PUT');
       })
     }
 
     deleteTiles() {
       this.tilePackages.ALL.forEach(tilePackage => {
-        this.sendRequest(tilePackage, 'DELETE')
+        this.sendRequest(tilePackage, 'DELETE');
       })
   }
 
@@ -125,7 +125,7 @@ export class LuxOffline extends LuxBaseElement {
         .then((data) => {
           console.log('Success:', data);
           if (method === 'PUT') {
-            this.checkTilesByInterval()
+            this.checkTilesByInterval();
           }
         })
         .catch((error) => {
