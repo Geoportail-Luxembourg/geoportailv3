@@ -375,8 +375,8 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
-      <lux-offline 
-          ng-if="mainCtrl.offlineBar.isBarOpen()"
+      <lux-offline
+          ng-class="mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide'"
           ng-click="mainCtrl.offlineBar.toggleFullOffline()"
           ng-prop-disabled="mainCtrl.offlineBar.isNgeoOfflineActive()"
       ></lux-offline>
