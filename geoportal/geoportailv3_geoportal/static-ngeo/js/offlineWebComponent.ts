@@ -10,6 +10,9 @@ export class LuxOffline extends LuxBaseElement {
     disabled: boolean = false;
 
     @state()
+    private server;
+
+    @state()
     private menuDisplayed;
 
     @state()
@@ -28,12 +31,11 @@ export class LuxOffline extends LuxBaseElement {
         const searchParams = new URLSearchParams(document.location.search);
         const server = searchParams.get('embeddedserver');
         const proto = searchParams.get('embeddedserverprotocol') || 'http';
-        this.baseURL = (server ? `${proto}://${server}` : "http://localhost:8766/map/")
+        this.baseURL = (server ? `${proto}://${server}` : "http://localhost:8766/map/");
         if (server) {
-          this.checkTiles()
-        } else {
-          this.disabled = true;
+          this.checkTiles();
         }
+        this.server = server;
     }
 
     renderMenu() {
@@ -59,7 +61,7 @@ export class LuxOffline extends LuxBaseElement {
         return html`
           <div class="db-button">
             <span>
-              <button ?disabled="${this.disabled}" class="no-data offline-wc" @click="${this.toggleMenu}"
+              <button ?disabled="${this.disabled || !this.server}" class="no-data offline-wc" @click="${this.toggleMenu}"
                 title="${i18next.t('Full offline (only available on mobile)')}"></button>
             </span>
           </div>
