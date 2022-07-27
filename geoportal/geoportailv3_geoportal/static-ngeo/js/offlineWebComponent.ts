@@ -90,7 +90,9 @@ export class LuxOffline extends LuxBaseElement {
         this.tilePackages.ALL.push(tileKey);
         if (tiles[tileKey].status === "IN_PROGRESS") {
           this.tilePackages.IN_PROGRESS.push(tileKey);
-        } else if (tiles[tileKey].current < tiles[tileKey].available) {
+        } else if ((tiles[tileKey].current < tiles[tileKey].available) 
+          || (!tiles[tileKey].current && tiles[tileKey].available)
+          ) {
           this.tilePackages.UPDATE_AVAILABLE.push(tileKey);
         } else {
           this.tilePackages.UP_TO_DATE.push(tileKey);
