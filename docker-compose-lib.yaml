@@ -311,7 +311,7 @@ services:
       context: ./lidar
       dockerfile: Dockerfile
     environment:
-      - DEPLOY_ENV=PROD
+      - DEPLOY_ENV=DEV
     volumes:
       - ./lidar/data:/home/pytree/data/processed
       - ./lidar/pytree.yml:/home/pytree/pytree.yml
