@@ -121,7 +121,6 @@ export class LuxOffline extends LuxBaseElement {
 
     sendRequest(tiles: string, method: string) {
       fetch(this.baseURL + "/map/" + tiles, {method})
-        .then((response) => response.json())
         .then((data) => {
           console.log('Success:', data);
           if (method === 'PUT') {
