@@ -23,7 +23,7 @@ export const getConfig = () => ({
           "en": "unclassified points",
           "de": "nicht klassifizierte Punkte",
           "lb": "onklass\u00e9iert Punkten",
-        },          
+        },
         "value": "unclassified points",
         "visible": 1
       },
@@ -89,7 +89,7 @@ export const getConfig = () => ({
           "en": "low points (noise)",
           "de": "niedrige Punkte",
           "lb": "niddereg Punkten",
-        },          
+        },
         "value": "low points (noise)",
         "visible": 1
       },
@@ -183,7 +183,7 @@ export const getConfig = () => ({
         "width": 7
       }
     },
-    "max_point_number": 75000,
+    "max_point_number": 150000,
     "minLOD": 0,
     "point_attributes": {
       "CLASSIFICATION": {
