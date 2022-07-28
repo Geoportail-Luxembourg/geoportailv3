@@ -90,6 +90,10 @@ export class LuxOffline extends LuxBaseElement {
         UP_TO_DATE: []
       }
       for(const tileKey in tiles) {
+        // skip package hillshade (too large for transfers)
+        if (tileKey == "hillshade-lu") {
+          continue;
+        }
         this.tilePackages.ALL.push(tileKey);
         if (tiles[tileKey].status === "IN_PROGRESS") {
           this.tilePackages.IN_PROGRESS.push(tileKey);
@@ -108,15 +112,15 @@ export class LuxOffline extends LuxBaseElement {
       } else {
         this.status = 'UP_TO_DATE';
       }
+      if (this.status == 'IN_PROGRESS') {
+        this.reCheckTilesTimeout();
+      }
     }
 
     updateTiles() {
       this.tilePackages.UPDATE_AVAILABLE.forEach(tilePackage => {
         this.sendRequest(tilePackage, 'PUT');
       })
-      if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
-        this.checkTilesByInterval();
-      }
     }
 
     deleteTiles() {
@@ -129,20 +133,21 @@ export class LuxOffline extends LuxBaseElement {
       fetch(this.baseURL + "/map/" + tiles, {method})
         .then((data) => {
           console.log('Success:', data);
+          this.checkTiles();
         })
         .catch((error) => {
           console.error('Error:', error);
         });
     }
 
-    checkTilesByInterval() {
-      this.status = 'IN_PROGRESS'
-      const checkInterval = setInterval(()=> {
+    reCheckTilesTimeout() {
+      // prevent multiple timers
+      if (this.checkTimeout !== undefined) {
+        clearTimeout(this.checkTimeout);
+      }
+      this.checkTimeout = setTimeout(()=> {
         this.checkTiles();
-        if (this.status !== 'IN_PROGRESS') {
-          clearInterval(checkInterval);
-        }
-      }, 500)
+      }, 3000)
     }
 
     createRenderRoot() {
