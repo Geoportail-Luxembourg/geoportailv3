@@ -1,11 +1,11 @@
-ngeo-offline {
+ngeo-offline, lux-offline {
   div {
     z-index: 1;
   }
-  .main-button {
+  .main-button, .db-button {
     position: absolute;
-    right: 8px;
-    bottom: 15rem;
+    right: 96px;
+    bottom: 152px;
     cursor: pointer;
     .no-data {
       color: black;
@@ -24,10 +24,20 @@ ngeo-offline {
         content: @fa-var-arrow-circle-o-down;
       }
     }
+    .offline-wc {
+      &::after {
+        content: @fa-var-database;
+      }
+    }
+    .no-data[disabled], .with-data[disabled], .offline-wc[disabled] {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
     .with-data {
       color: red;
     }
   }
+  .db-button {right: 52px}
 
   &.offline-mode {
     .main-button {
@@ -35,6 +45,23 @@ ngeo-offline {
         color: green;
       }
     }
+  }
+
+  .offline-btns {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .offline-btn {
+      // width: 20rem;
+      margin: 5px;
+      i {
+        margin-left: 6px;
+      }
   }
 
   .validate-extent {
@@ -87,10 +114,6 @@ ngeo-offline {
       height: 40px;
       line-height: 40px;
     }
-  }
-
-  .main-button {
-    bottom: 104px;
   }
 }
 

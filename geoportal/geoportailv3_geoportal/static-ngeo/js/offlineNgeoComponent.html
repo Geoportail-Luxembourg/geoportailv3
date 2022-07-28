@@ -1,6 +1,6 @@
 <div class="main-button">
   <span ng-if="!$ctrl.hasData()">
-    <div class="no-data" ng-click="$ctrl.toggleViewExtentSelection()"></div>
+    <button class="no-data" ng-click="$ctrl.toggleViewExtentSelection()" ng-disabled="$ctrl.fullOfflineActive"></button>
   </span>
   <span ng-if="$ctrl.hasData()">
     <div class="with-data" ng-click="$ctrl.showMenu()"></div>
