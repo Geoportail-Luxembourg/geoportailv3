@@ -307,12 +307,17 @@ services:
       - AWS_S3_ENDPOINT
 
   pytree:
+    image: pytree:1.0.0
+    environment:
+      DEPLOY_ENV: ${DEPLOY_ENV:-DEV}
+    restart: unless-stopped
     build:
       context: ./lidar
       dockerfile: Dockerfile
-    environment:
-      - DEPLOY_ENV=DEV
+    command: /app/start_server.sh
     volumes:
-      - ./lidar/data:/home/pytree/data/processed
-      - ./lidar/pytree.yml:/home/pytree/pytree.yml
+      - ./lidar/data:/app/data/processed
+      - ./lidar/pytree.yml:/app/pytree.yml
+    ports:
+      - "${PORT:-6001}:5000"
 
