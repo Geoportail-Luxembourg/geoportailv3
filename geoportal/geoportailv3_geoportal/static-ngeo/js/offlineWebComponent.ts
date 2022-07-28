@@ -113,7 +113,7 @@ export class LuxOffline extends LuxBaseElement {
         this.status = 'UP_TO_DATE';
       }
       if (this.status == 'IN_PROGRESS') {
-        this.reCheckTilesTimeout();
+        this.reCheckTilesTimeout(2500);
       }
     }
 
@@ -124,7 +124,8 @@ export class LuxOffline extends LuxBaseElement {
     }
 
     deleteTiles() {
-      this.tilePackages.ALL.forEach(tilePackage => {
+      // keep resources, so that vector maps remain operational
+      this.tilePackages.ALL.filter(tp => tp != 'resources').forEach(tilePackage => {
         this.sendRequest(tilePackage, 'DELETE');
       })
   }
@@ -133,21 +134,21 @@ export class LuxOffline extends LuxBaseElement {
       fetch(this.baseURL + "/map/" + tiles, {method})
         .then((data) => {
           console.log('Success:', data);
-          this.checkTiles();
         })
         .catch((error) => {
           console.error('Error:', error);
-        });
+        })
+        .finally(() => {this.reCheckTilesTimeout(250)});
     }
 
-    reCheckTilesTimeout() {
+    reCheckTilesTimeout(timeout) {
       // prevent multiple timers
       if (this.checkTimeout !== undefined) {
         clearTimeout(this.checkTimeout);
       }
       this.checkTimeout = setTimeout(()=> {
         this.checkTiles();
-      }, 3000)
+      }, timeout)
     }
 
     createRenderRoot() {
