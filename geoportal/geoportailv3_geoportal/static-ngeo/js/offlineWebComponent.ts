@@ -77,6 +77,9 @@ export class LuxOffline extends LuxBaseElement {
       fetch(this.baseURL + "/check")
         .then((response) => response.json())
         .then((statusJson) => this.getStatus(statusJson))
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
 
     getStatus(tiles) {
@@ -111,6 +114,9 @@ export class LuxOffline extends LuxBaseElement {
       this.tilePackages.UPDATE_AVAILABLE.forEach(tilePackage => {
         this.sendRequest(tilePackage, 'PUT');
       })
+      if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
+        this.checkTilesByInterval();
+      }
     }
 
     deleteTiles() {
@@ -123,9 +129,6 @@ export class LuxOffline extends LuxBaseElement {
       fetch(this.baseURL + "/map/" + tiles, {method})
         .then((data) => {
           console.log('Success:', data);
-          if (method === 'PUT') {
-            this.checkTilesByInterval();
-          }
         })
         .catch((error) => {
           console.error('Error:', error);
