@@ -26,6 +26,8 @@ export class LuxOffline extends LuxBaseElement {
     @state()
     private status;
 
+    private checkTimeout;
+
     constructor() {
         super();
         const searchParams = new URLSearchParams(document.location.search);
