@@ -22,7 +22,7 @@ function getDefaultMapBoxStyleUrl(label) {
     const searchParams = new URLSearchParams(document.location.search);
     const server = searchParams.get('embeddedserver');
     const proto = searchParams.get('embeddedserverprotocol') || 'http';
-    const url = (server ? `${proto}://${server}` : 'https://vectortiles.geoportail.lu') + `/styles/${label}/style.json`;
+    const url = (server ? `${proto}://${server}/static` : 'https://vectortiles.geoportail.lu') + `/styles/${label}/style.json`;
     return url;
 }
 
