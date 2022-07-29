@@ -197,6 +197,7 @@ import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 import '../lidar-plot/lidar-plot.ts';
 import '../offlineWebComponent.ts';
+import '../offlineAlertWebComponent.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
