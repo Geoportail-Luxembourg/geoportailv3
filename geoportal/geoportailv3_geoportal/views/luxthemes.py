@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from owslib.wms import WebMapService
 from c2cgeoportal_commons.models import DBSession
 from c2cgeoportal_commons.models.main import Theme as ThemeModel
 from c2cgeoportal_geoportal.views.theme import Theme
@@ -106,6 +107,7 @@ class LuxThemes(Theme):
     @cache_region.cache_on_arguments()
     def _wms_layers_internal(self):
         layers = {}
+        errors = set()
         for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
             if layer.time_mode != 'disabled' and layer.rest_url is not None and len(layer.rest_url) > 0:
                 query_params = {'f': 'pjson'}
@@ -149,20 +151,37 @@ class LuxThemes(Theme):
             # if no esri time layer defined => standard WMS server
             else:
                 for sublayer in layer.layers.split(","):
-                    layers[layer.name + '__' + sublayer] = {
+                    wms_info = {
                         "info": {
                             "name": layer.name + '__' + sublayer,
                         },
                         "children": []
                     }
+                    if layer.time_mode != 'disabled':
+                        try:
+                            wms_info = WebMapService(layer.url)[sublayer].__dict__
+                            time_configs = layer.get_metadatas('time_config')
+                            if len(time_configs) == 1:
+                                try:
+                                    override_time_config = json.loads(time_configs[0].value).get("time_override")
+                                    wms_info.update(override_time_config)
+                                except:
+                                    pass
+                            wms_info['children'] = []
+                            wms_info['info'] = {}
+                        except Exception as e:
+                            # wms_info = {}
+                            log.info('failed: ' + layer.name + sublayer)
+                            errors.add('Error in lux internal WMS layers: ' + str(e))
+                    layers[layer.name + '__' + sublayer] = wms_info
 
         return {"layers": layers}, set()
 
     @staticmethod
     def _merge_time(time_, layer_theme, layer, wms):
         def _fix_duration(wms):
-            for k in wms['layers']:
-                if isinstance(wms['layers'][k]['timepositions'], list):
+            for k, v in wms['layers'].items():
+                if isinstance(v.get('timepositions'), list):
                     if wms['layers'][k]['timepositions'][0][-1] == '0':
                         wms['layers'][k]['timepositions'][0] = wms['layers'][k]['timepositions'][0][:-1] + 'PT600S'
 
