@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import {LuxBaseElement} from './LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, property} from 'lit/decorators.js';
+import { OfflineService } from './offline.service';
 
 @customElement('lux-offline')
 export class LuxOffline extends LuxBaseElement {
@@ -10,34 +11,19 @@ export class LuxOffline extends LuxBaseElement {
     disabled: boolean = false;
 
     @state()
-    private server;
-
-    @state()
     private menuDisplayed;
-
-    @state()
-    private tilePackages = {
-      ALL: [],
-      IN_PROGRESS: [],
-      UPDATE_AVAILABLE: [],
-      UP_TO_DATE: []
-    };
 
     @state()
     private status;
 
-    private checkTimeout;
+    private offlineService: OfflineService;
 
     constructor() {
         super();
-        const searchParams = new URLSearchParams(document.location.search);
-        const server = searchParams.get('embeddedserver');
-        const proto = searchParams.get('embeddedserverprotocol') || 'http';
-        this.baseURL = (server ? `${proto}://${server}` : "http://localhost:8766/map/");
-        if (server) {
-          this.checkTiles();
-        }
-        this.server = server;
+        this.offlineService = new OfflineService();
+        this.offlineService.status$.subscribe((status)=> {
+          this.status = status;
+        });
     }
 
     renderMenu() {
@@ -63,7 +49,7 @@ export class LuxOffline extends LuxBaseElement {
         return html`
           <div class="db-button">
             <span>
-              <button ?disabled="${this.disabled || !this.server}" class="no-data offline-wc" @click="${this.toggleMenu}"
+              <button ?disabled="${this.disabled || !this.offlineService.hasLocalServer()}" class="no-data offline-wc" @click="${this.toggleMenu}"
                 title="${i18next.t('Full offline (only available on mobile)')}"></button>
             </span>
           </div>
@@ -71,86 +57,16 @@ export class LuxOffline extends LuxBaseElement {
         `;
     }
 
+    updateTiles(){
+      this.offlineService.updateTiles()
+    }
+
+    deleteTiles(){
+      this.offlineService.deleteTiles()
+    }
+
     toggleMenu() {
       this.menuDisplayed = !this.menuDisplayed;
-    }
-
-    checkTiles() {
-      fetch(this.baseURL + "/check")
-        .then((response) => response.json())
-        .then((statusJson) => this.getStatus(statusJson))
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-    }
-
-    getStatus(tiles) {
-      this.tilePackages = {
-        ALL: [],
-        IN_PROGRESS: [],
-        UPDATE_AVAILABLE: [],
-        UP_TO_DATE: []
-      }
-      for(const tileKey in tiles) {
-        // skip package hillshade (too large for transfers)
-        if (tileKey == "hillshade-lu") {
-          continue;
-        }
-        this.tilePackages.ALL.push(tileKey);
-        if (tiles[tileKey].status === "IN_PROGRESS") {
-          this.tilePackages.IN_PROGRESS.push(tileKey);
-        } else if ((tiles[tileKey].current < tiles[tileKey].available) 
-          || (!tiles[tileKey].current && tiles[tileKey].available)
-          ) {
-          this.tilePackages.UPDATE_AVAILABLE.push(tileKey);
-        } else {
-          this.tilePackages.UP_TO_DATE.push(tileKey);
-        }
-      }
-      if (this.tilePackages.IN_PROGRESS.length > 0) {
-        this.status = 'IN_PROGRESS';
-      } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
-        this.status = 'UPDATE_AVAILABLE';
-      } else {
-        this.status = 'UP_TO_DATE';
-      }
-      if (this.status == 'IN_PROGRESS') {
-        this.reCheckTilesTimeout(2500);
-      }
-    }
-
-    updateTiles() {
-      this.tilePackages.UPDATE_AVAILABLE.forEach(tilePackage => {
-        this.sendRequest(tilePackage, 'PUT');
-      })
-    }
-
-    deleteTiles() {
-      // keep resources, so that vector maps remain operational
-      this.tilePackages.ALL.filter(tp => tp != 'resources').forEach(tilePackage => {
-        this.sendRequest(tilePackage, 'DELETE');
-      })
-  }
-
-    sendRequest(tiles: string, method: string) {
-      fetch(this.baseURL + "/map/" + tiles, {method})
-        .then((data) => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        })
-        .finally(() => {this.reCheckTilesTimeout(250)});
-    }
-
-    reCheckTilesTimeout(timeout) {
-      // prevent multiple timers
-      if (this.checkTimeout !== undefined) {
-        clearTimeout(this.checkTimeout);
-      }
-      this.checkTimeout = setTimeout(()=> {
-        this.checkTiles();
-      }, timeout)
     }
 
     createRenderRoot() {
