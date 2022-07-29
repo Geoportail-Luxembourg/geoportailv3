@@ -1,6 +1,6 @@
 import { Observable, BehaviorSubject, of } from 'rxjs';
 
-export class OfflineService {
+export class LuxOfflineService {
   public status$ = new BehaviorSubject('UP_TO_DATE');
   private tilePackages: {
     ALL: [],
