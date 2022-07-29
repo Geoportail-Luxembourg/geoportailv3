@@ -1,10 +1,10 @@
 import 'jquery';
 import 'bootstrap/js/modal.js';
 import i18next from 'i18next';
-import {LuxBaseElement} from './LuxBaseElement';
+import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, query} from 'lit/decorators.js';
-import { OfflineService } from './offline.service';
+import { LuxOfflineService } from './lux-offline.service';
 
 @customElement('lux-offline-alert')
 export class LuxOfflineAlert extends LuxBaseElement {
@@ -17,7 +17,7 @@ export class LuxOfflineAlert extends LuxBaseElement {
 
   constructor() {
     super();
-    this.offlineService = new OfflineService();
+    this.offlineService = new LuxOfflineService();
     this.offlineService.status$.subscribe((status)=> {
       if (status === 'UPDATE_AVAILABLE') {
         $(this.modal).modal('show');

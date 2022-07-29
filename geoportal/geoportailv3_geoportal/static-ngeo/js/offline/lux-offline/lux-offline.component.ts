@@ -1,8 +1,8 @@
 import i18next from 'i18next';
-import {LuxBaseElement} from './LuxBaseElement';
+import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, property} from 'lit/decorators.js';
-import { OfflineService } from './offline.service';
+import { LuxOfflineService } from './lux-offline.service';
 
 @customElement('lux-offline')
 export class LuxOffline extends LuxBaseElement {
@@ -16,11 +16,11 @@ export class LuxOffline extends LuxBaseElement {
     @state()
     private status;
 
-    private offlineService: OfflineService;
+    private offlineService: LuxOfflineService;
 
     constructor() {
         super();
-        this.offlineService = new OfflineService();
+        this.offlineService = new LuxOfflineService();
         this.offlineService.status$.subscribe((status)=> {
           this.status = status;
         });
