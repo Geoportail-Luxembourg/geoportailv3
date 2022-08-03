@@ -1,6 +1,8 @@
-<div class="main-button">
+<div class="main-button ol-control">
   <span ng-if="!$ctrl.hasData()">
-    <button class="no-data" ng-click="$ctrl.toggleViewExtentSelection()" ng-disabled="$ctrl.fullOfflineActive"></button>
+    <button class="no-data" ng-click="$ctrl.toggleViewExtentSelection()" ng-disabled="$ctrl.fullOfflineActive">
+      <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+    </button>
   </span>
   <span ng-if="$ctrl.hasData()">
     <div class="with-data" ng-click="$ctrl.showMenu()"></div>
