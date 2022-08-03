@@ -47,10 +47,12 @@ export class LuxOffline extends LuxBaseElement {
 
     render() {
         return html`
-          <div class="db-button">
+          <div class="db-button ol-control">
             <span>
               <button ?disabled="${this.disabled || !this.offlineService.hasLocalServer()}" class="no-data offline-wc" @click="${this.toggleMenu}"
-                title="${i18next.t('Full offline (only available on mobile app)')}"></button>
+                title="${i18next.t('Full offline (only available on mobile)')}">
+                <i class="fa fa-database" aria-hidden="true"></i>
+              </button>
             </span>
           </div>
         ${this.menuDisplayed?this.renderMenu():""}
