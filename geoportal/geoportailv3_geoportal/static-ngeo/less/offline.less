@@ -11,7 +11,7 @@ ngeo-offline, lux-offline {
   .main-button, .db-button {
     position: absolute;
     right: 96px;
-    bottom: 152px;
+    bottom: 151px;
     cursor: pointer;
     .no-data {
       color: black;
@@ -20,20 +20,10 @@ ngeo-offline, lux-offline {
       background-color: white;
       text-align: center;
       font-size: 2.7rem;
-      font-family: FontAwesome;
-      line-height: 1.5em;
       color: #2980b9;
       width: 41px;
       height: 41px;
       border: 1px solid #8394a0;
-      &::after {
-        content: @fa-var-arrow-circle-o-down;
-      }
-    }
-    .offline-wc {
-      &::after {
-        content: @fa-var-database;
-      }
     }
     .no-data[disabled], .with-data[disabled], .offline-wc[disabled] {
       opacity: 0.65;
