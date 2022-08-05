@@ -58,52 +58,37 @@ class LuxThemes(Theme):
 
         return super()._wms_layers(ogc_server)
 
-    def _group(
-        self,
-        path,
-        group,
-        layers,
-        depth=1,
-        min_levels=1,
-        mixed=True,
-        time_=None,
-        dim=None,
-        wms_layers=None,
-        layers_name=None,
-        **kwargs,
-    ):
+    def _layer(self, layer, time_=None, dim=None, mixed=True):
+        layer_theme, l_errors = super()._layer(layer, time_, dim, mixed)
+        time_links = {}
+        if layer_theme is not None:
+            tc = json.loads(layer_theme.get('metadata', {}).get('time_config', '{}'))
+            time_links = tc.get("time_links", {})
+        if time_links:
+            if time_ is None:
+                time = TimeInformation()
+            else:
+                time = time_
+            # accepted date formats are "year" or "year-month" or "year-month-day"
+            time_positions = list(time_links.keys())
+            # extract finest resolution from dates as this is not done by default in parse_extent
+            resolutions = set(parse_extent([date], date).resolution for date in time_positions)
+            resolution = 'day' if 'day' in resolutions else 'month' if 'month' in resolutions else 'year'
+            time_layer_info = {}
+            for date, layer_name in time_links.items():
+                extent = parse_extent(time_positions, date)
+                # override resolution if different date formats are given
+                extent.resolution = resolution
+                time_layer_info[layer_name] = {'current_time': extent.to_dict()['minDefValue']}
+                time.merge(layer_theme, extent, 'value', 'slider')
 
-        g, errors = super()._group(path, group, layers, depth, min_levels, mixed, time_,
-                                   dim, wms_layers, layers_name, **kwargs)
-        if g is not None:
-            time_config = g.get('metadata', {}).get('time_config', '')
-            if time_config == 'time_group':
-                time_layer_info = {}
-                time_positions = []
-                if time_ is None:
-                    time = TimeInformation()
-                for c in g['children']:
-                    tc = json.loads(c.get('metadata', {}).get('time_config', '{}'))
-                    if tc:
-                        time_layer_info[c['id']] = tc
-                        time_positions.append(tc['time'])
-                for c in g['children']:
-                    if c['id'] in time_layer_info:
-                        extent = parse_extent(time_positions, time_layer_info[c['id']]['time'])
-                        time_layer_info[c['id']]['current_time'] = extent.to_dict()['minDefValue']
-                        time_layer_info[c['id']]['layer_name'] = c['layer']
-                        time.merge(c, extent, 'value', 'slider')
-                for c in g['children']:
-                    if c['id'] in time_layer_info:
-                        c['name'] = f'{g["name"]}_{c["name"]}'
-                        c['metadata']['time_layers'] = {
-                            str(v['current_time']): str(v['layer_name'])
-                            for k, v in time_layer_info.items()
-                        }
-                        c["time"] = time.to_dict()
-                        c['time']['minDefValue'] = time_layer_info[c['id']]['current_time']
-                g["time"] = time.to_dict()
-        return g, errors
+            layer_theme['metadata']['time_layers'] = {
+                str(v['current_time']): str(k)
+                for k, v in time_layer_info.items()
+            }
+            layer_theme["time"] = time.to_dict()
+            layer_theme['time']['minDefValue'] = time_layer_info[layer_theme['name']]['current_time']
+        return layer_theme, l_errors
 
     @cache_region.cache_on_arguments()
     def _wms_layers_internal(self):
