@@ -28,7 +28,18 @@ Metadata legend_name
 Timelayer configuration
 -----------------------
 
-Time layers are configured via some metadata
+There can be 2 types of time layers:
+- WMS-T: the time information is provided by the server and must conform to the format:
+
+- WMTS layers which are swappable by a time widget:
+
+in this case, the layers must be added into a group which shall have the metadata:
+time_config = "time_group"
+
+each child layer must have information in the metadata about its time stamp in the following form:
+time_config = {"time": "2010"}
+
+the time stamp may be specified by a simple year or a more precise date.
 
 
 Background layers

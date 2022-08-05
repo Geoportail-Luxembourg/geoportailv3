@@ -95,6 +95,7 @@ class LuxThemes(Theme):
                         time.merge(c, extent, 'value', 'slider')
                 for c in g['children']:
                     if c['id'] in time_layer_info:
+                        c['name'] = f'{g["name"]}_{c["name"]}'
                         c['metadata']['time_layers'] = {
                             str(v['current_time']): str(v['layer_name'])
                             for k, v in time_layer_info.items()
