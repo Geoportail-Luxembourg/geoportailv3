@@ -32,6 +32,11 @@ There can be 2 types of time layers:
 - WMS-T: the time information is provided by the server and must conform to the format:
 
 time_config may contain override properties for time configuration
+override for default timestep can be provided if the server does not send correct time dimensions:
+
+If the time_config metadata contains:
+{"time_override": {"default_timestep": "PT7200S"}}
+Then the incorrect capabilities <start_date>/<end_date>/0 will be re-written as <start_date>/<end_date>/PT7200S
 
 - WMTS layers which are swappable by a time widget:
 
