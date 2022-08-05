@@ -64,6 +64,7 @@ class LuxThemes(Theme):
         if layer_theme is not None:
             tc = json.loads(layer_theme.get('metadata', {}).get('time_config', '{}'))
             time_links = tc.get("time_links", {})
+            default_time = tc.get("default_time")
         if time_links:
             if time_ is None:
                 time = TimeInformation()
@@ -87,7 +88,8 @@ class LuxThemes(Theme):
                 for k, v in time_layer_info.items()
             }
             layer_theme["time"] = time.to_dict()
-            layer_theme['time']['minDefValue'] = time_layer_info[layer_theme['name']]['current_time']
+            default_time_link = time_links.get(default_time, list(time_links.values())[0])
+            layer_theme['time']['minDefValue'] = time_layer_info[default_time_link]['current_time']
         return layer_theme, l_errors
 
     @cache_region.cache_on_arguments()
@@ -165,22 +167,19 @@ class LuxThemes(Theme):
 
     @staticmethod
     def _merge_time(time_, layer_theme, layer, wms):
-        def _fix_duration(wms):
-            for k, v in wms['layers'].items():
-                if isinstance(v.get('timepositions'), list):
-                    if wms['layers'][k]['timepositions'][0][-1] == '0':
-                        wms['layers'][k]['timepositions'][0] = wms['layers'][k]['timepositions'][0][:-1] + 'PT600S'
-
-        try:
-            _fix_duration(wms)
-        except:
-            pass  # no time info to be fixed
         if isinstance(layer, LuxLayerInternalWMS):
             errors = set()
             for ll in layer.layers.split(','):
                 try:
                     wms_obj = wms["layers"][layer.name + '__' + ll]
-                    if wms_obj.get("timepositions", None):
+                    timepositions = wms_obj.get("timepositions", None)
+                    if timepositions:
+                        if isinstance(timepositions, list):
+                            if timepositions[0][-1] == '0':
+                                timepositions[0] = (
+                                    timepositions[0][:-1]
+                                    + wms_obj.get("default_timestep", 'PT600S')
+                                )
                         extent = parse_extent(
                             wms_obj["timepositions"],
                             wms_obj.get("defaulttimeposition", None)
