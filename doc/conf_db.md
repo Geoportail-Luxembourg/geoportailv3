@@ -31,15 +31,13 @@ Timelayer configuration
 There can be 2 types of time layers:
 - WMS-T: the time information is provided by the server and must conform to the format:
 
+time_config may contain override properties for time configuration
+
 - WMTS layers which are swappable by a time widget:
 
-in this case, the layers must be added into a group which shall have the metadata:
-time_config = "time_group"
-
-each child layer must have information in the metadata about its time stamp in the following form:
-time_config = {"time": "2010"}
-
-the time stamp may be specified by a simple year or a more precise date.
+other layer names to be substituted in the url may be specified in the metadata:
+{"time_links": {"2001": "ortho_2001", "2004": "ortho_2004", "2007": "ortho_2007", "2010": "ortho_2010", "2013": "ortho_2013", "2016": "ortho_2016", "2017": "ortho_2017", "2018": "ortho_2018", "2019-01": "ortho_2019_winter", "2019-08": "ortho_2019"}}
+accepted date formats are "year" or "year-month" or "year-month-day" and these can be mixed as shown in the example above
 
 
 Background layers
