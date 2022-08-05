@@ -59,7 +59,7 @@ class WMSTime extends ngeoMiscTime {
       yearResolution = gettextCatalog.getString('yyyy');
       monthResolution = gettextCatalog.getString('M/yyyy');
       dayResolution = gettextCatalog.getString('M/d/yyyy');
-      secondResolution = gettextCatalog.getString('M/d/yyyy HH:MM:ss');
+      secondResolution = gettextCatalog.getString('M/d/yyyy HH:mm:ss');
     }
 
     switch (resolution) {
