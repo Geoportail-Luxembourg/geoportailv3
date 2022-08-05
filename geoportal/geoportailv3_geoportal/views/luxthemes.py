@@ -64,6 +64,7 @@ class LuxThemes(Theme):
         if layer_theme is not None:
             tc = json.loads(layer_theme.get('metadata', {}).get('time_config', '{}'))
             time_links = tc.get("time_links", {})
+            default_time = tc.get("default_time")
         if time_links:
             if time_ is None:
                 time = TimeInformation()
@@ -87,7 +88,8 @@ class LuxThemes(Theme):
                 for k, v in time_layer_info.items()
             }
             layer_theme["time"] = time.to_dict()
-            layer_theme['time']['minDefValue'] = time_layer_info[layer_theme['name']]['current_time']
+            default_time_link = time_links.get(default_time, list(time_links.values())[0])
+            layer_theme['time']['minDefValue'] = time_layer_info[default_time_link]['current_time']
         return layer_theme, l_errors
 
     @cache_region.cache_on_arguments()
