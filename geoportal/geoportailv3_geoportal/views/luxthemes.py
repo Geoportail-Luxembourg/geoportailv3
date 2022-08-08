@@ -43,7 +43,7 @@ class LuxThemes(Theme):
     def _wms_layers_internal(self):
         layers = {}
         for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
-            for sublayer in layer.layers.split(","):
+            for sublayer in layer.layers.split(",") if layer.layers is not None else []:
                 layers[layer.name + '__' + sublayer] = {
                     "info": {
                         "name": layer.name + '__' + sublayer,
@@ -64,7 +64,7 @@ class LuxThemes(Theme):
             if wms is None:
                 return
             layer_theme["childLayers"] = []
-            for layer_name in layer.layers.split(","):
+            for layer_name in layer.layers.split(",") if layer.layers is not None else []:
                 full_layer_name = layer.name + '__' + layer_name
                 if full_layer_name in wms["layers"]:
                     wms_layer_obj = wms["layers"][full_layer_name]
