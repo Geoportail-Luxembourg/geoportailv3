@@ -203,6 +203,10 @@ exports.Controller_.prototype.init = function() {
  * @return {Array<number>}  - List of timestamp representing possible values
  */
 exports.Controller_.prototype.getTimeValueList_ = function() {
+  // maxValue == null means the UI shall use the current date
+  if (this.time.maxValue === null) {
+    this.time.maxValue = new Date(Date.now())
+  }
   const wmsTime = this.time;
   let timeValueList = null;
   const minDate = new Date(wmsTime.minValue);
