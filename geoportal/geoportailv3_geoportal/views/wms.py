@@ -89,7 +89,12 @@ class Wms:
                 query_params["imageSR"] = crs
                 query_params["bboxSR"] = crs
             elif lparam == 'time':
-                query_params["time"] = int(dateutil.parser.parse(value).timestamp()*1000)
+                time_values = value.split("/")
+                str_time_integers = [
+                    str(int(dateutil.parser.parse(time_val).timestamp()*1000))
+                    for time_val in time_values
+                ]
+                query_params["time"] = ",".join(str_time_integers)
             elif lparam == 'layers':
                 query_params["layers"] = 'show:' + internal_wms.layers
             elif lparam == 'format':
