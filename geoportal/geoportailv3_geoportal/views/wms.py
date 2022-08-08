@@ -89,6 +89,8 @@ class Wms:
                 query_params["imageSR"] = crs
                 query_params["bboxSR"] = crs
             elif lparam == 'time':
+                # WMS time format is <start_date>/<end_date>
+                # this shall be parsed into <start_millisec>,<end_millisec> for arcgis REST
                 time_values = value.split("/")
                 str_time_integers = [
                     str(int(dateutil.parser.parse(time_val).timestamp()*1000))
