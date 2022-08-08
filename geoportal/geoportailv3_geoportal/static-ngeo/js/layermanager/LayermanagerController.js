@@ -83,6 +83,10 @@ class Controller {
       let dd = new Date(time.start)
       let pp = layer.getSource().getParams();
       pp['TIME'] = dd.toISOString();
+      if (time.end != undefined) {
+        dd = new Date(time.end)
+        pp['TIME'] += '/' + dd.toISOString();
+      }
       layer.getSource().updateParams(pp);
     }
     else if (layer.type == 'TILE') {
