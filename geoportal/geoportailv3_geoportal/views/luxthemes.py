@@ -133,7 +133,6 @@ class LuxThemes(Theme):
                                                               end.isoformat(),
                                                               ESRI_TIME_CONSTANTS[ti['defaultTimeIntervalUnits']]
                                                               % ti['defaultTimeInterval'])]
-
                     layers[layer.name + '__' + sublayer] = layer_dict
 
             # if no esri time layer defined => standard WMS server
@@ -148,13 +147,6 @@ class LuxThemes(Theme):
                     if layer.time_mode != 'disabled':
                         try:
                             wms_info = WebMapService(layer.url)[sublayer].__dict__
-                            time_configs = layer.get_metadatas('time_config')
-                            if len(time_configs) == 1:
-                                try:
-                                    override_time_config = json.loads(time_configs[0].value).get("time_override")
-                                    wms_info.update(override_time_config)
-                                except:
-                                    pass
                             wms_info['children'] = []
                             wms_info['info'] = {}
                         except Exception as e:
@@ -162,6 +154,13 @@ class LuxThemes(Theme):
                             log.info('failed: ' + layer.name + sublayer)
                             errors.add('Error in lux internal WMS layers: ' + str(e))
                     layers[layer.name + '__' + sublayer] = wms_info
+            time_configs = layer.get_metadatas('time_config')
+            if len(time_configs) == 1:
+                try:
+                    override_time_config = json.loads(time_configs[0].value).get("time_override")
+                    layers[layer.name + '__' + sublayer].update(override_time_config)
+                except:
+                    pass
 
         return {"layers": layers}, set()
 
@@ -185,6 +184,9 @@ class LuxThemes(Theme):
                             wms_obj.get("defaulttimeposition", None)
                         )
                         time_.merge(layer_theme, extent, layer.time_mode, layer.time_widget)
+                        if wms_obj.get("override_end_date") == "now":
+                            extent.end = None
+                            layer_theme["time"]["maxValue"] = None
                 except Exception as e:
                     errors.add(
                         "Error while handling time for layer '{0!s}': {1!s}"
