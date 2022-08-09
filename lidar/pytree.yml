@@ -18,7 +18,7 @@ vars:
   # Tolerance of lateral movements during vertical pan. Passing this threshold, new points will be requested
   vertical_pan_tolerance: 0.2
   # max LOD for first profile request (will extend from LOD 0 to LOD initialLOD)
-  initialLOD: 6
+  initialLOD: 9
   # Classification colors for GMF2
   classification_colors:
     0:
@@ -124,32 +124,32 @@ vars:
       max: 13
       width: 2
     75:
-      max: 12
+      max: 13
       width: 3
     100:
-      max: 11
+      max: 12
       width: 3
     150:
-      max: 10
+      max: 12
       width: 4
     250:
-      max: 9
+      max: 11
       width: 4
     350:
-      max: 9
+      max: 11
       width: 4
     500:
-      max: 8
+      max: 10
       width: 5
     1000:
-      max: 8
+      max: 10
       width: 5
     5000:
-      max: 7
+      max: 9
       width: 6
     7500:
-      max: 6
+      max: 9
       width: 6
     100000:
-      max: 6
+      max: 9
       width: 7

@@ -1,5 +1,5 @@
 export const getConfig = () => ({
-  "pytreeLidarprofileJsonUrl":"http://localhost:5000/",
+  "pytreeLidarprofileJsonUrl":"https://nextprod.geoportail.lu/",
   "loaded":false,
   "clientConfig":{
     "autoWidth":true,
@@ -132,7 +132,7 @@ export const getConfig = () => ({
     "default_color": "RGB(250,150,150)",
     "default_point_attribute": "CLASSIFICATION",
     "default_point_cloud": "luxembourg",
-    "initialLOD": 6,
+    "initialLOD": 10,
     "max_levels": {
       "25": {
         "max": 14,
@@ -143,43 +143,43 @@ export const getConfig = () => ({
         "width": 2
       },
       "75": {
-        "max": 12,
+        "max": 13,
         "width": 3
       },
       "100": {
-        "max": 11,
+        "max": 12,
         "width": 3
       },
       "150": {
-        "max": 10,
+        "max": 12,
         "width": 4
       },
       "250": {
-        "max": 9,
+        "max": 11,
         "width": 4
       },
       "350": {
-        "max": 9,
+        "max": 11,
         "width": 4
       },
       "500": {
-        "max": 8,
+        "max": 10,
         "width": 5
       },
       "1000": {
-        "max": 8,
+        "max": 10,
         "width": 5
       },
       "5000": {
-        "max": 7,
+        "max": 9,
         "width": 6
       },
       "7500": {
-        "max": 6,
+        "max": 9,
         "width": 6
       },
       "100000": {
-        "max": 6,
+        "max": 9,
         "width": 7
       }
     },
