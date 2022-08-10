@@ -10,6 +10,10 @@ class ESRITokenException(Exception):
     pass
 
 
+class ESRIServerException(Exception):
+    pass
+
+
 ResultTuple = namedtuple('ResultTuple', ['data', 'content_type'])
 
 
@@ -21,10 +25,18 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
     except Exception as e:
         resp = {}
         # log.info(f"Response is no valid json, {type(e)}: {str(e)}")
-    if 'error' in resp:
+    error = resp.get("error")
+    if error is None:
+        return ResultTuple(data, result.info()['Content-Type'])
+    elif error.get("code") not in (498, 499):
+        # not a token error
+        raise ESRIServerException(f'Original server error: {resp}')
+    else:
         log.error(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
                   f"server answered {resp['error']}")
-        if renew_token:
+        if not renew_token:
+            raise ESRITokenException(f'Original server error: {resp}')
+        else:
             log.info("Try to get new token")
             auth_token = get_arcgis_token(parent_request, log, force_renew=True)
             if 'token' in auth_token:
@@ -46,7 +58,6 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
                 log.info(f"Response is no valid json, {type(e)}: {str(e)}")
             if 'error' in resp:
                 raise ESRITokenException(f'Original server error: {resp}')
-    return ResultTuple(data, result.info()['Content-Type'])
 
 
 def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None) -> Dict:

@@ -113,7 +113,12 @@ class LuxThemes(Theme):
                 except Exception as e:
                     log.exception(e)
                     log.error(full_url)
-                    return []
+                    # cannot set error message because one error message in an ogc_server
+                    # makes all layers fail
+                    # https://github.com/camptocamp/c2cgeoportal/commit/d5624ffb03e89e6252184b46d02c253d4c0a1035#diff-87c76d938d848457aa3b6fc773d30fd250280c2b050ea29d5016792bf4ab0c5eR405
+                    # TODO: if a solution is found, the line below can be uncommented
+                    # errors.add('Error in lux internal ArcGIS layers: ' + str(e))
+                    continue  # do not add layer
                 data = json.loads(content)
 
                 for sublayer in layer.layers.split(","):
@@ -162,7 +167,7 @@ class LuxThemes(Theme):
                 except:
                     pass
 
-        return {"layers": layers}, set()
+        return {"layers": layers}, errors
 
     @staticmethod
     def _merge_time(time_, layer_theme, layer, wms):
