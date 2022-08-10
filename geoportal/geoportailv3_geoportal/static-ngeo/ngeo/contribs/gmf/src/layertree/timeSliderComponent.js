@@ -194,6 +194,19 @@ exports.Controller_.prototype.init = function() {
     min: this.minValue,
     max: this.maxValue
   };
+  let sDate, eDate, wmstime;
+  if (this.isModeRange) {
+    sDate = new Date(this.getClosestValue_(initialOptions_.values[0]));
+    eDate = new Date(this.getClosestValue_(initialOptions_.values[1]));
+    wmstime = {
+      start: sDate.getTime(),
+      end: eDate.getTime()
+    };
+  } else {
+    sDate = new Date(this.getClosestValue_(initialOptions_.values));
+    wmstime = { start: sDate.getTime() };
+  }
+  this.onDateSelected({time: wmstime});
 };
 
 /**
