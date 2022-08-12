@@ -192,6 +192,8 @@ class LuxThemes(Theme):
                         if wms_obj.get("override_end_date") == "now":
                             extent.end = None
                             layer_theme["time"]["maxValue"] = None
+                        if wms_obj.get("time_mode") == "interval":
+                            layer_theme["time"]["translate_interval"] = True
                 except Exception as e:
                     errors.add(
                         "Error while handling time for layer '{0!s}': {1!s}"
