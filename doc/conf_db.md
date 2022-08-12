@@ -60,6 +60,14 @@ In case the server sends 9999 as an undefined upper date limit, it is possible t
 ```
 this issues a null upper limit in the the theme capabilities which is translated to now by the front end.
 
+#### Left/right translation of the range interval
+To mimic the behaviour of arcgis, the range slider control can be configured so that the lower nadle translates the selected interval and the upper handle adjusts the interval width.
+
+For this, the `time_config` metadata must contain the dict key time_mode: interval as shown below:
+```
+{"time_override": {"time_mode": "interval"}}
+```
+
 
 ### WMTS
 It is possible to configure a set of WMTS layers so that they are swappable by a time widget:
