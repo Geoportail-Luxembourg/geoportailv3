@@ -96,9 +96,9 @@ export class GmfLidarPanel extends LuxBaseElement {
     generatePlot(lineFeature: Feature) {
         this.coordinates = lineFeature;
 
+        this.manager.clearBuffer();
         this.manager.init(this.config, this.map);
         this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
-        this.manager.clearBuffer();
         this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
     }
     exportCsv() {
