@@ -235,7 +235,8 @@ export class LidarManager {
     if (distanceOffset == 0) {
       maxLODWith = this.utils.getNiceLOD(this.line_.getLength(), max_levels);
     } else {
-      const domain = this.plot.updateScaleX['domain']();
+      console.log("Plot : ", this.plot)
+      const domain = this.plot.updateScaleX.domain();
       pytreeLinestring = '';
 
       for (let i = 0; i < clippedLine.length; i++) {
@@ -448,7 +449,7 @@ export class LidarManager {
 
     const rangeY = [this.utils.arrayMin(points.altitude), this.utils.arrayMax(points.altitude)];
 
-    if (iter == 0 && resetPlot || !this.isPlotSetup_) {
+    if ((iter == 0 && resetPlot) || !this.isPlotSetup_) {
       this.plot.setupPlot(rangeX, rangeY);
       this.isPlotSetup_ = true;
     }
@@ -487,6 +488,7 @@ export class LidarManager {
    * @private
    */
   updateData_() {
+    console.log("Update data")
     const domainX = this.plot.updateScaleX['domain']();
     let map_resolution = this.map_ ? this.map_.getView().getResolution() : 0;
     map_resolution = map_resolution || 0;

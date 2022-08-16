@@ -27,6 +27,7 @@ RUN python -m pip install --upgrade pip \
   && pip3 install -r requirements.txt
 
 COPY . ./
+COPY ./bin/extract_profile ./bin/extract_profile
 
 RUN chmod +x ./start_server.sh \
   && mv ./bin/extract_profile /usr/local/bin/ && chmod +x /usr/local/bin/extract_profile \
