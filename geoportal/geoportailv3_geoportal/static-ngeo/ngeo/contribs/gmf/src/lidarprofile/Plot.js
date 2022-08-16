@@ -49,7 +49,7 @@ const exports = class {
      * d3.scaleLinear X scale.
      * @type {Function}
      */
-    this.updateScaleX;
+    this.updateScaleX = (x) => x;
 
     /**
      * d3.scaleLinear Y scale.
@@ -61,7 +61,7 @@ const exports = class {
      * d3.scaleLinear Y scale.
      * @type {Function}
      */
-    this.updateScaleY;
+    this.updateScaleY = (y) => y;
 
     /**
      * The material used for the drawing process. Initialized in the setup
@@ -163,9 +163,15 @@ const exports = class {
     ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
 
     const margin = this.manager_.config.clientConfig.margin;
+    // const container= d3.select(
+    //   document.querySelector('#lidar-footer').shadowRoot.querySelector('#gmf-lidarprofile-container')
+    // );
     const containerEl = d3.select('.gmf-lidarprofile-container').node();
     const containerWidth = containerEl.getBoundingClientRect().width;
     const containerHeight = containerEl.getBoundingClientRect().height;
+    console.log("Container EL", containerWidth);
+    console.log("margin", margin);
+
     this.width_ = Math.max(containerWidth - (margin.left + margin.right), 0);
     this.height_ = Math.max(containerHeight - (margin.top + margin.bottom), 0);
 
@@ -188,26 +194,25 @@ const exports = class {
 
     let domainScale;
     if (domainRatio < rangeRatio) {
-      const domainScale = rangeRatio / domainRatio;
-      const domainScaledWidth = domainProfileWidth * domainScale;
       this.scaleX = d3.scaleLinear();
-      this.scaleX['domain']([0, domainScaledWidth]);
-      this.scaleX['range']([0, this.width_]);
+      this.scaleX.domain(rangeX);
+      this.scaleX.range([0, this.width_]);
       this.scaleY = d3.scaleLinear();
-      this.scaleY['domain'](rangeY);
-      this.scaleY['range']([this.height_, 0]);
+      this.scaleY.domain(rangeY);
+      this.scaleY.range([this.height_, 0]);
     } else {
       domainScale =  domainRatio / rangeRatio;
       const domainScaledHeight = domainProfileHeight * domainScale;
       const domainHeightCentroid = (rangeY[1] + rangeY[0]) / 2;
       this.scaleX = d3.scaleLinear();
-      this.scaleX['domain'](rangeX);
-      this.scaleX['range']([0, this.width_]);
+      this.scaleX.domain(rangeX);
+      this.scaleX.range([0, this.width_]);
       this.scaleY = d3.scaleLinear();
-      this.scaleY['domain']([
+      this.scaleY.domain([
         domainHeightCentroid - domainScaledHeight / 2,
-        domainHeightCentroid + domainScaledHeight / 2]);
-      this.scaleY['range']([this.height_, 0]);
+        domainHeightCentroid + domainScaledHeight / 2,
+      ]);
+      this.scaleY.range([this.height_, 0]);
     }
 
     this.zoom_ = d3.zoom()
@@ -218,7 +223,7 @@ const exports = class {
 
     this.zoom_.on('end', this.zoomEnd.bind(this));
 
-    this.previousDomainX = this.scaleX['domain']();
+    this.previousDomainX = this.scaleX.domain();
     this.updateScaleX = this.scaleX;
     this.updateScaleY = this.scaleY;
 
@@ -415,7 +420,7 @@ const exports = class {
 
     const distance = point.distance;
     const altitude = point.altitude;
-    const classification = classification_color.name 
+    const classification = classification_color.name
       ? classification_color.name[i18next.language]
       : [];
     const intensity = point.intensity;
