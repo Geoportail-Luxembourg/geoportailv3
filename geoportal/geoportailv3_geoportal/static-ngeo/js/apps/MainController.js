@@ -387,7 +387,7 @@ const MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
   appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
@@ -725,6 +725,12 @@ const MainController = function(
    * @type {string}
    */
   this.tiles3dUrl_ = tiles3dUrl;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.lidarProfileUrl_ = lidarProfileUrl;
 
   /**
    * @type {ngeo.offline.NetworkStatus}

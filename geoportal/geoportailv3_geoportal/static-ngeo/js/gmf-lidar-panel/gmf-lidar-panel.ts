@@ -12,7 +12,7 @@ import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON'
 import {LuxBaseElement} from '../LuxBaseElement';
 import {LidarManager} from '../../ngeo/contribs/gmf/src/lidarprofile/Manager';
-import { getConfig } from '../../ngeo/contribs/gmf/src/lidarprofile/config'
+import { getConfig } from '../../../lidarConfig'
 import saveCsv from 'save-csv/save-csv.min';
 
 @customElement('gmf-lidar-panel')
@@ -24,6 +24,9 @@ export class GmfLidarPanel extends LuxBaseElement {
 
     @property({type: Boolean})
     drawActive: boolean = true;
+
+    @property({type: String})
+    url;
 
     @property({type: Object})
     config: object = getConfig();
@@ -64,9 +67,11 @@ export class GmfLidarPanel extends LuxBaseElement {
             this.coordinates = event.feature.getGeometry();
             this.generatePlot(event.feature);
         });
+
     }
 
     updated(changedProperties: Map<string, any>) {
+        this.config.pytreeLidarprofileJsonUrl = this.url;
         if (changedProperties.has('active')) {
             this.onActiveChange();
         }
@@ -172,6 +177,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                 <p>
                     <button class="btn btn-default ${classMap({active: this.drawActive})}"
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
+                    ${this.url}
                 </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
                     <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>
