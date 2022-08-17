@@ -55,6 +55,7 @@ function factory(proxyWmsUrl, remoteProxyWms,
     });
 
     layer.set('label', name);
+    layer.type = 'IMAGE';
     ngeoMiscDecorate.layer(layer);
 
     return layer;
