@@ -75,8 +75,10 @@ class Controller {
             const idx = this.bgLayers.findIndex(layer => layer === current);
             this.openerClass = `bg-selector-layer-${idx}`;
             const piwik = /** @type {Piwik} */ (window['_paq']);
-            piwik.push(['setDocumentTitle', 'BackgroundAdded/' + this.bgLayer.get('label')]);
-            piwik.push(['trackPageView']);
+            if (piwik != undefined) {
+              piwik.push(['setDocumentTitle', 'BackgroundAdded/' + this.bgLayer.get('label')]);
+              piwik.push(['trackPageView']);
+            }
             this.map.updateSize();
             this.map.renderSync();
             if (current.getMapBoxMap) {

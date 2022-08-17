@@ -177,7 +177,6 @@ export class GmfLidarPanel extends LuxBaseElement {
                 <p>
                     <button class="btn btn-default ${classMap({active: this.drawActive})}"
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
-                    ${this.url}
                 </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
                     <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>

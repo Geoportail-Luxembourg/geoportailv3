@@ -28,8 +28,60 @@ Metadata legend_name
 Timelayer configuration
 -----------------------
 
-Time layers are configured via some metadata
+There can be 2 types of time layers:
+- WMS-T
+- WMTS with time widget links
 
+### WMS-T
+The time information is provided by the server and must conform to the format:
+
+`time_config` may contain override properties for time configuration.
+
+#### Any WMS-T time information may be replaced:
+
+For example if the timepositions given by the WMS server are incorrect, they can be changed via the following time_config metadata:
+```
+{"time_override": {"timepositions": ["2014-08-31T12:43:47.000Z/2020-12-31T23:59:59.000Z/P1M"]}}
+```
+
+#### Override timestep
+Thr default timestep can be overridden if the server does not send correct time dimensions:
+
+If the `time_config` metadata contains:
+```
+{"time_override": {"default_timestep": "PT7200S"}}
+```
+Then an incorrect capabilities `<start_date>/<end_date>/0` will be re-written as `<start_date>/<end_date>/PT7200S`
+
+#### Fix upper range limit from infinity
+In case the server sends 9999 as an undefined upper date limit, it is possible to force the upper time limit to the current date ("now") via a special `time_config` metadata:
+```
+{"time_override": {"override_end_date": "now"}}
+```
+this issues a null upper limit in the the theme capabilities which is translated to now by the front end.
+
+#### Left/right translation of the range interval
+To mimic the behaviour of arcgis, the range slider control can be configured so that the lower nadle translates the selected interval and the upper handle adjusts the interval width.
+
+For this, the `time_config` metadata must contain the dict key time_mode: interval as shown below:
+```
+{"time_override": {"time_mode": "interval"}}
+```
+
+
+### WMTS
+It is possible to configure a set of WMTS layers so that they are swappable by a time widget:
+
+For each WMTS layer which shall offer links to other layer names to be substituted in the url one must define `time_config` metadata as illustrated below:
+```
+{"time_links": {"2001": "ortho_2001", "2004": "ortho_2004", "2007": "ortho_2007", "2010": "ortho_2010", "2013": "ortho_2013", "2016": "ortho_2016", "2017": "ortho_2017", "2018": "ortho_2018", "2019-01": "ortho_2019_winter", "2019-08": "ortho_2019"}}
+```
+accepted date formats are "year" or "year-month" or "year-month-day" and these can be mixed as shown in the example above.
+
+Optionnally a default time may be specified (otherwise the first element is used):
+```
+{"default_time": "2018", "time_links": {"2001": "ortho_2001", "2004": "ortho_2004", "2007": "ortho_2007", "2010": "ortho_2010", "2013": "ortho_2013", "2016": "ortho_2016", "2017": "ortho_2017", "2018": "ortho_2018", "2019-01": "ortho_2019_winter", "2019-08": "ortho_2019"}}
+```
 
 Background layers
 -----------------

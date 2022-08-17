@@ -75,6 +75,7 @@ exports.component_ = {
     'maskMargin': '<?ngeoOfflineMaskMargin',
     'minZoom': '<?ngeoOfflineMinZoom',
     'maxZoom': '<?ngeoOfflineMaxZoom',
+    'fullOfflineActive': '<?ngeoFullOfflineActive',
   },
   controller: 'ngeoOfflineController',
   templateUrl: ngeoOfflineTemplateUrl
@@ -241,6 +242,13 @@ exports.Controller = class {
      * @export
      */
     this.maxZoom;
+
+    /**
+     * Indicates if full offline tool is active (to disable ngeoOffline).
+     * @type {boolean}
+     * @export
+     */
+    this.fullOfflineActive;
 
     /**
      * Map view max zoom constraint.

@@ -53,6 +53,7 @@ const exports = function(
         appRouting, $sce, appActivetool,
         appUserManager) {
 
+  this.scope_ = $scope;
   this.bboxLidar_ = bboxLidar;
 
   this.bboxSrsLidar_ = bboxSrsLidar;
@@ -398,14 +399,15 @@ exports.prototype.$onInit = function() {
         this.setClickCordinate_(event.originalEvent);
         this['open'] = true;
         this.openInPointerDown_ = true;
-      } else if (!(event.originalEvent instanceof MouseEvent)) {
-        // if touch input device
+        this.scope_.$digest();
+      } else if (event.originalEvent.pointerType == "touch") {
         this.timeout_.cancel(this.holdPromise);
         this.startPixel = event.pixel;
         var that = this;
         this.holdPromise = this.timeout_(function() {
           that.setClickCordinate_(event.originalEvent);
           that['open'] = true;
+          that.scope_.$digest();
         }, 500, false);
       }
     }
@@ -583,6 +585,31 @@ exports.prototype.getCyclomediaUrl = function() {
   }
   return undefined;
 };
+
+
+/**
+ * @return {boolean} True if we want to show Images Obliques button.
+ * @export
+ */
+exports.prototype.isImagesObliquesAvailable = function() {
+  if (this.appUserManager_.getRoleId() == '1') {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * @return {string} The image oblique url.
+ * @export
+ */
+exports.prototype.getImagesObliquesUrl = function() {
+  if (this.clickCoordinateLuref_ !== undefined) {
+    return 'https://geo2orbit.geoportail.lu/publication/viewer?x='+this.clickCoordinateLuref_[0]+'&y='+this.clickCoordinateLuref_[1]+'&crs=2169';
+  }
+  return undefined;
+};
+
 
 /**
  * @param {string} dest The destination parameter .

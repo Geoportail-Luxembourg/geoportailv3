@@ -72,14 +72,26 @@ exports.directive_ = function($timeout, $filter) {
           if (sliderUi.values) {
             sDate = new Date(ctrl.getClosestValue_(sliderUi.values[0]));
             eDate = new Date(ctrl.getClosestValue_(sliderUi.values[1]));
-            ctrl.dates = [sDate, eDate];
+            ctrl.dates = [sDate.getTime(), eDate.getTime()];
+            if (ctrl.isInterval) {
+              if (ctrl.dates[0] != ctrl.prevLower) {
+                eDate = new Date(ctrl.getClosestValue_(ctrl.dates[0] + ctrl.interval));
+                ctrl.dates[1] = eDate;
+                ctrl.prevLower = ctrl.dates[0];
+                ctrl.prevUpper = ctrl.dates[1];
+              }
+              if (ctrl.dates[1] != ctrl.prevUpper) {
+                ctrl.interval = eDate - sDate;
+                ctrl.prevUpper = ctrl.dates[1];
+              }
+            }
             wmstime = {
               start: sDate.getTime(),
               end: eDate.getTime()
             };
           } else {
             sDate = new Date(ctrl.getClosestValue_(sliderUi.value));
-            ctrl.dates = sDate;
+            ctrl.dates = sDate.getTime();
             wmstime = {
               start: sDate.getTime()
             };
@@ -185,15 +197,32 @@ exports.Controller_.prototype.init = function() {
   // Fetch the initial options for the component
   const initialOptions_ = this.ngeoWMSTime_.getOptions(this.time);
   this.isModeRange = this.time.mode === 'range';
+  this.isInterval = this.time.translate_interval;
   this.minValue = initialOptions_.minDate;
   this.maxValue = initialOptions_.maxDate;
   this.dates = this.isModeRange ? [initialOptions_.values[0], initialOptions_.values[1]] :
     initialOptions_.values;
+  this.prevLower = this.dates[0];
+  this.prevUpper = this.dates[1];
+  this.interval = this.isModeRange ? this.dates[1] - this.dates[0] : 0;
   this.sliderOptions = {
     range: this.isModeRange,
     min: this.minValue,
     max: this.maxValue
   };
+  let sDate, eDate, wmstime;
+  if (this.isModeRange) {
+    sDate = new Date(this.getClosestValue_(initialOptions_.values[0]));
+    eDate = new Date(this.getClosestValue_(initialOptions_.values[1]));
+    wmstime = {
+      start: sDate.getTime(),
+      end: eDate.getTime()
+    };
+  } else {
+    sDate = new Date(this.getClosestValue_(initialOptions_.values));
+    wmstime = { start: sDate.getTime() };
+  }
+  this.onDateSelected({time: wmstime});
 };
 
 /**
@@ -203,10 +232,14 @@ exports.Controller_.prototype.init = function() {
  * @return {Array<number>}  - List of timestamp representing possible values
  */
 exports.Controller_.prototype.getTimeValueList_ = function() {
+  // maxValue == null means the UI shall use the current date
+  if (this.time.maxValue === null) {
+    this.time.maxValue = new Date(Date.now())
+  }
   const wmsTime = this.time;
   let timeValueList = null;
-  const minDate = new Date(this.minValue);
-  const maxDate = new Date(this.maxValue);
+  const minDate = new Date(wmsTime.minValue);
+  const maxDate = new Date(wmsTime.maxValue);
 
   if (wmsTime.values) {
     timeValueList = [];

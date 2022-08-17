@@ -129,6 +129,7 @@ import '../../less/geoportailv3.less';
  import appQueryCasiporeportController from '../query/CasiporeportController.js';
  import appQueryPdsreportDirective from '../query/pdsreportDirective.js';
  import appQueryPdsreportController from '../query/PdsreportController.js';
+ import appOfflineBar from '../offline/offlinebar.js'
 
  //const appQueryQueryStyles = goog.require('app.query.QueryStyles');
  import appQueryQueryDirective from '../query/queryDirective.js';
@@ -167,6 +168,7 @@ import '../../less/geoportailv3.less';
  import appMymaps from '../Mymaps.js';
 
  import appMymapsOffline from '../MymapsOffline.js';
+ import appToggleOffline from '../offline/toggleOffline.js';
  import appOlcsToggle3d from '../olcs/toggle3d.js';
  import appOlcsExtent from '../olcs/Extent.js';
  import appProjections from '../projections.js';
@@ -194,6 +196,7 @@ import '../../less/geoportailv3.less';
 import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 import '../lidar-plot/lidar-plot.ts';
+import '../offlineWebComponent.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
@@ -387,8 +390,8 @@ const MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
   appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
+    appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
   /**
@@ -707,6 +710,12 @@ const MainController = function(
    * @private
    */
   this.networkStatus_ = ngeoNetworkStatus;
+
+  /**
+  * @type {ngeo.offline.Mode}
+  * @export
+  */
+  this.offlineBar = appOfflineBar;
 
   /**
    * @type {ngeo.offline.Mode}
@@ -1362,7 +1371,7 @@ MainController.prototype.enable3dCallback_ = function(active) {
   this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  if (piwik != undefined ) {
+  if (piwik != undefined) {
     piwik.push(['setDocumentTitle', 'enable3d']);
     piwik.push(['trackPageView']);
   }
@@ -1553,7 +1562,7 @@ MainController.prototype.manageSelectedLayers_ =
           for (var i = 0; i < nbLayersAdded; i++) {
             var layer = this['selectedLayers'][i];
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            if (piwik != undefined ) {
+            if (piwik != undefined) {
               piwik.push(['setDocumentTitle',
                 'LayersAdded/' + layer.get('label')
               ]);
@@ -1664,13 +1673,6 @@ MainController.prototype.sidebarOpen = function() {
       this['vectorEditorOpen'] || this['lidarOpen'];
 };
 
-MainController.prototype.sidebarOpen = function() {
-  return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-    this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
-    this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
-    this['vectorEditorOpen'] || this['lidarOpen'];
-};
-
 
 /**
  * Track Vector Tiles Editor.
@@ -1680,8 +1682,10 @@ MainController.prototype.sidebarOpen = function() {
  */
 MainController.prototype.trackOpenVTEditor = function (documentTitle) {
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  piwik.push(['setDocumentTitle', documentTitle]);
-  piwik.push(['trackPageView']);
+  if (piwik != undefined) {
+    piwik.push(['setDocumentTitle', documentTitle]);
+    piwik.push(['trackPageView']);
+  }
 };
 
 
@@ -1703,7 +1707,7 @@ MainController.prototype.switchLanguage = function(lang, track) {
   i18next.changeLanguage(lang);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-  if (piwik != undefined ) {
+  if (piwik != undefined) {
     piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
     if (track) {
       piwik.push(['trackPageView']);

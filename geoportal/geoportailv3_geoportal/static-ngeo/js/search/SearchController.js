@@ -262,7 +262,8 @@ const exports = function($scope, $window, $compile,
         keys: ['translatedName'],
         threshold: 0.4,
         distance: 100,
-        includeScore: true
+        includeScore: true,
+        maxPatternLength: 100
       });
 
   $scope.$on('gettextLanguageChanged', function(evt) {
@@ -950,6 +951,7 @@ exports.selected_ =
       } else if (dataset === 'cms') {
         this.$window_.open('https://www.geoportail.lu' + suggestion.url, '_blank');
       }
+      this.$window_.document.activeElement.blur()
     };
 
 /**
