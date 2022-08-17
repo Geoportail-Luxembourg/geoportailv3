@@ -29,6 +29,16 @@
         <span class="fa" ng-class="(ctrl.isLayersComparatorDisplayed()) ? 'fa-adjust': 'fa-circle'"></span>
       </a>
     </div>
+    <ngeo-date-picker
+      ng-if="layer.get('time').widget === 'datepicker'"
+      time="layer.get('time')"
+      on-date-selected="ctrl.setTime(layer, time)">
+    </ngeo-date-picker>
+    <gmf-time-slider
+      ng-if="layer.get('time').widget === 'slider'"
+      gmf-time-slider-time="layer.get('time')"
+      gmf-time-slider-on-date-selected="ctrl.setTime(layer, time)">
+    </gmf-time-slider>
   </li>
 </ul>
 

@@ -74,7 +74,11 @@ const exports = function($scope, appDrawnFeatures,
     ['#ffffff', '#f7f7f7', '#c3c3c3', '#000000']
   ];
 
-  $scope.$watch(function() {
+  this.scope_ = $scope;
+};
+
+exports.prototype.$onInit = function() {
+  this.scope_.$watch(function() {
     return this.feature;
   }.bind(this), function() {
     if (this.feature === undefined) {
@@ -86,8 +90,7 @@ const exports = function($scope, appDrawnFeatures,
     }
     this.featureOrig = this.feature.clone();
   }.bind(this));
-};
-
+}
 
 /**
  * @param {string} lineStyle The line style.
