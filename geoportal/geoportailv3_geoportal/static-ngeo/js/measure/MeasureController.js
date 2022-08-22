@@ -76,6 +76,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
+  this['lidarOpen'] = false;
+
   var sketchStyle_ = new olStyleStyle({
     fill: new olStyleFill({
       color: 'rgba(255, 255, 255, 0.4)'
