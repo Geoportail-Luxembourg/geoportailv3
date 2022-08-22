@@ -42,10 +42,11 @@ const exports = class {
    * @export
    */
   clearMeasure() {
+    this.manager_.plot.activateZoom();
     this.pStart_ = {};
     this.pEnd_ = {};
 
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     svg.selectAll('#text_m').remove();
     svg.selectAll('#start_m').remove();
     svg.selectAll('#end_m').remove();
@@ -62,7 +63,8 @@ const exports = class {
    * @export
    */
   setMeasureActive() {
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    this.manager_.plot.deactivateZoom();
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     svg.style('cursor', 'pointer');
     svg.on('click', this.measureHeigt.bind(this));
   }
@@ -72,9 +74,9 @@ const exports = class {
    * Measure and display height after two click on the profile.
    */
   measureHeigt() {
-    const svg = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    const svg = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     const svgCoordinates = d3.mouse(svg.node());
-    const canvasCoordinates = d3.mouse(d3.select('#gmf-lidarprofile-container .lidar-canvas').node());
+    const canvasCoordinates = d3.mouse(d3.select('.gmf-lidarprofile-container .lidar-canvas').node());
     const margin = this.manager_.config.clientConfig.margin;
     const xs = svgCoordinates[0];
     const ys = svgCoordinates[1];

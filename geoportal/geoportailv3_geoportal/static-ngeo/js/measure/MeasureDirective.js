@@ -29,7 +29,8 @@ function measureDirective(appMeasureTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appMeasureMap',
-      'active': '=appMeasureActive'
+      'active': '=appMeasureActive',
+      'profileLidarOpen': '=appProfileLidarOpen'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',

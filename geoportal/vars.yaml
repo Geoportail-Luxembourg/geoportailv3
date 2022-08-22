@@ -170,6 +170,7 @@ vars:
         tags: {interface: main, service: js}
         tiles3dLayers: [buildings25d, buildings3d, bridges3d]
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
+        lidarProfileUrl: https://nextprod.geoportail.lu/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
         wmtsUrl: '{WMTSURL}'
@@ -389,6 +390,7 @@ vars:
       - vt-staging.geoportail.lu
       - devrm.geoportail.lu
       - migration.geoportail.lu
+      - localhost:8080
     base_url: '{SHORTENER_BASE_URL}'
     email_body: unused
     email_from: unused
