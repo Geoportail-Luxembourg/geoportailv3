@@ -104,7 +104,7 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container">
+    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -237,7 +237,7 @@
               ✕
             </button>
             <div class="tab-content">
-              <gmf-lidar-panel ng-prop-map="mainCtrl.map" ng-prop-active="mainCtrl.lidarOpen"></gmf-lidar-panel>
+              <gmf-lidar-panel ng-prop-map="mainCtrl.map" ng-prop-active="mainCtrl.lidarOpen" ng-prop-url="mainCtrl.lidarProfileUrl_"></gmf-lidar-panel>
             </div>
           </div>
           <!-- Feedback -->
@@ -398,9 +398,12 @@
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
     </div>
+
   </div>
+
     <!-- Begin bottom bar -->
     <footer class="footer" ng-show="::!mainCtrl.embedded">
+        <lidar-plot ng-prop-active="mainCtrl.lidarOpen" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'" ng-on-close-lidar="mainCtrl.closeSidebar()"></lidar-plot>
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"
@@ -453,7 +456,7 @@
         <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
-            app-profile-open="mainCtrl.profileOpen">
+            app-profile-open="mainCtrl.profileOpen" app-profile-lidar-open="mainCtrl.lidarOpen">
           </app-measure>
         </li>
         <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
