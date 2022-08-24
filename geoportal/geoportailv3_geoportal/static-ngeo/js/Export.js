@@ -13,6 +13,7 @@ import olFormatGPX from 'ol/format/GPX.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
+import appGPX from './GPX.js'
 
 /**
  * @constructor
@@ -61,7 +62,7 @@ const exports = function($document, exportgpxkmlUrl) {
    * @private
    * @type {ol.format.GPX}
    */
-  this.gpxFormat_ = new olFormatGPX();
+  this.gpxFormat_ = new appGPX();
 
   /**
    * @private
@@ -94,6 +95,12 @@ exports.prototype.init = function(map) {
  */
 exports.prototype.exportGpx = function(features, name, isTrack) {
   // LineString geometries, and tracks from MultiLineString
+  features.forEach(function(feature) {
+    var properties = feature.getProperties();
+    if ('feature_name' in properties) {
+      feature.set('name', properties['feature_name'], true);
+    }
+  }, this);
   var explodedFeatures = this.exploseFeature_(features);
   if (isTrack) {
     explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
@@ -104,7 +111,8 @@ exports.prototype.exportGpx = function(features, name, isTrack) {
     this.orderFeaturesForGpx_(explodedFeatures),
     {
       dataProjection: 'EPSG:4326',
-      featureProjection: this['map'].getView().getProjection()
+      featureProjection: this['map'].getView().getProjection(),
+      metadata: {'name': name}
     });
 
   this.exportFeatures_(gpx, 'gpx', appMiscFile.sanitizeFilename(name));
