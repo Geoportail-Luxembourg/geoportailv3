@@ -12,9 +12,7 @@
                src="data:image/png;base64,${leg['imageData']}"
                />
         </div>
-        <span class="legend-label" translate>
-           ${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}
-        </span>
+        <span class="legend-label" translate>${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}</span>
       </div>
     % endfor
   % endif
