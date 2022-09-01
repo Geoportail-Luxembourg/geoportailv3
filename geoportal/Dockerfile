@@ -1,6 +1,15 @@
 FROM camptocamp/geomapfish-tools:2.5.0.139 as builder
 LABEL maintainer Camptocamp "info@camptocamp.com"
 
+WORKDIR /tmp/
+RUN git clone --depth=1 --branch=backport/9911-to-2.5-lux https://github.com/camptocamp/c2cgeoportal.git \
+    && rm -rf /opt/c2cgeoportal/commons/c2cgeoportal_commons \
+        /opt/c2cgeoportal/geoportal/c2cgeoportal_geoportal /opt/c2cgeoportal/admin/c2cgeoportal_admin \
+    && mv c2cgeoportal/commons/c2cgeoportal_commons /opt/c2cgeoportal/commons/c2cgeoportal_commons \
+    && mv c2cgeoportal/geoportal/c2cgeoportal_geoportal /opt/c2cgeoportal/geoportal/c2cgeoportal_geoportal \
+    && mv c2cgeoportal/admin/c2cgeoportal_admin /opt/c2cgeoportal/admin/c2cgeoportal_admin \
+    && rm -rf c2cgeoportal
+
 ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
 ARG HTTPS_PROXY_URL
