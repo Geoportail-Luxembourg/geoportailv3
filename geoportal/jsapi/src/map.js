@@ -2628,6 +2628,13 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
       if (features.length != 0) {
         if (this.showSelectedFeature_) {
+          var iFeature = 0;
+          features.forEach(function(feature){
+            if (feature.getId()==null) {
+              iFeature++;
+              feature.setId(""+iFeature);
+            }
+          });
           this.showLayer_.getSource().addFeatures(features);
         }
         if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {
