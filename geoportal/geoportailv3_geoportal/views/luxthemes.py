@@ -15,6 +15,12 @@ invalidate_region()
 # override c2cgeoportal Entry class to customize handling of WMS and WMTS time positions and prepare
 # the theme tree for ngeo time functions
 class LuxThemes(Theme):
+    async def _wms_getcap(self, ogc_server, preload=False):
+        errors = set()
+        if preload:
+            return None, set()
+
+        return {"layers": []}, set()
 
     @view_config(route_name="themes", renderer="json")
     def themes(self):
@@ -80,7 +86,17 @@ class LuxThemes(Theme):
                         )
                     )
         else:
-            return super()._fill_wms(layer_theme, layer, errors, mixed)
+            wms, wms_errors = self._wms_layers(layer.ogc_server)
+            errors |= wms_errors
+            if wms is None:
+                return
+            layer_theme["imageType"] = layer.ogc_server.image_type
+            if layer.style:  # pragma: no cover
+                layer_theme["style"] = layer.style
+
+            layer_theme["childLayers"] = []
+            if mixed:
+                layer_theme["ogcServer"] = layer.ogc_server.name
 
     @view_config(route_name="lux_themes", renderer="json")
     def lux_themes(self):
