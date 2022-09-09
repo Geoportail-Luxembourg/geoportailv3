@@ -1,15 +1,11 @@
 import { Observable, BehaviorSubject, of } from 'rxjs';
+import { OfflineStatus, PackageToSkip, StatusJson, TilePackages } from './lux-offline.model';
 
-export class LuxOfflineService {
-  public status$ = new BehaviorSubject('UP_TO_DATE');
-  private tilePackages: {
-    ALL: [],
-    IN_PROGRESS: [],
-    UPDATE_AVAILABLE: [],
-    UP_TO_DATE: []
-  };
-  private server;
-  private checkTimeout;
+class LuxOfflineService {
+  public status$: BehaviorSubject<OfflineStatus> = new BehaviorSubject(OfflineStatus.UP_TO_DATE);
+  private tilePackages: TilePackages;
+  private server: string;
+  private checkTimeout: number;
   
   constructor(){
     const searchParams = new URLSearchParams(document.location.search);
@@ -35,23 +31,23 @@ export class LuxOfflineService {
       });
   }
 
-  private setStatus(tiles) {
+  private setStatus(statusJson: StatusJson) {
     this.tilePackages = {
       ALL: [],
       IN_PROGRESS: [],
       UPDATE_AVAILABLE: [],
       UP_TO_DATE: []
     }
-    for(const tileKey in tiles) {
+    for(const tileKey in statusJson) {
       // skip package hillshade (too large for transfers)
-      if (tileKey == "hillshade-lu") {
+      if (tileKey == PackageToSkip.HILLSHADE) {
         continue;
       }
       this.tilePackages.ALL.push(tileKey);
-      if (tiles[tileKey].status === "IN_PROGRESS") {
+      if (statusJson[tileKey].status === OfflineStatus.IN_PROGRESS) {
         this.tilePackages.IN_PROGRESS.push(tileKey);
-      } else if ((tiles[tileKey].current < tiles[tileKey].available) 
-        || (!tiles[tileKey].current && tiles[tileKey].available)
+      } else if ((statusJson[tileKey].current < statusJson[tileKey].available) 
+        || (!statusJson[tileKey].current && statusJson[tileKey].available)
         ) {
         this.tilePackages.UPDATE_AVAILABLE.push(tileKey);
       } else {
@@ -59,12 +55,12 @@ export class LuxOfflineService {
       }
     }
     if (this.tilePackages.IN_PROGRESS.length > 0) {
-      this.status$.next('IN_PROGRESS');
+      this.status$.next(OfflineStatus.IN_PROGRESS);
       this.reCheckTilesTimeout(2500);
     } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
-      this.status$.next('UPDATE_AVAILABLE');
+      this.status$.next(OfflineStatus.UPDATE_AVAILABLE);
     } else {
-      this.status$.next('UP_TO_DATE');
+      this.status$.next(OfflineStatus.UP_TO_DATE);
     }
   }
 
@@ -102,3 +98,5 @@ export class LuxOfflineService {
     }, timeout)
   }
 }
+
+export const LuxOfflineServiceInstance = new LuxOfflineService();

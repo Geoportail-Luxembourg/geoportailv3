@@ -2,7 +2,8 @@ import i18next from 'i18next';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, property} from 'lit/decorators.js';
-import { LuxOfflineService } from './lux-offline.service';
+import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline')
 export class LuxOffline extends LuxBaseElement {
@@ -16,28 +17,36 @@ export class LuxOffline extends LuxBaseElement {
     @state()
     private status;
 
+    @state()
+    private subscription;
+
     private offlineService: LuxOfflineService;
 
     constructor() {
         super();
-        this.offlineService = new LuxOfflineService();
-        this.offlineService.status$.subscribe((status)=> {
+        this.offlineService = LuxOfflineServiceInstance;
+        this.subscription = this.offlineService.status$.subscribe((status)=> {
           this.status = status;
         });
+    }
+
+    disconnectedCallback() {
+      this.subscription.unsubscribe();
+      super.disconnectedCallback();
     }
 
     renderMenu() {
         return html`
           <div class="offline-btns">
-            <div class="offline-btn btn btn-primary" @click="${this.updateTiles}" ?disabled="${this.status!=="UPDATE_AVAILABLE"}">
+            <div class="offline-btn btn btn-primary" @click="${this.updateTiles}" ?disabled="${this.status!==OfflineStatus.UPDATE_AVAILABLE}">
             ${i18next.t('Update offline data')}
-            ${this.status==="IN_PROGRESS"
+            ${this.status===OfflineStatus.IN_PROGRESS
               ? html `<i class="fa fa-circle-o-notch fa-spin"></i>`
               : ''
             }
             </div>
             <br>
-            <div class="offline-btn btn btn-primary" @click="${this.deleteTiles}" ?disabled="${this.status==="IN_PROGRESS"}">
+            <div class="offline-btn btn btn-primary" @click="${this.deleteTiles}" ?disabled="${this.status===OfflineStatus.IN_PROGRESS}">
               ${i18next.t('Delete offline data')}
             </div>
             <br>
