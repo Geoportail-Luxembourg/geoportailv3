@@ -4,7 +4,8 @@ import i18next from 'i18next';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, query} from 'lit/decorators.js';
-import { LuxOfflineService } from './lux-offline.service';
+import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline-alert')
 export class LuxOfflineAlert extends LuxBaseElement {
@@ -12,21 +13,29 @@ export class LuxOfflineAlert extends LuxBaseElement {
   @state()
   private status;
 
+  @state()
+  private subscription;
+
   @query('.modal')
   private modal: HTMLElement;
 
   constructor() {
     super();
-    this.offlineService = new LuxOfflineService();
-    this.offlineService.status$.subscribe((status)=> {
-      if (status === 'UPDATE_AVAILABLE') {
+    this.offlineService = LuxOfflineServiceInstance;
+    this.subscription = this.offlineService.status$.subscribe((status)=> {
+      if (status === OfflineStatus.UPDATE_AVAILABLE) {
         $(this.modal).modal('show');
       }
-      if (status === 'UP_TO_DATE') {
+      if (status === OfflineStatus.UP_TO_DATE) {
         $(this.modal).modal('hide');
       }
       this.status = status;
     });
+  }
+
+  disconnectedCallback() {
+    this.subscription.unsubscribe();
+    super.disconnectedCallback();
   }
 
   render() {
@@ -42,7 +51,7 @@ export class LuxOfflineAlert extends LuxBaseElement {
               <div>
                 <div class="offline-btn btn btn-primary" @click="${this.updateTiles}">
                   ${i18next.t('Update offline data')}
-                  ${this.status==="IN_PROGRESS"
+                  ${this.status===OfflineStatus.IN_PROGRESS
                     ? html `<i class="fa fa-circle-o-notch fa-spin"></i>`
                     : ''
                   }
