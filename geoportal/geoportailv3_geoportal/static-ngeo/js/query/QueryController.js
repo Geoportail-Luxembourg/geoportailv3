@@ -719,7 +719,8 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
       'layers': layersList.join(),
       'box1': big_box.join(),
       'box2': small_box.join(),
-      'srs': 'EPSG:3857'
+      'srs': 'EPSG:3857',
+      'zoom': this.map_.getView().getZoom()
     };
     if (!this.map_.get('ol3dm').is3dEnabled()) {
       var size = this.map_.getSize();
