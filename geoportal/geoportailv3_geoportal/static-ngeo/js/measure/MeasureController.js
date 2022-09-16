@@ -215,7 +215,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
 
   /**
