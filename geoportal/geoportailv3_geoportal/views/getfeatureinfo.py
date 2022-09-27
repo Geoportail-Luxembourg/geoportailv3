@@ -895,6 +895,23 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
+    def format_percentage(self, features, attributes="couverture en VHCN", format="{0:.0%}"):
+        modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
+        for feature in features:
+            try:
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                            feature['attributes'][attribute] =\
+                                "{0:.0%}".format(float(feature['attributes'][attribute]))
+            except Exception as e:
+                log.exception(e)
+            modified_features.append(feature)
+        return modified_features
+
     def format_date(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []
         if type(attributes) != type([]):
