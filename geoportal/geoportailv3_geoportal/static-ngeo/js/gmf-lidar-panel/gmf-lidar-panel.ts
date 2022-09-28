@@ -46,6 +46,7 @@ export class GmfLidarPanel extends LuxBaseElement {
     constructor() {
         super();
         this.manager = new LidarManager()
+        this.manager.width = this.profileWidth;
         this.lineStyle = new Style({
             stroke: new Stroke({
                 color: 'rgba(255,204,51,0.5',
@@ -82,6 +83,7 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
     changeWidth(event) {
       this.profileWidth = event.target.value;
+      this.manager.width = this.profileWidth;
       this.vectorLayer.changed();
       this.resetPlot();
     }
