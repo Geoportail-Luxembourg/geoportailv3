@@ -216,9 +216,11 @@ export class LidarManager {
    * @param {number} distanceOffset the left side of D3 profile domain at current zoom and pan configuration
    * @param {boolean} resetPlot whether to reset D3 plot or not
    * @param {number} minLOD minimum Level Of Detail
+   * @param {boolean} exportLAS export LAS file
+   * @param {number|undefined} userWidth The extract width.
    * @export
    */
-  getProfileByLOD(clippedLine, distanceOffset, resetPlot, minLOD) {
+  getProfileByLOD(clippedLine, distanceOffset, resetPlot, minLOD, exportLAS, userWidth) {
 
     const gettextCatalog = this.gettextCatalog;
     this.profilePoints = this.getEmptyProfilePoints_();
@@ -231,7 +233,11 @@ export class LidarManager {
     let pytreeLinestring = this.utils.getPytreeLinestring(this.line_);
 
     let maxLODWith;
+    let lastLOD = false;
+    d3.select('.gmf-lidarprofile-container .lod-info').html('');
     const max_levels = this.config.serverConfig.max_levels;
+    let profileWidth = 0;
+
     if (distanceOffset == 0) {
       maxLODWith = this.utils.getNiceLOD(this.line_.getLength(), max_levels);
     } else {
@@ -244,55 +250,57 @@ export class LidarManager {
       }
       pytreeLinestring = pytreeLinestring.substr(0, pytreeLinestring.length - 1);
       maxLODWith = this.utils.getNiceLOD(domain[1] - domain[0], max_levels);
-
     }
 
-    let lastLOD = false;
-    d3.select('.gmf-lidarprofile-container .lod-info').html('');
     this.config.clientConfig.pointSum = 0;
-    let profileWidth = 0;
     if (this.config.clientConfig.autoWidth) {
       profileWidth = maxLODWith.width;
     } else {
       profileWidth = this.config.serverConfig.width;
     }
-
+    profileWidth = userWidth;
     const profileWidthTxt = i18next.t('Profile width: ');
     d3.select('.gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
-
-    for (let i = 0; i < maxLODWith.maxLOD; i++) {
-      if (i == 0) {
-        this.queryPytree_(minLOD, this.config.serverConfig.initialLOD, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, resetPlot);
-        i += this.config.serverConfig.initialLOD - 1;
-      } else if (i < maxLODWith.maxLOD - 1) {
-        this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false);
-      } else {
-        lastLOD = true;
-        this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false);
+    if (!exportLAS) {
+      for (let i = 0; i < maxLODWith.maxLOD; i++) {
+        if (i == 0) {
+          this.queryPytree_(minLOD, this.config.serverConfig.initialLOD, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, resetPlot, false);
+          i += this.config.serverConfig.initialLOD - 1;
+        } else if (i < maxLODWith.maxLOD - 1) {
+          this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, false);
+        } else {
+          lastLOD = true;
+          this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, false);
+        }
       }
+    } else {
+      this.queryPytree_(undefined, undefined, undefined, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, true);
     }
   }
 
 
   /**
    * Request to Pytree service for a range of Level Of Detail (LOD)
-   * @param {number} minLOD minimum Level Of Detail of the request
-   * @param {number} maxLOD maximum Level Of Detail of the request
-   * @param {number} iter the iteration in profile requests cycle
+   * @param {number | undefined} minLOD minimum Level Of Detail of the request
+   * @param {number | undefined} maxLOD maximum Level Of Detail of the request
+   * @param {number | undefined} iter the iteration in profile requests cycle
    * @param {string} coordinates linestring in cPotree format
    * @param {number} distanceOffset the left side of D3 profile domain at current zoom and pan configuration
    * @param {boolean} lastLOD the deepest level to retrieve for this profile
    * @param {number} width the width of the profile
    * @param {boolean} resetPlot whether to reset D3 plot or not, used for first LOD
+   * @param {boolean} exportLAS should export a LAS file
    * @private
    */
-  queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot) {
+  queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot, exportLAS) {
     if (!this.config) {
       throw new Error('Missing config');
     }
     if (!this.config.serverConfig) {
       throw new Error('Missing config.serverConfig');
     }
+    this.map_.getViewport().style.cursor = 'wait';
+    document.body.style.cursor = 'wait';
     const gettextCatalog = this.gettextCatalog;
     const lodInfo = d3.select('.gmf-lidarprofile-container .lod-info');
     if (this.config.serverConfig.debug) {
@@ -303,36 +311,59 @@ export class LidarManager {
     }
 
     const pointCloudName = this.config.serverConfig.default_point_cloud;
-    const url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}
-      &maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=`;
+    const getLAS = exportLAS?1:0;
 
     const options = {
       method: 'GET',
       headers: {'Content-Type': 'text/plain; charset=x-user-defined'},
       responseType: 'arraybuffer',
     };
-
-    fetch(url, options)
-      .then((resp) => resp.arrayBuffer())
-      .then((data) => {
-        if (!this.config) {
-          throw new Error('Missing config');
-        }
-        if (!this.config.serverConfig) {
-          throw new Error('Missing config.serverConfig');
-        }
-        if (this.config.serverConfig.debug) {
-          let html = lodInfo.html();
-          const lodTxt = i18next.t('LOD: ');
-          const loadedTxt = i18next.t('loaded');
-          html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
-          lodInfo.html(html);
-        }
-        this.processBuffer_(data, iter, distanceOffset, lastLOD, resetPlot);
-      })
-      .catch((err) => {
-        throw `Error on pytree query: ${err.message}`;
-      });
+    if (exportLAS) {
+        const url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;  
+        fetch(url, options).then(res => res.blob())
+          .then(blobobject => {
+            const blob = window.URL.createObjectURL(blobobject);
+            const anchor = document.createElement('a');
+            anchor.style.display = 'none';
+            anchor.href = blob;
+            anchor.download = "output.las";
+            document.body.appendChild(anchor);
+            anchor.click();
+            window.URL.revokeObjectURL(blob);
+          }).finally(()=>{
+            this.map_.getViewport().style.cursor = '';
+            document.body.style.cursor = '';
+          });
+    } else {
+      let url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}&maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;
+      if (minLOD === undefined || maxLOD === undefined) {$
+        url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;
+      }
+      fetch(url, options)
+        .then((resp) => resp.arrayBuffer())
+        .then((data) => {
+          if (!this.config) {
+            throw new Error('Missing config');
+          }
+          if (!this.config.serverConfig) {
+            throw new Error('Missing config.serverConfig');
+          }
+          if (this.config.serverConfig.debug) {
+            let html = lodInfo.html();
+            const lodTxt = i18next.t('LOD: ');
+            const loadedTxt = i18next.t('loaded');
+            html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
+            lodInfo.html(html);
+          }
+          this.processBuffer_(data, iter, distanceOffset, lastLOD, resetPlot);
+        })
+        .catch((err) => {
+          throw `Error on pytree query: ${err.message}`;
+        }).finally(() => {
+          this.map_.getViewport().style.cursor = '';
+          document.body.style.cursor = '';
+        });
+    }
   }
 
   /**
@@ -512,8 +543,7 @@ export class LidarManager {
       if (maxLODWidth.maxLOD <= this.config.serverConfig.initialLOD) {
         this.plot.drawPoints(this.profilePoints);
       } else {
-        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0);
-
+        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0, false);
       }
     }
 
