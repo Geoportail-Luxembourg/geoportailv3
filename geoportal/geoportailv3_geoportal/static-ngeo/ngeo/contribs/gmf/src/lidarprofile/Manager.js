@@ -131,6 +131,11 @@ export class LidarManager {
     this.line_;
 
     /**
+     * @type {number}
+     */
+    this.width;
+
+    /**
      * @type {gmf.lidarprofile.Utils}
      */
     this.utils = new gmfLidarprofileUtils();
@@ -543,7 +548,7 @@ export class LidarManager {
       if (maxLODWidth.maxLOD <= this.config.serverConfig.initialLOD) {
         this.plot.drawPoints(this.profilePoints);
       } else {
-        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0, false);
+        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0, false, this.width);
       }
     }
 
