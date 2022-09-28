@@ -434,6 +434,7 @@ listen(this.map_, 'pointerup', function(evt) {
       return;
     }
     if (this['routingOpen'] ||
+        this['lidarOpen'] ||
         this.drawnFeatures_.modifyInteraction.getActive() ||
         this.drawnFeatures_.modifyCircleInteraction.getActive() ||
         this.appActivetool_.isActive() || this.isQuerying_) {
