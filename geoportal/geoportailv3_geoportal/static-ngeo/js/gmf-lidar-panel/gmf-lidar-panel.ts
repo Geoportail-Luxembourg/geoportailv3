@@ -34,6 +34,9 @@ export class GmfLidarPanel extends LuxBaseElement {
     @property({type: Boolean})
     measureActive: boolean = false;
 
+    @property({type: Number})
+    profileWidth: number = 5;
+
     private classifications: [] = this.config.serverConfig.classification_colors;
 
     private drawInteraction: DrawInteraction;
@@ -45,14 +48,13 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager = new LidarManager()
         this.lineStyle = new Style({
             stroke: new Stroke({
-                color: '#ffcc33',
-                width: 3,
-            }),
+                color: 'rgba(255,204,51,0.5',
+                lineCap: 'square'
+            })
         });
         this.vectorLayer = new VectorLayer({
             source: new VectorSource(),
-            zIndex: 1000,
-            style: this.lineStyle
+            zIndex: 1000
         });
         this.drawInteraction = new DrawInteraction({
             source: this.vectorLayer.getSource(),
@@ -61,13 +63,27 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.drawInteraction.setActive(false);
         this.drawInteraction.on('drawstart', (event) => {
             if (this.coordinates) this.clearProfile()
-        })
+        });
         this.drawInteraction.on('drawend', (event) => {
             this.drawActive = false;
             this.coordinates = event.feature.getGeometry();
+            event.feature.setStyle(this.createStyleFunction());
+            //this.vectorLayer.getStyle().getStroke().setWidth(this.profileWidth / this.map.getView().getResolution());
             this.generatePlot(event.feature);
         });
 
+    }
+    createStyleFunction() {
+      return function(feature, resolution) {
+        this.lineStyle.getStroke().setWidth(this.profileWidth / this.map.getView().getResolution());
+        console.log(this.profileWidth / this.map.getView().getResolution());
+        return this.lineStyle;
+      }.bind(this)
+    }
+    changeWidth(event) {
+      this.profileWidth = event.target.value;
+      this.vectorLayer.changed();
+      this.resetPlot();
     }
 
     updated(changedProperties: Map<string, any>) {
@@ -100,11 +116,10 @@ export class GmfLidarPanel extends LuxBaseElement {
 
     generatePlot(lineFeature: Feature) {
         this.coordinates = lineFeature;
-
         this.manager.clearBuffer();
         this.manager.init(this.config, this.map);
         this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
-        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
+        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD, false, this.profileWidth);
     }
     exportCsv() {
         const points = this.manager.utils.getFlatPointsByDistance(this.manager.profilePoints) || {};
@@ -128,13 +143,15 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.coordinates = null;
         this.manager.clearBuffer();
     }
-
+    exportLas(): void {
+      this.manager.getProfileByLOD([], 0, true, 0, true, this.profileWidth);
+    }
     /**
      * Reload and reset the plot to original extent for the current profile (reloads data)
      */
     resetPlot(): void {
         this.manager.clearBuffer();
-        this.manager.getProfileByLOD([], 0, true, 0);
+        this.manager.getProfileByLOD([], 0, true, 0, false, this.profileWidth);
     }
 
     toggleMeasure(): void {
@@ -178,6 +195,9 @@ export class GmfLidarPanel extends LuxBaseElement {
                     <button class="btn btn-default ${classMap({active: this.drawActive})}"
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
                 </p>
+                <p>
+                ${i18next.t('Profile width')} <input type="range" min="0" max="100" value="${this.profileWidth}" @change="${(event) => this.changeWidth(event)}">
+                </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
                     <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>
                 </p>
@@ -185,6 +205,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                     <div>
                         <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
                         <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
+                        <button class="btn btn-default" @click="${() => this.exportLas()}">${i18next.t('Export LAS')}</button>
                         <button class="btn btn-default" @click=${() => this.resetPlot()}><span class="fa fa-refresh"></span></button>
                     </div>
                     <hr/>
@@ -227,7 +248,7 @@ export class GmfLidarPanel extends LuxBaseElement {
 
     toggleClassificationCheck(classification) {
         classification.visible = (classification.visible + 1) % 2;
-        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD);
+        this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD, false, this.profileWidth);
     }
 
     createRenderRoot() {
