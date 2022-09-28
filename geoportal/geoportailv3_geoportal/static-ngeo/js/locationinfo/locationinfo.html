@@ -25,9 +25,9 @@
           <th translate>Distance approximative</th> <td>{{ ctrl.distance }} <span translate> mètres</span></td>
         </tr>
         <tr class="no-print">
-          <td colspan="2"><a ng-if="ctrl.isInBoxOfLidar" class="btn btn-default no-print" href="{{ctrl.getLidarUrl()}}" target="_geoportal_ext" translate>Lien vers la démo lidar</a>
-          <a ng-if="ctrl.isCyclomediaAvailable()" class="btn btn-default no-print" href="{{ctrl.getCyclomediaUrl()}}" target="_geoportal_ext" translate>Lien vers Cyclomédia</a>
-          <a ng-if="ctrl.isImagesObliquesAvailable()" class="btn btn-default no-print" href="{{ctrl.getImagesObliquesUrl()}}" target="_geoportal_ext" translate>Images obliques</a>
+          <td colspan="2"><a ng-if="ctrl.isInBoxOfLidar" class="btn btn-default no-print" href="{{ctrl.getLidarUrl()}}" target="_geoportal_ext_lidar" translate>Lien vers la démo lidar</a>
+          <a ng-if="ctrl.isCyclomediaAvailable()" class="btn btn-default no-print" href="{{ctrl.getCyclomediaUrl()}}" target="_geoportal_ext_cyclomedia" translate>Lien vers Cyclomédia</a>
+          <a ng-if="ctrl.isImagesObliquesAvailable()" class="btn btn-default no-print" href="{{ctrl.getImagesObliquesUrl()}}" target="_geoportal_ext_obliques" translate>Images obliques</a>
           </td>
         </tr>
         <tr class="no-print">
