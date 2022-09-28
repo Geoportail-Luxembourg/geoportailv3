@@ -873,6 +873,23 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
+    def format_percentage(self, features, attributes="couverture en VHCN", format="{0:.0%}"):
+        modified_features = []
+        if type(attributes) != type([]):
+            attributes = [attributes]
+        for feature in features:
+            try:
+                for attribute in attributes:
+                    if attribute in feature['attributes']:
+                        value = feature['attributes'][attribute]
+                        if value is not None:
+                            feature['attributes'][attribute] =\
+                                "{0:.0%}".format(float(feature['attributes'][attribute]))
+            except Exception as e:
+                log.exception(e)
+            modified_features.append(feature)
+        return modified_features
+
     def format_date(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S"):
         modified_features = []
         if type(attributes) != type([]):
@@ -892,7 +909,7 @@ class Getfeatureinfo(object):
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
-        return modified_features    
+        return modified_features
 
     def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S", use_local_time=True, delta_hours=0):
         modified_features = []
@@ -1002,16 +1019,25 @@ class Getfeatureinfo(object):
     def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
+        log.error("--------------------------")
+        log.error(url)
         url = url.replace('/MapServer/', '/FeatureServer/')
+        log.error(url)
         url = url.replace('/query?', '/')
+        log.error(url)
         url = url.replace('/query', '/')
-
+        log.error(url)
+        log.error("--------------------------")
         for feature in features:
             feature['attributes']['has_sketch'] = False
             id = feature['attributes'][id_attr]
             url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+            log.error("-----------11---------------")
+            log.error(url1)
+            log.error("-----------11-------------")
             try:
                 url_request = urllib.request.Request(url1)
+                log.error(url1)
                 result = read_request_with_token(url_request, self.request, log)
                 data = result.data
                 data_json = json.loads(data)
@@ -1398,6 +1424,7 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
+        log.error(query)
         try:
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
