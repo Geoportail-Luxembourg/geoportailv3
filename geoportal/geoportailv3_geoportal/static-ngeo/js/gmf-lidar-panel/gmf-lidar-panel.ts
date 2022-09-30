@@ -3,17 +3,25 @@ import {classMap} from 'lit/directives/class-map.js';
 import {html} from 'lit';
 import i18next from 'i18next';
 import Style from 'ol/style/Style';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olGeomPolygon from 'ol/geom/Polygon';
 import Stroke from 'ol/style/Stroke';
 import DrawInteraction from 'ol/interaction/Draw.js';
 import VectorSource from 'ol/source/Vector.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import LineString from 'ol/geom/LineString';
+import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON'
 import {LuxBaseElement} from '../LuxBaseElement';
 import {LidarManager} from '../../ngeo/contribs/gmf/src/lidarprofile/Manager';
 import { getConfig } from '../../../lidarConfig'
 import saveCsv from 'save-csv/save-csv.min';
+import {transform} from 'ol/proj.js';
+import {fromExtent} from 'ol/geom/Polygon';
+import LinearRing from 'ol/geom/LinearRing';
+import Fill from 'ol/style/Fill.js';
 
 @customElement('gmf-lidar-panel')
 export class GmfLidarPanel extends LuxBaseElement {
@@ -48,8 +56,9 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager = new LidarManager()
         this.manager.width = this.profileWidth;
         this.lineStyle = new Style({
+            fill: new Fill({color: 'rgba(255,204,51,0.5)'}),
             stroke: new Stroke({
-                color: 'rgba(255,204,51,0.5',
+                color: 'rgba(255,204,51,0.5)',
                 lineCap: 'square'
             })
         });
@@ -68,23 +77,61 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.drawInteraction.on('drawend', (event) => {
             this.drawActive = false;
             this.coordinates = event.feature.getGeometry();
+            this.drawRectangles(event.feature.clone().getGeometry());
             event.feature.setStyle(this.createStyleFunction());
-            //this.vectorLayer.getStyle().getStroke().setWidth(this.profileWidth / this.map.getView().getResolution());
             this.generatePlot(event.feature);
         });
-
     }
+    drawRectangles(line) {
+      let coords = line.getCoordinates();
+      for (let i = 0; i < coords.length - 1; i++) {
+        let p1 = transform(coords[i], this.map.getView().getProjection(), 'EPSG:2169');
+        let p2 = transform(coords[i+1], this.map.getView().getProjection(), 'EPSG:2169');
+        let rectangle = this.getRectangle(p1, p2, this.profileWidth/2);
+        let rectangle3857 = rectangle.transform('EPSG:2169', this.map.getView().getProjection());
+        var pointStyle = new Style({
+          image: new olStyleCircle({
+            radius: 3,
+            fill: new olStyleFill({color: '#000000'})
+          })
+        });
+        var f1 = new Feature({geometry:rectangle3857});
+        f1.setStyle(this.createStyleFunction());
+        this.vectorLayer.getSource().addFeature(f1);
+      }
+    }
+    getRectangle(p1, p2, d) {
+      let x1 = p1[0];
+      let y1 = p1[1];
+      let x2 = p2[0];
+      let y2 = p2[1];
+      // Compute the slope
+      let m = (x2 - x1) / (y2 - y1);
+
+      let dy = Math.sqrt(Math.pow(d,2)/(Math.pow(m,2)+1));
+      let dx = -m * dy;
+      let x3 = x1 + dy;
+      let y3 = y1 + dx;
+      let x4 = x2 - dy;
+      let y4 = y2 - dx;
+      let x5 = x1 - dy;
+      let y5 = y1 - dx;
+      let x6 = x2 + dy;
+      let y6 = y2 + dx;
+      return new olGeomPolygon([[[x3,y3], [x5,y5], [x4,y4], [x6,y6], [x3, y3]]]);
+    }
+
     createStyleFunction() {
       return function(feature, resolution) {
-        this.lineStyle.getStroke().setWidth(this.profileWidth / this.map.getView().getResolution());
-        console.log(this.profileWidth / this.map.getView().getResolution());
+        //this.lineStyle.getStroke().setWidth(this.profileWidth / this.map.getView().getResolution());
         return this.lineStyle;
       }.bind(this)
     }
     changeWidth(event) {
       this.profileWidth = event.target.value;
       this.manager.width = this.profileWidth;
-      this.vectorLayer.changed();
+      this.vectorLayer.getSource().clear();
+      this.drawRectangles(this.coordinates.clone().getGeometry());
       this.resetPlot();
     }
 
@@ -198,7 +245,7 @@ export class GmfLidarPanel extends LuxBaseElement {
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
                 </p>
                 <p>
-                ${i18next.t('Profile width')} <input type="range" min="0" max="100" value="${this.profileWidth}" @change="${(event) => this.changeWidth(event)}">
+                ${i18next.t('Profile width')} <input type="number" width = 5 min="0" max="100" value="${this.profileWidth}" @change="${(event) => this.changeWidth(event)}">
                 </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
                     <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>
