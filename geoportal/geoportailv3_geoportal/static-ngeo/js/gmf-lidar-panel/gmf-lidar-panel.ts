@@ -127,12 +127,18 @@ export class GmfLidarPanel extends LuxBaseElement {
         return this.lineStyle;
       }.bind(this)
     }
+
     changeWidth(event) {
-      this.profileWidth = event.target.value;
+      if (event.target.value <= 1000) {
+        this.profileWidth = event.target.value;
+      } else {
+        this.profileWidth = 1000;
+        event.target.value = 1000;
+      }
+
       this.manager.width = this.profileWidth;
       this.vectorLayer.getSource().clear();
       this.drawRectangles(this.coordinates.clone().getGeometry());
-      this.resetPlot();
     }
 
     updated(changedProperties: Map<string, any>) {
@@ -245,7 +251,8 @@ export class GmfLidarPanel extends LuxBaseElement {
                         @click="${() => this.drawActive = !this.drawActive}">${i18next.t('Draw a lidar profile')}</button>
                 </p>
                 <p>
-                ${i18next.t('Profile width')} <input type="number" width = 5 min="0" max="100" value="${this.profileWidth}" @change="${(event) => this.changeWidth(event)}">
+                ${i18next.t('Profile width')} <input type="number" width = 5 min="0" max="1000" value="${this.profileWidth}" @change="${(event) => this.changeWidth(event)}">
+                <button class="btn btn-default" @click=${() => this.resetPlot()}><span class="fa fa-refresh"></span></button>
                 </p>
                 <p class="${classMap({hidden: !this.drawActive})}">
                     <em class="small">${i18next.t('Draw a line on the map to dislay the corresponding LIDAR profile. Double clic to confirm.')}</em>
@@ -255,7 +262,6 @@ export class GmfLidarPanel extends LuxBaseElement {
                         <button class="btn btn-default" @click="${() => this.exportCsv()}">${i18next.t('Export CSV')}</button>
                         <button class="btn btn-default" @click="${() => this.exportPng()}">${i18next.t('Export PNG')}</button>
                         <button class="btn btn-default" @click="${() => this.exportLas()}">${i18next.t('Export LAS')}</button>
-                        <button class="btn btn-default" @click=${() => this.resetPlot()}><span class="fa fa-refresh"></span></button>
                     </div>
                     <hr/>
                     <div>
