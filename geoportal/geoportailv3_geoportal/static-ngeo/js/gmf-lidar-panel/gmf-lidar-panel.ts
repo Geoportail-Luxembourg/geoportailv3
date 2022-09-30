@@ -133,12 +133,12 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.profileWidth = event.target.value;
       } else {
         this.profileWidth = 1000;
+        event.target.value = 1000;
       }
 
       this.manager.width = this.profileWidth;
       this.vectorLayer.getSource().clear();
       this.drawRectangles(this.coordinates.clone().getGeometry());
-      //this.resetPlot();
     }
 
     updated(changedProperties: Map<string, any>) {
