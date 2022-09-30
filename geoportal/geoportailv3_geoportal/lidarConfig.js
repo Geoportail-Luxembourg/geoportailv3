@@ -6,7 +6,7 @@ export const getConfig = () => ({
     "margin":{
       "left":40,
       "top":10,
-      "right":200,
+      "right":0,
       "bottom":40
     },
     "pointAttributes":{ },
