@@ -258,6 +258,7 @@ class Getfeatureinfo(object):
     @view_config(route_name='getfeatureinfo', renderer='json')
     def get_feature_info(self):
         results = []
+        zoom = self.request.params.get('zoom', None)
         fid = self.request.params.get('fid', None)
         fids = self.request.params.get('fids', None)
         fids_array = []
@@ -271,7 +272,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers, None)
+                self.get_info(fid, None, None, results, layers, None, None, zoom)
             return results
 
         layers = self.request.params.get('layers', None)
@@ -284,13 +285,14 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         geometry_type = self.request.params.get('geometry_type', 'wkt')
+
         if geometry_type.lower() != 'wkt':
             geometry = shape(geojson_loads(geometry)).wkt
 
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
-                None, results, layers, None, geometry)
+                None, results, layers, None, geometry, zoom)
             if len(fc) > 0 and 'features' in fc[0]:
                 s = shape(wkt_loads(geometry))
                 for feature in fc[0]['features']:
@@ -315,13 +317,33 @@ class Getfeatureinfo(object):
             return HTTPBadRequest()
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box, None)
+            coordinates_small_box, results, layers, big_box, None, zoom)
+
+    def is_zoom_ok(self, cur_zoom, zoom_definition):
+        if cur_zoom is None or len(cur_zoom) == 0:
+            return True
+        if zoom_definition is None or len(zoom_definition) == 0:
+            return True
+        if "-" in zoom_definition:
+            start, stop = zoom_definition.split("-")
+            start, stop = int(start), int(stop)
+            if start <= int(cur_zoom) <= stop:
+                return True
+            return False
+        if ";" in zoom_definition:
+            zooms = zoom_definition.split(";")
+            for zoom in zooms:
+                if int(cur_zoom) == int(zoom):
+                    return True
+        return False
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, p_geometry=None):
+                 results, layers, big_box, p_geometry=None, p_zoom=None):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
+            if not self.is_zoom_ok(p_zoom, luxgetfeaturedefinition.zoom_level):
+                continue
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.engine_gfi is not None and
                 luxgetfeaturedefinition.query is not None and

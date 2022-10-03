@@ -4,7 +4,7 @@
 % endif
 % for l in data['layers']:
   % if str(l['layerId']) in active_layers:
-    <h4>${_l(wms_layer + " : " + l['layerName'])}</h4>
+    <h4 translate>${_l(wms_layer + " : " + l['layerName'])}</h4>
     % for leg in l['legend']:
       <div class="legend-row">
         <div class="legend-icon">
@@ -12,9 +12,7 @@
                src="data:image/png;base64,${leg['imageData']}"
                />
         </div>
-        <span class="legend-label">
-           ${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}
-        </span>
+        <span class="legend-label" translate>${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}</span>
       </div>
     % endfor
   % endif

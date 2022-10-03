@@ -22,6 +22,7 @@ class LuxGetfeatureDefinitionViews(AbstractViews):
         _list_field('rest_url'),
         _list_field('use_auth'),
         _list_field('layer'),
+        _list_field('zoom_level'),
     ]
     _id_field = 'id'
     _model = LuxGetfeatureDefinition

@@ -1628,10 +1628,12 @@ class Map extends OpenLayersMap {
    * @param {Element|string|undefined} opt_target Element to render popup content in
    * @param {boolean|undefined} isShowMarker True if a marker has to be displayed.
    * @param {number|undefined} maxZoom The maximum zoom to fit.
+   * @param {function(string, boolean, object)=|undefined} callback Optional callback function 
+   *    called for each id.
    * @export
    * @api
    */
-  showFeatures(layer, ids, opt_click, opt_target, isShowMarker, maxZoom) {
+  showFeatures(layer, ids, opt_click, opt_target, isShowMarker, maxZoom, callback) {
     // remove any highlighted feature
     this.showLayer_.getSource().clear();
     this.layersPromise.then(function () {
@@ -1651,6 +1653,18 @@ class Map extends OpenLayersMap {
         }).then(function (json) {
           this.addFeature_(json, visible, opt_click, opt_target,
             (isShowMarker === undefined) ? true : isShowMarker, maxZoom);
+          if (callback !== undefined) {
+            var found = true;
+            if (json.length === 0) {
+              found = false;
+            }
+            if (!('features' in json[0])) {
+              found = false;
+            } else {
+              found = (json[0]['features'].length > 0);
+            }
+            callback.call(this, id, found, json);
+          }
         }.bind(this));
       }.bind(this));
     }.bind(this));
@@ -2338,7 +2352,6 @@ class Map extends OpenLayersMap {
    * @export
    */
   getFeatureInfoByIds(layer, ids, callback) {
-
     this.layersPromise.then(function () {
       var lid = this.findLayerConf_(layer).id;
       if (!Array.isArray(ids)) {
@@ -2620,6 +2633,13 @@ class Map extends OpenLayersMap {
 
         if (features.length != 0) {
           if (this.showSelectedFeature_) {
+            var iFeature = 0;
+            features.forEach(function(feature){
+              if (feature.getId()==null) {
+                iFeature++;
+                feature.setId(""+iFeature);
+              }
+            });
             this.showLayer_.getSource().addFeatures(features);
           }
           if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {

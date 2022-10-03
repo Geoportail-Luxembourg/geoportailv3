@@ -39,7 +39,8 @@ const exports = function($window, ngeoLocation, appThemes) {
     'logement': 32,
     'energie': 40,
     'embedded': 44,
-    'geosciences': 59
+    'geosciences': 59,
+    'np_our': 67
   };
 
   /**

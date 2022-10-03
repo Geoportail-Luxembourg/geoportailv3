@@ -718,7 +718,8 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
       'layers': layersList.join(),
       'box1': big_box.join(),
       'box2': small_box.join(),
-      'srs': 'EPSG:3857'
+      'srs': 'EPSG:3857',
+      'zoom': this.map_.getView().getZoom()
     };
     if (!this.map_.get('ol3dm').is3dEnabled()) {
       var size = this.map_.getSize();
@@ -1250,7 +1251,9 @@ exports.prototype.exportGpx = function(feature, name, isTrack) {
     dataProjection: 'EPSG:2169',
     featureProjection: this.map_.getView().getProjection()
   });
-
+  if ('attributes' in feature && !('properties' in feature)) {
+    feature['properties'] = feature['attributes'];
+  }
   var activeFeature = /** @type {ol.Feature} */
       ((new olFormatGeoJSON()).readFeature(feature, encOpt_));
   if (name === undefined) {
