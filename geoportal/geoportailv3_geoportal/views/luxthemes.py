@@ -126,7 +126,6 @@ class LuxThemes(Theme):
                     # errors.add('Error in lux internal ArcGIS layers: ' + str(e))
                     continue  # do not add layer
                 data = json.loads(content)
-
                 for sublayer in layer.layers.split(","):
                     layer_dict = {
                         "info": {
@@ -145,7 +144,6 @@ class LuxThemes(Theme):
                                                               ESRI_TIME_CONSTANTS[ti['defaultTimeIntervalUnits']]
                                                               % ti['defaultTimeInterval'])]
                     layers[layer.name + '__' + sublayer] = layer_dict
-
             # if no esri time layer defined => standard WMS server
             else:
                 for sublayer in layer.layers.split(","):
@@ -163,7 +161,11 @@ class LuxThemes(Theme):
                         except Exception as e:
                             # wms_info = {}
                             log.info('failed: ' + layer.name + sublayer)
-                            errors.add('Error in lux internal WMS layers: ' + str(e))
+                            # cannot set error message because one error message in an ogc_server
+                            # makes all layers fail
+                            # https://github.com/camptocamp/c2cgeoportal/commit/d5624ffb03e89e6252184b46d02c253d4c0a1035#diff-87c76d938d848457aa3b6fc773d30fd250280c2b050ea29d5016792bf4ab0c5eR405
+                            # TODO: if a solution is found, the line below can be uncommented
+                            #errors.add('Error in lux internal WMS layers: ' + str(e))
                     layers[layer.name + '__' + sublayer] = wms_info
             time_configs = layer.get_metadatas('time_config')
             if len(time_configs) == 1:
@@ -172,7 +174,6 @@ class LuxThemes(Theme):
                     layers[layer.name + '__' + sublayer].update(override_time_config)
                 except:
                     pass
-
         return {"layers": layers}, errors
 
     @staticmethod
