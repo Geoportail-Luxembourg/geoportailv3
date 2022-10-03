@@ -244,7 +244,14 @@ class LuxGetfeatureDefinition(Base):
     query_limit = Column(Integer, info={
         'colanderalchemy': {'title': _('Limit the results. If < 0 then not limit.')}
     })
-
+    zoom_level = Column(String(255), info={
+        'colanderalchemy': {
+            'title': _('Zoom level'),
+            'description': 'Zoom level where this definition applies.'
+                           'Enter either a single zoom level or a zoom range (ex : 10 - 15) or '
+                           'individual zooms (ex : 10;11;13)'
+        }
+    })
 
 class LuxPrintJob(Base):
     __tablename__ = 'lux_print_job'
