@@ -1,7 +1,8 @@
 export enum OfflineStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   UPDATE_AVAILABLE = 'UPDATE_AVAILABLE',
-  UP_TO_DATE = 'UP_TO_DATE'
+  UP_TO_DATE = 'UP_TO_DATE',
+  UNINITIALIZED = 'NO_INIT'
 }
 export interface TilePackages {
   ALL: string[],
