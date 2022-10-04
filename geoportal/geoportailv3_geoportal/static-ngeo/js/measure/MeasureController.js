@@ -209,7 +209,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
       style: style,
-      layer: layer
+      layer: this['layer']
     });
 
   /**
