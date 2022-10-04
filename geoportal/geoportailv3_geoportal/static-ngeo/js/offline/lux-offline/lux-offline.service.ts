@@ -2,7 +2,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { OfflineStatus, PackageToSkip, StatusJson, TilePackages } from './lux-offline.model';
 
 class LuxOfflineService {
-  public status$: BehaviorSubject<OfflineStatus> = new BehaviorSubject(OfflineStatus.UP_TO_DATE);
+  public status$: BehaviorSubject<OfflineStatus> = new BehaviorSubject(OfflineStatus.UNINITIALIZED);
   private tilePackages: TilePackages;
   private server: string;
   private checkTimeout: number;
@@ -71,8 +71,7 @@ class LuxOfflineService {
   }
 
   public deleteTiles() {
-    // keep resources, so that vector maps remain operational
-    this.tilePackages.ALL.filter(tp => tp != 'resources').forEach(tilePackage => {
+    this.tilePackages.ALL.forEach(tilePackage => {
       this.sendRequest(tilePackage, 'DELETE');
     })
 }
