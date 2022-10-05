@@ -5,6 +5,7 @@ import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, query} from 'lit/decorators.js';
 import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline-reload')
 export class LuxReloadAlert extends LuxBaseElement {
@@ -19,13 +20,13 @@ export class LuxReloadAlert extends LuxBaseElement {
 
   constructor() {
     super();
-    //this.offlineService = new LuxOfflineService();
     this.prevStatus = LuxOfflineServiceInstance.status$.getValue();
     LuxOfflineServiceInstance.status$.subscribe((status)=> {
-      if (status != 'IN_PROGRESS' && this.prevStatus != undefined
-          && this.prevStatus != 'NO_INIT'
-        && status != this.prevStatus) {
-        $(this.modal).modal('show');
+      if (status !== OfflineStatus.IN_PROGRESS && this.prevStatus != undefined
+        && this.prevStatus !== OfflineStatus.UNINITIALIZED) {
+        if (status != this.prevStatus) {
+          $(this.modal).modal('show');
+        }
       }
       this.prevStatus = status;
     });
