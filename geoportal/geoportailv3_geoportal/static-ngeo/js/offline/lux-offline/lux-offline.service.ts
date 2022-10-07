@@ -27,6 +27,12 @@ class LuxOfflineService {
       .then((response) => response.json())
       .then((statusJson) => this.setStatus(statusJson))
       .catch((error) => {
+        this.tilePackages = {
+          ALL: [],
+          IN_PROGRESS: [],
+          UPDATE_AVAILABLE: [],
+          UP_TO_DATE: []
+        }
         console.error('Error:', error);
       });
   }
