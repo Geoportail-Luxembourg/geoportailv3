@@ -1194,6 +1194,55 @@ exports.prototype.prefixKeys =
     };
 
 /**
+ * @param {Object} elem The attributes.
+ * @param {String} layerid the layer id
+ * @return {Boolean} True if we should display this attribute.
+ * @export
+ */
+exports.prototype.showAttributesByLang =
+    function(elem, layerid) {
+      var key = elem['key'];
+      var value = elem['value'];
+      var ok = false;
+      if (layerid == '2444' && (key == 'f_Betriebsform' ||
+        key == 'f_Forme_d_entreprise' || key == 'f_Operation_Form' || 
+        key == 'f_Form_vun_Geschaeft')) {
+          if (this['language'] == 'fr' && key == 'f_Forme_d_entreprise') {
+            ok = true;
+          } else if (this['language'] == 'de' && key == 'f_Betriebsform') {
+            ok = true;
+          } else if (this['language'] == 'en' && key == 'f_Operation_Form') {
+            ok = true;
+          } else if (this['language'] == 'lb' && key == 'f_Form_vun_Geschaeft') {
+            ok = true;
+          }
+      } else if (key.indexOf('_FR') > 0 || key.indexOf('_DE') > 0 ||
+          key.indexOf('_EN') > 0 || key.indexOf('_LU') > 0 ||
+          key.indexOf('_LB') > 0) {
+        if (this['language'] == 'fr') {
+          if (key.indexOf('_FR') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'de') {
+          if (key.indexOf('_DE') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'en') {
+          if (key.indexOf('_EN') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'lb') {
+          if (key.indexOf('_LB') > 0 || key.indexOf('_LU') > 0) {
+            ok = true;
+          }
+        }
+      } else {
+        ok = true;
+      }
+      return ok;
+    };
+
+/**
  * Get the path to the Mymaps Resource.
  * @param {?string | undefined} resource The resource.
  * @return {string} The path to the Mymaps Resource.
