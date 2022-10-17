@@ -11,6 +11,9 @@ export class LuxOffline extends LuxBaseElement {
     @property({type: Boolean})
     disabled: boolean = false;
 
+    @property()
+    private bar;
+
     @state()
     private menuDisplayed;
 
@@ -78,6 +81,7 @@ export class LuxOffline extends LuxBaseElement {
 
     toggleMenu() {
       this.menuDisplayed = !this.menuDisplayed;
+      this.bar.toggleFullOffline();
     }
 
     createRenderRoot() {
