@@ -380,17 +380,17 @@
       <lux-offline-reload></lux-offline-reload>
       <lux-offline
           ng-class="mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide'"
-          ng-click="mainCtrl.offlineBar.toggleFullOffline()"
           ng-prop-disabled="mainCtrl.offlineBar.isNgeoOfflineActive()"
+          ng-prop-bar="mainCtrl.offlineBar"
+          ng-prop-scope="mainCtrl.scope_"
       ></lux-offline>
       <ngeo-offline
           ng-class="mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide'"
-          ng-click="mainCtrl.offlineBar.toggleNgeoOffline()"
           ngeo-offline-map="::mainCtrl.map"
           ngeo-offline-mask-margin="::100"
           ngeo-offline-min-zoom="::12"
           ngeo-offline-max-zoom="::16"
-          ngeo-full-offline-active="mainCtrl.offlineBar.isFullOfflineActive()"
+          ngeo-full-offline-active="mainCtrl.offlineBar.fullOffline_"
           ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
           ng-show="!mainCtrl.embedded"
       >
