@@ -14,6 +14,9 @@ export class LuxOffline extends LuxBaseElement {
     @property()
     private bar;
 
+    @property()
+    private scope;
+
     @state()
     private menuDisplayed;
 
@@ -82,6 +85,7 @@ export class LuxOffline extends LuxBaseElement {
     toggleMenu() {
       this.menuDisplayed = !this.menuDisplayed;
       this.bar.toggleFullOffline();
+      this.scope.$digest()
     }
 
     createRenderRoot() {
