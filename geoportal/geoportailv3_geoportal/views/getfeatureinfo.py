@@ -113,7 +113,7 @@ class Getfeatureinfo(object):
                 len(luxgetfeaturedefinition.rest_url) > 0):
                 sketch_id = self.request.params.get('sketch_id', None)
                 timeout = 15
-                url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
+                url = luxgetfeaturedefinition.rest_url
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
                 if luxgetfeaturedefinition.use_auth:
@@ -1041,30 +1041,36 @@ class Getfeatureinfo(object):
     def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
-        url = url.replace('/MapServer/', '/FeatureServer/')
-        url = url.replace('/query?', '/')
-        url = url.replace('/query', '/')
 
         for feature in features:
             feature['attributes']['has_sketch'] = False
             id = feature['attributes'][id_attr]
-            url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+            url1 = url.replace('/query?', '/query').replace('/query', f'/{id}/attachments?f=pjson')
+
             try:
                 url_request = urllib.request.Request(url1)
                 result = read_request_with_token(url_request, self.request, log)
                 data = result.data
                 data_json = json.loads(data)
+                if "attachmentGroups" in data_json:
+                    for group in data_json["attachmentGroups"]:
+                        if "attachmentInfos" in group:
+                            self.get_attachment_infos(feature, group)
                 if "attachmentInfos" in data_json:
-                    attachmentInfos = data_json["attachmentInfos"]
-                    feature['attributes']['sketches'] = []
-                    for info in attachmentInfos:
-                        feature['attributes']['has_sketch'] = True
-                        feature['attributes']['sketches'].append({'id':info['id'], 'name':info['name']})
+                    self.get_attachment_infos(feature, data_json)
+
             except Exception as e:
                 log.exception(e)
                 feature['attributes']['has_sketch'] = False
             features2.append(feature)
         return features2
+
+    def get_attachment_infos(self, feature, data_json):
+            attachmentInfos = data_json["attachmentInfos"]
+            feature['attributes']['sketches'] = []
+            for info in attachmentInfos:
+                feature['attributes']['has_sketch'] = True
+                feature['attributes']['sketches'].append({'id':info['id'], 'name':info['name']})
 
     def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
