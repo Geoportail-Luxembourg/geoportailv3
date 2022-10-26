@@ -150,7 +150,7 @@ class Wms:
 
             return Response(capabilities, headers=headers)
 
-        layers = self.request.params.get('LAYERS', '')
+        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
         layers = layers.split(',')
         if len(layers) == 0:
             return HTTPBadRequest()
