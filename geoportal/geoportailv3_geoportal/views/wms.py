@@ -142,7 +142,7 @@ class Wms:
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
 
-        request = self.request.params.get('REQUEST', '')
+        request = self.request.params.get('REQUEST', self.request.params.get('request', ''))
         if request.lower() == 'getcapabilities':
             headers = {"Content-Type": "text/xml"}
             capabilities = """<?xml version="1.0"?>
