@@ -153,16 +153,25 @@ class Wms:
             from shapely.geometry import asShape, box, shape
             import json
             gfi = Getfeatureinfo(self.request)
-            url = "https://map.geoportail.lu/getfeatureinfo?"
+            url = "https://devrm.geoportail.lu/getfeatureinfo?"
             params_dict = {'tooltip':1}
             for key in self.request.params.keys():
                 if key.lower() == 'bbox':
                     bbox = self.request.params.get(key)
                     bbox4326 = bbox.split(',')
-                    the_box = box(float(bbox4326[1]), float(bbox4326[0]), float(bbox4326[3]), float(bbox4326[2]))
+                    the_box = box(float(bbox4326[0]), float(bbox4326[1]), float(bbox4326[2]), float(bbox4326[3]))
                     crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
                     box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
+
                     box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
+                    width = self.request.params.get('WIDTH', self.request.params.get('width', '0'))
+                    height = self.request.params.get('HEIGHT', self.request.params.get('height', '0'))
+                    x = float(self.request.params.get('x', self.request.params.get('X', self.request.params.get('i', self.request.params.get('I', 0)))))
+                    y = float(self.request.params.get('y', self.request.params.get('Y', self.request.params.get('j', self.request.params.get('J', 0)))))
+                    res = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x,y])
+                    xLuref = res[0]
+                    yLuref = res[1]
+                    box = ""+str(box2169[1]+xLuref-1)+","+str(box2169[0]+yLuref-1)+","+str(box2169[1]+xLuref+1)+","+str(box2169[0]+yLuref+1)
                     params_dict['box1'] = box
                     params_dict['box2'] = box
                     params_dict[key.lower()] = box
