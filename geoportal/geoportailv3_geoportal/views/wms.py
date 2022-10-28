@@ -175,8 +175,7 @@ class Wms:
             url = url + separator + params
             f = urllib.request.urlopen(url, None, 15)
             data = f.read()
-
-            headers = {"Content-Type": "text/html"}
+            headers = {"Content-Type": self.request.params.get('INFO_FORMAT', 'text/plain')}
             tooltips = []
             for info in json.loads(data):
                 tooltips.append(info['tooltip'])
