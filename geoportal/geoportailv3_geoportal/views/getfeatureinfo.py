@@ -676,6 +676,23 @@ class Getfeatureinfo(object):
 
         return transform(project, shape(geometry))  # apply projection
 
+    def pixels2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
+        box3857 = bbox.split(',')
+        the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
+
+        box2169 = shape(self.transform_(the_box, epsg_source, epsg_dest)).bounds
+        if (box2169[2] - box2169[0]) > 0:
+            scale_x = (box2169[2] - box2169[0]) / width
+        else :
+            scale_x = (box2169[0] - box2169[2]) / width
+
+        if (box2169[3] - box2169[1]) > 0:
+            scale_y = (box2169[3] - box2169[1]) / height
+        else :
+            scale_y = (box2169[1] - box2169[3]) / height
+
+        return [scale_x * pixels[0], scale_y * pixels[1]]
+
     def pixel2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
         box3857 = bbox.split(',')
         the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
