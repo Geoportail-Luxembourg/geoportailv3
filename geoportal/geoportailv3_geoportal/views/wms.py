@@ -160,8 +160,8 @@ class Wms:
                     bbox = self.request.params.get(key)
                     bbox4326 = bbox.split(',')
                     the_box = box(float(bbox4326[1]), float(bbox4326[0]), float(bbox4326[3]), float(bbox4326[2]))
-
-                    box2169 = shape(gfi.transform_(the_box, 'EPSG:4326', 'EPSG:2169')).bounds
+                    crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
+                    box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
                     box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
                     params_dict['box1'] = box
                     params_dict['box2'] = box
