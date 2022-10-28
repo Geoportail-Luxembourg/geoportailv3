@@ -141,7 +141,6 @@ class Wms:
 
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
-
         request = self.request.params.get('REQUEST', self.request.params.get('request', ''))
         if request.lower() == 'getcapabilities':
             headers = {"Content-Type": "text/xml"}
@@ -149,6 +148,39 @@ class Wms:
             <WMT_MS_Capabilities version="1.1.1"></WMT_MS_Capabilities>"""
 
             return Response(capabilities, headers=headers)
+        if request.lower() == 'getfeatureinfo':
+            from geoportailv3_geoportal.views.getfeatureinfo import Getfeatureinfo
+            from shapely.geometry import asShape, box, shape
+            import json
+            gfi = Getfeatureinfo(self.request)
+            url = "https://map.geoportail.lu/getfeatureinfo?"
+            params_dict = {'tooltip':1}
+            for key in self.request.params.keys():
+                if key.lower() == 'bbox':
+                    bbox = self.request.params.get(key)
+                    bbox4326 = bbox.split(',')
+                    the_box = box(float(bbox4326[1]), float(bbox4326[0]), float(bbox4326[3]), float(bbox4326[2]))
+
+                    box2169 = shape(gfi.transform_(the_box, 'EPSG:4326', 'EPSG:2169')).bounds
+                    box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
+                    params_dict['box1'] = box
+                    params_dict['box2'] = box
+                    params_dict[key.lower()] = box
+                else:
+                    params_dict[key.lower()] = self.request.params.get(key)
+            params = urllib.parse.urlencode(params_dict)
+            separator = "?"
+            if "?" in url:
+                separator = "&"
+            url = url + separator + params
+            f = urllib.request.urlopen(url, None, 15)
+            data = f.read()
+
+            headers = {"Content-Type": "text/html"}
+            tooltips = []
+            for info in json.loads(data):
+                tooltips.append(info['tooltip'])
+            return Response("<br>".join(tooltips), headers=headers)
 
         layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
         layers = layers.split(',')
