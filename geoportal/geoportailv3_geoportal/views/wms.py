@@ -148,15 +148,35 @@ class Wms:
             <WMT_MS_Capabilities version="1.1.1"></WMT_MS_Capabilities>"""
 
             return Response(capabilities, headers=headers)
+
+        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
+        layers = layers.split(',')
+        if len(layers) == 0:
+            return HTTPBadRequest()
+        if len(layers) > 1:
+            log.warning(f"Only the first layer can be requested. Found {len(layers)}. "
+                        "Only the first one will be processed.")
+        # TODO: Multiple layers could be requested with a single request
+        # Today the first layer wins.
+        layer = layers[0]
+
+        internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
+            LuxLayerInternalWMS.layer == layer).first()
+        if internal_wms is None:
+            return HTTPNotFound()
+
+
         if request.lower() == 'getfeatureinfo':
             from geoportailv3_geoportal.views.getfeatureinfo import Getfeatureinfo
             from shapely.geometry import asShape, box, shape
             import json
             gfi = Getfeatureinfo(self.request)
-            url = "https://devrm.geoportail.lu/getfeatureinfo?"
+            url = "https://map.geoportail.lu/getfeatureinfo?"
             params_dict = {'tooltip':1}
             for key in self.request.params.keys():
-                if key.lower() == 'bbox':
+                if key.lower() == 'layers':
+                    params_dict['layers'] = internal_wms.id
+                elif key.lower() == 'bbox':
                     bbox = self.request.params.get(key)
                     bbox4326 = bbox.split(',')
                     the_box = box(float(bbox4326[0]), float(bbox4326[1]), float(bbox4326[2]), float(bbox4326[3]))
@@ -190,21 +210,6 @@ class Wms:
                 tooltips.append(info['tooltip'])
             return Response("<br>".join(tooltips), headers=headers)
 
-        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
-        layers = layers.split(',')
-        if len(layers) == 0:
-            return HTTPBadRequest()
-        if len(layers) > 1:
-            log.warning(f"Only the first layer can be requested. Found {len(layers)}. "
-                        "Only the first one will be processed.")
-        # TODO: Multiple layers could be requested with a single request
-        # Today the first layer wins.
-        layer = layers[0]
-
-        internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
-            LuxLayerInternalWMS.layer == layer).first()
-        if internal_wms is None:
-            return HTTPNotFound()
 
         # If the layer is not public check if it comes from an authorized url
         # or from a connected user or uses the right token
