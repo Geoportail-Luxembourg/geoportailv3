@@ -277,9 +277,9 @@ class Getfeatureinfo(object):
 
         layers = self.request.params.get('layers', None)
         if layers is None:
-            return HTTPBadRequest()
+            return HTTPBadRequest("missing layers parameter")
         if not all(x.isdigit() for x in layers.split(',')):
-            return HTTPBadRequest()
+            return HTTPBadRequest("layers parameter should be a number")
 
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
@@ -307,14 +307,14 @@ class Getfeatureinfo(object):
             return fc
 
         if big_box is None or small_box is None:
-            return HTTPBadRequest()
+            return HTTPBadRequest("box1 or box2 are required")
 
         coordinates_big_box = big_box.split(',')
-        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_big_box):
-            return HTTPBadRequest()
+        if not all(x.replace('-', '', 1).replace('.', '', 1).isdigit() for x in coordinates_big_box):
+            return HTTPBadRequest("Wrong box value :" + big_box)
         coordinates_small_box = small_box.split(',')
-        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
-            return HTTPBadRequest()
+        if not all(x.replace('-', '', 1).replace('.', '', 1).isdigit() for x in coordinates_small_box):
+            return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
             coordinates_small_box, results, layers, big_box, None, zoom)
