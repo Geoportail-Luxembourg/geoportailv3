@@ -149,23 +149,6 @@ class Wms:
 
             return Response(capabilities, headers=headers)
 
-        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
-        layers = layers.split(',')
-        if len(layers) == 0:
-            return HTTPBadRequest()
-        if len(layers) > 1:
-            log.warning(f"Only the first layer can be requested. Found {len(layers)}. "
-                        "Only the first one will be processed.")
-        # TODO: Multiple layers could be requested with a single request
-        # Today the first layer wins.
-        layer = layers[0]
-
-        internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
-            LuxLayerInternalWMS.layer == layer).first()
-        if internal_wms is None:
-            return HTTPNotFound()
-
-
         if request.lower() == 'getfeatureinfo':
             from geoportailv3_geoportal.views.getfeatureinfo import Getfeatureinfo
             from shapely.geometry import asShape, box, shape
@@ -174,15 +157,29 @@ class Wms:
             url = "https://map.geoportail.lu/getfeatureinfo?"
             params_dict = {'tooltip':1}
             for key in self.request.params.keys():
-                if key.lower() == 'layers':
+                if key.lower() == 'query_layers':
+                    query_layers = self.request.params.get(key).split(',')
+                    if len(query_layers) == 0:
+                        return HTTPBadRequest("query_layers is required")
+
+                    query_layer = query_layers[0]
+
+                    internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
+                        LuxLayerInternalWMS.layer == query_layer).first()
+                    if internal_wms is None:
+                        return HTTPNotFound("query_layers not found" )
                     params_dict['layers'] = internal_wms.id
+                elif key.lower() == 'layers' or key.lower() == 'i' or key.lower() == 'j' or \
+                     key.lower() == 'info_format' or key.lower() == 'transparent' or \
+                     key.lower() == 'width' or key.lower() == 'height' or key.lower() == 'format' or \
+                     key.lower() == 'request' or key.lower() == 'version' or \
+                     key.lower() == 'crs' or key.lower() == 'styles' or key.lower() == 'service':
+                    pass
                 elif key.lower() == 'bbox':
-                    bbox = self.request.params.get(key)
-                    bbox4326 = bbox.split(',')
-                    the_box = box(float(bbox4326[0]), float(bbox4326[1]), float(bbox4326[2]), float(bbox4326[3]))
+                    bbox = self.request.params.get(key).split(',')
+                    the_box = box(float(bbox[0]), float(bbox[1]), float(bbox[2]), float(bbox[3]))
                     crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
                     box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
-
                     box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
                     width = self.request.params.get('WIDTH', self.request.params.get('width', '0'))
                     height = self.request.params.get('HEIGHT', self.request.params.get('height', '0'))
@@ -191,7 +188,7 @@ class Wms:
                     res = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x,y])
                     xLuref = res[0]
                     yLuref = res[1]
-                    box = ""+str(box2169[1]+xLuref-1)+","+str(box2169[0]+yLuref-1)+","+str(box2169[1]+xLuref+1)+","+str(box2169[0]+yLuref+1)
+                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[1]+yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[1]+yLuref+1)
                     params_dict['box1'] = box
                     params_dict['box2'] = box
                     params_dict[key.lower()] = box
@@ -210,6 +207,21 @@ class Wms:
                 tooltips.append(info['tooltip'])
             return Response("<br>".join(tooltips), headers=headers)
 
+        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
+        layers = layers.split(',')
+        if len(layers) == 0:
+            return HTTPBadRequest()
+        if len(layers) > 1:
+            log.warning(f"Only the first layer can be requested. Found {len(layers)}. "
+                        "Only the first one will be processed.")
+        # TODO: Multiple layers could be requested with a single request
+        # Today the first layer wins.
+        layer = layers[0]
+
+        internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
+            LuxLayerInternalWMS.layer == layer).first()
+        if internal_wms is None:
+            return HTTPNotFound()
 
         # If the layer is not public check if it comes from an authorized url
         # or from a connected user or uses the right token
