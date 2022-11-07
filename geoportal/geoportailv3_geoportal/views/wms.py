@@ -188,7 +188,7 @@ class Wms:
                     res = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x,y])
                     xLuref = res[0]
                     yLuref = res[1]
-                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[3]+yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[3]+yLuref+1)
+                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[3]-yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[3]-yLuref+1)
                     params_dict['box1'] = box
                     params_dict['box2'] = box
                     params_dict[key.lower()] = box
