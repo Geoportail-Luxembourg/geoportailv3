@@ -659,9 +659,11 @@ class Getfeatureinfo(object):
                         r['tooltip'] =\
                             remote_template.render(features=features)
                     else:
-                        r['tooltip'] =\
-                            remote_template.render(feature=features[0])
-
+                        if len(features) > 0:
+                            r['tooltip'] =\
+                                remote_template.render(feature=features[0])
+                        else:
+                            r['tooltip'] = ''
                 else:
                     r['tooltip'] = render(
                         'geoportailv3_geoportal:' + path + template, context)
@@ -685,7 +687,6 @@ class Getfeatureinfo(object):
             scale_x = (box2169[2] - box2169[0]) / width
         else :
             scale_x = (box2169[0] - box2169[2]) / width
-
         if (box2169[3] - box2169[1]) > 0:
             scale_y = (box2169[3] - box2169[1]) / height
         else :
