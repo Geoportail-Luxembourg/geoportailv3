@@ -177,7 +177,7 @@ class Wms:
                     pass
                 elif key.lower() == 'bbox':
                     bbox = self.request.params.get(key).split(',')
-                    the_box = box(float(bbox[0]), float(bbox[1]), float(bbox[2]), float(bbox[3]))
+                    the_box = box(float(bbox[1]), float(bbox[0]), float(bbox[3]), float(bbox[2]))
                     crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
                     box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
                     box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
@@ -188,7 +188,7 @@ class Wms:
                     res = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x,y])
                     xLuref = res[0]
                     yLuref = res[1]
-                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[1]+yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[1]+yLuref+1)
+                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[3]+yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[3]+yLuref+1)
                     params_dict['box1'] = box
                     params_dict['box2'] = box
                     params_dict[key.lower()] = box
