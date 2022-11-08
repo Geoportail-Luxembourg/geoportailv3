@@ -191,9 +191,10 @@ class Wms:
                     res = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x,y])
                     xLuref = res[0]
                     yLuref = res[1]
-                    box = ""+str(box2169[0]+xLuref-1)+","+str(box2169[3]-yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[3]-yLuref+1)
-                    params_dict['box1'] = box
-                    params_dict['box2'] = box
+                    box2 = ""+str(box2169[0]+xLuref-1)+","+str(box2169[3]-yLuref-1)+","+str(box2169[0]+xLuref+1)+","+str(box2169[3]-yLuref+1)
+                    box1 = ""+str(box2169[0]+xLuref-10)+","+str(box2169[3]-yLuref-10)+","+str(box2169[0]+xLuref+10)+","+str(box2169[3]-yLuref+10)
+                    params_dict['box1'] = box1
+                    params_dict['box2'] = box2
                     params_dict[key.lower()] = box
                 else:
                     params_dict[key.lower()] = self.request.params.get(key)
