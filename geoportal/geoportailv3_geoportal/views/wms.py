@@ -177,8 +177,11 @@ class Wms:
                     pass
                 elif key.lower() == 'bbox':
                     bbox = self.request.params.get(key).split(',')
-                    the_box = box(float(bbox[1]), float(bbox[0]), float(bbox[3]), float(bbox[2]))
                     crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
+                    if crs.lower() == 'epsg:3857':
+                        the_box = box(float(bbox[0]), float(bbox[1]), float(bbox[2]), float(bbox[3]))
+                    else:
+                        the_box = box(float(bbox[1]), float(bbox[0]), float(bbox[3]), float(bbox[2]))
                     box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
                     box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
                     width = self.request.params.get('WIDTH', self.request.params.get('width', '0'))
