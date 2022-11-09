@@ -188,8 +188,8 @@ class Wms:
                     height = self.request.params.get('HEIGHT', self.request.params.get('height', '0'))
                     x = float(self.request.params.get('x', self.request.params.get('X', self.request.params.get('i', self.request.params.get('I', 0)))))
                     y = float(self.request.params.get('y', self.request.params.get('Y', self.request.params.get('j', self.request.params.get('J', 0)))))
-                    xy1 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x-1,y-1])
-                    xy2 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x+1,y+1])
+                    xy1 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x-5,y-5])
+                    xy2 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x+5,y+5])
                     box = ""+str(box2169[0]+xy1[0])+","+str(box2169[3]-xy1[1])+","+str(box2169[0]+xy2[0])+","+str(box2169[3]-xy2[1])
                     params_dict['box1'] = box
                     params_dict['box2'] = box
