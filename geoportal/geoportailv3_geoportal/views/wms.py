@@ -170,7 +170,7 @@ class Wms:
                         return HTTPNotFound("query_layers not found" )
                     params_dict['layers'] = internal_wms.id
                 elif key.lower() == 'layers' or key.lower() == 'i' or key.lower() == 'j' or \
-                     key.lower() == 'info_format' or key.lower() == 'transparent' or \
+                     key.lower() == 'transparent' or \
                      key.lower() == 'width' or key.lower() == 'height' or key.lower() == 'format' or \
                      key.lower() == 'request' or key.lower() == 'version' or \
                      key.lower() == 'crs' or key.lower() == 'styles' or key.lower() == 'service':
@@ -203,7 +203,7 @@ class Wms:
             url = url + separator + params
             f = urllib.request.urlopen(url, None, 15)
             data = f.read()
-            headers = {"Content-Type": self.request.params.get('INFO_FORMAT', 'text/plain')}
+            headers = {"Content-Type": self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/plain'))}
             tooltips = []
             for info in json.loads(data):
                 tooltips.append(info['tooltip'])
