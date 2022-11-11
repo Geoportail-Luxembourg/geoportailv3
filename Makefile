@@ -129,7 +129,7 @@ run: build
 .PHONY: dev
 dev: build
 	echo "Once the composition is up open the following URL:"
-	echo "browse http:/localhost:8080/dev/main.html"
+	echo "browse http://localhost:8080/dev/main.html"
 	docker-compose down; docker-compose up
 
 .PHONY: attach
