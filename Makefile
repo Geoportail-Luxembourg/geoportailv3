@@ -109,18 +109,6 @@ update-translations:
 pull-translations:
 	tx pull --force
 	tx pull -s --force
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-tooltips.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-tooltips.mo geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-tooltips.mo geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-tooltips.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-tooltips.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-server.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-server.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-server.mo geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-server.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-server.mo geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-server.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-server.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-server.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-client.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-client.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-client.mo geoportal/geoportailv3_geoportal/static/de/LC_MESSAGES/geoportailv3_geoportal-client.po
-	  msgfmt -o geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-client.mo geoportal/geoportailv3_geoportal/static/en/LC_MESSAGES/geoportailv3_geoportal-client.po
-	msgfmt -o geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-client.mo geoportal/geoportailv3_geoportal/static/lb/LC_MESSAGES/geoportailv3_geoportal-client.po
 
 .PHONY: update-search-layers
 update-search-layers:
