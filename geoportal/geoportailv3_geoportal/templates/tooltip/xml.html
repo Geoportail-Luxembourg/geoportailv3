@@ -1,13 +1,16 @@
 <% import numbers %>
-<?xml version=”1.0″ encoding=”utf-8″?>
 ## -*- coding: utf-8 -*-
-<attributes>
 % for feature in features:
+  <feature>
+  <attributes>
   % for attr in feature['attributes']:
     % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != '':
-        <label>${_c(_t('f_' + attr))}</label>
+        <attribute>
+        <name>${_c(_t('f_' + attr))}</name>
         <value>${str(feature['attributes'][attr]) | n}</value>
+        </attribute>
     % endif
   % endfor
+  </attributes>
+  </feature>
 % endfor
-</attributes>
