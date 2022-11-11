@@ -627,11 +627,11 @@ class Getfeatureinfo(object):
 
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
-            localizer = get_localizer(self.request)
+            localizer = self.request.localizer
             server = TranslationStringFactory("geoportailv3_geoportal-server")
             tooltips = TranslationStringFactory("geoportailv3_geoportal-tooltips")
             client = TranslationStringFactory("geoportailv3_geoportal-client")
-
+            info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/html'))
             for r in results:
                 l_template = r['template']
                 filename = resource_filename('geoportailv3_geoportal', path + l_template)
@@ -665,8 +665,15 @@ class Getfeatureinfo(object):
                         else:
                             r['tooltip'] = ''
                 else:
-                    r['tooltip'] = render(
-                        'geoportailv3_geoportal:' + path + template, context)
+                    if info_format == 'text/xml':
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + 'xml.html', context)
+                    elif info_format == 'text/plain':
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + 'text.html', context)
+                    else:
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
 
         return results
 
