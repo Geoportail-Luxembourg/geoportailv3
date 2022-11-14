@@ -155,7 +155,7 @@ class Wms:
             import json
             gfi = Getfeatureinfo(self.request)
             url = "https://map.geoportail.lu/getfeatureinfo?"
-            params_dict = {'tooltip':1}
+            params_dict = {'tooltip':1, 'lang': 'fr'}
             for key in self.request.params.keys():
                 if key.lower() == 'query_layers':
                     query_layers = self.request.params.get(key).split(',')
@@ -206,6 +206,7 @@ class Wms:
             info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/plain'))
             headers = {"Content-Type": info_format}
             tooltips = []
+
             for info in json.loads(data):
                 tooltips.append(info['tooltip'])
             if info_format == 'text/xml':
