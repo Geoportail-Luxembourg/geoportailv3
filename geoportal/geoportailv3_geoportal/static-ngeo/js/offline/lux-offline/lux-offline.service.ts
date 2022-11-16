@@ -1,8 +1,9 @@
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { OfflineStatus, PackageToSkip, StatusJson, TilePackages } from './lux-offline.model';
 
-class LuxOfflineService {
+export class LuxOfflineService {
   public status$: BehaviorSubject<OfflineStatus> = new BehaviorSubject(OfflineStatus.UNINITIALIZED);
+  public tileError$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private tilePackages: TilePackages;
   private server: string;
   private checkTimeout: number;
@@ -22,7 +23,7 @@ class LuxOfflineService {
     return !!this.server;
   }
 
-  private checkTiles() {
+  public checkTiles() {
     fetch(this.baseURL + "/check")
       .then((response) => response.json())
       .then((statusJson) => this.setStatus(statusJson))
@@ -44,6 +45,7 @@ class LuxOfflineService {
       UPDATE_AVAILABLE: [],
       UP_TO_DATE: []
     }
+    this.tileError$.next(false)
     for(const tileKey in statusJson) {
       // skip package hillshade (too large for transfers)
       if (tileKey == PackageToSkip.HILLSHADE) {
@@ -64,6 +66,9 @@ class LuxOfflineService {
       this.status$.next(OfflineStatus.IN_PROGRESS);
       this.reCheckTilesTimeout(2500);
     } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
+      if (this.status$.getValue() === OfflineStatus.IN_PROGRESS) {
+        this.tileError$.next(true)
+      }
       this.status$.next(OfflineStatus.UPDATE_AVAILABLE);
     } else {
       this.status$.next(OfflineStatus.UP_TO_DATE);
@@ -90,7 +95,17 @@ class LuxOfflineService {
       .catch((error) => {
         console.error('Error:', error);
       })
-      .finally(() => {this.reCheckTilesTimeout(250)});
+      .finally(() => {
+        if (method === 'DELETE') {
+          //prevents a network request for 'DELETE'
+          if (this.tilePackages.UP_TO_DATE.length > 0) {
+            this.tilePackages.UPDATE_AVAILABLE = [...this.tilePackages.UP_TO_DATE]
+            this.status$.next(OfflineStatus.UPDATE_AVAILABLE)
+          }
+        } else {
+          this.reCheckTilesTimeout(250)
+        }
+      });
   }
 
   private reCheckTilesTimeout(timeout) {
