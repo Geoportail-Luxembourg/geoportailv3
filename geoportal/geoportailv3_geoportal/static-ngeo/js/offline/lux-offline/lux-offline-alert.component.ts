@@ -1,10 +1,11 @@
 import 'jquery';
 import 'bootstrap/js/modal.js';
 import i18next from 'i18next';
+import { combineLatestWith } from 'rxjs';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, query} from 'lit/decorators.js';
-import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { LuxOfflineServiceInstance, LuxOfflineService } from './lux-offline.service';
 import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline-alert')
@@ -19,17 +20,27 @@ export class LuxOfflineAlert extends LuxBaseElement {
   @query('.modal')
   private modal: HTMLElement;
 
+  private prevStatus;
+  private offlineService: LuxOfflineService;
+
   constructor() {
     super();
     this.offlineService = LuxOfflineServiceInstance;
-    this.subscription = this.offlineService.status$.subscribe((status)=> {
-      if (status === OfflineStatus.UPDATE_AVAILABLE) {
+    this.prevStatus = this.offlineService.status$.getValue();
+    this.subscription = this.offlineService.status$.pipe(
+      combineLatestWith(this.offlineService.tileError$)
+    ).subscribe(([status, error])=> {
+      if ((!error 
+        && status === OfflineStatus.UPDATE_AVAILABLE)
+        && (this.prevStatus === undefined 
+        || this.prevStatus === OfflineStatus.UNINITIALIZED)) {
         $(this.modal).modal('show');
       }
       if (status === OfflineStatus.UP_TO_DATE) {
         $(this.modal).modal('hide');
       }
       this.status = status;
+      this.prevStatus = status
     });
   }
 
@@ -49,7 +60,7 @@ export class LuxOfflineAlert extends LuxBaseElement {
             </div>
             <div class="modal-body">
               <div>
-                <div class="offline-btn btn btn-primary" @click="${this.updateTiles}">
+                <div class="offline-btn btn btn-primary" @click="${this.updateTiles}" ?disabled="${this.status!==OfflineStatus.UPDATE_AVAILABLE}">
                   ${i18next.t('Update offline data')}
                   ${this.status===OfflineStatus.IN_PROGRESS
                     ? html `<i class="fa fa-circle-o-notch fa-spin"></i>`
