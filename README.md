@@ -1,47 +1,43 @@
-geoportailv3 project
-===================
+# geoportailv3 project
 [![Build Status](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3.svg?branch=master)](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3)
 
 geoportailv3 is the implementation of the v3 of the map viewer of the luxembourgish geoportal.
 
-
 Read the `Documentation <http://docs.camptocamp.net/c2cgeoportal/>`_
 
-System-level dependencies
--------------------------
-
+## System-level dependencies
 The following must be installed on the system:
 
 * ``git``
 * ``npm``
 * ``gettext``
 
-Checkout
---------
-
+## Checkout
 ```bash
 git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
 ```
 
-Build
------
-
+## Build
 ```bash
 cd geoportailv3
 make build
 ```
 
-Local run and development
--------------------------
+## Local run and development
 
-To some extent, it is possible to simulate the services needed by the
-application using git@github.com:camptocamp/luxembourg_dev_db.git
-Clone that repository and there run: `make`.
-In order to work with a database dump, simply put the sql file there before running `make`.
+### Run the Database
+- Clone https://github.com/camptocamp/luxembourg_dev_db
+- Copy the `geov3-light.sql` in the project directory.
+- Run `make`
 
-To start the composition use: `make run` and open http://localhost:8080.
-Alternatively, to start the dev composition use: `make dev` and open http://localhost:8080/dev/main.html.
+### Run
+To start the composition use `make run` and open http://localhost:8080.
 
+### Dev
+- Copy `docker-compose.override.sample.yaml` to `docker-compose.override.yaml` to enable webpack server.
+- Start the dev composition with `make dev` and open http://localhost:8080/dev/main.html.
+
+### Other ?
 Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
 The local ldap contains a single user: c2c/test1234 with admin rights.
