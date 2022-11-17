@@ -7,7 +7,11 @@
   % for attr in feature['attributes']:
     % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != '':
         <attribute>
-        <name>${escape(_c(_t('f_' + attr)))}</name>
+        % if _c(_t('f_' + attr)) != 'f_' + attr:
+          <name>${escape(_c(_t('f_' + attr)))}</name>
+        % else:
+          <name>${escape(attr)}</name>
+        % endif
         <value>${escape(str(feature['attributes'][attr])) | n}</value>
         </attribute>
     % endif
