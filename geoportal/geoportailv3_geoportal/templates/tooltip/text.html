@@ -3,7 +3,11 @@
 % for feature in features:
   % for attr in feature['attributes']:
     % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != '':
+      % if _c(_t('f_' + attr)) != 'f_' + attr:
         ${_c(_t('f_' + attr))} : ${str(feature['attributes'][attr]) | n}
+      % else:
+        ${attr} : ${str(feature['attributes'][attr]) | n}
+      % endif
     % endif
   % endfor
 % endfor
