@@ -385,13 +385,15 @@
           ng-prop-scope="mainCtrl.scope_"
       ></lux-offline>
       <ngeo-offline
-          ng-class="mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide'"
+          ng-class="[
+                      mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide', 
+                      {'offline-mode': mainCtrl.offlineMode.isEnabled()}
+                    ]"
           ngeo-offline-map="::mainCtrl.map"
           ngeo-offline-mask-margin="::100"
           ngeo-offline-min-zoom="::12"
           ngeo-offline-max-zoom="::16"
           ngeo-full-offline-active="mainCtrl.offlineBar.fullOffline_"
-          ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
           ng-show="!mainCtrl.embedded"
       >
       </ngeo-offline>
