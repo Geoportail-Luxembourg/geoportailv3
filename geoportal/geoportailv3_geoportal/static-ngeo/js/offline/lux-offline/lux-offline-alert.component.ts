@@ -17,7 +17,7 @@ export class LuxOfflineAlert extends LuxBaseElement {
   @state()
   private subscription;
 
-  @query('.modal')
+  @query('.modal-alert')
   private modal: HTMLElement;
 
   private prevStatus;
@@ -51,7 +51,7 @@ export class LuxOfflineAlert extends LuxBaseElement {
 
   render() {
     return html`
-      <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal modal-alert" tabindex="-1" role="dialog">
         <div class="modal-dialog offline-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">
