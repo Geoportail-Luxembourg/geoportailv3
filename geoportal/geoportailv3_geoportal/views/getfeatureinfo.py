@@ -1149,7 +1149,7 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_pf(self, layer_id, rows, measurements=True,
+    def get_info_from_pf2(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3_geoportal.PF
         DBSession.rollback()
@@ -1180,6 +1180,65 @@ class Getfeatureinfo(object):
                     self.request.user,
                     self.request.referer)
 
+            features.append(f)
+
+        return features
+
+    def get_info_from_pf(self, layer_id, rows, measurements=True,
+                         attributes_to_remove=""):
+        #import geoportailv3_geoportal.PF
+        DBSession.rollback()
+        #pf = geoportailv3_geoportal.PF.PF()
+        features = []
+        for row in rows:
+            geometry = geojson_loads(row['st_asgeojson'])
+            if 'textstring' in row:
+                fid = row['textstring']
+            else:
+                fid = None
+            f = self.to_feature(layer_id, fid,
+                                geometry, dict(row), attributes_to_remove)
+            attributes = f['attributes']
+            base_url = os.environ["API-ARCHIMET-URL"]
+            api_key = os.environ["API-ARCHIMET-KEY"]
+            url = f"{base_url}/parcelles/pf/{fid}"
+            hdr = {'api-key': api_key}
+            try:
+                req = urllib.request.Request(url, headers=hdr)
+                response = urllib.request.urlopen(req)
+                attributes['PF'] = dict(json.loads(response.read()))
+            except Exception as e:
+                log.exception(e)
+
+            if measurements:
+                try:
+                    attributes['measurements'] = []
+                    url = f"{base_url}/document/from-parcel-ids/?parcel_ids={fid}&include_descendants=false"
+                    req = urllib.request.Request(url, headers=hdr)
+                    response = urllib.request.urlopen(req)
+                    info = json.loads(response.read())
+                    for mesurage_num in info[fid].keys():
+                        documents = info[fid][mesurage_num]['documents']
+                        if len(documents) > 0:
+                            for document in documents:
+                                cur_measurement = {}
+                                cur_measurement['measurementNumber'] = mesurage_num
+                                cur_measurement['parcelId'] = fid
+                                cur_measurement['measurementType'] = document['document_type']['description']
+                                cur_measurement['description'] = document['document_type']['description']
+                                cur_measurement['dossier_id'] = document['dossier_id']
+                                cur_measurement['document_id'] = document['id']
+                                cur_measurement['is_downloadable'] = True
+                                attributes['measurements'].append(cur_measurement)
+                                log.error(document)
+                        else:
+                            cur_measurement['measurementNumber'] = mesurage_num
+                            cur_measurement['parcelId'] = fid
+                            cur_measurement['document_id'] = None
+                            cur_measurement['dossier_id'] = None
+                            attributes['measurements'].append(cur_measurement)
+                except Exception as e:
+                    log.exception(e)
             features.append(f)
 
         return features

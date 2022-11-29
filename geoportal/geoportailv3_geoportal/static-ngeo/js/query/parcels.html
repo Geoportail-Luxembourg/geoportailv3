@@ -12,10 +12,10 @@
   <span translate>Lien vers les mesurages</span> : 
   <ul>
   <div ng-repeat="measurement in feature.attributes.measurements">
-    <div ng-repeat="file in measurement.files">
-      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.town_info.town_code, file.filename,measurement.measurementType, measurement.parcelId)">No {{file.filename | limitTo : 5 :0}}</a></li>
+    <div ng-if="measurement.document_id">
+      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.document_id, measurement.description, measurement.measurementNumber, measurement.parcelId)">No {{measurement.measurementNumber}} {{measurement.description}}</a></li>
     </div>
-    <div ng-if="!measurement.files">
+    <div ng-if="!measurement.document_id">
       <li><span translate>Mesurage non disponible</span> : {{measurement.measurementNumber}}</li>
     </div>
   </div>

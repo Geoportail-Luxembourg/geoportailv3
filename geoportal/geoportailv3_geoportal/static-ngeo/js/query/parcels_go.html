@@ -14,11 +14,11 @@
   <span translate>Lien vers les mesurages</span> : 
   <ul>
   <div ng-repeat="measurement in feature.attributes.measurements">
-    <div ng-repeat="file in measurement.files">
-      <li ng-if="file.is_downloadable"><a target='_blank' download href='{{ctrl.getDownloadMeasurementUrl()}}?parcel={{measurement.parcelId}}&dirName={{measurement.town_info.name}}&filename={{file.filename}}'>No {{file.filename | limitTo : 5 :0}}</a></li>
-      <li ng-if="!file.is_downloadable">No {{file.filename | limitTo : 5 :0}}</li>
+    <div ng-if="measurement.document_id">
+      <li ng-if="measurement.is_downloadable"><a target='_blank' download href='{{ctrl.getDownloadMeasurementUrl()}}?document_id={{measurement.document_id}}'>No {{measurement.measurementNumber}} {{measurement.description}}</a></li>
+      <li ng-if="!measurement.is_downloadable">No {{measurement.measurementNumber}} {{measurement.description}}</li>
     </div>
-    <div ng-if="!measurement.files">
+    <div ng-if="!measurement.document_id">
       <li><span translate>Mesurage non disponible</span> : {{measurement.measurementNumber}}</li>
     </div>
   </div>
