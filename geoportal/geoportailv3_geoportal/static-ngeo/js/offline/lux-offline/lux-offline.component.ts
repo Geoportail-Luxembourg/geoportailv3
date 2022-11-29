@@ -88,6 +88,9 @@ export class LuxOffline extends LuxBaseElement {
 
     toggleMenu() {
       this.menuDisplayed = !this.menuDisplayed;
+      if (this.menuDisplayed) {
+        this.offlineService.checkTiles(true);
+      }
       this.bar.toggleFullOffline();
       this.scope.$digest()
     }
