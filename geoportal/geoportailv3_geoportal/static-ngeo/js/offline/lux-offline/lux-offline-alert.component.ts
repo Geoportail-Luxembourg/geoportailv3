@@ -76,7 +76,9 @@ export class LuxOfflineAlert extends LuxBaseElement {
   }
 
   updateTiles(){
-    this.offlineService.updateTiles()
+    if (this.status === OfflineStatus.UPDATE_AVAILABLE) {
+      this.offlineService.updateTiles()
+    }
   }
 
   createRenderRoot() {
