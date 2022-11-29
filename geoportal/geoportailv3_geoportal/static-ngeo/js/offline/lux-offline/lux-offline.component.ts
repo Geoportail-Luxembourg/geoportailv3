@@ -75,7 +75,9 @@ export class LuxOffline extends LuxBaseElement {
     }
 
     updateTiles(){
-      this.offlineService.updateTiles()
+      if (this.status === OfflineStatus.UPDATE_AVAILABLE) {
+        this.offlineService.updateTiles()
+      }
     }
 
     deleteTiles(){
