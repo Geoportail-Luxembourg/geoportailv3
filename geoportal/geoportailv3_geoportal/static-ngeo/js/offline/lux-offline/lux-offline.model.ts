@@ -9,7 +9,8 @@ export interface TilePackages {
   ALL: string[],
   IN_PROGRESS: string[],
   UPDATE_AVAILABLE: string[],
-  UP_TO_DATE: string[]
+  UP_TO_DATE: string[],
+  UNAVAILABLE: string[],
 };
 export enum PackageToSkip {
   HILLSHADE = "hillshade-lu"
