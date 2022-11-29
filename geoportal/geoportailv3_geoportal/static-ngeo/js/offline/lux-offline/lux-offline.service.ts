@@ -23,13 +23,13 @@ export class LuxOfflineService {
     return !!this.server;
   }
 
-  public checkTiles() {
+  public checkTiles(silent?: boolean) {
     this.tileError$.next(false);
     fetch(this.baseURL + "/check")
       .then((response) => response.json())
       .then((statusJson) => this.setStatus(statusJson))
       .catch((error) => {
-        this.handleError(error)
+        this.handleError(error, silent)
       });
   }
 
@@ -59,7 +59,6 @@ export class LuxOfflineService {
         this.tilePackages.UP_TO_DATE.push(tileKey);
       }
     }
-    console.log(this.tilePackages)
     if (this.tilePackages.UNAVAILABLE.length > 0) {
       this.handleError('AVAILABLE FALSY');
     } else if (this.tilePackages.IN_PROGRESS.length > 0) {
@@ -115,8 +114,10 @@ export class LuxOfflineService {
    * - A tile package has a falsy value in its 'available' property
    * In all three cases handleError() is called from within this service.
    */
-  private handleError(error: Error | string) {
-    this.tileError$.next(true);
+  private handleError(error: Error | string, silent?: boolean) {
+    if (!silent) {
+      this.tileError$.next(true);
+    }
     console.error('Error:', error);
     console.log(this.tilePackages)
     clearTimeout(this.checkTimeout);
