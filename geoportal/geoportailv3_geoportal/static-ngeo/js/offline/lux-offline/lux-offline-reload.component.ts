@@ -28,10 +28,11 @@ export class LuxReloadAlert extends LuxBaseElement {
     this.offlineService.status$.pipe(
       combineLatestWith(this.offlineService.tileError$)
     ).subscribe(([status, error])=> {
-      if (!error
-        && status !== OfflineStatus.IN_PROGRESS
+      if ((status === OfflineStatus.UP_TO_DATE ||
+        status === OfflineStatus.DELETED)
         && this.prevStatus !== undefined
-        && this.prevStatus !== OfflineStatus.UNINITIALIZED) {
+        && this.prevStatus !== OfflineStatus.UNINITIALIZED
+        && !error) {
         if (status !== this.prevStatus) {
           $(this.modal).modal('show');
         }
