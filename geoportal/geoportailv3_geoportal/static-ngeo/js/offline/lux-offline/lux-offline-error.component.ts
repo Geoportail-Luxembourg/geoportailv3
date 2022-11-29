@@ -3,7 +3,7 @@ import 'bootstrap/js/modal.js';
 import i18next from 'i18next';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
-import {customElement, state, query} from 'lit/decorators.js';
+import {customElement, state, query, property} from 'lit/decorators.js';
 import { LuxOfflineServiceInstance, LuxOfflineService } from './lux-offline.service';
 import { OfflineStatus } from './lux-offline.model';
 
@@ -16,7 +16,7 @@ export class LuxOfflineError extends LuxBaseElement {
   @state()
   private subscription;
 
-  @query('.modal')
+  @query('.modal-error')
   private modal: HTMLElement;
 
   private offlineService: LuxOfflineService;
@@ -41,7 +41,7 @@ export class LuxOfflineError extends LuxBaseElement {
 
   render() {
     return html`
-      <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal modal-error" tabindex="-1" role="dialog">
         <div class="modal-dialog offline-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">

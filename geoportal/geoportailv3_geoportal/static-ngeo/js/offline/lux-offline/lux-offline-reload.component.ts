@@ -16,7 +16,7 @@ export class LuxReloadAlert extends LuxBaseElement {
 
   private prevStatus;
 
-  @query('.modal')
+  @query('.modal-reload')
   private modal: HTMLElement;
 
   private offlineService: LuxOfflineService
@@ -44,7 +44,7 @@ export class LuxReloadAlert extends LuxBaseElement {
 
   render() {
     return html`
-      <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal modal-reload" tabindex="-1" role="dialog">
         <div class="modal-dialog offline-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">
