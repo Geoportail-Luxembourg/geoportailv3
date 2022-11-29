@@ -24,17 +24,12 @@ export class LuxOfflineService {
   }
 
   public checkTiles() {
+    this.tileError$.next(false);
     fetch(this.baseURL + "/check")
       .then((response) => response.json())
       .then((statusJson) => this.setStatus(statusJson))
       .catch((error) => {
-        this.tilePackages = {
-          ALL: [],
-          IN_PROGRESS: [],
-          UPDATE_AVAILABLE: [],
-          UP_TO_DATE: []
-        }
-        console.error('Error:', error);
+        this.handleError(error)
       });
   }
 
@@ -43,16 +38,18 @@ export class LuxOfflineService {
       ALL: [],
       IN_PROGRESS: [],
       UPDATE_AVAILABLE: [],
-      UP_TO_DATE: []
+      UP_TO_DATE: [],
+      UNAVAILABLE: [],
     }
-    this.tileError$.next(false)
     for(const tileKey in statusJson) {
       // skip package hillshade (too large for transfers)
       if (tileKey == PackageToSkip.HILLSHADE) {
         continue;
       }
       this.tilePackages.ALL.push(tileKey);
-      if (statusJson[tileKey].status === OfflineStatus.IN_PROGRESS) {
+      if (!statusJson[tileKey].available) {
+        this.tilePackages.UNAVAILABLE.push(tileKey);
+      } else if (statusJson[tileKey].status === OfflineStatus.IN_PROGRESS) {
         this.tilePackages.IN_PROGRESS.push(tileKey);
       } else if ((statusJson[tileKey].current < statusJson[tileKey].available) 
         || (!statusJson[tileKey].current && statusJson[tileKey].available)
@@ -62,12 +59,15 @@ export class LuxOfflineService {
         this.tilePackages.UP_TO_DATE.push(tileKey);
       }
     }
-    if (this.tilePackages.IN_PROGRESS.length > 0) {
+    console.log(this.tilePackages)
+    if (this.tilePackages.UNAVAILABLE.length > 0) {
+      this.handleError('AVAILABLE FALSY');
+    } else if (this.tilePackages.IN_PROGRESS.length > 0) {
       this.status$.next(OfflineStatus.IN_PROGRESS);
       this.reCheckTilesTimeout(2500);
     } else if (this.tilePackages.UPDATE_AVAILABLE.length > 0) {
       if (this.status$.getValue() === OfflineStatus.IN_PROGRESS) {
-        this.tileError$.next(true)
+        this.handleError('IN_PROGRESS => UPDATE_AVAILABLE');
       }
       this.status$.next(OfflineStatus.UPDATE_AVAILABLE);
     } else {
@@ -93,19 +93,42 @@ export class LuxOfflineService {
         console.log('Success:', data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        this.handleError(error);
       })
       .finally(() => {
         if (method === 'DELETE') {
           //prevents a network request for 'DELETE'
           if (this.tilePackages.UP_TO_DATE.length > 0) {
             this.tilePackages.UPDATE_AVAILABLE = [...this.tilePackages.UP_TO_DATE]
-            this.status$.next(OfflineStatus.UPDATE_AVAILABLE)
+            this.status$.next(OfflineStatus.DELETED)
           }
         } else {
           this.reCheckTilesTimeout(250)
         }
       });
+  }
+
+  /**
+   * There are three possible erroneous responses that can be returned by the local backend
+   * - A server error that is caught via the fetch().catch() statement
+   * - A tile package that has been in status 'IN_PROGRESS' turns back into status 'UPDATE_AVAILABLE'
+   * - A tile package has a falsy value in its 'available' property
+   * In all three cases handleError() is called from within this service.
+   */
+  private handleError(error: Error | string) {
+    this.tileError$.next(true);
+    console.error('Error:', error);
+    console.log(this.tilePackages)
+    clearTimeout(this.checkTimeout);
+    if (this.tilePackages.IN_PROGRESS.length > 0) {
+      this.tilePackages.UPDATE_AVAILABLE = [...this.tilePackages.IN_PROGRESS];
+      this.tilePackages.IN_PROGRESS = [];
+    }
+    if (this.tilePackages.UNAVAILABLE.length > 0) {
+      this.tilePackages.UPDATE_AVAILABLE = [...this.tilePackages.UNAVAILABLE];
+      this.tilePackages.UNAVAILABLE = [];
+    }
+    this.status$.next(OfflineStatus.UPDATE_AVAILABLE);
   }
 
   private reCheckTilesTimeout(timeout) {
