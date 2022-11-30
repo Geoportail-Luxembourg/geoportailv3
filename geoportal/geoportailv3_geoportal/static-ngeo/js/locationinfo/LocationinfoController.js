@@ -310,8 +310,8 @@ const exports = function(
   var urlLocationInfo = appStateManager.getInitialValue('crosshair');
   if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
       urlLocationInfo === 'true') {
-    var x = parseInt(appStateManager.getInitialValue('X'), 0);
-    var y = parseInt(appStateManager.getInitialValue('Y'), 0);
+    var x = appStateManager.getInitialValue('X');
+    var y = appStateManager.getInitialValue('Y');
     var version = this.stateManager_.getVersion();
     var srs = appStateManager.getInitialValue('SRS');
     if (srs === undefined) {
