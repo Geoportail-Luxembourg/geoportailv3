@@ -1,10 +1,11 @@
 import 'jquery';
 import 'bootstrap/js/modal.js';
 import i18next from 'i18next';
+import { combineLatestWith } from 'rxjs';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, query} from 'lit/decorators.js';
-import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { LuxOfflineServiceInstance, LuxOfflineService } from './lux-offline.service';
 import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline-reload')
@@ -15,16 +16,24 @@ export class LuxReloadAlert extends LuxBaseElement {
 
   private prevStatus;
 
-  @query('.modal')
+  @query('.modal-reload')
   private modal: HTMLElement;
+
+  private offlineService: LuxOfflineService
 
   constructor() {
     super();
-    this.prevStatus = LuxOfflineServiceInstance.status$.getValue();
-    LuxOfflineServiceInstance.status$.subscribe((status)=> {
-      if (status !== OfflineStatus.IN_PROGRESS && this.prevStatus != undefined
-        && this.prevStatus !== OfflineStatus.UNINITIALIZED) {
-        if (status != this.prevStatus) {
+    this.offlineService = LuxOfflineServiceInstance
+    this.prevStatus = this.offlineService.status$.getValue();
+    this.offlineService.status$.pipe(
+      combineLatestWith(this.offlineService.tileError$)
+    ).subscribe(([status, error])=> {
+      if ((status === OfflineStatus.UP_TO_DATE ||
+        status === OfflineStatus.DELETED)
+        && this.prevStatus !== undefined
+        && this.prevStatus !== OfflineStatus.UNINITIALIZED
+        && !error) {
+        if (status !== this.prevStatus) {
           $(this.modal).modal('show');
         }
       }
@@ -35,7 +44,7 @@ export class LuxReloadAlert extends LuxBaseElement {
 
   render() {
     return html`
-      <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal modal-reload" tabindex="-1" role="dialog">
         <div class="modal-dialog offline-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">
