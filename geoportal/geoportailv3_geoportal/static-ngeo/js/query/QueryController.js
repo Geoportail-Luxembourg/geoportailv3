@@ -73,6 +73,12 @@ const exports = function($sce, $timeout, $scope, $http,
   this.appLotChasse_ = appLotChasse;
 
   /**
+   * @type {boolean}
+   * @export
+   */
+  this.isDownloadable = false;
+
+  /**
    * @type {string}
    * @export
    */
@@ -998,15 +1004,27 @@ exports.prototype.openFeedbackAnf = function(lot) {
   this['feedbackAnfOpen'] = true;
 };
 
+
+/**
+ * Format the Date.
+ * @param {string} datetime the string representation of datetime.
+ * @export
+ */
+exports.prototype.formatDate = function(datetime) {
+  return new Date(Date.parse(datetime)).toLocaleDateString()
+}
+
 /**
  * Open preview mesurement popup.
  * @param {string} document_id The unique document id.
  * @param {string} description The measurement description.
  * @param {string} numMeasurement The measurement number.
  * @param {string} parcelId The id of the parcel.
+ * @param {boolean} isDownloadable True if the current user is authorize to download the originale document.
  * @export
  */
-exports.prototype.openPreviewMesurage = function(document_id, description, numMeasurement, parcelId) {
+exports.prototype.openPreviewMesurage = function(document_id, description, numMeasurement, parcelId, isDownloadable) {
+  this.isDownloadable = isDownloadable;
   this.preview = true;
   this.previewDescription = description.trim() + ' - No ' + numMeasurement;
   this.previewParcelId = parcelId;

@@ -32,9 +32,9 @@ from shapely.ops import transform
 from shapely.wkt import loads as wkt_loads
 from functools import partial
 from arcgis2geojson import arcgis2geojson
-
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.views.download import Download
 log = logging.getLogger(__name__)
 
 
@@ -1126,7 +1126,6 @@ class Getfeatureinfo(object):
                 if f is not None:
                     feature['attributes']['has_sketch'] = True
             features.append(feature)
-
         return features
 
     def chargy_attributes(self, features):
@@ -1141,13 +1140,7 @@ class Getfeatureinfo(object):
                     feature['attributes']['connector_maxchspeed'] = connector['maxchspeed']
                     feature['attributes']['connector_description'] = connector['description']
                     modified_features.append(copy.deepcopy(feature))
-
-            
-
-        return modified_features    
-
-
-        return features
+        return modified_features
 
     def get_info_from_pf2(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
@@ -1209,6 +1202,7 @@ class Getfeatureinfo(object):
                 attributes['PF'] = dict(json.loads(response.read()))
             except Exception as e:
                 log.exception(e)
+                log.error(url)
 
             if measurements:
                 try:
@@ -1217,6 +1211,7 @@ class Getfeatureinfo(object):
                     req = urllib.request.Request(url, headers=hdr)
                     response = urllib.request.urlopen(req)
                     info = json.loads(response.read())
+                    dossiers = {}
                     for mesurage_num in info[fid].keys():
                         documents = info[fid][mesurage_num]['documents']
                         if len(documents) > 0:
@@ -1224,13 +1219,39 @@ class Getfeatureinfo(object):
                                 cur_measurement = {}
                                 cur_measurement['measurementNumber'] = mesurage_num
                                 cur_measurement['parcelId'] = fid
-                                cur_measurement['measurementType'] = document['document_type']['description']
-                                cur_measurement['description'] = document['document_type']['description']
+                                cur_measurement['measurementType'] = document['document_type']['name']
+                                cur_measurement['date_document'] = document['date_document']
+                                cur_measurement['description'] = document['document_type']['name']
                                 cur_measurement['dossier_id'] = document['dossier_id']
                                 cur_measurement['document_id'] = document['id']
-                                cur_measurement['is_downloadable'] = True
-                                attributes['measurements'].append(cur_measurement)
-                                log.error(document)
+                                if self.request.user is None:
+                                    cur_measurement['is_downloadable'] = False
+                                else:
+                                    if cur_measurement['dossier_id'] not in dossiers:
+                                        url = f"{base_url}/dossiers/{cur_measurement['dossier_id']}/"
+                                        req = urllib.request.Request(url, headers=hdr)
+                                        response = urllib.request.urlopen(req)
+                                        cur_dossier = json.loads(response.read())
+                                        dossiers[cur_measurement['dossier_id']] = cur_dossier
+                                    else:
+                                        cur_dossier = dossiers[cur_measurement['dossier_id']]
+                                    cur_measurement['is_downloadable'] = \
+                                        Download(self.request)._is_download_authorized(
+                                        cur_dossier['commune_cadastrale']['directive_id'],
+                                        self.request.user, self.request.referer)
+                                if cur_measurement['is_downloadable']:
+                                    if document['document_type']['name'] in ('OTHER_PRIVATE') or \
+                                       document['document_type']['directive_code_type'] == 'DAI':
+                                        # do not show
+                                        pass
+                                    else:
+                                        attributes['measurements'].append(cur_measurement)
+                                elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
+                                     document['document_type']['directive_code_type'] in ('DAI', 'DTC' , 'DAE', None):
+                                        # do not show
+                                        pass
+                                else:
+                                    attributes['measurements'].append(cur_measurement)
                         else:
                             cur_measurement['measurementNumber'] = mesurage_num
                             cur_measurement['parcelId'] = fid
