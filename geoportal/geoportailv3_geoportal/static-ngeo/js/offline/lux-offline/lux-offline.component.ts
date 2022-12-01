@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import {LuxBaseElement} from '../../LuxBaseElement';
 import {html} from 'lit';
 import {customElement, state, property} from 'lit/decorators.js';
-import { LuxOfflineServiceInstance } from './lux-offline.service';
+import { LuxOfflineServiceInstance, LuxOfflineService } from './lux-offline.service';
 import { OfflineStatus } from './lux-offline.model';
 
 @customElement('lux-offline')
@@ -70,20 +70,27 @@ export class LuxOffline extends LuxBaseElement {
               </button>
             </span>
           </div>
-        ${this.menuDisplayed?this.renderMenu():""}
+        ${this.menuDisplayed ? this.renderMenu() : ""}
         `;
     }
 
     updateTiles(){
-      this.offlineService.updateTiles()
+      if (this.status === OfflineStatus.UPDATE_AVAILABLE) {
+        this.offlineService.updateTiles()
+      }
     }
 
     deleteTiles(){
-      this.offlineService.deleteTiles()
+      if (this.status !== OfflineStatus.IN_PROGRESS) {
+        this.offlineService.deleteTiles()
+      }
     }
 
     toggleMenu() {
       this.menuDisplayed = !this.menuDisplayed;
+      if (this.menuDisplayed) {
+        this.offlineService.checkTiles(true);
+      }
       this.bar.toggleFullOffline();
       this.scope.$digest()
     }
