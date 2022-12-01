@@ -14,8 +14,7 @@
   <ul>
   <div ng-repeat="measurement in feature.attributes.measurements">
     <div ng-if="measurement.document_id">
-      <li ng-if="measurement.is_downloadable"><a target='_blank' download href='{{ctrl.getDownloadMeasurementUrl()}}?document_id={{measurement.document_id}}'>No {{measurement.measurementNumber}} {{measurement.description}}</a></li>
-      <li ng-if="!measurement.is_downloadable">No {{measurement.measurementNumber}} {{measurement.description}}</li>
+      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.document_id, measurement.description, measurement.measurementNumber, measurement.parcelId, measurement.is_downloadable)">No {{measurement.measurementNumber}} {{measurement.description}} {{ctrl.formatDate(measurement.date_document)}}</a></li>
     </div>
     <div ng-if="!measurement.document_id">
       <li><span translate>Mesurage non disponible</span> : {{measurement.measurementNumber}}</li>
