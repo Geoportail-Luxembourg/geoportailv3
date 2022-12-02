@@ -5,6 +5,7 @@
     <h4 class="modal-title" translate>Prévisualisation du mesurage</h4>
   </div>
   <div class="modal-body" style="overflow: auto;max-height:500px;">
+  <p  ng-if="!ctrl.isDownloadable" class="alert" translate>Pour des raisons de protection de données, nous ne pouvons pas afficher les documents de la mensuration officielle en résolution complète, par contre vous avez la possibilité de les commander de manière individuelle et traçable</p>
   <img ng-if="ctrl.preview" ng-if="ctrl.getPreviewUrl()" ng-src="{{ctrl.getPreviewUrl()}}"/>
   </div>
   <div class="modal-footer">

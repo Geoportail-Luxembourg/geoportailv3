@@ -3,6 +3,7 @@
  */
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
+import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
 import {extend as extentExtend} from 'ol/extent.js';
@@ -60,6 +61,12 @@ const exports = function($sce, $timeout, $scope, $http,
     appExport, appActivetool, appSelectedFeatures, appDrawnFeatures,
     appAuthtktCookieName, appNotify, downloadresourceUrl, qrServiceUrl,
     previewMesurementUrl, appLotChasse, appStateManager) {
+  /**
+   * @type {Array<string>}
+   * @private
+   */
+  this.curThemesName = [];
+
   /**
    * @type {string}
    * @private
@@ -509,6 +516,18 @@ const exports = function($sce, $timeout, $scope, $http,
     this.getFeatureInfoById_(fid);
     this.ngeoLocation_.deleteParam('fid');
   }
+  listen(appThemes, appEventsThemesEventType.LOAD,
+      /**
+       * @param {ol.events.Event} evt Event.
+       */
+      (function(evt) {
+        this.curThemesName = [];
+        this.appThemes_.getThemesPromise().then((root) => {
+          root.themes.forEach(function(theme) {
+            this.curThemesName.push(theme.name);
+          }, this);
+        });
+      }), this);
 };
 
 
@@ -1464,6 +1483,17 @@ exports.prototype.openLegendPanel = function() {
  */
 exports.prototype.closeLegendPanel = function() {
   this['legendsOpen'] = false;
+};
+
+
+/**
+ * Check if the theme is available for user
+ * @param {String} currentTheme The theme to check.
+ * @return {angular.$q.Promise} Promise.
+ * @export
+ */
+exports.prototype.isThemeAvailable = function(currentTheme) {
+  return this.curThemesName.indexOf(currentTheme) >= 0;
 };
 
 appModule.controller('AppQueryController',
