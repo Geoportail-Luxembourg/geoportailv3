@@ -5,7 +5,11 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPUnauthorized
 from geoportailv3_geoportal.portail import MesurageDownload, SketchDownload
 from geoportailv3_geoportal.models import LuxDownloadUrl, LuxMeasurementDirectory
+from geoportailv3_geoportal.models import LuxMeasurementLoginCommune
 from c2cgeoportal_commons.models import DBSession
+
+from sqlalchemy import func
+
 import logging
 import mimetypes
 import geoportailv3_geoportal.PF
@@ -58,8 +62,7 @@ class Download(object):
     def download_sketch_by_id(self):
         id = self.request.params.get('id', None)
         timeout = 15
-        ng_url = os.environ["NG_URL"]
-
+        ng_url = "https://arcgis-portal.public.lu/server/rest/services/Cadastre/TOPO_NG_POINTS_PUBLIC/MapServer/0/"
         url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
         pdf_id = None
         pdf_name = None
@@ -128,14 +131,68 @@ class Download(object):
 
         return Response(f.read(), headers=headers)
 
+    def _is_download_authorized(self, town_code, user, referer):
+        if referer is not None:
+            if "bodfeature" in referer and "search4naila" in referer:
+                return True
+            if "weboffice" in referer:
+                return True
+            if "weboffice_um" in referer:
+                return True
+
+        if (town_code is None or user is None or user.username is None):
+            return False
+
+        if (DBSession.query(LuxMeasurementLoginCommune).
+                filter(func.lower(LuxMeasurementLoginCommune.login) ==
+                       func.lower(func.geov3.getMainAccount(user.username))).
+                filter(LuxMeasurementLoginCommune.num_commune ==
+                       str(town_code)).count() > 0):
+            return True
+
+        if (DBSession.query(LuxMeasurementLoginCommune).
+                filter(func.lower(LuxMeasurementLoginCommune.login) ==
+                       func.lower(user.username)).
+                filter(LuxMeasurementLoginCommune.num_commune ==
+                       str(town_code)).count() > 0):
+            return True
+
+        return False
+
     @view_config(route_name='download_measurement')
     def download_measurement(self):
         if self.request.user is None and self.request.referer is None:
             return HTTPUnauthorized()
-
+        document_id = self.request.params.get("document_id", None)
         townname = self.request.params.get("dirName", None)
         filename = self.request.params.get("filename", None)
+        if document_id is not None:
+            base_url = os.environ["API-ARCHIMET-URL"]
+            api_key = os.environ["API-ARCHIMET-KEY"]
+            hdr = {'api-key': api_key}
 
+            url = f"{base_url}/document/{document_id}/"
+            req = urllib.request.Request(url, headers=hdr)
+            response = urllib.request.urlopen(req)
+            cur_doc = json.loads(response.read())
+            dossier_id = cur_doc['dossier_id']
+            url = f"{base_url}/dossiers/{dossier_id}/"
+            req = urllib.request.Request(url, headers=hdr)
+            response = urllib.request.urlopen(req)
+            cur_dossier = json.loads(response.read())
+            if not self._is_download_authorized(
+                cur_dossier['commune_cadastrale']['directive_id'],
+                self.request.user, self.request.referer):
+                return HTTPUnauthorized()
+
+            url = f"{base_url}/document/{document_id}/download/"
+            req = urllib.request.Request(url, headers=hdr)
+            response = urllib.request.urlopen(req)
+            headers = {"Content-Type": "application/pdf",
+                   "Content-Disposition": "attachment; filename=\"%s\""
+                   % (str(filename))}
+            return Response(response.read(), headers=response.headers)
+        
         if filename is None or townname is None:
             return HTTPBadRequest("parameters are missing")
 
@@ -161,32 +218,46 @@ class Download(object):
 
         return Response(f.read(), headers=headers)
 
-    @view_config(route_name='preview_measurement')
     def preview_measurement(self):
-        towncode = self.request.params.get("code", None)
-        filename = self.request.params.get("filename", None)
-        cur_record = DBSession.query(LuxMeasurementDirectory).\
-            filter(LuxMeasurementDirectory.town_code == int(towncode)).first()
-        if cur_record is None:
-            return HTTPBadRequest("Invalid Town name")
-        measurement_filepath = "%s/%s" % (cur_record.path, filename)
-        input1 = PdfFileReader(open(measurement_filepath, 'rb'))
-        factor = 1.5
-        page0 = input1.getPage(0)
-        width = int(int(page0.mediaBox[2]) / factor)
-        height = int(int(page0.mediaBox[3]) / factor)
-        (fd, tempfilename) = tempfile.mkstemp(".png")
-        try:
-            subprocess.call(["/usr/bin/convert", "-sample",
-                             str(width) + "x" + str(height),
-                             measurement_filepath, tempfilename])
-            tfile = open(tempfilename, "rb")
-            data = tfile.read()
-        finally:
-            os.close(fd)
-            os.remove(tempfilename)
+        base_url = os.environ["API-ARCHIMET-URL"]
+        api_key = os.environ["API-ARCHIMET-KEY"]
+        document_id = self.request.params.get("document_id", None)
+        url = f"{base_url}/document/{document_id}/preview/?blur=3"
+        hdr = {'api-key': api_key}
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+
         headers = {"Content-Type": "image/png"}
-        return Response(data, headers=headers)
+        return Response(response.read(), headers=headers)
+
+    @view_config(route_name='preview_measurement')
+    def view_measurement(self):
+        base_url = os.environ["API-ARCHIMET-URL"]
+        api_key = os.environ["API-ARCHIMET-KEY"]
+        document_id = self.request.params.get("document_id", None)
+        if self.request.user is None and self.request.referer is None and document_id is None:
+            return self.preview_measurement()
+        hdr = {'api-key': api_key}
+        url = f"{base_url}/document/{document_id}/"
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        cur_doc = json.loads(response.read())
+        dossier_id = cur_doc['dossier_id']
+        url = f"{base_url}/dossiers/{dossier_id}/"
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        cur_dossier = json.loads(response.read())
+        if not self._is_download_authorized(
+            cur_dossier['commune_cadastrale']['directive_id'],
+            self.request.user, self.request.referer):
+            return self.preview_measurement()
+
+        url = f"{base_url}/document/{document_id}/preview/"
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+
+        headers = {"Content-Type": "image/png"}
+        return Response(response.read(), headers=headers)
 
     def _log_download_sketch_stats(self, filename, town):
         sketch_download = SketchDownload()
