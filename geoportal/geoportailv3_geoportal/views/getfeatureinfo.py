@@ -1241,7 +1241,7 @@ class Getfeatureinfo(object):
                                         self.request.user, self.request.referer)
                                 if cur_measurement['is_downloadable']:
                                     if document['document_type']['name'] in ('OTHER_PRIVATE') or \
-                                       document['document_type']['directive_code_type'] == 'DAI':
+                                       document['document_type']['directive_code_type'] in ('DAI', None):
                                         # do not show
                                         pass
                                     else:
