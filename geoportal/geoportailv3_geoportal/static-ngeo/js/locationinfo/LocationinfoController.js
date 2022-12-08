@@ -479,7 +479,7 @@ exports.prototype.addRoutePoint = function() {
  */
 exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
   if (eventOrCoordinate instanceof Array) {
-    this.clickCoordinate = eventOrCoordinate;
+    this.clickCoordinate = [parseInt(eventOrCoordinate[0]), parseInt(eventOrCoordinate[1])];
   } else {
     eventOrCoordinate.preventDefault();
     this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
