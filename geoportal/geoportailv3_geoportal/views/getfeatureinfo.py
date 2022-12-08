@@ -1142,46 +1142,9 @@ class Getfeatureinfo(object):
                     modified_features.append(copy.deepcopy(feature))
         return modified_features
 
-    def get_info_from_pf2(self, layer_id, rows, measurements=True,
-                         attributes_to_remove=""):
-        import geoportailv3_geoportal.PF
-        DBSession.rollback()
-        pf = geoportailv3_geoportal.PF.PF()
-        features = []
-        for row in rows:
-            geometry = geojson_loads(row['st_asgeojson'])
-            if 'textstring' in row:
-                fid = row['textstring']
-            else:
-                fid = None
-            f = self.to_feature(layer_id, fid,
-                                geometry, dict(row), attributes_to_remove)
-
-            attributes = f['attributes']
-            attributes['PF'] = dict(pf.get_detail(
-                attributes['code_commu'],
-                attributes['code_secti'],
-                int(attributes['num_cadast']),
-                int(attributes['code_sup'])))
-
-            if measurements:
-                attributes['measurements'] = pf.get_measurement_list(
-                    attributes['num_cadast'],
-                    attributes['code_sup'],
-                    attributes['code_secti'],
-                    attributes['code_commu'],
-                    self.request.user,
-                    self.request.referer)
-
-            features.append(f)
-
-        return features
-
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
-        #import geoportailv3_geoportal.PF
         DBSession.rollback()
-        #pf = geoportailv3_geoportal.PF.PF()
         features = []
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
@@ -1192,6 +1155,7 @@ class Getfeatureinfo(object):
             f = self.to_feature(layer_id, fid,
                                 geometry, dict(row), attributes_to_remove)
             attributes = f['attributes']
+
             base_url = os.environ["API-ARCHIMET-URL"]
             api_key = os.environ["API-ARCHIMET-KEY"]
             url = f"{base_url}/parcelles/pf/{fid}"
@@ -1240,7 +1204,10 @@ class Getfeatureinfo(object):
                                         cur_dossier['commune_cadastrale']['directive_id'],
                                         self.request.user, self.request.referer)
                                 if cur_measurement['is_downloadable']:
-                                    if document['document_type']['name'] in ('OTHER_PRIVATE') or \
+                                    if self.request.user.settings_role.id == 1:
+                                        # if ACT Show everything
+                                        attributes['measurements'].append(cur_measurement)
+                                    elif document['document_type']['name'] in ('OTHER_PRIVATE') or \
                                        document['document_type']['directive_code_type'] in ('DAI', None):
                                         # do not show
                                         pass
