@@ -6,7 +6,7 @@ from c2cgeoportal_commons.models.main import TreeItem
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from pyramid.renderers import render
 from pyramid.i18n import TranslationStringFactory
-from io import StringIO
+from io import BytesIO
 from bs4 import BeautifulSoup
 import weasyprint
 import urllib.request
@@ -47,7 +47,8 @@ class Legends(object):
                   "id=%s:legend:%s&do=export_html" % \
                   (lang, name)
 
-        legend_buffer = StringIO()
+        legend_buffer = BytesIO()
+        log.error(url)
         weasyprint.HTML(url, media_type="screen").write_png(
             legend_buffer,
             stylesheets=[css]
