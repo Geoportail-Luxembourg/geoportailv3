@@ -4,7 +4,7 @@ from ipaddr import IPv4Network
 from pyramid.view import view_config
 from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
 from c2cgeoportal_commons.models import DBSession
-from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, LayerWMTS
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
@@ -167,8 +167,14 @@ class Wms:
                     internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
                         LuxLayerInternalWMS.layer == query_layer).first()
                     if internal_wms is None:
-                        return HTTPNotFound("query_layers not found" )
-                    params_dict['layers'] = internal_wms.id
+                        layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
+                                                LayerWMTS.layer == query_layer).first()
+                        if layer_wmts is None:
+                            return HTTPNotFound("query_layers not found" )
+                        else:
+                            params_dict['layers'] = layer_wmts.id
+                    else:
+                        params_dict['layers'] = internal_wms.id
                 elif key.lower() == 'layers' or key.lower() == 'i' or key.lower() == 'j' or \
                      key.lower() == 'transparent' or \
                      key.lower() == 'width' or key.lower() == 'height' or key.lower() == 'format' or \
