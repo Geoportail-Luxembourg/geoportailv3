@@ -666,11 +666,15 @@ class Getfeatureinfo(object):
                             r['tooltip'] = ''
                 else:
                     if info_format == 'text/xml':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
+                        template = 'xml_' + l_template if isfile(filename) else 'xml.html'
                         r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + 'xml.html', context)
+                            'geoportailv3_geoportal:' + path + template, context)
                     elif info_format == 'text/plain':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'text_' + l_template)
+                        template = 'text_' + l_template if isfile(filename) else 'text.html'
                         r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + 'text.html', context)
+                            'geoportailv3_geoportal:' + path + template, context)
                     else:
                         r['tooltip'] = render(
                             'geoportailv3_geoportal:' + path + template, context)
@@ -1344,6 +1348,7 @@ class Getfeatureinfo(object):
         try:
             DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
+            log.error(query)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -1376,6 +1381,7 @@ class Getfeatureinfo(object):
         except Exception as e:
             log.exception(e)
             log.error(content)
+            log.error(query)
             return []
         return []
 
