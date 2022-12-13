@@ -1,0 +1,17 @@
+﻿## -*- coding: utf-8 -*-
+% for feature in features:
+  ${_c("Commune")} : ${feature['attributes']['PF']['townName']}
+  ${_c("Section")} : ${feature['attributes']['PF']['sectionDesignation']}
+  ${_c("Numero cadastral")} : ${feature['attributes']['PF']['mainNumber']}/${feature['attributes']['PF']['additionalNumber']}
+  ${_c("Contenance")} : ${feature['attributes']['PF']['capacity']}
+  ${_c("Lieudit")} : ${feature['attributes']['PF']['locality']}
+  % if 'farmingTypes' in feature['attributes']['PF']:
+  ${_c("Nature")} : ${','.join(feature['attributes']['PF']['farmingTypes'])}
+  % endif
+  % if 'occupations' in feature['attributes']['PF']:
+  ${_c("Occupation")} : ${','.join(feature['attributes']['PF']['occupations'])}
+  % endif
+  % if 'measurementNumber' in feature['attributes']['PF']:
+  ${_c("Dernier mesurage")} : ${feature['attributes']['PF']['measurementNumber']}
+  % endif
+% endfor
