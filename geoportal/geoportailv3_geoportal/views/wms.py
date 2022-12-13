@@ -232,15 +232,21 @@ class Wms:
         # TODO: Multiple layers could be requested with a single request
         # Today the first layer wins.
         layer = layers[0]
-
+        is_wmts = False
         internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.layer == layer).first()
         if internal_wms is None:
-            return HTTPNotFound()
+            layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
+                                    LayerWMTS.layer == layer).first()
+            if layer_wmts is None:
+                return HTTPNotFound()
+            else:
+                is_wmts = True
+
 
         # If the layer is not public check if it comes from an authorized url
         # or from a connected user or uses the right token
-        if not internal_wms.public and self.request.user is None:
+        if not is_wmts and not internal_wms.public and self.request.user is None:
             remote_addr = str(self.request.environ.get(
                 'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
 
@@ -249,7 +255,7 @@ class Wms:
                 return HTTPUnauthorized()
 
         # If the layer is not public and we are connected check the rights
-        if not internal_wms.public and self.request.user is not None:
+        if not is_wmts and not internal_wms.public and self.request.user is not None:
             # Check if the layer has a restriction area
             restriction: Optional[RestrictionArea] = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
@@ -264,17 +270,23 @@ class Wms:
 
         query_params = {}
         # arcgis rest api shall be used whenever rest_url is not empty
-        if (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
+        if not is_wmts and (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
             remote_host = internal_wms.rest_url + "/export"
             query_params = self._process_arcgis_server(internal_wms)
         else:
-            remote_host = internal_wms.url
+            if not is_wmts:
+                remote_host = internal_wms.url
+            else:
+                remote_host = "https://wms.geoportail.lu/mapproxy_4_v3/service?"
             for param, value in self.request.params.items():
                 if param.lower() == "styles" and remote_host.lower().find("styles") > -1:
                     continue
 
                 if param.lower() == 'layers':
-                    query_params[param] = internal_wms.layers
+                    if not is_wmts:
+                        query_params[param] = internal_wms.layers
+                    else:
+                        query_params[param] = value
                 else:
                     query_params[param] = value
 
