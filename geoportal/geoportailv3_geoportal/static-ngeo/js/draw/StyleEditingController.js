@@ -254,6 +254,17 @@ exports.prototype.setColor = function(val) {
  */
 exports.prototype.saveFeature = function() {
   this.drawnFeatures_.saveFeature(this.feature);
+  if (this.feature !== undefined && this.featureOrig !== undefined) {
+    this.featureOrig.set('color', this.feature.get('color'));
+    this.featureOrig.set('opacity', this.feature.get('opacity'));
+    this.featureOrig.set('angle', this.feature.get('angle'));
+    this.featureOrig.set('size', this.feature.get('size'));
+    this.featureOrig.set('shape', this.feature.get('shape'));
+    this.featureOrig.set('symbolId', this.feature.get('symbolId'));
+    this.featureOrig.set('stroke', this.feature.get('stroke'));
+    this.featureOrig.set('linestyle', this.feature.get('linestyle'));
+    this.featureOrig.setGeometry(this.feature.getGeometry());
+  }
   this.editingStyle = false;
 };
 
