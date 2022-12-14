@@ -1212,13 +1212,14 @@ class Getfeatureinfo(object):
                                         # if ACT Show everything
                                         attributes['measurements'].append(cur_measurement)
                                     elif document['document_type']['name'] in ('OTHER_PRIVATE') or \
-                                       document['document_type']['directive_code_type'] in ('DAI', None):
+                                       document['document_type']['directive_code_archivage'] in ('DAI', None):
                                         # do not show
                                         pass
                                     else:
                                         attributes['measurements'].append(cur_measurement)
                                 elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
-                                     document['document_type']['directive_code_type'] in ('DAI', 'DTC' , 'DAE', None):
+                                     document['document_type']['directive_code_archivage'] in ('DAI', 'DTC' , 'DAE', None):
+                                        # If grand public
                                         # do not show
                                         pass
                                 else:
