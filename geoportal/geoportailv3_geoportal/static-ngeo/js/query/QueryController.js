@@ -1030,7 +1030,7 @@ exports.prototype.openFeedbackAnf = function(lot) {
  * @export
  */
 exports.prototype.formatDate = function(datetime) {
-  return new Date(Date.parse(datetime)).toLocaleDateString()
+  return new Date(Date.parse(datetime)).toLocaleDateString("en-GB");
 }
 
 /**
