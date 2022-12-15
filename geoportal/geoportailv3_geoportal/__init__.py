@@ -450,6 +450,10 @@ def main(global_config, **settings):
         'jsapithemesfull',
         '/jsapithemesfull'
     )
+    config.add_route(
+        'apiv4fullasync',
+        '/apiv4-full-async.js'
+    )
 
     config.add_route("echocsv", "/profile/echocsv", request_method="POST")
     config.add_route('getuserinfo', '/getuserinfo')
