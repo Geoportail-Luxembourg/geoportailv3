@@ -159,6 +159,7 @@ class JsapiEntry(Theme):
             print(e)
         return layers
 
+
     @view_config(route_name='jsapiloader')
     def apiloader(self):
         config = self.settings
@@ -178,6 +179,12 @@ class JsapiEntry(Theme):
         response = Response(result)
         response.content_type = 'application/javascript'
         return response
+
+    @view_config(route_name='apiv4fullasync',
+                 renderer='/etc/static-ngeo/build/apiv4-full-async.js')
+    def apiv4fullasync(self):
+        self.request.response.content_type = 'application/javascript'
+        return {}
 
     @view_config(route_name='jsapiexample',
                  renderer='geoportailv3_geoportal:templates/api/apiv4example.html')
