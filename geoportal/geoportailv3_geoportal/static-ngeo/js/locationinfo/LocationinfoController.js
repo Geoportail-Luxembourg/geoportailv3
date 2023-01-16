@@ -325,9 +325,9 @@ const exports = function(
 
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
-          /** @type {ol.Coordinate} */ (transform([x, y], srs,
+          /** @type {ol.Coordinate} */ (transform([parseFloat(x), parseFloat(y)], srs,
               this['map'].getView().getProjection())) :
-          /** @type {ol.Coordinate} */ (transform([y, x], srs,
+          /** @type {ol.Coordinate} */ (transform([parseFloat(y), parseFloat(x)], srs,
               this['map'].getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
