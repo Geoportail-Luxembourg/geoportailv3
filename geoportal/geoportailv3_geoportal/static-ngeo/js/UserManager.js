@@ -302,6 +302,14 @@ exports.prototype.getUserType = function() {
 };
 
 /**
+ * @return {string|undefined} The Role.
+ */
+exports.prototype.getRole = function() {
+  return this.role;
+};
+
+
+/**
  * @return {?number} The Role Id.
  */
 exports.prototype.getRoleId = function() {
