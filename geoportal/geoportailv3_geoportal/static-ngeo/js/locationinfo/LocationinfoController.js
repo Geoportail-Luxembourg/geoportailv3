@@ -324,18 +324,22 @@ const exports = function(
 
 
     if (x !== undefined && y !== undefined) {
-      var coordinate = version === 3 ?
-          /** @type {ol.Coordinate} */ (transform([parseFloat(x), parseFloat(y)], srs,
-              this['map'].getView().getProjection())) :
-          /** @type {ol.Coordinate} */ (transform([parseFloat(y), parseFloat(x)], srs,
-              this['map'].getView().getProjection()));
-      this.setClickCordinate_(coordinate);
-      this.loadInfoPane_();
-      if (!this.appGetDevice_.testEnv('xs')) {
-        this['open'] = true;
-        this['hiddenContent'] = false;
-      } else {
-        this['hiddenContent'] = true;
+      try {
+        var coordinate = version === 3 ?
+            /** @type {ol.Coordinate} */ (transform([parseFloat(x), parseFloat(y)], srs,
+                this['map'].getView().getProjection())) :
+            /** @type {ol.Coordinate} */ (transform([parseFloat(y), parseFloat(x)], srs,
+                this['map'].getView().getProjection()));
+        this.setClickCordinate_(coordinate);
+        this.loadInfoPane_();
+        if (!this.appGetDevice_.testEnv('xs')) {
+          this['open'] = true;
+          this['hiddenContent'] = false;
+        } else {
+          this['hiddenContent'] = true;
+        }
+      } catch(exception) {
+        console.error(exception);
       }
     }
   }
@@ -557,7 +561,8 @@ exports.prototype.getLidarUrl = function() {
  */
 exports.prototype.isCyclomediaAvailable = function() {
   if (this.appUserManager_.getUserType() == 'etat' ||
-      this.appUserManager_.getUserType() == 'commune') {
+      this.appUserManager_.getUserType() == 'commune' ||
+      this.appUserManager_.getRole() == 'MinTour') {
     return true;
   }
   return false;
