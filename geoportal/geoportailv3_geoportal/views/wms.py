@@ -4,7 +4,7 @@ from ipaddr import IPv4Network
 from pyramid.view import view_config
 from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
 from c2cgeoportal_commons.models import DBSession
-from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, LayerWMTS
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
@@ -150,8 +150,7 @@ class Wms:
 
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
-
-        request = self.request.params.get('REQUEST', '')
+        request = self.request.params.get('REQUEST', self.request.params.get('request', ''))
         if request.lower() == 'getcapabilities':
             headers = {"Content-Type": "text/xml"}
             capabilities = """<?xml version="1.0"?>
@@ -159,7 +158,80 @@ class Wms:
 
             return Response(capabilities, headers=headers)
 
-        layers = self.request.params.get('LAYERS', '')
+        if request.lower() == 'getfeatureinfo':
+            from geoportailv3_geoportal.views.getfeatureinfo import Getfeatureinfo
+            from shapely.geometry import asShape, box, shape
+            import json
+            gfi = Getfeatureinfo(self.request)
+            url = "https://map.geoportail.lu/getfeatureinfo?"
+            params_dict = {'tooltip':1, 'lang': 'fr'}
+            for key in self.request.params.keys():
+                if key.lower() == 'query_layers':
+                    query_layers = self.request.params.get(key).split(',')
+                    if len(query_layers) == 0:
+                        return HTTPBadRequest("query_layers is required")
+
+                    query_layer = query_layers[0]
+
+                    internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
+                        LuxLayerInternalWMS.layer == query_layer).first()
+                    if internal_wms is None:
+                        layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
+                                                LayerWMTS.layer == query_layer).first()
+                        if layer_wmts is None:
+                            return HTTPNotFound("query_layers not found" )
+                        else:
+                            params_dict['layers'] = layer_wmts.id
+                    else:
+                        params_dict['layers'] = internal_wms.id
+                elif key.lower() == 'layers' or key.lower() == 'i' or key.lower() == 'j' or \
+                     key.lower() == 'transparent' or \
+                     key.lower() == 'width' or key.lower() == 'height' or key.lower() == 'format' or \
+                     key.lower() == 'request' or key.lower() == 'version' or \
+                     key.lower() == 'crs' or key.lower() == 'styles' or key.lower() == 'service':
+                    pass
+                elif key.lower() == 'bbox':
+                    bbox = self.request.params.get(key).split(',')
+                    crs = self.request.params.get('CRS', self.request.params.get('crs', self.request.params.get('srs', self.request.params.get('SRS', 'EPSG:4326'))))
+                    if crs.lower() == 'epsg:3857':
+                        the_box = box(float(bbox[0]), float(bbox[1]), float(bbox[2]), float(bbox[3]))
+                    else:
+                        the_box = box(float(bbox[1]), float(bbox[0]), float(bbox[3]), float(bbox[2]))
+                    box2169 = shape(gfi.transform_(the_box, crs, 'EPSG:2169')).bounds
+                    box = ""+str(box2169[0])+","+str(box2169[1])+","+str(box2169[2])+","+str(box2169[3])
+                    width = self.request.params.get('WIDTH', self.request.params.get('width', '0'))
+                    height = self.request.params.get('HEIGHT', self.request.params.get('height', '0'))
+                    x = float(self.request.params.get('x', self.request.params.get('X', self.request.params.get('i', self.request.params.get('I', 0)))))
+                    y = float(self.request.params.get('y', self.request.params.get('Y', self.request.params.get('j', self.request.params.get('J', 0)))))
+                    xy1 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x-5,y-5])
+                    xy2 = gfi.pixels2meter(float(width), float(height), box, "epsg:2169", "epsg:2169", [x+5,y+5])
+                    box = ""+str(box2169[0]+xy1[0])+","+str(box2169[3]-xy1[1])+","+str(box2169[0]+xy2[0])+","+str(box2169[3]-xy2[1])
+                    params_dict['box1'] = box
+                    params_dict['box2'] = box
+                    params_dict[key.lower()] = box
+                else:
+                    params_dict[key.lower()] = self.request.params.get(key)
+            params = urllib.parse.urlencode(params_dict)
+            separator = "?"
+            if "?" in url:
+                separator = "&"
+            url = url + separator + params
+            f = urllib.request.urlopen(url, None, 15)
+            data = f.read()
+            info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/plain'))
+            headers = {"Content-Type": info_format}
+            tooltips = []
+
+            for info in json.loads(data):
+                tooltips.append(info['tooltip'])
+            if info_format == 'text/xml':
+                return Response('<?xml version="1.0" encoding="utf-8"?><features>'+"".join(tooltips)+"</features>", headers=headers)
+            elif info_format == 'text/plain':
+                return Response("\n".join(tooltips), headers=headers)
+            else:
+                return Response("<br>".join(tooltips), headers=headers)
+
+        layers = self.request.params.get('LAYERS', self.request.params.get('layers', ''))
         layers = layers.split(',')
         if len(layers) == 0:
             return HTTPBadRequest()
@@ -169,15 +241,21 @@ class Wms:
         # TODO: Multiple layers could be requested with a single request
         # Today the first layer wins.
         layer = layers[0]
-
+        is_wmts = False
         internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.layer == layer).first()
         if internal_wms is None:
-            return HTTPNotFound()
+            layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
+                                    LayerWMTS.layer == layer).first()
+            if layer_wmts is None:
+                return HTTPNotFound()
+            else:
+                is_wmts = True
+
 
         # If the layer is not public check if it comes from an authorized url
         # or from a connected user or uses the right token
-        if not internal_wms.public and self.request.user is None:
+        if not is_wmts and not internal_wms.public and self.request.user is None:
             remote_addr = str(self.request.environ.get(
                 'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
 
@@ -186,7 +264,7 @@ class Wms:
                 return HTTPUnauthorized()
 
         # If the layer is not public and we are connected check the rights
-        if not internal_wms.public and self.request.user is not None:
+        if not is_wmts and not internal_wms.public and self.request.user is not None:
             # Check if the layer has a restriction area
             restriction: Optional[RestrictionArea] = DBSession.query(RestrictionArea).filter(
                 RestrictionArea.roles.any(
@@ -201,18 +279,24 @@ class Wms:
 
         query_params = {}
         # arcgis rest api shall be used whenever rest_url is not empty
-        if (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
+        if not is_wmts and (internal_wms.rest_url is not None and len(internal_wms.rest_url) > 0):
             remote_host = internal_wms.rest_url + "/export"
             query_params = self._process_arcgis_server(internal_wms)
         else:
-            remote_host = internal_wms.url
+            if not is_wmts:
+                remote_host = internal_wms.url
+            else:
+                remote_host = "https://wms.geoportail.lu/mapproxy_4_v3/service?"
             for param, value in self.request.params.items():
                 if param.lower() == "styles" and remote_host.lower().find("styles") > -1:
                     continue
 
                 if param.lower() == 'layers':
                     if 'LAYERS=' not in internal_wms.url:
-                        query_params[param] = internal_wms.layers
+                        if not is_wmts:
+                            query_params[param] = internal_wms.layers
+                        else:
+                            query_params[param] = value
                 else:
                     query_params[param] = value
 

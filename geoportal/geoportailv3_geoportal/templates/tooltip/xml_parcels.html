@@ -1,0 +1,21 @@
+﻿## -*- coding: utf-8 -*-
+% for feature in features:
+  <feature>
+  <attributes>
+  <span>${_c("Commune")}</name><value>${feature['attributes']['PF']['townName']}</value>
+  <name>${_c("Section")}</name><value>${feature['attributes']['PF']['sectionDesignation']}</value>
+  <name>${_c("Numero cadastral")}</name><value>${feature['attributes']['PF']['mainNumber']}/${feature['attributes']['PF']['additionalNumber']}</value>
+  <name>${_c("Contenance")}</name><value>${feature['attributes']['PF']['capacity']}</value>
+  <name>${_c("Lieudit")}</name><value>${feature['attributes']['PF']['locality']}</value>
+  % if 'farmingTypes' in feature['attributes']['PF']:
+    <name>${_c("Nature")}</name><value>${','.join(feature['attributes']['PF']['farmingTypes'])}</value>
+  % endif
+  % if 'occupations' in feature['attributes']['PF']:
+    <name>${_c("Occupation")}</name><value>${','.join(feature['attributes']['PF']['occupations'])}</value>
+  % endif
+  % if 'measurementNumber' in feature['attributes']['PF']:
+    <name>${_c("Dernier mesurage")}</name><value>${feature['attributes']['PF']['measurementNumber']}</value>
+  % endif
+  </attributes>
+  </feature>
+% endfor

@@ -1,0 +1,21 @@
+<% import numbers %>
+<% from xml.sax.saxutils import escape%>
+## -*- coding: utf-8 -*-
+% for feature in features:
+  <feature>
+  <attributes>
+  % for attr in feature['attributes']:
+    % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != '':
+        <attribute>
+        % if _c(_t('f_' + attr)) != 'f_' + attr:
+          <name>${escape(_c(_t('f_' + attr)))}</name>
+        % else:
+          <name>${escape(attr)}</name>
+        % endif
+        <value>${escape(str(feature['attributes'][attr])) | n}</value>
+        </attribute>
+    % endif
+  % endfor
+  </attributes>
+  </feature>
+% endfor

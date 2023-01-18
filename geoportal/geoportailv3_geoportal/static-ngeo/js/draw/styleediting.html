@@ -1,5 +1,5 @@
 <!-- Color (for both stroke and fill) -->
-<div ng-show="!ctrl.symbolselector">
+<div ng-show="!ctrl.symbolselector" class="feature-content">
   <div class="feature-popup-heading" translate>Style your drawing</div>
   <a href class="close" ng-click="ctrl.close()">&times;</a>
   <div class="feature-popup-body">
@@ -126,7 +126,7 @@
     </button>
   </div>
 </div>
-<div ng-show="ctrl.symbolselector">
+<div ng-show="ctrl.symbolselector" class="feature-content">
   <app-symbol-selector app-symbol-selector-symbol = "ctrl.symbolselector"
                        app-symbol-selector-feature = "ctrl.feature">
   </app-symbol-selector>

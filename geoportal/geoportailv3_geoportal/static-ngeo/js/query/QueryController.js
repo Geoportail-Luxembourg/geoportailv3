@@ -3,6 +3,7 @@
  */
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
+import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
 import {extend as extentExtend} from 'ol/extent.js';
@@ -63,6 +64,12 @@ const exports = function($sce, $timeout, $scope, $http,
 
   this.timeout_ = $timeout;
   /**
+   * @type {Array<string>}
+   * @private
+   */
+  this.curThemesName = [];
+
+  /**
    * @type {string}
    * @private
    */
@@ -75,6 +82,12 @@ const exports = function($sce, $timeout, $scope, $http,
   this.appLotChasse_ = appLotChasse;
 
   /**
+   * @type {boolean}
+   * @export
+   */
+  this.isDownloadable = false;
+
+  /**
    * @type {string}
    * @export
    */
@@ -85,6 +98,12 @@ const exports = function($sce, $timeout, $scope, $http,
    * @export
    */
   this.previewParcelId = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewDocumentId = '';
 
   /**
    * @type {string}
@@ -382,6 +401,18 @@ const exports = function($sce, $timeout, $scope, $http,
     this.getFeatureInfoById_(fid);
     this.ngeoLocation_.deleteParam('fid');
   }
+  listen(appThemes, appEventsThemesEventType.LOAD,
+      /**
+       * @param {ol.events.Event} evt Event.
+       */
+      (function(evt) {
+        this.curThemesName = [];
+        this.appThemes_.getThemesPromise().then((root) => {
+          root.themes.forEach(function(theme) {
+            this.curThemesName.push(theme.name);
+          }, this);
+        });
+      }), this);
 };
 
 
@@ -495,8 +526,7 @@ listen(this.map_, 'pointerup', function(evt) {
       this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
     }
   }, this);
-
-}
+};
 
 
 /**
@@ -976,9 +1006,8 @@ exports.prototype.getTrustedUrl = function(url) {
  */
 exports.prototype.getPreviewUrl = function() {
   return this.sce_.trustAsResourceUrl(
-    this.previewMesurementUrl + '?code=' +
-    this.previewTownCode + '&filename=' +
-    this.previewFilename);
+    this.previewMesurementUrl + '?document_id=' +
+    this.previewDocumentId);
 };
 
 /**
@@ -992,22 +1021,31 @@ exports.prototype.openFeedbackAnf = function(lot) {
   this['feedbackAnfOpen'] = true;
 };
 
+
 /**
- * Open preview mesurement popup.
- * @param {string} townCode The townCode.
- * @param {string} filename The measurement file name.
- * @param {string} description The description of the survey.
- * @param {string} parcelId The technical parcel id.
+ * Format the Date.
+ * @param {string} datetime the string representation of datetime.
  * @export
  */
-exports.prototype.openPreviewMesurage = function(townCode, filename, description, parcelId) {
+exports.prototype.formatDate = function(datetime) {
+  return new Date(Date.parse(datetime)).toLocaleDateString("en-GB");
+}
+
+/**
+ * Open preview mesurement popup.
+ * @param {string} document_id The unique document id.
+ * @param {string} description The measurement description.
+ * @param {string} numMeasurement The measurement number.
+ * @param {string} parcelId The id of the parcel.
+ * @param {boolean} isDownloadable True if the current user is authorize to download the originale document.
+ * @export
+ */
+exports.prototype.openPreviewMesurage = function(document_id, description, numMeasurement, parcelId, isDownloadable) {
+  this.isDownloadable = isDownloadable;
   this.preview = true;
-  this.previewTownCode = townCode;
-  this.previewFilename = filename;
-  this.previewDescription = description.trim() + ' - No ' +
-    filename.substring(0, 5) + ' MES_TYPE_' + filename.substring(5, 6) + ' ' +
-    filename.substring(8, 10) + '/' + filename.substring(10, 12) + '/' + filename.substring(12, 16);
+  this.previewDescription = description.trim() + ' - No ' + numMeasurement;
   this.previewParcelId = parcelId;
+  this.previewDocumentId = document_id;
 };
 
 
@@ -1190,6 +1228,55 @@ exports.prototype.prefixKeys =
         }
       }, this);
       return results;
+    };
+
+/**
+ * @param {Object} elem The attributes.
+ * @param {String} layerid the layer id
+ * @return {Boolean} True if we should display this attribute.
+ * @export
+ */
+exports.prototype.showAttributesByLang =
+    function(elem, layerid) {
+      var key = elem['key'];
+      var value = elem['value'];
+      var ok = false;
+      if (layerid == '2444' && (key == 'f_Betriebsform' ||
+        key == 'f_Forme_d_entreprise' || key == 'f_Operation_Form' || 
+        key == 'f_Form_vun_Geschaeft')) {
+          if (this['language'] == 'fr' && key == 'f_Forme_d_entreprise') {
+            ok = true;
+          } else if (this['language'] == 'de' && key == 'f_Betriebsform') {
+            ok = true;
+          } else if (this['language'] == 'en' && key == 'f_Operation_Form') {
+            ok = true;
+          } else if (this['language'] == 'lb' && key == 'f_Form_vun_Geschaeft') {
+            ok = true;
+          }
+      } else if (key.indexOf('_FR') > 0 || key.indexOf('_DE') > 0 ||
+          key.indexOf('_EN') > 0 || key.indexOf('_LU') > 0 ||
+          key.indexOf('_LB') > 0) {
+        if (this['language'] == 'fr') {
+          if (key.indexOf('_FR') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'de') {
+          if (key.indexOf('_DE') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'en') {
+          if (key.indexOf('_EN') > 0) {
+            ok = true;
+          }
+        } else if (this['language'] == 'lb') {
+          if (key.indexOf('_LB') > 0 || key.indexOf('_LU') > 0) {
+            ok = true;
+          }
+        }
+      } else {
+        ok = true;
+      }
+      return ok;
     };
 
 /**
@@ -1394,6 +1481,17 @@ exports.prototype.openLegendPanel = function() {
  */
 exports.prototype.closeLegendPanel = function() {
   this['legendsOpen'] = false;
+};
+
+
+/**
+ * Check if the theme is available for user
+ * @param {String} currentTheme The theme to check.
+ * @return {angular.$q.Promise} Promise.
+ * @export
+ */
+exports.prototype.isThemeAvailable = function(currentTheme) {
+  return this.curThemesName.indexOf(currentTheme) >= 0;
 };
 
 appModule.controller('AppQueryController',
