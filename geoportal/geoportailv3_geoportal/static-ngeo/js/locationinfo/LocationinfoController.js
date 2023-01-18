@@ -330,8 +330,8 @@ exports.prototype.$onInit = function() {
   var urlLocationInfo = this.stateManager_.getInitialValue('crosshair');
   if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
       urlLocationInfo === 'true') {
-    var x = appStateManager.getInitialValue('X');
-    var y = appStateManager.getInitialValue('Y');
+    var x = this.stateManager_.getInitialValue('X');
+    var y = this.stateManager_.getInitialValue('Y');
     var version = this.stateManager_.getVersion();
     var srs = this.stateManager_.getInitialValue('SRS');
     if (srs === undefined) {
