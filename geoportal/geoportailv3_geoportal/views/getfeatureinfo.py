@@ -32,9 +32,9 @@ from shapely.ops import transform
 from shapely.wkt import loads as wkt_loads
 from functools import partial
 from arcgis2geojson import arcgis2geojson
-
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from geoportailv3_geoportal.views.download import Download
 log = logging.getLogger(__name__)
 
 
@@ -113,7 +113,7 @@ class Getfeatureinfo(object):
                 len(luxgetfeaturedefinition.rest_url) > 0):
                 sketch_id = self.request.params.get('sketch_id', None)
                 timeout = 15
-                url = luxgetfeaturedefinition.rest_url.replace('/MapServer/', '/FeatureServer/')
+                url = luxgetfeaturedefinition.rest_url
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
                 if luxgetfeaturedefinition.use_auth:
@@ -277,9 +277,9 @@ class Getfeatureinfo(object):
 
         layers = self.request.params.get('layers', None)
         if layers is None:
-            return HTTPBadRequest()
+            return HTTPBadRequest("missing layers parameter")
         if not all(x.isdigit() for x in layers.split(',')):
-            return HTTPBadRequest()
+            return HTTPBadRequest("layers parameter should be a number")
 
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
@@ -307,14 +307,14 @@ class Getfeatureinfo(object):
             return fc
 
         if big_box is None or small_box is None:
-            return HTTPBadRequest()
+            return HTTPBadRequest("box1 or box2 are required")
 
         coordinates_big_box = big_box.split(',')
-        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_big_box):
-            return HTTPBadRequest()
+        if not all(x.replace('-', '', 1).replace('.', '', 1).isdigit() for x in coordinates_big_box):
+            return HTTPBadRequest("Wrong box value :" + big_box)
         coordinates_small_box = small_box.split(',')
-        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
-            return HTTPBadRequest()
+        if not all(x.replace('-', '', 1).replace('.', '', 1).isdigit() for x in coordinates_small_box):
+            return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
             coordinates_small_box, results, layers, big_box, None, zoom)
@@ -627,11 +627,11 @@ class Getfeatureinfo(object):
 
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
-            localizer = get_localizer(self.request)
+            localizer = self.request.localizer
             server = TranslationStringFactory("geoportailv3_geoportal-server")
             tooltips = TranslationStringFactory("geoportailv3_geoportal-tooltips")
             client = TranslationStringFactory("geoportailv3_geoportal-client")
-
+            info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/html'))
             for r in results:
                 l_template = r['template']
                 filename = resource_filename('geoportailv3_geoportal', path + l_template)
@@ -659,12 +659,25 @@ class Getfeatureinfo(object):
                         r['tooltip'] =\
                             remote_template.render(features=features)
                     else:
-                        r['tooltip'] =\
-                            remote_template.render(feature=features[0])
-
+                        if len(features) > 0:
+                            r['tooltip'] =\
+                                remote_template.render(feature=features[0])
+                        else:
+                            r['tooltip'] = ''
                 else:
-                    r['tooltip'] = render(
-                        'geoportailv3_geoportal:' + path + template, context)
+                    if info_format == 'text/xml':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
+                        template = 'xml_' + l_template if isfile(filename) else 'xml.html'
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
+                    elif info_format == 'text/plain':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'text_' + l_template)
+                        template = 'text_' + l_template if isfile(filename) else 'text.html'
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
+                    else:
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
 
         return results
 
@@ -675,6 +688,22 @@ class Getfeatureinfo(object):
             pyproj.Proj(init=dest)) # destination coordinate system
 
         return transform(project, shape(geometry))  # apply projection
+
+    def pixels2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
+        box3857 = bbox.split(',')
+        the_box = box(float(box3857[0]), float(box3857[1]), float(box3857[2]), float(box3857[3]))
+
+        box2169 = shape(self.transform_(the_box, epsg_source, epsg_dest)).bounds
+        if (box2169[2] - box2169[0]) > 0:
+            scale_x = (box2169[2] - box2169[0]) / width
+        else :
+            scale_x = (box2169[0] - box2169[2]) / width
+        if (box2169[3] - box2169[1]) > 0:
+            scale_y = (box2169[3] - box2169[1]) / height
+        else :
+            scale_y = (box2169[1] - box2169[3]) / height
+
+        return [scale_x * pixels[0], scale_y * pixels[1]]
 
     def pixel2meter (self, width, height, bbox, epsg_source, epsg_dest, pixels):
         box3857 = bbox.split(',')
@@ -1041,39 +1070,35 @@ class Getfeatureinfo(object):
     def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
-        log.error("--------------------------")
-        log.error(url)
-        url = url.replace('/MapServer/', '/FeatureServer/')
-        log.error(url)
-        url = url.replace('/query?', '/')
-        log.error(url)
-        url = url.replace('/query', '/')
-        log.error(url)
-        log.error("--------------------------")
         for feature in features:
             feature['attributes']['has_sketch'] = False
             id = feature['attributes'][id_attr]
-            url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
-            log.error("-----------11---------------")
-            log.error(url1)
-            log.error("-----------11-------------")
+            url1 = url.replace('/query?', '/query').replace('/query', f'/{id}/attachments?f=pjson')
+
             try:
                 url_request = urllib.request.Request(url1)
-                log.error(url1)
                 result = read_request_with_token(url_request, self.request, log)
                 data = result.data
                 data_json = json.loads(data)
+                if "attachmentGroups" in data_json:
+                    for group in data_json["attachmentGroups"]:
+                        if "attachmentInfos" in group:
+                            self.get_attachment_infos(feature, group)
                 if "attachmentInfos" in data_json:
-                    attachmentInfos = data_json["attachmentInfos"]
-                    feature['attributes']['sketches'] = []
-                    for info in attachmentInfos:
-                        feature['attributes']['has_sketch'] = True
-                        feature['attributes']['sketches'].append({'id':info['id'], 'name':info['name']})
+                    self.get_attachment_infos(feature, data_json)
+
             except Exception as e:
                 log.exception(e)
                 feature['attributes']['has_sketch'] = False
             features2.append(feature)
         return features2
+
+    def get_attachment_infos(self, feature, data_json):
+            attachmentInfos = data_json["attachmentInfos"]
+            feature['attributes']['sketches'] = []
+            for info in attachmentInfos:
+                feature['attributes']['has_sketch'] = True
+                feature['attributes']['sketches'].append({'id':info['id'], 'name':info['name']})
 
     def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
@@ -1104,7 +1129,6 @@ class Getfeatureinfo(object):
                 if f is not None:
                     feature['attributes']['has_sketch'] = True
             features.append(feature)
-
         return features
 
     def chargy_attributes(self, features):
@@ -1119,19 +1143,11 @@ class Getfeatureinfo(object):
                     feature['attributes']['connector_maxchspeed'] = connector['maxchspeed']
                     feature['attributes']['connector_description'] = connector['description']
                     modified_features.append(copy.deepcopy(feature))
-
-            
-
-        return modified_features    
-
-
-        return features
+        return modified_features
 
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
-        import geoportailv3_geoportal.PF
         DBSession.rollback()
-        pf = geoportailv3_geoportal.PF.PF()
         features = []
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
@@ -1141,23 +1157,80 @@ class Getfeatureinfo(object):
                 fid = None
             f = self.to_feature(layer_id, fid,
                                 geometry, dict(row), attributes_to_remove)
-
             attributes = f['attributes']
-            attributes['PF'] = dict(pf.get_detail(
-                attributes['code_commu'],
-                attributes['code_secti'],
-                int(attributes['num_cadast']),
-                int(attributes['code_sup'])))
+
+            base_url = os.environ["API-ARCHIMET-URL"]
+            api_key = os.environ["API-ARCHIMET-KEY"]
+            url = f"{base_url}/parcelles/pf/{fid}"
+            hdr = {'api-key': api_key}
+            try:
+                req = urllib.request.Request(url, headers=hdr)
+                response = urllib.request.urlopen(req)
+                attributes['PF'] = dict(json.loads(response.read()))
+            except Exception as e:
+                log.exception(e)
+                log.error(url)
 
             if measurements:
-                attributes['measurements'] = pf.get_measurement_list(
-                    attributes['num_cadast'],
-                    attributes['code_sup'],
-                    attributes['code_secti'],
-                    attributes['code_commu'],
-                    self.request.user,
-                    self.request.referer)
-
+                try:
+                    attributes['measurements'] = []
+                    url = f"{base_url}/document/from-parcel-ids/?parcel_ids={fid}&include_descendants=false"
+                    req = urllib.request.Request(url, headers=hdr)
+                    response = urllib.request.urlopen(req)
+                    info = json.loads(response.read())
+                    dossiers = {}
+                    for mesurage_num in info[fid].keys():
+                        documents = info[fid][mesurage_num]['documents']
+                        if len(documents) > 0:
+                            for document in documents:
+                                cur_measurement = {}
+                                cur_measurement['measurementNumber'] = mesurage_num
+                                cur_measurement['parcelId'] = fid
+                                cur_measurement['measurementType'] = document['document_type']['name']
+                                cur_measurement['date_document'] = document['date_document']
+                                cur_measurement['description'] = document['document_type']['name']
+                                cur_measurement['dossier_id'] = document['dossier_id']
+                                cur_measurement['document_id'] = document['id']
+                                if self.request.user is None:
+                                    cur_measurement['is_downloadable'] = False
+                                else:
+                                    if cur_measurement['dossier_id'] not in dossiers:
+                                        url = f"{base_url}/dossiers/{cur_measurement['dossier_id']}/"
+                                        req = urllib.request.Request(url, headers=hdr)
+                                        response = urllib.request.urlopen(req)
+                                        cur_dossier = json.loads(response.read())
+                                        dossiers[cur_measurement['dossier_id']] = cur_dossier
+                                    else:
+                                        cur_dossier = dossiers[cur_measurement['dossier_id']]
+                                    cur_measurement['is_downloadable'] = \
+                                        Download(self.request)._is_download_authorized(
+                                        cur_dossier['commune_cadastrale']['directive_id'],
+                                        self.request.user, self.request.referer)
+                                if cur_measurement['is_downloadable']:
+                                    if self.request.user.settings_role.id == 1:
+                                        # if ACT Show everything
+                                        attributes['measurements'].append(cur_measurement)
+                                    elif document['document_type']['name'] in ('OTHER_PRIVATE') or \
+                                       document['document_type']['directive_code_archivage'] in ('DAI', None):
+                                        # do not show
+                                        pass
+                                    else:
+                                        attributes['measurements'].append(cur_measurement)
+                                elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
+                                     document['document_type']['directive_code_archivage'] in ('DAI', 'DTC' , 'DAE', None):
+                                        # If grand public
+                                        # do not show
+                                        pass
+                                else:
+                                    attributes['measurements'].append(cur_measurement)
+                        else:
+                            cur_measurement['measurementNumber'] = mesurage_num
+                            cur_measurement['parcelId'] = fid
+                            cur_measurement['document_id'] = None
+                            cur_measurement['dossier_id'] = None
+                            attributes['measurements'].append(cur_measurement)
+                except Exception as e:
+                    log.exception(e)
             features.append(f)
 
         return features
@@ -1275,6 +1348,7 @@ class Getfeatureinfo(object):
         try:
             DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
+            log.error(query)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -1307,6 +1381,7 @@ class Getfeatureinfo(object):
         except Exception as e:
             log.exception(e)
             log.error(content)
+            log.error(query)
             return []
         return []
 

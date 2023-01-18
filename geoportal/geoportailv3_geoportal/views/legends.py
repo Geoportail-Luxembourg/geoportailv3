@@ -6,7 +6,7 @@ from c2cgeoportal_commons.models.main import TreeItem
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from pyramid.renderers import render
 from pyramid.i18n import TranslationStringFactory
-from io import StringIO
+from io import BytesIO
 from bs4 import BeautifulSoup
 import weasyprint
 import urllib.request
@@ -28,10 +28,10 @@ class Legends(object):
 
     @view_config(route_name='get_png')
     def get_png(self):
-        css = weasyprint.CSS(
-            string="img {max-height: 450px}"
-        )
-
+        css = [
+            weasyprint.CSS(string="img {max-height: 450px;}"),
+            weasyprint.CSS(string='@page {margin:0;}')
+        ]
         lang = self.request.params.get("lang")
         name = self.request.params.get("name")
 
@@ -39,18 +39,16 @@ class Legends(object):
             # use ESRI rest mechanism
             path = self.request.route_url('get_html')
             url = path + '?' + urllib.parse.urlencode(self.request.params)
-
         else:
-
             url = \
                   "https://wiki.geoportail.lu/doku.php?" \
                   "id=%s:legend:%s&do=export_html" % \
                   (lang, name)
 
-        legend_buffer = StringIO()
+        legend_buffer = BytesIO()
         weasyprint.HTML(url, media_type="screen").write_png(
             legend_buffer,
-            stylesheets=[css]
+            stylesheets=css
         )
 
         headers = {"Content-Type": "image/png"}

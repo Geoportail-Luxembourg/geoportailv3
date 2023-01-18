@@ -330,8 +330,8 @@ exports.prototype.$onInit = function() {
   var urlLocationInfo = this.stateManager_.getInitialValue('crosshair');
   if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
       urlLocationInfo === 'true') {
-    var x = parseInt(this.stateManager_.getInitialValue('X'), 0);
-    var y = parseInt(this.stateManager_.getInitialValue('Y'), 0);
+    var x = appStateManager.getInitialValue('X');
+    var y = appStateManager.getInitialValue('Y');
     var version = this.stateManager_.getVersion();
     var srs = this.stateManager_.getInitialValue('SRS');
     if (srs === undefined) {
@@ -342,18 +342,22 @@ exports.prototype.$onInit = function() {
       }
     }
     if (x !== undefined && y !== undefined) {
-      var coordinate = version === 3 ?
-          /** @type {ol.Coordinate} */ (transform([x, y], srs,
-              this.map_.getView().getProjection())) :
-          /** @type {ol.Coordinate} */ (transform([y, x], srs,
-              this.map_.getView().getProjection()));
-      this.setClickCordinate_(coordinate);
-      this.loadInfoPane_();
-      if (!this.appGetDevice_.testEnv('xs')) {
-        this['open'] = true;
-        this['hiddenContent'] = false;
-      } else {
-        this['hiddenContent'] = true;
+      try {
+        var coordinate = version === 3 ?
+            /** @type {ol.Coordinate} */ (transform([parseFloat(x), parseFloat(y)], srs,
+                this['map'].getView().getProjection())) :
+            /** @type {ol.Coordinate} */ (transform([parseFloat(y), parseFloat(x)], srs,
+                this['map'].getView().getProjection()));
+        this.setClickCordinate_(coordinate);
+        this.loadInfoPane_();
+        if (!this.appGetDevice_.testEnv('xs')) {
+          this['open'] = true;
+          this['hiddenContent'] = false;
+        } else {
+          this['hiddenContent'] = true;
+        }
+      } catch(exception) {
+        console.error(exception);
       }
     }
   }
@@ -488,7 +492,7 @@ exports.prototype.addRoutePoint = function() {
  */
 exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
   if (eventOrCoordinate instanceof Array) {
-    this.clickCoordinate = eventOrCoordinate;
+    this.clickCoordinate = [parseInt(eventOrCoordinate[0]), parseInt(eventOrCoordinate[1])];
   } else {
     eventOrCoordinate.preventDefault();
     this.clickCoordinate = this.map_.getEventCoordinate(eventOrCoordinate);
@@ -566,7 +570,8 @@ exports.prototype.getLidarUrl = function() {
  */
 exports.prototype.isCyclomediaAvailable = function() {
   if (this.appUserManager_.getUserType() == 'etat' ||
-      this.appUserManager_.getUserType() == 'commune') {
+      this.appUserManager_.getUserType() == 'commune' ||
+      this.appUserManager_.getRole() == 'MinTour') {
     return true;
   }
   return false;
