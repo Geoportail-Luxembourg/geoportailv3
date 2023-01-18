@@ -26,11 +26,15 @@
   }
 
   toggleNgeoOffline() {
-    this.ngeoOffline_ = !this.ngeoOffline_;
+    if (!this.isFullOfflineActive()) {
+      this.ngeoOffline_ = !this.ngeoOffline_;
+    }
   }
 
   toggleFullOffline() {
-    this.fullOffline_ = !this.fullOffline_;
+    if (!this.isNgeoOfflineActive()) {
+      this.fullOffline_ = !this.fullOffline_;
+    }
   }
 };
 

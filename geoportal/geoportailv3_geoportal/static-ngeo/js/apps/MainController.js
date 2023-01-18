@@ -196,7 +196,10 @@ import '../../less/geoportailv3.less';
 import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 import '../lidar-plot/lidar-plot.ts';
-import '../offlineWebComponent.ts';
+import '../offline/lux-offline/lux-offline.component.ts';
+import '../offline/lux-offline/lux-offline-alert.component.ts';
+import '../offline/lux-offline/lux-offline-reload.component.ts';
+import '../offline/lux-offline/lux-offline-error.component.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
