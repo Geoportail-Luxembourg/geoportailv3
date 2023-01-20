@@ -7,6 +7,8 @@ import * as olProj from 'ol/proj.js';
 import olSourceTileWMS from 'ol/source/TileWMS.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import olLayerTile from 'ol/layer/Tile.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+
 
 
 const SerDes = class {
@@ -31,8 +33,10 @@ const SerDes = class {
     for (const key in properties) {
       const value = properties[key];
       const typeOf = typeof value;
-      if (typeOf === 'string' || typeOf === 'number') {
+      if (typeOf === 'string') {
         obj[key] = value;
+      } else if (typeOf === 'number') {
+        obj[key] = this.makeInfinitySerializable_(value);
       }
     }
     return obj;
@@ -173,6 +177,9 @@ const SerDes = class {
     if (number === Infinity) {
       return 1000;
     }
+    if (number === -Infinity) {
+      return -1000;
+    }
     return number;
   }
 
@@ -185,7 +192,7 @@ const SerDes = class {
     const obj = this.createBaseObject_(layer);
     obj['opacity'] = layer.getOpacity();
     obj['visible'] = layer.getVisible();
-    obj['minResolution'] = layer.getMinResolution();
+    obj['minResolution'] = this.makeInfinitySerializable_(layer.getMinResolution());
     obj['maxResolution'] = this.makeInfinitySerializable_(layer.getMaxResolution());
     obj['zIndex'] = layer.getZIndex();
     source = source || layer.getSource();
@@ -212,7 +219,10 @@ const SerDes = class {
     } else if (sourceType === 'WMTS') {
       options['source'] = this.deserializeSourceWMTS(options['source'], tileLoadFunction);
     }
-    return new olLayerTile(options);
+    let layer = new olLayerTile(options);
+
+    ngeoMiscDecorate.layer(layer);
+    return layer;
   }
 };
 
