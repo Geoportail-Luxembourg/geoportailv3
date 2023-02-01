@@ -1225,6 +1225,7 @@ class Getfeatureinfo(object):
                                 else:
                                     attributes['measurements'].append(cur_measurement)
                         else:
+                            cur_measurement = {}
                             cur_measurement['measurementNumber'] = mesurage_num
                             cur_measurement['parcelId'] = fid
                             cur_measurement['document_id'] = None
