@@ -48,6 +48,9 @@ from c2cgeoportal_geoportal.lib.bashcolor import RED, colorize
 from c2cgeoportal_geoportal.lib.caching import init_region
 from c2cgeoportal_geoportal.views.layers import Layers, get_layer_class
 
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
 config = c2cgeoportal_commons.configuration
 
 import logging
@@ -129,7 +132,8 @@ class _Request:  # pragma: no cover
     params: Dict[str, str] = {}
     matchdict: Dict[str, str] = {}
     GET: Dict[str, str] = {}
-
+    session: Dict[str, str] = {} 
+    
     def __init__(self, settings=None):
         self.registry: _Registry = _Registry(settings)
 
@@ -989,7 +993,13 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     ESRI legend extractor
     """
     extensions = [".ini"]
-
+    def __init__(self) -> None:
+        super().__init__()
+        if os.path.exists("/etc/geomapfish/config.yaml"):
+            config.init("/etc/geomapfish/config.yaml")
+            self.config = config.get_config()['arcgis_token']
+        else:
+            self.config = None
     def _extract_messages(self):
         print('Entering into ESRI extractor')
 
@@ -1007,10 +1017,20 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     def _load_result(self, result):
         data = None
         if result.rest_url is not None and len(result.rest_url) > 0:
+            query_params = {'f': 'pjson'}
             full_url = result.rest_url + '/legend?f=pjson'
             try:
-                f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
-                data = json.load(f)
+                if result.use_auth:
+                    auth_token = get_arcgis_token(_Request(self.config), log)
+                    if 'token' in auth_token:
+                        query_params["token"] = auth_token['token']
+                full_url = result.rest_url + '/legend?' + urllib.parse.urlencode(query_params)
+
+                url_request = urllib.request.Request(full_url)
+                esri_result = read_request_with_token(url_request, _Request(self.config), log)
+                content = esri_result.data
+                data = json.loads(content)
+
             except Exception as e:
                 log.error(full_url)
                 log.exception(e)
