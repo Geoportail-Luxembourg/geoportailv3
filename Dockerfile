@@ -72,7 +72,7 @@ RUN \
     mkdir --parent /usr/local/tomcat/webapps/ROOT/ && \
     if [ -e /tmp/config/print ]; then mv /tmp/config/print/print-apps /usr/local/tomcat/webapps/ROOT/; fi && \
     mv /tmp/config/geoportal/geoportailv3_geoportal/ /etc/geomapfish/ && \
-    chmod g+w -R /etc /usr/local/tomcat/webapps && \
+    chmod g+w -R /usr/local/tomcat/webapps && \
     adduser www-data root && \
     sed 's#bind :80#bind *:443 ssl crt /etc/haproxy_dev/localhost.pem#g' /etc/haproxy/haproxy.cfg.tmpl \
         > /etc/haproxy_dev/haproxy.cfg.tmpl && \
