@@ -1054,6 +1054,13 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
     Tooltip extractor
     """
     extensions = [".ini"]
+    def __init__(self) -> None:
+        super().__init__()
+        if os.path.exists("/etc/geomapfish/config.yaml"):
+            config.init("/etc/geomapfish/config.yaml")
+            self.config = config.get_config()['arcgis_token']
+        else:
+            self.config = None
 
     @staticmethod
     def _get_url_with_token(url):
@@ -1072,7 +1079,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             traceback.print_exc(file=sys.stdout)
         return None
 
-    def _get_external_data(self, url, bbox=None, layer=None):
+    def _get_external_data(self, url, bbox=None, layer=None, use_auth=False):
 
         body = {'f': 'pjson',
                 'geometry': '',
@@ -1104,9 +1111,16 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
         try:
             content = ""
             print('Requesting %s' % query)
-            result = urllib.request.urlopen(query, None, self.TIMEOUT)
-            content = result.read()
-            esricoll = geojson_loads(content)
+            if use_auth is True:
+                url_request = urllib.request.Request(query)
+                esri_result = read_request_with_token(url_request, _Request(self.config), log)
+                content = esri_result.data
+                esricoll = geojson_loads(content)
+            else:
+                result = urllib.request.urlopen(query, None, self.TIMEOUT)
+                content = result.read()
+                esricoll = geojson_loads(content)
+
         except Exception as e:
             log.error("-----------------------------")
             log.error(query)
@@ -1234,7 +1248,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 first_row = self._get_external_data(
                     result.rest_url,
                     '96958.90059551848,61965.61097091329,' +
-                    '97454.77280739773,62463.21618929457', result.layer)
+                    '97454.77280739773,62463.21618929457', result.layer, result.use_auth)
             if ((result.rest_url is None or len(result.rest_url) == 0) and
                 (result.query is None or len(result.query) == 0)):
                 x = "831.1112060546875"
