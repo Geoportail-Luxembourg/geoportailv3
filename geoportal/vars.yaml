@@ -339,7 +339,7 @@ vars:
     mymaps: {url: '{DB_MYMAPS}'}
     pgroute: {url: '{DB_PGROUTE}'}
     poi: {url: '{DB_POI}'}
-
+    mymaps_geoportal: {url: '{DB_MYMAPS_GEOPORTAL}'}
   fulltextsearch:
     languages:
       fr: french
@@ -487,6 +487,7 @@ runtime_environment:
   - {name: CASIPO_SMTP_SERVER}
   - {name: CASIPO_BCC_ADDRESS}
   - {name: DB_MYMAPS}
+  - {name: DB_MYMAPS_GEOPORTAL, default: 'postgresql://172.17.0.1:5433/dummy'}
   - {name: DB_PGROUTE}
   - {name: DB_ECADASTRE}
   - {name: DB_POI}
