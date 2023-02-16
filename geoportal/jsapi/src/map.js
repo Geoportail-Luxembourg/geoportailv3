@@ -2174,7 +2174,7 @@ class Map extends OpenLayersMap {
       this.addLayer(vector);
       this.addedKmlLayers_.push(vector);
       this.addedKmlOnClick_.push(opt_options.onClick);
-      if (fit || opt_options.onFeatureAdded !== undefined) {
+      if (fit || opt_options.onFeatureAdd !== undefined) {
         listen(vector.getSource(), VectorEventType.ADDFEATURE,
           function (evt) {
             if (fit) {
