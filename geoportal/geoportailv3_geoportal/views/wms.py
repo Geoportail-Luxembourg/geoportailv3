@@ -14,7 +14,7 @@ import urllib.parse
 import socket
 import base64
 import os
-import json
+import dateutil
 
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
@@ -88,6 +88,15 @@ class Wms:
                     crs = value
                 query_params["imageSR"] = crs
                 query_params["bboxSR"] = crs
+            elif lparam == 'time':
+                # WMS time format is <start_date>/<end_date>
+                # this shall be parsed into <start_millisec>,<end_millisec> for arcgis REST
+                time_values = value.split("/")
+                str_time_integers = [
+                    str(int(dateutil.parser.parse(time_val).timestamp()*1000))
+                    for time_val in time_values
+                ]
+                query_params["time"] = ",".join(str_time_integers)
             elif lparam == 'layers':
                 query_params["layers"] = 'show:' + internal_wms.layers
             elif lparam == 'format':
@@ -283,10 +292,11 @@ class Wms:
                     continue
 
                 if param.lower() == 'layers':
-                    if not is_wmts:
-                        query_params[param] = internal_wms.layers
-                    else:
-                        query_params[param] = value
+                    if 'LAYERS=' not in internal_wms.url:
+                        if not is_wmts:
+                            query_params[param] = internal_wms.layers
+                        else:
+                            query_params[param] = value
                 else:
                     query_params[param] = value
 

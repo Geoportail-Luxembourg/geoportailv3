@@ -21,7 +21,8 @@ const exports = function(appQueryTemplateUrl) {
       'feedbackAnfOpen': '=appQueryFeedbackAnfOpen',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo',
-      'legendsOpen': '=appQueryLegendsOpen'
+      'legendsOpen': '=appQueryLegendsOpen',
+      'lidarOpen': '=appQueryLidarOpen'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',

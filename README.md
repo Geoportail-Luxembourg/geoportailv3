@@ -101,11 +101,11 @@ Translations
 
 The translation workflow is as follows:
 - make update-pots # Replace pot files with new ones using a running composition
+- make update-web-component-translations # extract i18next strings from web component templates to translation files (using a running webpack_dev_server container from docker-compose.override)
 - make update-translations # push new pots to transifex
 - make pull-translations # retrieve pos from transifex
-- # commit updated po files
+- #commit updated po files
 - make build # build image using updated po files
-
 
 Updating c2cgeoportal
 ---------------------

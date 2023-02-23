@@ -31,6 +31,7 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import gmfLayertreeTimeSliderComponent from 'gmf/layertree/timeSliderComponent.js';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
 
@@ -59,6 +60,7 @@ const exports = angular.module('Appmain', [
   ngeoQueryModule.name,
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
+  gmfLayertreeTimeSliderComponent.name,
   ngeoStatemanagerWfsPermalink.module.name,
   'gettext']).run(function() {
     if (!('ontouchstart' in window)) {
@@ -73,10 +75,6 @@ exports.config(ngeoStatemanagerLocation.MockProvider);
 
 
 exports.config(['$compileProvider', function($compileProvider) {
-  // activate pre-assigning bindings
-  // See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
-  $compileProvider.preAssignBindingsEnabled(true);
-
   // allow clicking the thumbnail link while offline
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?:|s?ftp:|mailto:|tel:|file:|data:image)/);
 }]);
@@ -139,6 +137,7 @@ exports.constant('appLayerinfoTemplateUrl', 'templatecache/appLayerinfoTemplateU
 exports.constant('appAuthenticationTemplateUrl', 'templatecache/appAuthenticationTemplateUrl');
 exports.constant('appInfobarTemplateUrl', 'templatecache/appInfobarTemplateUrl');
 exports.constant('app3dbarTemplateUrl', 'templatecache/app3dbarTemplateUrl');
+exports.constant('appOfflineBarTemplateUrl', 'templatecache/appOfflineBarTemplateUrl');
 exports.constant('appProjectionselectorTemplateUrl', 'templatecache/appProjectionselectorTemplateUrl');
 exports.constant('appMapTemplateUrl', 'templatecache/appMapTemplateUrl');
 exports.constant('appThemeswitcherTemplateUrl', 'templatecache/appThemeswitcherTemplateUrl');
@@ -171,6 +170,7 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/ngeoLayertreeTemplateUrl', require('./catalog/layertree.html'));
   $templateCache.put('templatecache/ngeoPopupTemplateUrl', require('./layerinfo/popup.html'));
   $templateCache.put('templatecache/ngeoScaleselectorTemplateUrl', require('./infobar/scaleselector.html'));
+  $templateCache.put('templatecache/appOfflineBarTemplateUrl', require('./offline/offlinebar.html'));
   $templateCache.put('templatecache/ngeoOfflineTemplateUrl', require('./offlineNgeoComponent.html')); //  # FIXME was a function
   $templateCache.put('templatecache/ngeoOlcsControls3dTemplateUrl', require('./olcs/controls3d.html'));
   $templateCache.put('templatecache/appBackgroundselectorTemplateUrl', require('./backgroundselector/backgroundselector.html'));

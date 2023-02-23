@@ -296,7 +296,7 @@ const exports = function($scope, $window, $compile,
    */
   var sourceFunc = (query, syncResults) => syncResults(matchCoordinate(
     query,
-    this['map'].getView().getProjection().getCode(),
+    this.map_.getView().getProjection().getCode(),
     this.maxExtent_,
     this.coordinateString_
   ));
@@ -519,15 +519,6 @@ const exports = function($scope, $window, $compile,
     select: exports.selected_.bind(this)
   });
 
-  listen(this['map'].getLayers(),
-      olCollectionEventType.ADD,
-      /**
-       * @param {ol.Collection.Event} e Collection event.
-       */
-      (function(e) {
-        this.featureOverlay.clear();
-      }), this);
-
   this.facetsPanelOpen = false;
   this.initialFacets = {
     layers: true,
@@ -593,6 +584,11 @@ const exports = function($scope, $window, $compile,
   }
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+
+  listen(this.map_.getLayers(), olCollectionEventType.ADD, () => this.featureOverlay.clear());
+}
 
 /**
  * @param {Fuse} fuseEngine The fuse engine.
@@ -827,7 +823,7 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this['map'], input);
+  this.backgroundLayerMgr_.set(this.map_, input);
 };
 
 
@@ -859,27 +855,25 @@ exports.prototype.addLayerToMap_ = function(input, key) {
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
-  if (layer !== undefined) {
-    var map = this['map'];
-    if (map.getLayers().getArray().indexOf(layer) <= 0) {
-      map.addLayer(layer);
-    }
-    var layerMetadata = layer.get('metadata');
-    if (layerMetadata.hasOwnProperty('linked_layers')) {
-      var layers = layerMetadata['linked_layers'];
-      layers.forEach(function(layerId) {
-        this.appThemes_.getFlatCatalog().then(
-          function(flatCatalog) {
-            var node2 = flatCatalog.find(function(catItem) {
-              return catItem.id === Number(layerId);
-            });
-            if (node2 !== undefined) {
-              var linked_layer = this.getLayerFunc_(node2);
-              map.addLayer(linked_layer);
-            }
-          }.bind(this));
-      }, this);
-    }
+  var map = this.map_;
+  if (map.getLayers().getArray().indexOf(layer) <= 0) {
+    map.addLayer(layer);
+  }
+  var layerMetadata = layer.get('metadata');
+  if (layerMetadata.hasOwnProperty('linked_layers')) {
+    var layers = layerMetadata['linked_layers'];
+    layers.forEach(function(layerId) {
+      this.appThemes_.getFlatCatalog().then(
+        function(flatCatalog) {
+          var node2 = flatCatalog.find(function(catItem) {
+            return catItem.id === Number(layerId);
+          });
+          if (node2 !== undefined) {
+            var linked_layer = this.getLayerFunc_(node2);
+            map.addLayer(linked_layer);
+          }
+        }.bind(this));
+    }, this);
   }
 };
 
@@ -893,7 +887,7 @@ exports.prototype.addLayerToMap_ = function(input, key) {
  */
 exports.selected_ =
     function(event, suggestion) {
-      var map = /** @type {ol.Map} */ (this['map']);
+      var map = /** @type {ol.Map} */ (this.map_);
       var /** @type {string} */ dataset;
       if (suggestion['dataset'] !== undefined) {
         dataset = suggestion['dataset'];
@@ -959,6 +953,7 @@ exports.selected_ =
       } else if (dataset === 'cms') {
         this.$window_.open('https://www.geoportail.lu' + suggestion.url, '_blank');
       }
+      this.$window_.document.activeElement.blur()
     };
 
 /**

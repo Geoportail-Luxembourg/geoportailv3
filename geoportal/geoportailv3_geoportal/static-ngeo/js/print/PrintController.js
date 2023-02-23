@@ -85,12 +85,6 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
   this.featurePopup_ = appFeaturePopup;
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_;
-
-  /**
    * @private
    */
   this.maskLayer_ = new MaskLayer();
@@ -226,12 +220,6 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {boolean}
    */
   this['printing'] = false;
-
-  /**
-   * @type {Array.<ol.layer.Layer>}
-   * @private
-   */
-  this.layers_ = this['layers'];
 
   /**
  * Return the size in dots of the map to print. Depends on
@@ -431,6 +419,7 @@ exports.prototype.changeLayout = function(newLayout) {
  */
 exports.prototype.$onInit = function() {
   this.map_ = this['map'];
+  this.layers_ = this['layers'];
   console.assert(this.map_ !== undefined && this.map_ !== null);
 };
 

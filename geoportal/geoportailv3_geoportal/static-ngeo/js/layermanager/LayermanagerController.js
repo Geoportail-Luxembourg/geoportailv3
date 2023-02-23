@@ -17,6 +17,7 @@
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
 import PrintMaskLayer from 'ngeo/print/Mask.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
 import OfflineMaskLayer from 'ngeo/offline/Mask.js';
 
 class Controller {
@@ -26,9 +27,11 @@ class Controller {
    * @param {angular.$rootScope} $rootScope Angular rootScope service.
    * @ngInject
    */
-  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope) {
+  constructor(ngeoLocation, ngeoBackgroundLayerMgr, appTimeLayer, $rootScope) {
 
     this.ngeoLocation_ = ngeoLocation;
+
+    this.timeLayer_ = appTimeLayer
 
     this.ngeoBackgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
@@ -45,9 +48,13 @@ class Controller {
      * @type {angular.$rootScope}
      */
     this.$rootScope = $rootScope;
-    this.layers3d = this.map.get('ol3dm');
 
-  };
+  }
+
+  $onInit() {
+    this.layers3d = this.map.get('ol3dm');
+  }
+
   is3dEnabled() {
     return this.map.get('ol3dm') && this.map.get('ol3dm').is3dEnabled();
   }
@@ -71,6 +78,19 @@ class Controller {
 
   get3DLayers() {
     return this.map.get('ol3dm').getAvailableLayers().filter(e => this.map.get('ol3dm').getActiveLayerName().indexOf(e.layer) >= 0);
+  }
+
+  setTime(layer, time) {
+    let dd = new Date(time.start);
+    // remove milleseconds
+    let timeString = dd.toISOString().split('.')[0]+"Z";
+    if (time.end != undefined) {
+      dd = new Date(time.end)
+      // remove milleseconds
+      timeString += '/' + dd.toISOString().split('.')[0]+"Z";
+    }
+    this.timeLayer_.setTime(layer, timeString);
+    layer.set('current_time', timeString)
   }
 
   reorderCallback3D(element, layers) {
@@ -124,6 +144,29 @@ class Controller {
   }
 };
 
+class TimeLayer {
+    setTime(layer, time) {
+    if (layer.type == 'IMAGE') {
+      let pp = layer.getSource().getParams();
+      pp['TIME'] = time;
+      layer.getSource().updateParams(pp);
+    }
+    else if (layer.type == 'TILE') {
+      let WMTS_source = layer.getSource();
+      let isWmts = WMTS_source instanceof olSourceWMTS;
+      if (isWmts) {
+        let oldLayer = WMTS_source.getLayer();
+        let newLayer = layer.get('metadata')['time_layers'][time];
+        let oldUrls = WMTS_source.getUrls();
+        let newUrls = oldUrls.map((url) => url.replace(/\/[^\/]*\/{TileMatrixSet}/, '/' + newLayer + '/{TileMatrixSet}'))
+        WMTS_source.setUrls(newUrls);
+        layer.set('label', newLayer);
+      }
+    }
+  }
+};
+
 appModule.controller('AppLayermanagerController', Controller);
+appModule.service('appTimeLayer', TimeLayer);
 
 export default Controller;

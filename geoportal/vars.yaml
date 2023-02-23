@@ -176,6 +176,7 @@ vars:
         tags: {interface: main, service: js}
         tiles3dLayers: [buildings25d, buildings3d, bridges3d]
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
+        lidarProfileUrl: '{LIDAR_PROFILE_URL}'
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
         wmtsUrl: '{WMTSURL}'
@@ -313,6 +314,7 @@ vars:
     - {name: start_x, type: float}
     - {name: start_y, type: float}
     - {name: start_zoom, type: float}
+    - {name: time_config}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
@@ -394,6 +396,7 @@ vars:
       - vt-staging.geoportail.lu
       - devrm.geoportail.lu
       - migration.geoportail.lu
+      - localhost:8080
     base_url: '{SHORTENER_BASE_URL}'
     email_body: unused
     email_from: unused
@@ -497,6 +500,7 @@ runtime_environment:
   - {name: ELASTIC_INDEX}
   - {name: ELASTIC_SERVERS}
   - {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork/srv'}
+  - {name: LIDAR_PROFILE_URL, default: 'https://map.geoportail.lu/'}
   - {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
   - {name: HTTPS_PROXY_UNAUTHORIZED_IPS, default: '10.0.0.0/8, 127.0.0.1'}
   - {name: LDAP_BASE_DN, default: 'ou=portail,dc=act,dc=lu'}
