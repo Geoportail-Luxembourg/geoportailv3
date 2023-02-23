@@ -30,11 +30,17 @@ import {extend as arrayExtend} from 'ol/array.js';
  */
 const exports = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
-    ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, gettextCatalog) {
+    ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, appTimeLayer, gettextCatalog) {
   /**
    * @type {angularGettext.Catalog}
    */
   this.gettextCatalog = gettextCatalog;
+
+  /**
+   * @type {app.TimeLayer}
+   * @private
+   */
+  this.timeLayer_ = appTimeLayer;
 
   /**
    * @type {app.Notify}
@@ -71,6 +77,12 @@ const exports = function(appStateManager,
    * @private
    */
   this.unavailableOpacities_ = [];
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.unavailableTimes_ = [];
 
   /**
    * @type {Array.<number>}
@@ -189,6 +201,9 @@ exports.prototype.onLayerUpdate_ = function(layers_) {
   var opacities = layers.map(function(layer) {
     return layer.getOpacity();
   });
+  var time_selections = layers.map(function(layer) {
+    return layer.get('current_time');
+  });
   var bgLayer = this.backgroundLayerMgr_.get(this.map_);
   var bgLabel = 'blank';
   if (bgLayer) {
@@ -197,6 +212,7 @@ exports.prototype.onLayerUpdate_ = function(layers_) {
   this.stateManager_.updateState({
     'layers': layerIds.join('-'),
     'opacities': opacities.join('-'),
+    'time': time_selections.join('--'),
     'bgLayer': bgLabel
   });
 };
@@ -208,12 +224,14 @@ exports.prototype.onLayerUpdate_ = function(layers_) {
  * @param {Array.<Object>} flatCatalog The catalog.
  * @private
  */
-exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCatalog) {
+exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, times, flatCatalog) {
   layerIds.reverse();
   opacities.reverse();
+  times.reverse();
   this.unavailableLayerIndex_.forEach(function(elem, index) {
     layerIds.splice(elem, 0,  this.unavailableLayers_[index]);
     opacities.splice(elem, 0, this.unavailableOpacities_[index]);
+    times.splice(elem, 0, this.unavailableTimes_[index]);
   }, this);
   if (this.unavailableLayerIndex_.length > 0) {
     while(this.selectedLayers.length > 0) {
@@ -223,6 +241,7 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
   this.unavailableLayerIndex_ = [];
   this.unavailableLayers_ = [];
   this.unavailableOpacities_ = [];
+  this.unavailableTimes_ = [];
 
 
   var addedLayers = this.map_.getLayers().getArray();
@@ -248,6 +267,18 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
           }
           layerMetadata['start_opacity'] = opacities[layerIndex];
         }
+        if (times[layerIndex].length > 0) {
+          this.timeLayer_.setTime(layer, times[layerIndex]);
+          layer.set('current_time', times[layerIndex])
+          // use min and max default values to restore previous state
+          let time = layer.get('time');
+          const default_times = times[layerIndex].split("/");
+          time.minDefValue = default_times[0];
+          if (default_times.length > 1 ) {
+            time.maxDefValue = default_times[1];
+          }
+          layer.set('time', time);
+        }
         // Skip layers that have already been added
         if (addedLayers.every(function(addedLayer) {
           return addedLayer.get('queryable_id') !==
@@ -257,7 +288,7 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
         }
       } else {
         this.setLayerAsUnavailable_(addedLayers, layerId,
-            opacities[layerIndex], layerIndex);
+            opacities[layerIndex], times[layerIndex], layerIndex);
         return;
       }
     } else {
@@ -313,7 +344,7 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
             }.bind(this));
       } else {
         this.setLayerAsUnavailable_(addedLayers,
-            /** @type {string} */ (layerId), opacities[layerIndex], layerIndex);
+            /** @type {string} */ (layerId), opacities[layerIndex], times[layerIndex], layerIndex);
         return;
       }
     }
@@ -340,7 +371,7 @@ exports.prototype.hasUnavailableLayers = function() {
  * @private
  */
 exports.prototype.setLayerAsUnavailable_ = function(
-    addedLayers, layerId, opacity, layerIndex) {
+  addedLayers, layerId, opacity, time, layerIndex) {
   var layerToRemove = /** @type{ol.layer.Base} */
       (addedLayers.find(function(addedLayer) {
         if (addedLayer.get('queryable_id') === layerId) {
@@ -353,6 +384,7 @@ exports.prototype.setLayerAsUnavailable_ = function(
   }
   this.unavailableLayers_.push(layerId);
   this.unavailableOpacities_.push(opacity);
+  this.unavailableTimes_.push(time);
   this.unavailableLayerIndex_.push(layerIndex);
 };
 
@@ -372,6 +404,9 @@ exports.prototype.getStateValue_ = function(parameter) {
   }
   if (parameter === 'layers') {
     return this.splitLayers_(result, '-');
+  }
+  if (parameter === 'time') {
+    return this.splitTimes_(result, '--');
   }
   return this.splitNumbers_(result, '-');
 };
@@ -421,6 +456,22 @@ exports.prototype.splitLayers_ =
         });
       }
       return items.length === 0 ? undefined : items;
+    };
+
+
+/**
+ * @param {string} parameter The parameter to get.
+ * @param {string} splitChar The char to split with.
+ * @private
+ * @return {Array.<number|string>|undefined} The values.
+ */
+exports.prototype.splitTimes_ =
+    function(parameter, splitChar) {
+      var items = [];
+      if (parameter !== undefined) {
+        return parameter.split(splitChar)
+      }
+      return undefined;
     };
 
 
@@ -585,6 +636,7 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
      * @type {Array.<number>|undefined}
      */
     var opacities = [];
+    var times = [];
     if (!this.initialized_) {
       if (this.initialVersion_ === 2) {
         var layerString = this.stateManager_.getInitialValue('layers');
@@ -621,6 +673,7 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
       } else {
         layerIds = this.getStateValue_('layers');
         opacities = this.getStateValue_('opacities');
+        times = this.getStateValue_('time');
       }
       this.initialized_ = true;
     } else {
@@ -628,15 +681,20 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
           this.ngeoLocation_.getParam('layers'), '-');
       opacities = this.splitNumbers_(
           this.ngeoLocation_.getParam('opacities'), '-');
+      times = this.splitTimes_(
+          this.ngeoLocation_.getParam('time'), '--');
     }
     this.removeWatchers_();
     if (layerIds === undefined) {
       layerIds = [];
       opacities = [];
+      times = [];
     }
+    // create empty list if times are undefined
+    if (times == undefined) times = layerIds.map(i => '');
     if ((layerIds.length > 0 || this.unavailableLayerIndex_.length > 0) &&
         layerIds.length === opacities.length) {
-      this.applyLayerStateToMap_(layerIds, opacities, flatCatalog, ogcServers);
+      this.applyLayerStateToMap_(layerIds, opacities, times, flatCatalog, ogcServers);
     }
     this.setupWatchers_(selectedLayers);
   });

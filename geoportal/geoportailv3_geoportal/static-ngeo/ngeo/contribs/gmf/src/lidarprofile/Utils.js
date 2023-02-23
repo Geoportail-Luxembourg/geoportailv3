@@ -65,9 +65,11 @@ const exports = class {
       mileage_start += segLine.getLength();
 
     });
-
+    //return clippedLine in original projection to request new lidar data
+    const clippedLineLidarProjection = clippedLine.clone();
     const feat = new olFeature({
-      geometry: clippedLine
+      //transform clippedLine to map projection
+      geometry: clippedLine.transform('EPSG:2169', 'EPSG:3857')
     });
 
     const lineStyle = new olStyleStyle({
@@ -144,7 +146,7 @@ const exports = class {
     );
 
     return {
-      clippedLine: clippedLine.getCoordinates(),
+      clippedLine: clippedLineLidarProjection.getCoordinates(),
       distanceOffset: dLeft,
       bufferGeom: feat,
       bufferStyle: styles
@@ -183,7 +185,7 @@ const exports = class {
    * @export
    */
   downloadProfileAsImageFile(profileClientConfig) {
-    const profileSVG = d3.select('#gmf-lidarprofile-container svg.lidar-svg');
+    const profileSVG = d3.select('.gmf-lidarprofile-container svg.lidar-svg');
     const w = parseInt(profileSVG.attr('width'), 10);
     const h = parseInt(profileSVG.attr('height'), 10);
     const margin = profileClientConfig.margin;
@@ -198,7 +200,7 @@ const exports = class {
     ctx.fillRect(0, 0, w, h);
 
     // Draw the profile canvas (the points) into the new canvas.
-    const profileCanvas = d3.select('#gmf-lidarprofile-container .lidar-canvas').node();
+    const profileCanvas = d3.select('.gmf-lidarprofile-container .lidar-canvas').node();
     ctx.drawImage(profileCanvas, margin.left, margin.top,
       w - (margin.left + margin.right), h - (margin.top + margin.bottom));
 
@@ -260,13 +262,13 @@ const exports = class {
       const row = {};
       for (const key in point) {
         const value = point[key];
-        if (key == 'altitude') {
-          row[key] = value.toFixed(4);
-        } else if (key == 'color_packed' || key == 'coords') {
-          row[key] = value.join(' ');
-        } else {
-          row[key] = value;
-        }
+          if (key == 'altitude') {
+            row[key] = value ? value.toFixed(4) : null;
+          } else if (key == 'color_packed' || key == 'coords') {
+            row[key] = value ? value.join(' ') : null;
+          } else {
+            row[key] = value;
+          }
       }
       return row;
     });

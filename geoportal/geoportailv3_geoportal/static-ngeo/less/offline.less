@@ -1,11 +1,24 @@
-ngeo-offline {
+lux-offline-alert {
+  .offline-modal {
+    width: 300px;
+  }
+}
+
+lux-offline-reload {
+  .offline-modal {
+    width: 300px;
+    top: 100px;
+  }
+}
+
+ngeo-offline, lux-offline {
   div {
     z-index: 1;
   }
-  .main-button {
+  .main-button, .db-button {
     position: absolute;
-    right: 8px;
-    bottom: 15rem;
+    right: 96px;
+    bottom: 151px;
     cursor: pointer;
     .no-data {
       color: black;
@@ -14,27 +27,43 @@ ngeo-offline {
       background-color: white;
       text-align: center;
       font-size: 2.7rem;
-      font-family: FontAwesome;
-      line-height: 1.5em;
       color: #2980b9;
       width: 41px;
       height: 41px;
       border: 1px solid #8394a0;
-      &::after {
-        content: @fa-var-arrow-circle-o-down;
-      }
+    }
+    .no-data[disabled], .with-data[disabled], .offline-wc[disabled] {
+      opacity: 0.65;
+      cursor: not-allowed;
     }
     .with-data {
-      color: red;
+      color: red !important;
     }
   }
+  .db-button {right: 52px}
 
   &.offline-mode {
     .main-button {
       .no-data, .with-data{
-        color: green;
+        color: green !important;
       }
     }
+  }
+
+  .offline-btns {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .offline-btn {
+      margin: 5px;
+      i {
+        margin-left: 6px;
+      }
   }
 
   .validate-extent {
@@ -87,10 +116,6 @@ ngeo-offline {
       height: 40px;
       line-height: 40px;
     }
-  }
-
-  .main-button {
-    bottom: 104px;
   }
 }
 

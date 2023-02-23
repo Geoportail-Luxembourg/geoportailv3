@@ -23,11 +23,10 @@ import olControlMousePosition from 'ol/control/MousePosition.js';
  * @ngInject
  * @export
  * @constructor
- * @param {Object} $document The document service.
  * @param {angular.$sce} $sce Angular sce service.
  * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
-const exports = function($document, $sce, appCoordinateString) {
+const exports = function($sce, appCoordinateString) {
   /**
    * @type {app.CoordinateString}
    * @private
@@ -53,6 +52,10 @@ const exports = function($document, $sce, appCoordinateString) {
   });
 };
 
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+};
+
 
 /**
  * @param {ol.Coordinate} coord The coordinate.
@@ -62,7 +65,7 @@ const exports = function($document, $sce, appCoordinateString) {
 exports.prototype.mouseCoordinateFormat_ =
     function(coord) {
       var mapEpsgCode =
-      this['map'].getView().getProjection().getCode();
+      this.map_.getView().getProjection().getCode();
       if (this['projection']['value'] === 'EPSG:4326:DMS') {
         return this.coordinateString_(coord, mapEpsgCode, 'EPSG:4326', true, false);
       } else if (this['projection']['value'] === 'EPSG:4326:DMm') {

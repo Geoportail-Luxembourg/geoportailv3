@@ -75,6 +75,7 @@ exports.component_ = {
     'maskMargin': '<?ngeoOfflineMaskMargin',
     'minZoom': '<?ngeoOfflineMinZoom',
     'maxZoom': '<?ngeoOfflineMaxZoom',
+    'fullOfflineActive': '<?ngeoFullOfflineActive',
   },
   controller: 'ngeoOfflineController',
   templateUrl: ngeoOfflineTemplateUrl
@@ -101,7 +102,7 @@ exports.Controller = class {
    * @ngdoc controller
    * @ngname ngeoOfflineController
    */
-  constructor($timeout, ngeoFeatureOverlayMgr, ngeoOfflineServiceManager, ngeoOfflineConfiguration, ngeoOfflineMode, ngeoNetworkStatus) {
+  constructor($timeout, ngeoFeatureOverlayMgr, ngeoOfflineServiceManager, ngeoOfflineConfiguration, ngeoOfflineMode, ngeoNetworkStatus, appOfflineBar) {
 
     /**
      * @type {angular.$timeout}
@@ -131,6 +132,8 @@ exports.Controller = class {
      * @export
      */
     this.offlineMode = ngeoOfflineMode;
+
+    this.offlineBar = appOfflineBar;
 
     /**
      * @type {ngeo.offline.NetworkStatus}
@@ -243,6 +246,13 @@ exports.Controller = class {
     this.maxZoom;
 
     /**
+     * Indicates if full offline tool is active (to disable ngeoOffline).
+     * @type {boolean}
+     * @export
+     */
+    this.fullOfflineActive;
+
+    /**
      * Map view max zoom constraint.
      * @type {number}
      * @export
@@ -321,6 +331,7 @@ exports.Controller = class {
   toggleViewExtentSelection(finished) {
     this.menuDisplayed = false;
     this.selectingExtent = !this.selectingExtent;
+    this.offlineBar.toggleNgeoOffline();
 
     this.map.removeLayer(this.maskLayer_);
     this.removeZoomConstraints_();

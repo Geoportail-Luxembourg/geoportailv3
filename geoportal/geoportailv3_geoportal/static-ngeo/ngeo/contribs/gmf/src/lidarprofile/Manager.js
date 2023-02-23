@@ -1,10 +1,10 @@
 /**
  * @module gmf.lidarprofile.Manager
  */
-import gmfLidarprofileMeasure from 'gmf/lidarprofile/Measure.js';
-import gmfLidarprofilePlot from 'gmf/lidarprofile/Plot.js';
-import gmfLidarprofileUtils from 'gmf/lidarprofile/Utils.js';
-import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
+import gmfLidarprofileMeasure from './Measure.js';
+import gmfLidarprofilePlot from './Plot.js';
+import gmfLidarprofileUtils from './Utils.js';
+import ngeoDownloadCsv from 'ngeo/download/Csv.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olOverlay from 'ol/Overlay.js';
 import olSourceVector from 'ol/source/Vector.js';
@@ -12,37 +12,32 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleStyle from 'ol/style/Style.js';
 import {select} from 'd3-selection';
+import i18next from 'i18next';
 const d3 = {
   select,
 };
 
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
 
-const exports = class {
+const gettextCatalog = { getString: str => str }
+
+export class LidarManager {
 
   /**
    * Provides a service to manage a D3js component to be used to draw an lidar point cloud profile chart.
    * Requires access to a Pytree webservice: https://github.com/sitn/pytree
    *
    * @struct
-   * @param {angular.$http} $http Angular http service.
-   * @param {angular.$filter} $filter Angular filter.
-   * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
-   * @param {ngeo.misc.Debounce} ngeoDebounce ngeo debounce service.
-   * @ngInject
    * @ngdoc service
    * @ngname gmflidarprofileManager
    */
-  constructor($http, $filter, gettextCatalog, ngeoDebounce) {
-
-    /**
-     * @type {angular.$http}
-     */
-    this.$http = $http;
-
-    /**
-     * @type {angular.$filter}
-     */
-    this.$filter = $filter;
+  constructor() {
 
     /**
      * @type {angularGettext.Catalog}
@@ -53,7 +48,7 @@ const exports = class {
      * @type {ngeo.misc.Debounce}
      * @private
      */
-    this.ngeoDebounce_ = ngeoDebounce;
+    this.ngeoDebounce_ = debounce;
 
     /**
      * @type {?angular.$q.Promise}
@@ -136,9 +131,15 @@ const exports = class {
     this.line_;
 
     /**
+     * @type {number}
+     */
+    this.width;
+
+    /**
      * @type {gmf.lidarprofile.Utils}
      */
     this.utils = new gmfLidarprofileUtils();
+
   }
 
   /**
@@ -160,6 +161,20 @@ const exports = class {
     if (this.lidarBuffer) {
       this.lidarBuffer.getSource().clear();
     }
+  }
+
+  clearRect() {
+    const canvas = d3.select('.gmf-lidarprofile-container .lidar-canvas');
+    const canvasEl = canvas.node();
+    const ctx = canvasEl.getContext('2d');
+    ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
+    canvas.selectAll('*').remove();
+    d3.select('.gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
+    this.profilePoints = this.getEmptyProfilePoints_();
+    this.line_;
+    this.plot = new gmfLidarprofilePlot(this);
+    this.measure = new gmfLidarprofileMeasure(this);
+    this.setMap(map);
   }
 
 
@@ -206,9 +221,11 @@ const exports = class {
    * @param {number} distanceOffset the left side of D3 profile domain at current zoom and pan configuration
    * @param {boolean} resetPlot whether to reset D3 plot or not
    * @param {number} minLOD minimum Level Of Detail
+   * @param {boolean} exportLAS export LAS file
+   * @param {number|undefined} userWidth The extract width.
    * @export
    */
-  getProfileByLOD(clippedLine, distanceOffset, resetPlot, minLOD) {
+  getProfileByLOD(clippedLine, distanceOffset, resetPlot, minLOD, exportLAS, userWidth) {
 
     const gettextCatalog = this.gettextCatalog;
     this.profilePoints = this.getEmptyProfilePoints_();
@@ -217,15 +234,20 @@ const exports = class {
       this.isPlotSetup_ = false;
     }
 
-    d3.select('#gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
+    d3.select('.gmf-lidarprofile-container .lidar-error').style('visibility', 'hidden');
     let pytreeLinestring = this.utils.getPytreeLinestring(this.line_);
 
     let maxLODWith;
+    let lastLOD = false;
+    d3.select('.gmf-lidarprofile-container .lod-info').html('');
     const max_levels = this.config.serverConfig.max_levels;
+    let profileWidth = 0;
+
     if (distanceOffset == 0) {
       maxLODWith = this.utils.getNiceLOD(this.line_.getLength(), max_levels);
     } else {
-      const domain = this.plot.updateScaleX['domain']();
+      console.log("Plot : ", this.plot)
+      const domain = this.plot.updateScaleX.domain();
       pytreeLinestring = '';
 
       for (let i = 0; i < clippedLine.length; i++) {
@@ -233,79 +255,120 @@ const exports = class {
       }
       pytreeLinestring = pytreeLinestring.substr(0, pytreeLinestring.length - 1);
       maxLODWith = this.utils.getNiceLOD(domain[1] - domain[0], max_levels);
-
     }
 
-    let lastLOD = false;
-    d3.select('#gmf-lidarprofile-container .lod-info').html('');
     this.config.clientConfig.pointSum = 0;
-    let profileWidth = 0;
     if (this.config.clientConfig.autoWidth) {
       profileWidth = maxLODWith.width;
     } else {
       profileWidth = this.config.serverConfig.width;
     }
-
-    const profileWidthTxt = gettextCatalog.getString('Profile width: ');
-    d3.select('#gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
-
-    for (let i = 0; i < maxLODWith.maxLOD; i++) {
-      if (i == 0) {
-        this.queryPytree_(minLOD, this.config.serverConfig.initialLOD, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, resetPlot);
-        i += this.config.serverConfig.initialLOD - 1;
-      } else if (i < maxLODWith.maxLOD - 1) {
-        this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false);
-      } else {
-        lastLOD = true;
-        this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false);
+    profileWidth = userWidth;
+    const profileWidthTxt = i18next.t('Profile width: ');
+    d3.select('.gmf-lidarprofile-container .width-info').html(`${profileWidthTxt} ${profileWidth}m`);
+    if (!exportLAS) {
+      for (let i = 0; i < maxLODWith.maxLOD; i++) {
+        if (i == 0) {
+          this.queryPytree_(minLOD, this.config.serverConfig.initialLOD, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, resetPlot, false);
+          i += this.config.serverConfig.initialLOD - 1;
+        } else if (i < maxLODWith.maxLOD - 1) {
+          this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, false);
+        } else {
+          lastLOD = true;
+          this.queryPytree_(minLOD + i, minLOD + i + 1, i, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, false);
+        }
       }
+    } else {
+      this.queryPytree_(undefined, undefined, undefined, pytreeLinestring, distanceOffset, lastLOD, profileWidth, false, true);
     }
   }
 
 
   /**
    * Request to Pytree service for a range of Level Of Detail (LOD)
-   * @param {number} minLOD minimum Level Of Detail of the request
-   * @param {number} maxLOD maximum Level Of Detail of the request
-   * @param {number} iter the iteration in profile requests cycle
+   * @param {number | undefined} minLOD minimum Level Of Detail of the request
+   * @param {number | undefined} maxLOD maximum Level Of Detail of the request
+   * @param {number | undefined} iter the iteration in profile requests cycle
    * @param {string} coordinates linestring in cPotree format
    * @param {number} distanceOffset the left side of D3 profile domain at current zoom and pan configuration
    * @param {boolean} lastLOD the deepest level to retrieve for this profile
    * @param {number} width the width of the profile
    * @param {boolean} resetPlot whether to reset D3 plot or not, used for first LOD
+   * @param {boolean} exportLAS should export a LAS file
    * @private
    */
-  queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot) {
+  queryPytree_(minLOD, maxLOD, iter, coordinates, distanceOffset, lastLOD, width, resetPlot, exportLAS) {
+    if (!this.config) {
+      throw new Error('Missing config');
+    }
+    if (!this.config.serverConfig) {
+      throw new Error('Missing config.serverConfig');
+    }
+    this.map_.getViewport().style.cursor = 'wait';
+    document.body.style.cursor = 'wait';
     const gettextCatalog = this.gettextCatalog;
-    const lodInfo = d3.select('#gmf-lidarprofile-container .lod-info');
+    const lodInfo = d3.select('.gmf-lidarprofile-container .lod-info');
     if (this.config.serverConfig.debug) {
       let html = lodInfo.html();
-      const loadingLodTxt = gettextCatalog.getString('Loading LOD: ');
+      const loadingLodTxt = i18next.t('Loading LOD: ');
       html += `${loadingLodTxt} ${minLOD}-${maxLOD}...<br>`;
       lodInfo.html(html);
     }
 
     const pointCloudName = this.config.serverConfig.default_point_cloud;
-    const hurl = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}
-      &maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=`;
+    const getLAS = exportLAS?1:0;
 
-    this.$http.get(hurl, {
-      headers: {
-        'Content-Type': 'text/plain; charset=x-user-defined'
-      },
-      responseType: 'arraybuffer'
-    }).then((response) => {
-      if (this.config.serverConfig.debug) {
-        let html = lodInfo.html();
-        const lodTxt = gettextCatalog.getString('LOD: ');
-        const loadedTxt = gettextCatalog.getString('loaded');
-        html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
-        lodInfo.html(html);
+    const options = {
+      method: 'GET',
+      headers: {'Content-Type': 'text/plain; charset=x-user-defined'},
+      responseType: 'arraybuffer',
+    };
+    if (exportLAS) {
+        const url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;  
+        fetch(url, options).then(res => res.blob())
+          .then(blobobject => {
+            const blob = window.URL.createObjectURL(blobobject);
+            const anchor = document.createElement('a');
+            anchor.style.display = 'none';
+            anchor.href = blob;
+            anchor.download = "output.las";
+            document.body.appendChild(anchor);
+            anchor.click();
+            window.URL.revokeObjectURL(blob);
+          }).finally(()=>{
+            this.map_.getViewport().style.cursor = '';
+            document.body.style.cursor = '';
+          });
+    } else {
+      let url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?minLOD=${minLOD}&maxLOD=${maxLOD}&width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;
+      if (minLOD === undefined || maxLOD === undefined) {$
+        url = `${this.config.pytreeLidarprofileJsonUrl}profile/get?width=${width}&coordinates=${coordinates}&pointCloud=${pointCloudName}&attributes=&getLAS=${getLAS}`;
       }
-      this.processBuffer_(response.data, iter, distanceOffset, lastLOD, resetPlot);
-    }, (response) => {
-      console.error(response);
-    });
+      fetch(url, options)
+        .then((resp) => resp.arrayBuffer())
+        .then((data) => {
+          if (!this.config) {
+            throw new Error('Missing config');
+          }
+          if (!this.config.serverConfig) {
+            throw new Error('Missing config.serverConfig');
+          }
+          if (this.config.serverConfig.debug) {
+            let html = lodInfo.html();
+            const lodTxt = i18next.t('LOD: ');
+            const loadedTxt = i18next.t('loaded');
+            html += `${lodTxt} ${minLOD}-${maxLOD} ${loadedTxt}<br>`;
+            lodInfo.html(html);
+          }
+          this.processBuffer_(data, iter, distanceOffset, lastLOD, resetPlot);
+        })
+        .catch((err) => {
+          throw `Error on pytree query: ${err.message}`;
+        }).finally(() => {
+          this.map_.getViewport().style.cursor = '';
+          document.body.style.cursor = '';
+        });
+    }
   }
 
   /**
@@ -318,7 +381,7 @@ const exports = class {
    * @private
    */
   processBuffer_(profile, iter, distanceOffset, lastLOD, resetPlot) {
-    const lidarError = d3.select('#gmf-lidarprofile-container .lidar-error');
+    const lidarError = d3.select('.gmf-lidarprofile-container .lidar-error');
 
     const typedArrayInt32 = new Int32Array(profile, 0, 4);
     const headerSize = typedArrayInt32[0];
@@ -335,7 +398,7 @@ const exports = class {
 
     } catch (e) {
       if (!this.isPlotSetup_) {
-        const canvas = d3.select('#gmf-lidarprofile-container .lidar-canvas');
+        const canvas = d3.select('.gmf-lidarprofile-container .lidar-canvas');
         const canvasEl = canvas.node();
         const ctx = canvasEl.getContext('2d');
         ctx.clearRect(0, 0, canvasEl.getBoundingClientRect().width, canvasEl.getBoundingClientRect().height);
@@ -422,7 +485,7 @@ const exports = class {
 
     const rangeY = [this.utils.arrayMin(points.altitude), this.utils.arrayMax(points.altitude)];
 
-    if (iter == 0 && resetPlot || !this.isPlotSetup_) {
+    if ((iter == 0 && resetPlot) || !this.isPlotSetup_) {
       this.plot.setupPlot(rangeX, rangeY);
       this.isPlotSetup_ = true;
     }
@@ -435,10 +498,10 @@ const exports = class {
    */
   getHTMLError_() {
     const gettextCatalog = this.gettextCatalog;
-    const errorInfoTxt = gettextCatalog.getString('Lidar profile service error');
-    const errorOfflineTxt = gettextCatalog.getString('It might be offline');
-    const errorOutsideTxt = gettextCatalog.getString('Or did you attempt to draw a profile outside data extent?');
-    const errorNoPointError = gettextCatalog.getString('Or did you attempt to draw such a small profile that no point was returned?');
+    const errorInfoTxt = i18next.t('Lidar profile service error');
+    const errorOfflineTxt = i18next.t('It might be offline');
+    const errorOutsideTxt = i18next.t('Or did you attempt to draw a profile outside data extent?');
+    const errorNoPointError = i18next.t('Or did you attempt to draw such a small profile that no point was returned?');
     return `
       <div class="lidarprofile-error">
       <p class="bold">${errorInfoTxt}</p>
@@ -461,6 +524,7 @@ const exports = class {
    * @private
    */
   updateData_() {
+    console.log("Update data")
     const domainX = this.plot.updateScaleX['domain']();
     let map_resolution = this.map_ ? this.map_.getView().getResolution() : 0;
     map_resolution = map_resolution || 0;
@@ -484,8 +548,7 @@ const exports = class {
       if (maxLODWidth.maxLOD <= this.config.serverConfig.initialLOD) {
         this.plot.drawPoints(this.profilePoints);
       } else {
-        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0);
-
+        this.getProfileByLOD(clip.clippedLine, clip.distanceOffset, false, 0, false, this.width);
       }
     }
 
@@ -493,14 +556,3 @@ const exports = class {
   }
 
 };
-
-
-/**
- * @type {!angular.Module}
- */
-exports.module = angular.module('gmfLidarprofileManager', [
-  ngeoMiscDebounce.name,
-]);
-exports.module.service('gmfLidarprofileManager', exports);
-
-export default exports;

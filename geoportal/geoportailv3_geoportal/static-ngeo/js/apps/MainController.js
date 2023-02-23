@@ -129,6 +129,7 @@ import '../../less/geoportailv3.less';
  import appQueryCasiporeportController from '../query/CasiporeportController.js';
  import appQueryPdsreportDirective from '../query/pdsreportDirective.js';
  import appQueryPdsreportController from '../query/PdsreportController.js';
+ import appOfflineBar from '../offline/offlinebar.js'
 
  //const appQueryQueryStyles = goog.require('app.query.QueryStyles');
  import appQueryQueryDirective from '../query/queryDirective.js';
@@ -167,6 +168,7 @@ import '../../less/geoportailv3.less';
  import appMymaps from '../Mymaps.js';
 
  import appMymapsOffline from '../MymapsOffline.js';
+ import appToggleOffline from '../offline/toggleOffline.js';
  import appOlcsToggle3d from '../olcs/toggle3d.js';
  import appOlcsExtent from '../olcs/Extent.js';
  import appProjections from '../projections.js';
@@ -193,6 +195,11 @@ import '../../less/geoportailv3.less';
 
 import '../lux-iframe-preview/lux-iframe-preview.ts';
 import '../gmf-lidar-panel/gmf-lidar-panel.ts';
+import '../lidar-plot/lidar-plot.ts';
+import '../offline/lux-offline/lux-offline.component.ts';
+import '../offline/lux-offline/lux-offline-alert.component.ts';
+import '../offline/lux-offline/lux-offline-reload.component.ts';
+import '../offline/lux-offline/lux-offline-error.component.ts';
 
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
@@ -386,8 +393,8 @@ const MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
   appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
+    appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
   /**
@@ -500,7 +507,7 @@ const MainController = function(
     this.resetSelectedSimpleData();
     // Then we select this item
     selectedItem['selected'] = true;
-  
+
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
@@ -708,6 +715,12 @@ const MainController = function(
   this.networkStatus_ = ngeoNetworkStatus;
 
   /**
+  * @type {ngeo.offline.Mode}
+  * @export
+  */
+  this.offlineBar = appOfflineBar;
+
+  /**
    * @type {ngeo.offline.Mode}
    * @export
    */
@@ -724,6 +737,12 @@ const MainController = function(
    * @type {string}
    */
   this.tiles3dUrl_ = tiles3dUrl;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.lidarProfileUrl_ = lidarProfileUrl;
 
   /**
    * @type {ngeo.offline.NetworkStatus}
@@ -824,10 +843,7 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['lidarOpen'] = false;
-
-  // FIXME: To be changed to use `ng-prop` when available (angular > 1.7).
-  $scope.$watch(() => this['lidarOpen'], (val) => document.querySelector('gmf-lidar-panel').active = val);
+   this['lidarOpen'] = false;
 
   /**
    * @type {boolean}
@@ -1125,6 +1141,26 @@ const MainController = function(
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
+      } else {
+        this['lidarOpen'] = false;
+      }
+    });
+    $scope.$watch(() => {
+      return this['mymapsOpen'] || this['infosOpen'] ||
+        this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
+        this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+        this['vectorEditorOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['lidarOpen'] = false;
+      }
+    });
+    $scope.$watch(() => {
+      return this['lidarOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['infosOpen'] = this['printOpen'] = this['shareOpen'] =
+          this['legendsOpen'] = this['routingOpen'] = false;
       }
     });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');

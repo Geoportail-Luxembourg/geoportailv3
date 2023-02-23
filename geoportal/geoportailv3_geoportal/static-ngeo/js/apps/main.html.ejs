@@ -104,7 +104,7 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container">
+    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -176,6 +176,7 @@
                        app-query-routing-open="mainCtrl.routingOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
                        app-query-legends-open="mainCtrl.legendsOpen"
+                       app-query-lidar-open="mainCtrl.lidarOpen"
                        app-query-language="mainCtrl.lang"
                        app-query-feedback-anf-open="mainCtrl.feedbackAnfOpen"
                        app-query-feedback-crues-open="mainCtrl.feedbackCruesOpen"
@@ -237,10 +238,10 @@
               ✕
             </button>
             <div class="tab-content">
-              <gmf-lidar-panel></gmf-lidar-panel>
+              <gmf-lidar-panel ng-prop-map="mainCtrl.map" ng-prop-active="mainCtrl.lidarOpen" ng-prop-url="mainCtrl.lidarProfileUrl_"></gmf-lidar-panel>
             </div>
           </div>
-        <!-- Feedback -->
+          <!-- Feedback -->
         <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
           <h2 translate>Feedback</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
@@ -375,12 +376,25 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <lux-offline-alert></lux-offline-alert>
+      <lux-offline-reload></lux-offline-reload>
+      <lux-offline-error></lux-offline-error>
+      <lux-offline
+          ng-class="mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide'"
+          ng-prop-disabled="mainCtrl.offlineBar.isNgeoOfflineActive()"
+          ng-prop-bar="mainCtrl.offlineBar"
+          ng-prop-scope="mainCtrl.scope_"
+      ></lux-offline>
       <ngeo-offline
+          ng-class="[
+                      mainCtrl.offlineBar.isBarOpen() ? 'show' : 'hide', 
+                      {'offline-mode': mainCtrl.offlineMode.isEnabled()}
+                    ]"
           ngeo-offline-map="::mainCtrl.map"
           ngeo-offline-mask-margin="::100"
           ngeo-offline-min-zoom="::12"
           ngeo-offline-max-zoom="::16"
-          ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
+          ngeo-full-offline-active="mainCtrl.offlineBar.fullOffline_"
           ng-show="!mainCtrl.embedded"
       >
       </ngeo-offline>
@@ -390,9 +404,12 @@
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
     </div>
+
   </div>
+
     <!-- Begin bottom bar -->
     <footer class="footer" ng-show="::!mainCtrl.embedded">
+        <lidar-plot ng-prop-active="mainCtrl.lidarOpen" ng-class="mainCtrl.lidarOpen ? 'show' : 'hide'" ng-on-close-lidar="mainCtrl.closeSidebar()"></lidar-plot>
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"
@@ -445,7 +462,7 @@
         <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
-            app-profile-open="mainCtrl.profileOpen">
+            app-profile-open="mainCtrl.profileOpen" app-profile-lidar-open="mainCtrl.lidarOpen">
           </app-measure>
         </li>
         <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">

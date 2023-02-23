@@ -960,7 +960,7 @@ class Getfeatureinfo(object):
             except Exception as e:
                 log.exception(e)
             modified_features.append(feature)
-        return modified_features    
+        return modified_features
 
     def format_esridate(self, features, attributes="date_time", format="%Y-%m-%d %H:%M:%S", use_local_time=True, delta_hours=0):
         modified_features = []
@@ -1070,7 +1070,6 @@ class Getfeatureinfo(object):
     def get_additional_pdf(self, features, url, id_attr = 'OBJECTID'):
         features2 = []
         timeout = 15
-
         for feature in features:
             feature['attributes']['has_sketch'] = False
             id = feature['attributes'][id_attr]
@@ -1523,6 +1522,7 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
+        log.error(query)
         try:
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)

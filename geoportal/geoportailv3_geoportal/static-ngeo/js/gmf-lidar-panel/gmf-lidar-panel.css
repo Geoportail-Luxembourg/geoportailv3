@@ -1,3 +1,7 @@
 gmf-lidar-panel > div {
     padding: 10px;
 }
+
+hr {
+    margin: 10px 0 !important;
+}
