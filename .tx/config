@@ -26,11 +26,11 @@ source_lang = frp
 type = PO
 
 [o:geoportail:p:geoportailv3-lu:r:geoportailv3-webcomponents]
-source_file = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.frp.json
-file_filter = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.<lang>.json
+source_file = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.frp.json
+file_filter = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.<lang>.json
 source_lang = frp
 type = KEYVALUEJSON
-trans.en = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.en.json
-trans.fr = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.fr.json
-trans.de = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.de.json
-trans.lb = geoportailv3_geoportal/static-ngeo/ngeo/locales/app.lb.json
+trans.en = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.en.json
+trans.fr = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.fr.json
+trans.de = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.de.json
+trans.lb = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.lb.json
