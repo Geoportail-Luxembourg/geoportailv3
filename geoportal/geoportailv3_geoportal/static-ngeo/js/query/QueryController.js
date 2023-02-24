@@ -394,13 +394,6 @@ const exports = function($sce, $timeout, $scope, $http,
     }
   }.bind(this));
 
-  // Load info window if fid has a valid value
-  var fid = this.ngeoLocation_.getParam('fid');
-
-  if (this.isFIDValid_(fid)) {
-    this.getFeatureInfoById_(fid);
-    this.ngeoLocation_.deleteParam('fid');
-  }
   listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
@@ -415,7 +408,6 @@ const exports = function($sce, $timeout, $scope, $http,
       }), this);
 };
 
-
 exports.prototype.$onInit = function() {
   this.map_ = this['map'];
   this.map_.addLayer(this.featureLayer_);
@@ -427,17 +419,6 @@ exports.prototype.$onInit = function() {
     this.isLongPress_ = true;
   }.bind(this));
 
-  listen(this.map_.getLayers(),
-  'remove',
-  /**
-   * @param {ol.Collection.Event} e Collection event.
-   */
-  function(e) {
-    if (this['appSelector'] == this.QUERYPANEL_) {
-      this.clearQueryResult_(undefined);
-    }
-  }, this);
-
   listen(this.map_, 'pointerdown', function(evt) {
     this.isLongPress_ = false;
     this.startPixel_ = evt.pixel;
@@ -446,7 +427,7 @@ exports.prototype.$onInit = function() {
     this.timeout_.cancel(this.holdPromise);
   }, this);
 
-listen(this.map_, 'pointerup', function(evt) {
+  listen(this.map_, 'pointerup', function(evt) {
     this.timeout_.cancel(this.holdPromise);
     var tempTime = new Date().getTime();
     if ((tempTime - this.pointerUpTime_) <= 499) {
@@ -526,6 +507,11 @@ listen(this.map_, 'pointerup', function(evt) {
       this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
     }
   }, this);
+  var fid = this.ngeoLocation_.getParam('fid');
+  if (this.isFIDValid_(fid)) {
+    this.getFeatureInfoById_(fid);
+  }
+  this.ngeoLocation_.deleteParam('fid');
 };
 
 
@@ -652,7 +638,6 @@ exports.prototype.getFeatureInfoById_ = function(fid) {
     var layersList = [splittedFid[0]];
     var layerLabel = {};
 
-
     this.appThemes_.getFlatCatalog().then(
         function(flatCatalogue) {
 
@@ -666,6 +651,7 @@ exports.prototype.getFeatureInfoById_ = function(fid) {
                 'fid': curFid
               }}).then(
                 function(resp) {
+                  this['appSelector'] = this.QUERYPANEL_;
                   var showInfo = false;
                   if (!this.appGetDevice_.testEnv('xs')) {
                     showInfo = true;
