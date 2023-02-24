@@ -2114,6 +2114,32 @@ class Map extends OpenLayersMap {
   }
 
   /**
+   * It displays a GeoJSON object on the map.
+   * The default data projection is EPSG:4326.
+   * @param {Object} geojson The GeoJSON object.
+   * @param {VectorOptions=} opt_options Options.
+   * @return {Promise} The vector layer promise.
+   * @export
+   * @api
+   */
+  addGeoJSONObject(geojson, opt_options = {}) {
+    var opt_format = {
+        dataProjection: 'EPSG:4326',
+        featureProjection: this.getView().getProjection()
+      };
+    if (opt_options.dataProjection !== undefined) {
+      opt_format['dataProjection'] = opt_options.dataProjection;
+    }
+    var vector = new VectorLayer(opt_options);
+    const vectorSource = new VectorSource({
+      features: new GeoJSON(opt_format).readFeatures(geojson),
+    });
+    vector.setSource(vectorSource);
+    this.addLayer(vector);
+    return Promise.resolve(vector);
+  }
+
+  /**
    * Adds a KML or gpx file on the map
    * @param {string} url Url to the vector file
    * @param {GPX|KML|GeoJSON} format The format.
