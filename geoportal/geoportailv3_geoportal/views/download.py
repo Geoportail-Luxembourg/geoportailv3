@@ -224,7 +224,6 @@ class Download(object):
         document_id = self.request.params.get("document_id", None)
         url = f"{base_url}/document/preview/{document_id}/?variant=public"
         hdr = {'api-key': api_key}
-        log.error(url)
         req = urllib.request.Request(url, headers=hdr)
         response = urllib.request.urlopen(req)
 
