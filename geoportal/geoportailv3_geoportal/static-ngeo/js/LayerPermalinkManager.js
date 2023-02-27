@@ -267,7 +267,7 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, times, f
           }
           layerMetadata['start_opacity'] = opacities[layerIndex];
         }
-        if (times[layerIndex].length > 0) {
+        if (times.length > 0) {
           this.timeLayer_.setTime(layer, times[layerIndex]);
           layer.set('current_time', times[layerIndex])
           // use min and max default values to restore previous state
