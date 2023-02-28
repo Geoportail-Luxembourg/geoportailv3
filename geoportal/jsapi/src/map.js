@@ -437,10 +437,10 @@ class Map extends OpenLayersMap {
       }
     }.bind(this));
 
-    this.grantedUrls = ['visitluxembourg.com', 'mullerthal-trail.lu', 'traveltrade.visitluxembourg.com', 'visit-eislek.lu', 'visitguttland.lu',
-      'visitmoselle.lu', 'visitminett.lu', 'mullerthal.lu', 'gites.lu', 'vins-cremants.lu', 'visitbeaufort.lu', 'visitberdorf.lu',
-      'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu', 'visitmondorf.lu',
-      'visitwasserbillig.lu', 'si-schengen.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'visit-wincrange.lu',
+    this.grantedUrls = ['visitluxembourg.com', 'mullerthal-trail.lu', 'visit-eislek.lu', 'visitguttland.lu', 'luxembourgtravel.lu',
+      'visitmoselle.lu', 'visitminett.lu', 'mullerthal.lu', 'gites.lu', 'vins-cremants.lu', 'visitbeaufort.lu', 'visitberdorf.lu', 'minetttour.lu',
+      'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu',
+      'visitwasserbillig.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'minetttrail.lu', 'minettcycle.lu',
       'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
       'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online'];
 
