@@ -1349,7 +1349,6 @@ class Getfeatureinfo(object):
         try:
             DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
-            log.error(query)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -1522,7 +1521,6 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
-        log.error(query)
         try:
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
