@@ -268,16 +268,18 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, times, f
           layerMetadata['start_opacity'] = opacities[layerIndex];
         }
         if (times.length > 0) {
-          this.timeLayer_.setTime(layer, times[layerIndex]);
-          layer.set('current_time', times[layerIndex])
-          // use min and max default values to restore previous state
-          let time = layer.get('time');
-          const default_times = times[layerIndex].split("/");
-          time.minDefValue = default_times[0];
-          if (default_times.length > 1 ) {
-            time.maxDefValue = default_times[1];
+          if (layerIndex <= times.length - 1 && times[layerIndex].length > 0) {
+            this.timeLayer_.setTime(layer, times[layerIndex]);
+            layer.set('current_time', times[layerIndex])
+            // use min and max default values to restore previous state
+            let time = layer.get('time');
+            const default_times = times[layerIndex].split("/");
+            time.minDefValue = default_times[0];
+            if (default_times.length > 1 ) {
+              time.maxDefValue = default_times[1];
+            }
+            layer.set('time', time);
           }
-          layer.set('time', time);
         }
         // Skip layers that have already been added
         if (addedLayers.every(function(addedLayer) {
