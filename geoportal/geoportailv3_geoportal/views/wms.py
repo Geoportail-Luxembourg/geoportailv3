@@ -292,11 +292,10 @@ class Wms:
                     continue
 
                 if param.lower() == 'layers':
-                    if 'LAYERS=' not in internal_wms.url:
-                        if not is_wmts:
-                            query_params[param] = internal_wms.layers
-                        else:
-                            query_params[param] = value
+                    if not is_wmts:
+                        query_params[param] = internal_wms.layers
+                    else:
+                        query_params[param] = value
                 else:
                     query_params[param] = value
 
