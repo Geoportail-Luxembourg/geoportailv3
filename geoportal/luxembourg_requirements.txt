@@ -13,7 +13,7 @@ bleach
 html5lib
 CairoSVG
 WeasyPrint==0.42.3
-PyPDF2
+PyPDF2==2.12.1
 marrow.mailer
 webtest
 beautifulsoup4
