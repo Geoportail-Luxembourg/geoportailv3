@@ -760,7 +760,9 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
           /** @type {GeoJSONFeatureCollection} */
           var featureCollection = /** @type {GeoJSONFeatureCollection} */
           (parsedResponse);
-
+          if (featureCollection.length === 0) {
+            return [];
+          }
           return geojsonFormat.readFeatures(featureCollection, {
             featureProjection: undefined,
             dataProjection: undefined

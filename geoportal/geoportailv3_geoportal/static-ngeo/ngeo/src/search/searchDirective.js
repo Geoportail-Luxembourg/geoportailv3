@@ -18,12 +18,13 @@
  * @htmlAttribute {TypeaheadOptions} ngeo-search The options.
  * @htmlAttribute {Array.<TypeaheadDataset>} ngeo-search-datasets The sources datasets.
  * @htmlAttribute {ngeox.SearchDirectiveListeners} ngeo-search-listeners The listeners.
+ * @param {angular.$timeout} $timeout timeout.
  * @return {angular.Directive} Directive Definition Object.
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoSearch
  */
-const exports = function() {
+const exports = function($timeout) {
   return {
     restrict: 'A',
     /**
@@ -64,7 +65,7 @@ const exports = function() {
       });
 
       element.on('typeahead:close', () => {
-        scope.$apply(() => {
+        $timeout(function(){
           typeaheadListeners.close();
         });
       });
