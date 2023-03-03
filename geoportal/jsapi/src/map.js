@@ -2432,7 +2432,8 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
     'Y': evt.pixel[1],
     'tooltip': 1,
     'lang': lux.lang,
-    'srs': 'EPSG:3857'
+    'srs': 'EPSG:3857',
+    'zoom': Math.round(this.getView().getZoom())
   };
   var url = document.createElement('A');
   url.href = lux.queryUrl;
@@ -2628,6 +2629,13 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
       if (features.length != 0) {
         if (this.showSelectedFeature_) {
+          var iFeature = 0;
+          features.forEach(function(feature){
+            if (feature.getId()==null) {
+              iFeature++;
+              feature.setId(""+iFeature);
+            }
+          });
           this.showLayer_.getSource().addFeatures(features);
         }
         if (this.showLayerInfoPopup_ && this.popupContentTransformer_ !== undefined) {
