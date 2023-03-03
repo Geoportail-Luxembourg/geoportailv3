@@ -58,6 +58,11 @@ lux.MyMap = function(options) {
   if (options && options.name) {
     this.layerName_ = options.name;
   }
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.layerVisibility_ = true;
 
   /**
    * @type {Array<string>}
@@ -70,7 +75,9 @@ lux.MyMap = function(options) {
   if (options.mapId !== undefined) {
     this.ids_.push(options.mapId);
   }
-
+  if (options.layerVisibility !== undefined) {
+    this.layerVisibility_ = options.layerVisibility;
+  }
   console.assert(this.ids_ != undefined && this.ids_.length > 0, 'mapId or mapids must be defined');
 
 
@@ -202,7 +209,8 @@ lux.MyMap.prototype.loadFeatures_ = function() {
   this.sourceFeatures_ = new ol.source.Vector();
   var vector = new ol.layer.Vector({
     source: this.sourceFeatures_,
-    name: this.layerName_
+    name: this.layerName_,
+    visible: this.layerVisibility_
   });
   this.map_.addLayer(vector);
   this.selectInteraction_ = new ol.interaction.Select({

@@ -434,6 +434,13 @@ luxx.LayerMetadataOptions.prototype.exclusion;
 luxx.MyMapOptions;
 
 /**
+ * The layer visibility. Default is visible.
+ * @type {boolean}
+ * @api
+ */
+luxx.MyMapOptions.prototype.layerVisibility;
+
+/**
  * Fit to the mymaps extent. Default value is true.
  * @type {boolean}
  * @api
