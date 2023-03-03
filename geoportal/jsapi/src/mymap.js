@@ -45,6 +45,7 @@ import d3Elevation from '@geoblocks/d3profile';
  * @property {string} [profileTarget]  The id of the element in which to put the profile (without #).
  *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
  * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
+ * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
  */
 
 
@@ -83,11 +84,21 @@ class MyMap {
      * @private
      */
     this.ids_ = [];
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.layerVisibility_ = true;
+
     if (options.mapIds !== undefined) {
       this.ids_ = options.mapIds;
     }
     if (options.mapId !== undefined) {
       this.ids_.push(options.mapId);
+    }
+    if (options.layerVisibility !== undefined) {
+      this.layerVisibility_ = options.layerVisibility;
     }
 
     console.assert(Array.isArray(this.ids_) && this.ids_.length > 0, 'mapId or mapids must be defined');
@@ -221,7 +232,8 @@ class MyMap {
     this.sourceFeatures_ = new VectorSource();
     var vector = new VectorLayer({
       source: this.sourceFeatures_,
-      name: this.layerName_
+      name: this.layerName_,
+      visible: this.layerVisibility_
     });
     this.map_.addLayer(vector);
     this.selectInteraction_ = new Select({
@@ -635,7 +647,6 @@ class MyMap {
           this.hideProfile_();
         }.bind(this));
       }.bind(this));
-
     }
 
     link = document.createElement('A');
