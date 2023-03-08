@@ -58,7 +58,7 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
                 log.info(f"Response is no valid json, {type(e)}: {str(e)}")
             if 'error' in resp:
                 raise ESRITokenException(f'Original server error: {resp}')
-
+            return ResultTuple(data, result.info()['Content-Type'])
 
 def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None) -> Dict:
     session = request.session
