@@ -678,12 +678,8 @@ class Map extends OpenLayersMap {
     listen(this, MapBrowserEventType.POINTERMOVE, function (evt) {
       var pixel = this.getEventPixel(evt.originalEvent);
       var hit = this.hasFeatureAtPixel(pixel);
-      var pixelHit = this.forEachLayerAtPixel(pixel, function (colors) {
-        return true;
-      }, this, function (l) {
-        return this.getLayers().getArray()[0] !== l;
-      }.bind(this), this);
-      this.getTargetElement().style.cursor = (hit || pixelHit) ? 'pointer' : '';
+
+      this.getTargetElement().style.cursor = (hit) ? 'pointer' : '';
     }.bind(this));
 
     if (options.callback !== undefined) {
