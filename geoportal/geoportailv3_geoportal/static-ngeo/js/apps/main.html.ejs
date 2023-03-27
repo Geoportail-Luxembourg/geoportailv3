@@ -16,6 +16,7 @@
     <% for (var css in htmlWebpackPlugin.files.css) { %>
     <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
     <% } %>
+    <link href="/static-ngeo/css/main.css" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
@@ -42,6 +43,7 @@
           }
         }
     </script>
+
   </head>
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
@@ -139,6 +141,9 @@
             <div id="catalog" class="tab-pane active">
               <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
                                  app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
+
+              <lux-catalog style="padding:10px;display: block;"></lux-catalog>
+
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
             </div>
           </div>

@@ -60,6 +60,10 @@ RUN mv webpack.apps.js webpack.apps.js.tmpl
 # put Cesium build in static-ngeo
 RUN mkdir /etc/static-ngeo/Cesium && cp -r /usr/lib/node_modules/cesium/Build/Cesium/* /etc/static-ngeo/Cesium/
 RUN cp -r /app/geoportailv3_geoportal/static-ngeo/ngeo/locales/ /etc/static-ngeo/
+
+ENTRYPOINT echo '####################################################### ASSETS'
+RUN cp -r /app/luxembourg-geoportail/assets/ /etc/
+RUN cp -r /app/luxembourg-geoportail/assets/ /etc/static-ngeo/
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
 

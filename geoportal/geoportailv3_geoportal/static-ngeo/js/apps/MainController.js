@@ -197,6 +197,12 @@ import '../gmf-lidar-panel/gmf-lidar-panel.ts';
 import DragRotate from 'ol/interaction/DragRotate';
 import {platformModifierKeyOnly} from 'ol/events/condition';
 import Rotate from 'ol/control/Rotate';
+import { mapService } from '../../../../luxembourg-geoportail/src/services/map/map.service'
+import '../../../../luxembourg-geoportail/src/components/layers-panel/catalog/Catalog'
+import {
+  OlSynchronizer
+} from '../../../../luxembourg-geoportail/src/services/map/ol.synchronizer'
+
 
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling(label) {
@@ -500,7 +506,7 @@ const MainController = function(
     this.resetSelectedSimpleData();
     // Then we select this item
     selectedItem['selected'] = true;
-  
+
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
@@ -1416,6 +1422,8 @@ MainController.prototype.createMap_ = function() {
       rotation,
     })
   });
+  mapService.map = map;
+  new OlSynchronizer(mapService.map)
 
   // FIXME: this is a hack to make the map avaialble to the web components.
   // To be changed to use `ng-prop` when available (angular > 1.7).

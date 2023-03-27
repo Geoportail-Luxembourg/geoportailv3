@@ -53,6 +53,17 @@ const projectRule = {
 
 const rules = [
   projectRule,
+  {
+    test: /luxembourg-geoportail\/js\/.*\.js$/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        babelrc: false,
+        comments: false,
+        presets: [babelPresets],
+      }
+    }
+  }
 ];
 
 const noDevServer = process.env['NO_DEV_SERVER'] == 'TRUE';

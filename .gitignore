@@ -14,3 +14,10 @@ __pycache__/
 /geoportal/geoportailv3_geoportal/jsapi
 # Generated with dev mode
 /geoportal/geoportailv3_geoportal/static/apihelp/index.html
+
+## editors
+/.idea
+*.iml
+/.vscode
+
+.build/

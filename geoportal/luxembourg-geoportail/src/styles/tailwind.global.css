@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'DINNextLTPro-Condensed';
+  src: url('https://map.geoportail.lu/static-ngeo/28867F_0_0.c8a814.woff')
+    format('woff');
+}
+/* Font inlcudes all lux icons from various "old" icon font files:
+** "geoportail-icons", "urban-farming", "apart-geoportail", "Geoportail-Grande-Region", "statec-icons"
+** Codes for icons from "geoportail-icons" are identical, but different for those coming from other fonts.
+** All lux icons can be found in the range between "e000" and "e064".
+** To view or edit the file use a tool like fontforge.
+** The src might be adapted for production where the font will be available under url("../webfonts/geoportail-icons-wc.woff")
+*/
+@font-face {
+  font-family: 'geoportail-icons-wc';
+  src: url('/assets/fonts/geoportail-icons-wc.woff') format('woff');
+}
+
+@layer base {
+  body {
+    @apply text-default;
+  }
+}
+
+@layer components {
+  .lux-primary {
+    @apply bg-tertiary text-secondary px-2 py-1.5 uppercase;
+  }
+
+  .lux-panel-title {
+    @apply text-white text-title-xl uppercase px-3 pt-1.5;
+  }
+
+  .lux-bg-sel {
+    @apply h-10 w-10 md:h-14 md:w-20 p-0.5 rounded-sm cursor-pointer;
+  }
+
+  .lux-bg-sel-icon-bg-length {
+    @apply bg-[length:41px_41px] md:bg-[length:90px_50px];
+  }
+
+  .lux-outlined {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+
+  .lux-btn {
+    @apply bg-white border text-primary py-[6px] px-[12px] hover:bg-primary hover:text-white leading-snug focus:bg-[#e6e6e6] focus:border-[#8c8c8c] focus:[color:var(--color-primary)] focus:lux-outlined;
+    border: 1px solid var(--button-bg-color);
+  }
+
+  .lux-input {
+    @apply py-[6px] px-[12px] leading-snug text-white placeholder:text-white border;
+    background-color: var(--color-secondary);
+  }
+
+  .lux-label {
+    @apply font-bold mb-[5px] inline-block;
+  }
+
+  .lux-dropdown {
+    @apply inline-block;
+  }
+
+  .lux-dropdown-list {
+    @apply absolute left-0 z-10 bg-white py-[5px] mt-[2px] w-auto;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+  }
+
+  .lux-dropdown-list-item {
+    @apply hover:bg-[#f5f5f5] py-[3px] px-5 cursor-pointer focus:lux-outlined text-left w-full;
+  }
+
+  .lux-caret {
+    @apply inline-block w-0 h-0 align-middle;
+    border-top: 4px dashed;
+    border-top: 4px solid \9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+  }
+
+  .lux-collapse {
+    @apply relative max-h-0 overflow-hidden duration-[.70s] transition-[max-height] ease-in-out;
+  }
+
+  .lux-collapse.expanded {
+    @apply max-h-[3000px];
+  }
+}
+
+@layer base {
+  :root {
+    --color-default: #333;
+    --color-primary: #2980b9;
+    --color-secondary: #97bbd3;
+    --color-tertiary: #1f5d87;
+    --main-primary: #2980b9;
+    --main-secondary: #97bbd3;
+    --main-tertiary: #1f5d87;
+    --tourisme-primary: #e84c3d;
+    --tourisme-secondary: #e88c83;
+    --tourisme-tertiary: #a50f15;
+    --emwelt-primary: #558b2f;
+    --emwelt-secondary: #85bb5c;
+    --emwelt-tertiary: #255d00;
+    --eau-primary: #03a2ac;
+    --eau-secondary: #45cdd6;
+    --eau-tertiary: #078f98;
+    --pag-primary: #2b8cbe;
+    --pag-secondary: #74a9cf;
+    --pag-tertiary: #045a8d;
+    --agriculture-primary: #f39c11;
+    --agriculture-secondary: #ffc363;
+    --agriculture-tertiary: #9c6101;
+    --lenoz-primary: #f4b72b;
+    --lenoz-secondary: #f3d89b;
+    --lenoz-tertiary: #b3851d;
+    --preizerdaul-primary: #2980b9;
+    --preizerdaul-secondary: #97bbd3;
+    --preizerdaul-tertiary: #1f5d87;
+    --wellenstein-primary: #7ac573;
+    --wellenstein-secondary: #b0e4ab;
+    --wellenstein-tertiary: #42803c;
+    --lintgen-primary: #f3c531;
+    --lintgen-secondary: #f3d89b;
+    --lintgen-tertiary: #b3851d;
+    --remich-primary: #8ca229;
+    --remich-secondary: #bacd63;
+    --remich-tertiary: #5c6b1b;
+    --at-primary: #f4511e;
+    --at-secondary: #ff844c;
+    --at-tertiary: #b91400;
+    --cadastre_hertzien-primary: #7ac573;
+    --cadastre_hertzien-secondary: #b0e4ab;
+    --cadastre_hertzien-tertiary: #42803c;
+    --urban_farming-primary: #028349;
+    --urban_farming-secondary: #4ab475;
+    --urban_farming-tertiary: #005520;
+    --energie-primary: #558b2f;
+    --energie-secondary: #85bb5c;
+    --energie-tertiary: #255d00;
+    --atlas_demographique-primary: #f4b72b;
+    --atlas_demographique-secondary: #f3d89b;
+    --atlas_demographique-tertiary: #b3851d;
+    --logement-primary: #b0271a;
+    --logement-secondary: #e95b43;
+    --logement-tertiary: #790000;
+    --np_our-primary: #76b854;
+    --np_our-secondary: #a8ea82;
+    --np_our-tertiary: #458725;
+    --geosciences-primary: #895e03;
+    --geosciences-secondary: #d7ba87;
+    --geosciences-tertiary: #5e4024;
+    --ahc-primary: #ff5722;
+    --ahc-secondary: #ff8a50;
+    --ahc-tertiary: #c41c00;
+    --municipalities-primary: #9e9ac8;
+    --municipalities-secondary: #cbc9e2;
+    --municipalities-tertiary: #756bb1;
+    --Amenagement_du_territoire-primary: #f4511e;
+    --Amenagement_du_territoire-secondary: #ff844c;
+    --Amenagement_du_territoire-tertiary: #b91400;
+    --Environnement_naturel-primary: #879d31;
+    --Environnement_naturel-secondary: #bacd81;
+    --Environnement_naturel-tertiary: #627529;
+    --Environnement_humain-primary: #558b2f;
+    --Environnement_humain-secondary: #85bb5c;
+    --Environnement_humain-tertiary: #255d00;
+    --Occupation_du_sol-primary: #8d6e63;
+    --Occupation_du_sol-secondary: #bd9b8f;
+    --Occupation_du_sol-tertiary: #5e4238;
+    --intranet-at-primary: #9e9ac8;
+    --intranet-at-secondary: #cbc9e2;
+    --intranet-at-tertiary: #756bb1;
+    --prof-primary: #006d2c;
+    --prof-secondary: #99d8c9;
+    --prof-tertiary: #238b45;
+    --go-primary: #555;
+    --go-secondary: #bbb;
+    --go-tertiary: #756bb1;
+    --sig_secours-primary: #2979ff;
+    --sig_secours-secondary: #75a7ff;
+    --sig_secours-tertiary: #004ecb;
+    --button-bg-color: #ccc;
+  }
+}

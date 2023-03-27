@@ -51,7 +51,7 @@ function factory(appGetWmtsLayer, appGetWmsLayer, appGetDevice) {
       console.assert('name' in node);
       console.assert('layers' in node);
       console.assert('imageType' in node);
-      layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'], node['url']);
+      layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'], node['id'], node['url']);
     } else if (type == 'WMTS') {
       console.assert('name' in node);
       console.assert('imageType' in node);

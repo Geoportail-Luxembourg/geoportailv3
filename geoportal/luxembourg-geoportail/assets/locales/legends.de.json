@@ -1,0 +1,23 @@
+{
+    "velo_by_pch : Label": "Radrouten",
+    "velo_by_pch / Label : ": "Nummer der Radroute",
+    "velo_by_pch : Pistes cyclables nationales": "Nationale Radwege",
+    "velo_by_pch / Pistes cyclables nationales : Assise réservée (sécurisé)": "Separater Radweg (abgesichert)",
+    "velo_by_pch / Pistes cyclables nationales : Voirie secondaire (Sécurisé)": "Nebenstrecke",
+    "velo_by_pch / Pistes cyclables nationales : Apaisement du trafic (Sécurisé)": "Verkehrsberuhigte Zone",
+    "velo_by_pch / Pistes cyclables nationales : Trafic mixte sur voirie principale (Non-sécurisé)": "Gemischter Verkehr auf einer Haupstrecke",
+    "recreation : Facilities": "Einrichtungen",
+    "recreation / Facilities : Camping": "Campingplatz",
+    "recreation / Facilities : Dining": "Restaurant",
+    "recreation / Facilities : Drinking Water": "Trinkwasser",
+    "recreation / Facilities : Medical Facility": "",
+    "recreation / Facilities : RV Parking": "",
+    "recreation / Facilities : Ranger Station": "",
+    "recreation / Facilities : Rest Area": "",
+    "recreation / Facilities : Restrooms": "Toiletten",
+    "recreation / Facilities : Showers": "Duschen",
+    "recreation / Facilities : Trail Head": "",
+    "recreation / Facilities : Trash Can": "",
+    "recreation : Recreational Area": "",
+    "recreation / Recreational Area : ": "Begrenzung"
+}

@@ -1,0 +1,23 @@
+{
+    "velo_by_pch : Label": "Label",
+    "velo_by_pch / Label : ": "Numéro de piste cyclable",
+    "velo_by_pch : Pistes cyclables nationales": "Pistes cyclables nationales",
+    "velo_by_pch / Pistes cyclables nationales : Assise réservée (sécurisé)": "Pistes cyclables nationales : Assise réservée (sécurisé)",
+    "velo_by_pch / Pistes cyclables nationales : Voirie secondaire (Sécurisé)": "Voirie secondaire (Sécurisé)",
+    "velo_by_pch / Pistes cyclables nationales : Apaisement du trafic (Sécurisé)": "Apaisement du trafic (Sécurisé)",
+    "velo_by_pch / Pistes cyclables nationales : Trafic mixte sur voirie principale (Non-sécurisé)": "Trafic mixte sur voirie principale (Non-sécurisé)",
+    "recreation : Facilities": "Infrastructures",
+    "recreation / Facilities : Camping": "Camping",
+    "recreation / Facilities : Dining": "Resto",
+    "recreation / Facilities : Drinking Water": "",
+    "recreation / Facilities : Medical Facility": "Service Médical",
+    "recreation / Facilities : RV Parking": "",
+    "recreation / Facilities : Ranger Station": "",
+    "recreation / Facilities : Rest Area": "",
+    "recreation / Facilities : Restrooms": "Toilettes",
+    "recreation / Facilities : Showers": "Douches",
+    "recreation / Facilities : Trail Head": "",
+    "recreation / Facilities : Trash Can": "",
+    "recreation : Recreational Area": "Aire de loisirs",
+    "recreation / Recreational Area : ": "Périmètre de l'aire de loisirs"
+}
