@@ -336,7 +336,7 @@ class Geocode(object):
                 "postnumber": None,
                 "street": None,
                 "zip": p_zip,
-                "locality": None
+                "locality": res.localite
             }
             })
         return self.encoded_country_result()
