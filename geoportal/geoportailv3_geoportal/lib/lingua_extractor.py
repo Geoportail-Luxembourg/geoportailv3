@@ -1232,6 +1232,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
         print("%d results" % results.count())
         for result in results:
+            has_prefix = True
+            if result.template == 'default_attachment_no_prefix.html':
+                has_prefix = False
             engine = DBSessions[result.engine_gfi]
             first_row = None
             if result.query is not None and len(result.query) > 0:
@@ -1282,7 +1285,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             if attributes is not None:
                 for attribute in attributes:
                     self._insert_attribute(
-                        "f_" + attribute,
+                        "f_" + attribute if has_prefix else attribute,
                         (("engine:%(engine)s *"
                          "Role:%(role)s Layer" % {
                              "engine": result.engine_gfi,
