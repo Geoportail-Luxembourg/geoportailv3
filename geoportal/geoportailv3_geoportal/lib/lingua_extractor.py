@@ -1228,7 +1228,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                   filter(LuxGetfeatureDefinition.remote_template == False).\
                   filter(
                       LuxGetfeatureDefinition.template.in_
-                      (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols']))  # noqa
+                      (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols', 'default_attachment_no_prefix.html']))  # noqa
 
         print("%d results" % results.count())
         for result in results:
