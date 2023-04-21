@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const { VueLoaderPlugin } = require('vue-loader');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginCleanCSS = require('less-plugin-clean-css');
 const LessPluginAutoprefix = require('less-plugin-autoprefix');
@@ -25,7 +24,7 @@ const providePlugin = new webpack.ProvidePlugin({
   'jQuery': 'jquery',
   // For own scripts
   $: 'jquery',
-  Vue: ['vue/dist/vue.esm-browser.prod.js', 'default'],
+  // Vue: ['vue/dist/vue.esm-browser.prod.js', 'default'],
 });
 
 const babelPresets = [require.resolve('@babel/preset-env'), {
@@ -194,21 +193,21 @@ const config = function(hardSourceConfig) {
     }
   };
 
-  const vuejsRule = {
-    test: /\.(vue|mjs)$/,
-    loader: 'vue-loader',
-    include: [
-          '/node_modules/luxembourg-geoportail'
-        ],
-  };
+  // const vuejsRule = {
+  //   test: /\.(vue|mjs)$/,
+  //   loader: 'vue-loader',
+  //   include: [
+  //         '/node_modules/luxembourg-geoportail'
+  //       ],
+  // };
 
-  const vuejsRuleDep = {
-    test: require.resolve('vue'),
-    use: {
-      loader: 'expose-loader',
-      options: 'vue'
-    }
-  };
+  // const vuejsRuleDep = {
+  //   test: require.resolve('vue'),
+  //   use: {
+  //     loader: 'expose-loader',
+  //     options: 'vue'
+  //   }
+  // };
   
   // const vuejsRuleLux = {
   //   test: /luxembourg\/.*\.mjs$/,
@@ -221,13 +220,13 @@ const config = function(hardSourceConfig) {
   //   ],
   // };
 
-  const vuejsRuleLux = {
-    test: require.resolve("vue"),
-    loader: "expose-loader",
-    options: {
-      exposes: ["Vue", "vue", "@vue", "@vue/runtime-core", "@vue/shared", "@vue/runtime-dom"],
-    },
-  }
+  // const vuejsRuleLux = {
+  //   test: require.resolve("vue"),
+  //   loader: "expose-loader",
+  //   options: {
+  //     exposes: ["Vue", "vue", "@vue", "@vue/runtime-core", "@vue/shared", "@vue/runtime-dom"],
+  //   },
+  // }
 
   // const atvuejsRuleLux = {
   //   test: require.resolve("@vue"),
@@ -251,9 +250,9 @@ const config = function(hardSourceConfig) {
           type: 'javascript/auto'
         },
         // atvuejsRuleLux,
-        vuejsRuleLux,
-        vuejsRule,
-        vuejsRuleDep,
+        // vuejsRuleLux,
+        // vuejsRule,
+        // vuejsRuleDep,
         olRule,
         olcsRule,
         jstsRule,
@@ -272,7 +271,6 @@ const config = function(hardSourceConfig) {
     },
     plugins: [
       providePlugin,
-      new VueLoaderPlugin(),
       new ExtractTextPlugin({
           ignoreOrder: true,
           filename: devMode ? '[name].css' : '[name].[hash:6].css'
@@ -307,13 +305,13 @@ const config = function(hardSourceConfig) {
         'olcs': 'ol-cesium/src/olcs',
         'jquery-ui/datepicker': 'jquery-ui/ui/widgets/datepicker', // For angular-ui-date
         'proj4': 'proj4/lib',
-        'vue': 'vue/dist/vue.esm-browser.prod.js',
-        'vue$': 'vue/dist/vue.esm-browser.prod.js',
-        '@vue': 'vue/dist/vue.esm-browser.prod.js',
+        // 'vue': 'vue/dist/vue.esm-browser.prod.js',
+        // 'vue$': 'vue/dist/vue.esm-browser.prod.js',
+        // '@vue': 'vue/dist/vue.esm-browser.prod.js',
         // '@vue/runtime-core': path.resolve(__dirname, '/node_modules/vue/dist/vue.runtime.esm-browser.prod.js'),
-        '@vue/runtime-core': 'vue/dist/vue.runtime.esm-browser.prod.js',
-        '@vue/shared': 'vue/dist/vue.runtime.esm-browser.prod.js',
-        '@vue/runtime-dom': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        // '@vue/runtime-core': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        // '@vue/shared': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        // '@vue/runtime-dom': 'vue/dist/vue.runtime.esm-browser.prod.js',
         'luxembourg-geoportail': 'luxembourg-geoportail',
       }
     }
