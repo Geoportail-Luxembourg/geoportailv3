@@ -47,7 +47,11 @@
   </head>
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
-    <catalog-tree></catalog-tree>
+    
+    <div style="display: flex;">
+      <catalog-tree></catalog-tree>
+      <layer-manager></layer-manager>
+    </div>
     
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
@@ -109,10 +113,6 @@
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
-      *******
-      <testbutton></testbutton>
-      <MyButton></MyButton>
-      *****
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -135,6 +135,7 @@
           </ul>
           <div class="tab-content">
             <div id="mylayers" class="tab-pane col-xs-12">
+              <catalog-tree></catalog-tree>
               <app-layermanager app-layermanager-map="::mainCtrl.map"
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">

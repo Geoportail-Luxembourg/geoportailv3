@@ -17,7 +17,6 @@ import 'bootstrap';
 import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
-import 'vue';
 
 // import { defineCustomElement } from 'vue';
 
@@ -31,18 +30,20 @@ import 'vue';
 
 
 
-import { App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
+import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree } 
-  from "luxembourg-geoportail/bundle/lux.dist.js";
-import { createApp } from 'vue';
+  from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
-const app = createApp(App)
-app.use(createPinia())
-app.use(I18NextVue, { Luxi18next })
-app.use(VueDOMPurifyHTML)
+// const app = createApp(App)
+// app.use(createPinia())
+// app.use(I18NextVue, { Luxi18next })
+// app.use(VueDOMPurifyHTML)
 
 const CatalogElement = createElementInstance(CatalogTree, app)
 customElements.define('catalog-tree', CatalogElement)
+
+const LayerManagerElement = createElementInstance(LayerManager, app)
+customElements.define('layer-manager', LayerManagerElement)
 
 
 
