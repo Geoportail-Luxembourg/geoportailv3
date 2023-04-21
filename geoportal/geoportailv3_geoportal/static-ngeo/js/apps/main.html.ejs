@@ -17,6 +17,8 @@
     <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
     <% } %>
 
+    <link rel="stylesheet" href="assets/style.css">
+
     <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
     <link rel="apple-touch-icon" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114.png" />
@@ -45,6 +47,8 @@
   </head>
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+    <catalog-tree></catalog-tree>
+    
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
@@ -105,6 +109,10 @@
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
+      *******
+      <testbutton></testbutton>
+      <MyButton></MyButton>
+      *****
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 

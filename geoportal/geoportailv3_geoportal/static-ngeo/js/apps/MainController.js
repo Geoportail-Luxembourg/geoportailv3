@@ -17,6 +17,35 @@ import 'bootstrap';
 import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
+import 'vue';
+
+// import { defineCustomElement } from 'vue';
+
+// setTimeout(() => {
+//   const app = createApp({});
+//   // app.component('mybutton', MyButtonVue);
+//   app.mount('#vuejsinside');
+//   // app.component('testbutton', MyButtonVue);
+//   console.log("mybutton", app.component('mybutton'))
+// }, 2000)
+
+
+
+import { App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
+  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree } 
+  from "luxembourg-geoportail/bundle/lux.dist.js";
+import { createApp } from 'vue';
+
+const app = createApp(App)
+app.use(createPinia())
+app.use(I18NextVue, { Luxi18next })
+app.use(VueDOMPurifyHTML)
+
+const CatalogElement = createElementInstance(CatalogTree, app)
+customElements.define('catalog-tree', CatalogElement)
+
+
+
 
 import i18next from 'i18next';
 

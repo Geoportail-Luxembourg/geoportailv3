@@ -13,6 +13,9 @@
   "bugs": {
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
+  "dependencies": {
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#GSLUX-602-IntegrationV3"
+  },
   "devDependencies": {
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
@@ -119,6 +122,9 @@
     "webpack": "4.46.0",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.2",
-    "webpack-merge": "5.8.0"
+    "webpack-merge": "5.8.0",
+    "vue-loader": "^17.0.1",
+    "vue-template-compiler": "^2.7.14",
+    "vue": "^3.2.47"
   }
 }
