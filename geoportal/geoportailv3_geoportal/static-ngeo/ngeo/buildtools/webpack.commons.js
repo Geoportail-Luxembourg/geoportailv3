@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { VueLoaderPlugin } = require('vue-loader');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginCleanCSS = require('less-plugin-clean-css');
 const LessPluginAutoprefix = require('less-plugin-autoprefix');
@@ -24,6 +25,7 @@ const providePlugin = new webpack.ProvidePlugin({
   'jQuery': 'jquery',
   // For own scripts
   $: 'jquery',
+  Vue: ['vue/dist/vue.esm-browser.prod.js', 'default'],
 });
 
 const babelPresets = [require.resolve('@babel/preset-env'), {
@@ -37,7 +39,8 @@ const angularRule = {
   use: {
     loader: 'expose-loader',
     options: 'angular'
-  }
+  },
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 // Expose corejs-typeahead as window.Bloodhound
@@ -46,14 +49,16 @@ const typeaheadRule = {
   use: {
     loader: 'expose-loader',
     options: 'Bloodhound'
-  }
+  },
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 const cssRule = {
   test: /\.css$/,
   use: ExtractTextPlugin.extract({
     use: 'css-loader'
-  })
+  }),
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 const cssLessLoaderConfigs = [
@@ -95,13 +100,15 @@ const tsRule = {
       ],
     },
   },
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 const lessRule = {
   test: /\.less$/,
   use: ExtractTextPlugin.extract({
     use: cssLessLoaderConfigs
-  })
+  }),
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 const htmlRule = {
@@ -111,7 +118,8 @@ const htmlRule = {
     options: {
       minimize: true
     }
-  }]
+  }],
+  exclude: '/node_modules/luxembourg-geoportail',
 };
 
 const config = function(hardSourceConfig) {
@@ -186,6 +194,49 @@ const config = function(hardSourceConfig) {
     }
   };
 
+  const vuejsRule = {
+    test: /\.(vue|mjs)$/,
+    loader: 'vue-loader',
+    include: [
+          '/node_modules/luxembourg-geoportail'
+        ],
+  };
+
+  const vuejsRuleDep = {
+    test: require.resolve('vue'),
+    use: {
+      loader: 'expose-loader',
+      options: 'vue'
+    }
+  };
+  
+  // const vuejsRuleLux = {
+  //   test: /luxembourg\/.*\.mjs$/,
+  //   use: {
+  //     loader: 'expose-loader',
+  //     options: 'vue'
+  //   },
+  //   include: [
+  //     '/node_modules/luxembourg-geoportail'
+  //   ],
+  // };
+
+  const vuejsRuleLux = {
+    test: require.resolve("vue"),
+    loader: "expose-loader",
+    options: {
+      exposes: ["Vue", "vue", "@vue", "@vue/runtime-core", "@vue/shared", "@vue/runtime-dom"],
+    },
+  }
+
+  // const atvuejsRuleLux = {
+  //   test: require.resolve("@vue"),
+  //   loader: "expose-loader",
+  //   options: {
+  //     exposes: ["Vue", "vue", "@vue"],
+  //   },
+  // }
+
   return {
     context: path.resolve(__dirname, '../'),
     devtool: 'source-map',
@@ -194,6 +245,15 @@ const config = function(hardSourceConfig) {
     },
     module: {
       rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto'
+        },
+        // atvuejsRuleLux,
+        vuejsRuleLux,
+        vuejsRule,
+        vuejsRuleDep,
         olRule,
         olcsRule,
         jstsRule,
@@ -212,18 +272,27 @@ const config = function(hardSourceConfig) {
     },
     plugins: [
       providePlugin,
+      new VueLoaderPlugin(),
       new ExtractTextPlugin({
           ignoreOrder: true,
           filename: devMode ? '[name].css' : '[name].[hash:6].css'
       }),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /node_modules\/moment\/src\/lib\/locale$/),
-      new HardSourceWebpackPlugin(hardSourceConfig || {}),
+      new webpack.IgnorePlugin(/^\.\/locale$/, 
+      /node_modules\/moment\/src\/lib\/locale$/, 
+      // /^\.\/luxembourg-geoportail$/, 
+      // /node_modules\/luxembourg-geoportail$/, 
+      // /luxembourg-geoportail$/
+      ),
+      new HardSourceWebpackPlugin(hardSourceConfig || {})
     ],
+    // externals: {
+    //   'luxembourg-geoportail': 'luxembourg-geoportail',
+    // },
     resolve: {
       modules: [
         '../node_modules'
       ],
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx', '.js', '.mjs'],
       mainFields: ['module', 'jsnext:main', 'main'],
       alias: {
         'ngeo/test': path.resolve(__dirname, '../test/spec'),
@@ -238,6 +307,14 @@ const config = function(hardSourceConfig) {
         'olcs': 'ol-cesium/src/olcs',
         'jquery-ui/datepicker': 'jquery-ui/ui/widgets/datepicker', // For angular-ui-date
         'proj4': 'proj4/lib',
+        'vue': 'vue/dist/vue.esm-browser.prod.js',
+        'vue$': 'vue/dist/vue.esm-browser.prod.js',
+        '@vue': 'vue/dist/vue.esm-browser.prod.js',
+        // '@vue/runtime-core': path.resolve(__dirname, '/node_modules/vue/dist/vue.runtime.esm-browser.prod.js'),
+        '@vue/runtime-core': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        '@vue/shared': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        '@vue/runtime-dom': 'vue/dist/vue.runtime.esm-browser.prod.js',
+        'luxembourg-geoportail': 'luxembourg-geoportail',
       }
     }
   }
