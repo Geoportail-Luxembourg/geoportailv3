@@ -9,9 +9,9 @@ var map = new LuxMap({
 });
 
 lux.geocode({
-  num: 43,
-  street: 'avenue gaston diderich',
-  zip: 1420,
+  num: 1,
+  street: 'Rue Charles Darwin',
+  zip: 1433,
   locality: 'luxembourg'
 }, function(position) {
   map.showMarker({
