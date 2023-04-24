@@ -254,7 +254,7 @@ function findLayerByName_(name, layers) {
  *   target: 'map1',
  *   bgLayer: 'basemap_2015_global',
  *   zoom: 18,
- *   position: [75977, 75099]
+ *   position: [76771, 72205]
  * });
  * @constructor
  * @export
