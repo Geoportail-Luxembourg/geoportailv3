@@ -57,6 +57,10 @@ RUN make build
 
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
+# copy web component styles and translations from bundle to static-ngeo
+RUN mkdir /etc/static-ngeo/web-components \
+    && cp -r /usr/lib/node_modules/luxembourg-geoportail/bundle/assets/ /etc/static-ngeo/web-components/assets/ \
+    && cp /usr/lib/node_modules/luxembourg-geoportail/bundle/style.css /etc/static-ngeo/web-components/style.css
 # put Cesium build in static-ngeo
 RUN mkdir /etc/static-ngeo/Cesium && cp -r /usr/lib/node_modules/cesium/Build/Cesium/* /etc/static-ngeo/Cesium/
 RUN cp -r /app/geoportailv3_geoportal/static-ngeo/ngeo/locales/ /etc/static-ngeo/
