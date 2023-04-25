@@ -1399,8 +1399,8 @@ class Geocode(object):
     # House number after or before the street
     # House number composed of digit but sometimes letter 54A
     # Post code is followed by locality
-    # 54 Avenue gaston diedrich 1420 luxembourg
-    # Avenue gaston diedrich 54 , 1420 luxembourg
+    # 54 Avenue gaston diderich 1420 luxembourg
+    # Avenue gaston diderich 54 , 1420 luxembourg
     # 14 Allée de la Jeunesse Sacrifiée 1940-1945 5863 Alzinghen
     # 2A Rue du 9 mai 1944 2112 Howald
     def _split_address(self, address):

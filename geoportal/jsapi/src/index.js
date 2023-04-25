@@ -456,16 +456,16 @@ lux.WMSLayerFactory = function(config, opacity, visible) {
  * @return {Promise.<luxx.GeocodeResponse>} Promise that returns the geocoding response.
  * @example
  * lux.geocode({
- *   queryString: '54 avenue gaston diderich 1420 luxembourg'
+ *   queryString: '1 Rue Charles Darwin 1433 luxembourg'
  * }, function(position) {
  *	 console.log (position);
  * });
  *
  * @example
  * lux.geocode({
- * num: 54,
- *   street: 'avenue gaston diderich',
- *   zip: 1420,
+ * num: 1,
+ *   street: 'Rue Charles Darwin',
+ *   zip: 1433,
  *   locality: 'luxembourg'
  * }, function(position) {
  *	console.log (position);
