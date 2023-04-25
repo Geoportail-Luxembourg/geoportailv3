@@ -1,3 +1,4 @@
+<p>This API is no longer up to date. Please use the new version available here: https://apiv4.geoportail.lu</p>
 <p>The Geoportail.lu V3 API is a web delivered service platform delivering both data and functionality, enabling geographical information to be shown on a map.
 The Geoportail.lu V3 API enables the integration of geoportail functionalities in external web pages.
 Although the options for data processing are limited compared with “real” office GIS software, some targeted queries and analyses are possible.</p>
