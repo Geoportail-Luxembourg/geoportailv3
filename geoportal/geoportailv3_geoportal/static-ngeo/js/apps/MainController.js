@@ -31,7 +31,8 @@ import 'angular-dynamic-locale';
 
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
-  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree } 
+  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree,
+  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
@@ -44,6 +45,18 @@ customElements.define('catalog-tree', CatalogElement)
 
 const LayerManagerElement = createElementInstance(LayerManager, app)
 customElements.define('layer-manager', LayerManagerElement)
+
+const MapContainerElement = createElementInstance(MapContainer, app)
+customElements.define('map-container', MapContainerElement)
+
+const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
+customElements.define('background-selector', BackgroundSelectorElement)
+
+const LayerMetadataElement = createElementInstance(LayerMetadata, app)
+customElements.define('layer-metadata', LayerMetadataElement)
+
+const RemoteLayersElement = createElementInstance(RemoteLayers, app)
+customElements.define('remote-layers', RemoteLayersElement)
 
 
 
