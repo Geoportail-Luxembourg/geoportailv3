@@ -109,7 +109,8 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
+    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}"
+      class="flex grow">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
@@ -370,9 +371,10 @@
           </div>
         </div>
       </div>
-    <div class="map-wrapper">
+    <div class="map-wrapper grow">
+      <map-container></map-container>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
-      <app-map app-map-map="::mainCtrl.map"></app-map>
+      <!-- <app-map app-map-map="::mainCtrl.map"></app-map> -->
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
       <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
            app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
@@ -402,12 +404,17 @@
           ng-show="!mainCtrl.embedded"
       >
       </ngeo-offline>
-      <app-backgroundselector
+      <!-- <app-backgroundselector
         ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
-      </app-backgroundselector>
+      </app-backgroundselector> -->
     </div>
+    <div class="absolute right-1" style="top: 1rem">
+      <background-selector></background-selector>
+    </div>
+
+    <layer-metadata></layer-metadata>
 
   </div>
 

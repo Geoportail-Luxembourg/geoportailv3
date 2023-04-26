@@ -8,7 +8,9 @@
     <h4 class="modal-title" translate>Add external data</h4>
   </div>
   <div class="modal-body">
-  <div class="form-inline">
+    <!--TODO: adapt internal style of remote-layers element => not absolute, etc. currently also appears twice -->
+    <remote-layers></remote-layers>
+  <!-- <div class="form-inline">
     <div class="dropdown">
      <div class="form-group">
        <button type="button" class="btn btn-default" data-toggle="dropdown"><span translate>Predefined wms</span><span class="caret"></span></button>
@@ -30,7 +32,7 @@
       <li ng-include="ctrl.getWmtsTreeTemplate()" ng-repeat="layer in ctrl.getWmtsLayers() | orderBy:'Title'" class="panel">
       </li>
     </ul>
-  </div>
+  </div> -->
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal" translate>Close</button>
