@@ -49,10 +49,6 @@
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
     
-    <div style="display: flex;">
-      <catalog-tree></catalog-tree>
-      <layer-manager></layer-manager>
-    </div>
     
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
@@ -136,11 +132,11 @@
           </ul>
           <div class="tab-content">
             <div id="mylayers" class="tab-pane col-xs-12">
-              <catalog-tree></catalog-tree>
-              <app-layermanager app-layermanager-map="::mainCtrl.map"
+              <layer-manager></layer-manager>
+              <!-- <app-layermanager app-layermanager-map="::mainCtrl.map"
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
-              </app-layermanager>
+              </app-layermanager> -->
               <div class="text-center add-layers">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
@@ -149,7 +145,8 @@
             <div id="catalog" class="tab-pane active">
               <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
                                  app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
-              <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
+              <!-- <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog> -->
+              <catalog-tree></catalog-tree>
             </div>
           </div>
         </div>
