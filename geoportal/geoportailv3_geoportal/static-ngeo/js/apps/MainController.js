@@ -1737,7 +1737,10 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this.locale_.NUMBER_FORMATS.GROUP_SEP = ' ';
   this['lang'] = lang;
 
+  //change lang for existing lit elements
   i18next.changeLanguage(lang);
+  //change lang for integrated vue custom elements
+  Luxi18next.changeLanguage(lang)
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {
