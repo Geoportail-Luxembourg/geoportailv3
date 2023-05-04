@@ -32,7 +32,7 @@ import 'angular-dynamic-locale';
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree,
-  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar } 
+  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, useMap } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
@@ -1471,29 +1471,30 @@ MainController.prototype.createMap_ = function() {
 
   let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
 
-  var map = this['map'] = new appMap({
-    logo: false,
-    controls: [
-      new olControlZoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
-      // the zoom to extent control will be added later since it depends on ol3dm
-      new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
-      new olControlAttribution({collapsible: false,
-        collapsed: false, className: 'geoportailv3-attribution'}),
-      new Rotate({})
-    ],
-    interactions: interactions.extend([rotate]),
-    keyboardEventTarget: document,
-    loadTilesWhileInteracting: true,
-    loadTilesWhileAnimating: true,
-    view: new olView({
-      maxZoom: 19,
-      minZoom: 8,
-      enableRotation: true,
-      extent: this.maxExtent_,
-      constrainResolution: true,
-      rotation,
-    })
-  });
+  var map = this['map'] = useMap().getOlMap();
+  // var map = this['map'] = new appMap({
+  //   logo: false,
+  //   controls: [
+  //     new olControlZoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
+  //     // the zoom to extent control will be added later since it depends on ol3dm
+  //     new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
+  //     new olControlAttribution({collapsible: false,
+  //       collapsed: false, className: 'geoportailv3-attribution'}),
+  //     new Rotate({})
+  //   ],
+  //   interactions: interactions.extend([rotate]),
+  //   keyboardEventTarget: document,
+  //   loadTilesWhileInteracting: true,
+  //   loadTilesWhileAnimating: true,
+  //   view: new olView({
+  //     maxZoom: 19,
+  //     minZoom: 8,
+  //     enableRotation: true,
+  //     extent: this.maxExtent_,
+  //     constrainResolution: true,
+  //     rotation,
+  //   })
+  // });
 
   // FIXME: this is a hack to make the map avaialble to the web components.
   // To be changed to use `ng-prop` when available (angular > 1.7).
