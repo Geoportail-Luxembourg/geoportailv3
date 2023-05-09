@@ -32,7 +32,7 @@ import 'angular-dynamic-locale';
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree,
-  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, useMap } 
+  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, useMap, useThemeStore } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
@@ -1113,7 +1113,8 @@ const MainController = function(
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-  this.loadThemes_().then(() => {
+  this.loadThemes_().then((themes) => {
+    useThemeStore().setThemes(themes);
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             if (appOverviewMapShow) {
