@@ -31,9 +31,9 @@ import 'angular-dynamic-locale';
 
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
-  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree,
+  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree, ThemeSelector,
   MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useThemeStore, statePersistorLayersService } 
+  useMap, useThemeStore, statePersistorLayersService, statePersistorThemeService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
@@ -45,6 +45,14 @@ statePersistorLayersService.bootstrap()
 
 const CatalogElement = createElementInstance(CatalogTree, app)
 customElements.define('catalog-tree', CatalogElement)
+
+// Themes
+// - do not use ThemeSelector for now, but let legacy switcher handle url and theme color
+// - change theme content and color of custom elements in ThemeswitcherController via useThemeStore() and themeSelectorService
+// - once the new themes will be used useThemeStore().theme will need to provide theme to appTheme_.getCurrentTheme()
+// statePersistorThemeService.bootstrap()
+// const ThemeSelectorElement = createElementInstance(ThemeSelector, app)
+// customElements.define('theme-selector', ThemeSelectorElement)
 
 const LayerManagerElement = createElementInstance(LayerManager, app)
 customElements.define('layer-manager', LayerManagerElement)

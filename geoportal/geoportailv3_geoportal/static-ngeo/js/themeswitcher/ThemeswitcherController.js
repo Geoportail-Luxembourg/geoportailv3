@@ -12,6 +12,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 
+import { themeSelectorService, useThemeStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
@@ -143,6 +144,9 @@ exports.prototype.setThemes_ = function() {
  */
 exports.prototype.switchTheme = function(themeId) {
   this.appTheme_.setCurrentTheme(themeId);
+  //set theme and color for vue custom elements
+  useThemeStore().setTheme(themeId)
+  themeSelectorService.setCurrentThemeColors(themeId)
 };
 
 
