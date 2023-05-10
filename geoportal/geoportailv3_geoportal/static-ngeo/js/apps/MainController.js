@@ -32,13 +32,16 @@ import 'angular-dynamic-locale';
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree,
-  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, useMap, useThemeStore } 
+  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
+  useMap, useThemeStore, statePersistorLayersService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
 // app.use(createPinia())
 // app.use(I18NextVue, { Luxi18next })
 // app.use(VueDOMPurifyHTML)
+
+statePersistorLayersService.bootstrap()
 
 const CatalogElement = createElementInstance(CatalogTree, app)
 customElements.define('catalog-tree', CatalogElement)
