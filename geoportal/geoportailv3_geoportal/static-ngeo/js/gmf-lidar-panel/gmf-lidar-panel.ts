@@ -175,6 +175,11 @@ export class GmfLidarPanel extends LuxBaseElement {
         this.manager.init(this.config, this.map);
         this.manager.setLine(lineFeature.clone().getGeometry().transform('EPSG:3857', 'EPSG:2169'));
         this.manager.getProfileByLOD([], 0, true, this.config.serverConfig.minLOD, false, this.profileWidth);
+        var piwik = /** @type {Piwik} */ (window['_paq']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle', 'LidarGeneratePlot']);
+          piwik.push(['trackPageView']);
+        }
     }
     exportCsv() {
         const points = this.manager.utils.getFlatPointsByDistance(this.manager.profilePoints) || {};
@@ -184,10 +189,20 @@ export class GmfLidarPanel extends LuxBaseElement {
             return {'name': column};
         });
         saveCsv(csvData, {filename: 'export-lidar.csv'});
+        var piwik = /** @type {Piwik} */ (window['_paq']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle', 'LidarExportCsv']);
+          piwik.push(['trackPageView']);
+        }
     }
 
     exportPng() {
         this.manager.utils.downloadProfileAsImageFile(getConfig().clientConfig);
+        var piwik = /** @type {Piwik} */ (window['_paq']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle', 'LidarExportPNG']);
+          piwik.push(['trackPageView']);
+        }
     }
 
     /**
@@ -200,6 +215,11 @@ export class GmfLidarPanel extends LuxBaseElement {
     }
     exportLas(): void {
       this.manager.getProfileByLOD([], 0, true, 0, true, this.profileWidth);
+        var piwik = /** @type {Piwik} */ (window['_paq']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle', 'LidarExportLAS']);
+          piwik.push(['trackPageView']);
+        }
     }
     /**
      * Reload and reset the plot to original extent for the current profile (reloads data)
