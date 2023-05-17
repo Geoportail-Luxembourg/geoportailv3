@@ -1159,6 +1159,11 @@ const MainController = function(
       return this['lidarOpen'];
     }, newVal => {
       if (newVal) {
+        var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+        if (piwik != undefined) {
+          piwik.push(['setDocumentTitle', 'openLidarPanel']);
+          piwik.push(['trackPageView']);
+        }
         this['layersOpen'] = this['measureOpen'] = this['mymapsOpen'] = this['infosOpen'] = this['printOpen'] = this['shareOpen'] =
           this['legendsOpen'] = this['routingOpen'] = false;
       }
