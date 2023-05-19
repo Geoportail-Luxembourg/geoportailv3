@@ -857,14 +857,17 @@ class Map extends OpenLayersMap {
    * Only html and pdf are supported.
    * [{'url': 'http://url1', 'html'},{'url': 'http://url2' 'pdf'}]
    * @param {function()=} callback Optional callback function.
+   * @param {String=} format the output format. Default value is pdf.
    * @example
    * map.print();
    * @export
    * @api
    */
-  print(name, layout, scale, firstPagesUrls, callback) {
+  print(name, layout, scale, firstPagesUrls, callback, format) {
     var dpi = 127;
-    var format = 'pdf';
+    if (format === undefined || format === null) {
+      format = 'pdf';
+    }
 
     var pm = new PrintManager(lux.printUrl, this);
     if (firstPagesUrls === undefined || firstPagesUrls === null) {
