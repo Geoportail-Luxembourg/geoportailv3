@@ -1239,23 +1239,23 @@ exports.prototype.showAttributesByLang =
           } else if (this['language'] == 'lb' && key == 'f_Form_vun_Geschaeft') {
             ok = true;
           }
-      } else if (key.indexOf('_FR') > 0 || key.indexOf('_DE') > 0 ||
-          key.indexOf('_EN') > 0 || key.indexOf('_LU') > 0 ||
-          key.indexOf('_LB') > 0) {
+      } else if (key.endsWith('_FR') || key.endsWith('_DE') ||
+          key.endsWith('_EN') || key.endsWith('_LU') ||
+          key.endsWith('_LB')) {
         if (this['language'] == 'fr') {
-          if (key.indexOf('_FR') > 0) {
+          if (key.endsWith('_FR')) {
             ok = true;
           }
         } else if (this['language'] == 'de') {
-          if (key.indexOf('_DE') > 0) {
+          if (key.endsWith('_DE')) {
             ok = true;
           }
         } else if (this['language'] == 'en') {
-          if (key.indexOf('_EN') > 0) {
+          if (key.endsWith('_EN')) {
             ok = true;
           }
         } else if (this['language'] == 'lb') {
-          if (key.indexOf('_LB') > 0 || key.indexOf('_LU') > 0) {
+          if (key.endsWith('_LB') || key.endsWith('_LU')) {
             ok = true;
           }
         }
