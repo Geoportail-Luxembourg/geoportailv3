@@ -1925,6 +1925,7 @@ MainController.prototype.toggleThemeSelector = function() {
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
   var themeTab = $('#catalog');
+
   if (this['layersOpen']) {
     if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
       this['layersOpen'] = false;
@@ -1932,13 +1933,24 @@ MainController.prototype.toggleThemeSelector = function() {
       this.showTab('a[href=\'#catalog\']');
       themesSwitcher.collapse('show');
       layerTree.collapse('hide');
+      this.toggleCatalogTree(false);
     }
   } else {
     this['layersOpen'] = true;
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+    this.toggleCatalogTree(false);
   }
+};
+
+/**
+ * Toggle Custom Element <catalog-tree>
+ * @return {boolean} show: if true force show, if false, force hide, otherwise, toggle.
+ * @export
+ */
+MainController.prototype.toggleCatalogTree = function(show) {
+  $('#catalog-tree').toggle(show ?? undefined);
 };
 
 /**

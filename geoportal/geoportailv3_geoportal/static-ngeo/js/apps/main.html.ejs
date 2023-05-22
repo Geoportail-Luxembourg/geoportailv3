@@ -113,7 +113,6 @@
       class="flex grow">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
-
         <!-- Layers -->
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <h2 translate>layers</h2>
@@ -145,10 +144,11 @@
             </div>
             <div id="catalog" class="tab-pane active">
               <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
-                                 app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
+                                 app-themeswitcher-map="::mainCtrl.map"
+                                 ng-click="mainCtrl.toggleCatalogTree();"></app-themeswitcher>
               <!-- <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog> -->
               <!-- <theme-selector></theme-selector> -->
-              <catalog-tree class="h-full inline bg-primary px-2.5 overflow-y-auto" style="margin-top: -0.625rem;"></catalog-tree>
+              <catalog-tree id="catalog-tree" class="h-full inline bg-primary px-2.5 overflow-y-auto" style="margin-top: -0.625rem;"></catalog-tree>
             </div>
           </div>
         </div>
