@@ -19,7 +19,7 @@ from decimal import Decimal
 from marrow.mailer import Mailer
 # from pyramid.events import NewRequest
 from geoportailv3_geoportal.adapters import datetime_adapter, decimal_adapter
-
+from c2cgeoportal_admin import PermissionSetter
 import datetime
 import json
 import ldap3 as ldap
@@ -544,6 +544,11 @@ def main(global_config, **settings):
     mailer.start()
 
     # scan view decorator for adding routes
-    config.scan()
+    #config.scan()
+
+    with PermissionSetter(config):
+        # Scan view decorator for adding routes
+        config.scan('geoportailv3_geoportal.admin.view')
+    config.scan(ignore='geoportailv3_geoportal.admin.view')
 
     return config.make_wsgi_app()
