@@ -14,18 +14,19 @@
 
 import appModule from './module.js';
 import olMap from 'ol/Map.js';
-import offlineUtils from 'ngeo/offline/utils.js';
 
 
 function resizeMap(map) {
   map.updateSize();
   map.renderSync();
-  offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
-    if (layer.getMapBoxMap) {
-      const mbm = layer.getMapBoxMap();
-      mbm.resize();
+  map.getAllLayers().forEach(layer => {
+    if (layer.maplibreMap) {
+      layer.maplibreMap.resize();
     }
-    return true;
+
+    if (layer.getMapBoxMap) {
+      layer.getMapBoxMap().resize();
+    }
   });
 }
 
