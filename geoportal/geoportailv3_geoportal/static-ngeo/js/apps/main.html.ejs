@@ -373,7 +373,11 @@
         </div>
       </div>
     <div class="map-wrapper grow">
-      <map-container app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.open"></map-container>
+      <map-container app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.open">
+        <app-toggle-offline></app-toggle-offline>
+        <app-toggle-3d></app-toggle-3d>
+        <app-infobar app-infobar-map="::ctrl.map"></app-infobar>
+      </map-container>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <!-- <app-map app-map-map="::mainCtrl.map"></app-map> -->
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
