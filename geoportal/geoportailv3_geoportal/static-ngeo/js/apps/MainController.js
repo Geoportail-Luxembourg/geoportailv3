@@ -32,9 +32,9 @@ import 'angular-dynamic-locale';
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, storeToRefs, watch,
-  DropdownList, LayerManager, CatalogTree, ThemeSelector,
+  DropdownList, LayerManager, CatalogTree, ThemeSelector, LayerPanel,
   MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useThemeStore, statePersistorLayersService, statePersistorThemeService,
+  useMap, useAppStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
   themeSelectorService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
@@ -44,6 +44,9 @@ import { app, App, i18next as Luxi18next, createElementInstance, defineCustomEle
 // app.use(VueDOMPurifyHTML)
 
 statePersistorLayersService.bootstrap()
+
+const LayerPanelElement = createElementInstance(LayerPanel, app)
+customElements.define('layer-panel', LayerPanelElement)
 
 const CatalogElement = createElementInstance(CatalogTree, app)
 customElements.define('catalog-tree', CatalogElement)
@@ -1200,6 +1203,19 @@ const MainController = function(
         this['lidarOpen'] = false;
       }
     });
+    // listen to layersOpen changes in store (clicking close button on custom element)
+    const { layersOpen } = storeToRefs(useAppStore())
+    watch(
+      layersOpen,
+      layersOpen => {
+        if(layersOpen === false) {
+          this.closeSidebar()
+          $scope.$apply()
+        }
+      },
+      { immediate: true }
+    )
+    // listen to theme changes in store
     const themeStore = useThemeStore()
     const { theme } = storeToRefs(themeStore)
     watch(
@@ -1239,6 +1255,9 @@ const MainController = function(
     $scope.$watch(() => {
       return this.sidebarOpen();
     }, newVal => {
+      // setLayersOpen in store from legacy components
+      const { setLayersOpen } = useAppStore()
+      setLayersOpen(newVal)
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
