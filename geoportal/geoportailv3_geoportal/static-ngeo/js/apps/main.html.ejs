@@ -47,7 +47,7 @@
     </script>
   </head>
 
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+  <body ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
     
     
     <!-- Begin fixed top bar -->
@@ -143,11 +143,11 @@
               </div>
             </div>
             <div id="catalog" class="tab-pane active">
-              <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
+              <!-- <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
                                  app-themeswitcher-map="::mainCtrl.map"
-                                 ng-click="mainCtrl.toggleCatalogTree();"></app-themeswitcher>
+                                 ng-click="mainCtrl.toggleCatalogTree();"></app-themeswitcher> -->
               <!-- <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog> -->
-              <!-- <theme-selector></theme-selector> -->
+              <theme-selector></theme-selector>
               <catalog-tree id="catalog-tree" class="h-full inline bg-primary px-2.5 overflow-y-auto" style="margin-top: -0.625rem;"></catalog-tree>
             </div>
           </div>

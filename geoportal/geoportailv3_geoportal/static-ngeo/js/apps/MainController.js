@@ -31,9 +31,11 @@ import 'angular-dynamic-locale';
 
 
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
-  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree, ThemeSelector,
+  createPinia, VueDOMPurifyHTML, backend, I18NextVue, storeToRefs, watch,
+  DropdownList, LayerManager, CatalogTree, ThemeSelector,
   MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useThemeStore, statePersistorLayersService, statePersistorThemeService } 
+  useMap, useThemeStore, statePersistorLayersService, statePersistorThemeService,
+  themeSelectorService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // const app = createApp(App)
@@ -46,13 +48,11 @@ statePersistorLayersService.bootstrap()
 const CatalogElement = createElementInstance(CatalogTree, app)
 customElements.define('catalog-tree', CatalogElement)
 
-// Themes
-// - do not use ThemeSelector for now, but let legacy switcher handle url and theme color
-// - change theme content and color of custom elements in ThemeswitcherController via useThemeStore() and themeSelectorService
-// - once the new themes will be used useThemeStore().theme will need to provide theme to appTheme_.getCurrentTheme()
-// statePersistorThemeService.bootstrap()
-// const ThemeSelectorElement = createElementInstance(ThemeSelector, app)
-// customElements.define('theme-selector', ThemeSelectorElement)
+// Themes are now handled by new theme-selector:
+// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
+statePersistorThemeService.bootstrap()
+const ThemeSelectorElement = createElementInstance(ThemeSelector, app)
+customElements.define('theme-selector', ThemeSelectorElement)
 
 const LayerManagerElement = createElementInstance(LayerManager, app)
 customElements.define('layer-manager', LayerManagerElement)
@@ -1200,6 +1200,22 @@ const MainController = function(
         this['lidarOpen'] = false;
       }
     });
+    const themeStore = useThemeStore()
+    const { theme } = storeToRefs(themeStore)
+    watch(
+      theme,
+      theme => {
+        if (theme) {
+          // set color for custom elements (which is currently not called, since in header of vue app)
+          themeSelectorService.setCurrentThemeColors(theme.name)
+          // set current theme for legacy components
+          this.appTheme_.setCurrentTheme(theme.name);
+          // set 'data-theme' attribute for legacy component colors
+          document.getElementsByTagName('body')[0].setAttribute('data-theme', theme.name)
+        }
+      },
+      { immediate: true }
+    )
     $scope.$watch(() => {
       return this['mymapsOpen'] || this['infosOpen'] ||
         this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
