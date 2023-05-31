@@ -18,47 +18,21 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
-// import { defineCustomElement } from 'vue';
-
-// setTimeout(() => {
-//   const app = createApp({});
-//   // app.component('mybutton', MyButtonVue);
-//   app.mount('#vuejsinside');
-//   // app.component('testbutton', MyButtonVue);
-//   console.log("mybutton", app.component('mybutton'))
-// }, 2000)
-
-
-
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
   createPinia, VueDOMPurifyHTML, backend, I18NextVue, storeToRefs, watch,
-  DropdownList, LayerManager, CatalogTree, ThemeSelector, LayerPanel,
-  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
+  DropdownList, LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
   useMap, useAppStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
   themeSelectorService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
-// const app = createApp(App)
-// app.use(createPinia())
-// app.use(I18NextVue, { Luxi18next })
-// app.use(VueDOMPurifyHTML)
-
 statePersistorLayersService.bootstrap()
+statePersistorThemeService.bootstrap()
 
+// LayerPanel includes Catalog, ThemeSelector, LayerManager
+// Note: Themes are now handled by new theme-selector
+// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
 const LayerPanelElement = createElementInstance(LayerPanel, app)
 customElements.define('layer-panel', LayerPanelElement)
-
-const CatalogElement = createElementInstance(CatalogTree, app)
-customElements.define('catalog-tree', CatalogElement)
-
-// Themes are now handled by new theme-selector:
-// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
-statePersistorThemeService.bootstrap()
-const ThemeSelectorElement = createElementInstance(ThemeSelector, app)
-customElements.define('theme-selector', ThemeSelectorElement)
-
-const LayerManagerElement = createElementInstance(LayerManager, app)
-customElements.define('layer-manager', LayerManagerElement)
 
 const MapContainerElement = createElementInstance(MapContainer, app)
 customElements.define('map-container', MapContainerElement)
