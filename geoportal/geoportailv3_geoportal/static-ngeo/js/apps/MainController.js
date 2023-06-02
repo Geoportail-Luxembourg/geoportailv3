@@ -18,44 +18,21 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
-// import { defineCustomElement } from 'vue';
-
-// setTimeout(() => {
-//   const app = createApp({});
-//   // app.component('mybutton', MyButtonVue);
-//   app.mount('#vuejsinside');
-//   // app.component('testbutton', MyButtonVue);
-//   console.log("mybutton", app.component('mybutton'))
-// }, 2000)
-
-
-
 import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
-  createPinia, VueDOMPurifyHTML, backend, I18NextVue, DropdownList, LayerManager, CatalogTree, ThemeSelector,
-  MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useThemeStore, statePersistorLayersService, statePersistorThemeService } 
+  createPinia, VueDOMPurifyHTML, backend, I18NextVue, storeToRefs, watch,
+  DropdownList, LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
+  useMap, useAppStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
+  themeSelectorService } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
-// const app = createApp(App)
-// app.use(createPinia())
-// app.use(I18NextVue, { Luxi18next })
-// app.use(VueDOMPurifyHTML)
-
 statePersistorLayersService.bootstrap()
+statePersistorThemeService.bootstrap()
 
-const CatalogElement = createElementInstance(CatalogTree, app)
-customElements.define('catalog-tree', CatalogElement)
-
-// Themes
-// - do not use ThemeSelector for now, but let legacy switcher handle url and theme color
-// - change theme content and color of custom elements in ThemeswitcherController via useThemeStore() and themeSelectorService
-// - once the new themes will be used useThemeStore().theme will need to provide theme to appTheme_.getCurrentTheme()
-// statePersistorThemeService.bootstrap()
-// const ThemeSelectorElement = createElementInstance(ThemeSelector, app)
-// customElements.define('theme-selector', ThemeSelectorElement)
-
-const LayerManagerElement = createElementInstance(LayerManager, app)
-customElements.define('layer-manager', LayerManagerElement)
+// LayerPanel includes Catalog, ThemeSelector, LayerManager
+// Note: Themes are now handled by new theme-selector
+// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
+const LayerPanelElement = createElementInstance(LayerPanel, app)
+customElements.define('layer-panel', LayerPanelElement)
 
 const MapContainerElement = createElementInstance(MapContainer, app)
 customElements.define('map-container', MapContainerElement)
@@ -1200,6 +1177,35 @@ const MainController = function(
         this['lidarOpen'] = false;
       }
     });
+    // listen to layersOpen changes in store (clicking close button on custom element)
+    const { layersOpen } = storeToRefs(useAppStore())
+    watch(
+      layersOpen,
+      layersOpen => {
+        if(layersOpen === false) {
+          this.closeSidebar()
+          $scope.$apply()
+        }
+      },
+      { immediate: true }
+    )
+    // listen to theme changes in store
+    const themeStore = useThemeStore()
+    const { theme } = storeToRefs(themeStore)
+    watch(
+      theme,
+      theme => {
+        if (theme) {
+          // set color for custom elements (which is currently not called, since in header of vue app)
+          themeSelectorService.setCurrentThemeColors(theme.name)
+          // set current theme for legacy components
+          this.appTheme_.setCurrentTheme(theme.name);
+          // set 'data-theme' attribute for legacy component colors
+          document.getElementsByTagName('body')[0].setAttribute('data-theme', theme.name)
+        }
+      },
+      { immediate: true }
+    )
     $scope.$watch(() => {
       return this['mymapsOpen'] || this['infosOpen'] ||
         this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
@@ -1223,6 +1229,9 @@ const MainController = function(
     $scope.$watch(() => {
       return this.sidebarOpen();
     }, newVal => {
+      // setLayersOpen in store from legacy components
+      const { setLayersOpen } = useAppStore()
+      setLayersOpen(newVal)
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -1933,24 +1942,13 @@ MainController.prototype.toggleThemeSelector = function() {
       this.showTab('a[href=\'#catalog\']');
       themesSwitcher.collapse('show');
       layerTree.collapse('hide');
-      this.toggleCatalogTree(false);
     }
   } else {
     this['layersOpen'] = true;
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
-    this.toggleCatalogTree(false);
   }
-};
-
-/**
- * Toggle Custom Element <catalog-tree>
- * @return {boolean} show: if true force show, if false, force hide, otherwise, toggle.
- * @export
- */
-MainController.prototype.toggleCatalogTree = function(show) {
-  $('#catalog-tree').toggle(show ?? undefined);
 };
 
 /**
