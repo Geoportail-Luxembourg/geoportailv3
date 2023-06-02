@@ -47,7 +47,7 @@
     </script>
   </head>
 
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+  <body ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
     
     
     <!-- Begin fixed top bar -->
@@ -115,42 +115,7 @@
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
         <!-- Layers -->
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
-          <h2 translate>layers</h2>
-          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-            ✕
-          </button>
-          <ul class="nav nav-tabs">
-            <li role="presentation" class="my-layers-tab">
-              <a href="#mylayers" data-toggle="tab">
-                <span translate>my_layers</span>
-                <span ng-if="mainCtrl.selectedLayersLength() > 0">({{mainCtrl.selectedLayersLength()}})</span>
-              </a>
-            </li>
-            <li role="presentation" class="active catalog-tab">
-              <a href="#catalog" data-toggle="tab" translate>Catalog</a>
-            </li>
-          </ul>
-          <div class="tab-content">
-            <div id="mylayers" class="tab-pane col-xs-12">
-              <layer-manager></layer-manager>
-              <!-- <app-layermanager app-layermanager-map="::mainCtrl.map"
-                app-layermanager-layers="::mainCtrl.selectedLayers"
-                app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
-              </app-layermanager> -->
-              <div class="text-center add-layers">
-                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
-                <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
-              </div>
-            </div>
-            <div id="catalog" class="tab-pane active">
-              <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
-                                 app-themeswitcher-map="::mainCtrl.map"
-                                 ng-click="mainCtrl.toggleCatalogTree();"></app-themeswitcher>
-              <!-- <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog> -->
-              <!-- <theme-selector></theme-selector> -->
-              <catalog-tree id="catalog-tree" class="h-full inline bg-primary px-2.5 overflow-y-auto" style="margin-top: -0.625rem;"></catalog-tree>
-            </div>
-          </div>
+          <layer-panel></layer-panel>
         </div>
 
         <!-- MyMaps -->
@@ -421,9 +386,8 @@
     <div class="absolute right-1" style="top: 1rem">
       <background-selector></background-selector>
     </div>
-
     <layer-metadata></layer-metadata>
-
+    <remote-layers></remote-layers>
   </div>
 
     <!-- Begin bottom bar -->
