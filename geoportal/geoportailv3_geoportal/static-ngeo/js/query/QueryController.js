@@ -457,10 +457,18 @@ exports.prototype.$onInit = function() {
       var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
           this.drawnFeatures_.getCollection().getLength() > 0;
       if (isQueryMymaps) {
-        this.selectedFeatures_.clear();
-        var result = this.selectMymapsFeature_(evt.pixel);
-        if (result) {
-          found = true;
+        let editing = false;
+        this.selectedFeatures_.getArray().forEach(function(feature) {
+          if (feature.get('__editable__')) {
+            editing = true;
+          }
+        });
+        if (!editing) {
+          this.selectedFeatures_.clear();
+          var result = this.selectMymapsFeature_(evt.pixel);
+          if (result) {
+            found = true;
+          }
         }
       }
       if (!found) {
