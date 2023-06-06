@@ -167,8 +167,7 @@ class Feature(Base):
 
         opacity = feature.properties.get('opacity')
         self.opacity = opacity if opacity is not None and\
-            str(opacity).isnumeric() else 0.5
-
+            str(opacity).replace('.', '', 1).isnumeric() else 0.5
         if hasattr(feature.geometry, "__geo_interface__"):
             ob = feature.geometry.__geo_interface__
         else:
