@@ -122,6 +122,19 @@ export function getElevation(coordinate) {
 }
 
 /**
+ * @typedef {Object} MyMapOptions
+ * @property {boolean} [fitToExtent=true]  Fit to the mymaps extent.
+ * @property {string} [mapId] The map identifier.
+ * @property {Array<string>} [mapIds] An array of map identifiers.
+ * @property {string} [name] The name of the mymaps layer.
+ * @property {string} [profileTarget]  The id of the element in which to put the profile (without #).
+ *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
+ * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
+ * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
+ */
+
+
+/**
  * @typedef {Object} LayerMetadataOptions
  * @property {string} exclusion
  */
@@ -2339,7 +2352,7 @@ class Map extends OpenLayersMap {
    * map8.addMyMapLayer({
    *   mapId: '0416ef680fbe4cdaa2d8009262d1127c'
    * });
-   * @param {luxx.MyMapOptions} options The options.
+   * @param {MyMapOptions} options The options.
    * @return {Promise} Promise of the mymaps object.
    * @export
    * @api
