@@ -470,6 +470,12 @@ class Map extends OpenLayersMap {
     this.addedKmlLayers_ = [];
 
     /**
+     * @type {SelectInteraction | undefined}
+     * @private
+     */
+    this.addedKmlLayersSelectInteraction_ = undefined;
+
+    /**
      * @private
      * @type {Array}
      */
@@ -2215,28 +2221,35 @@ class Map extends OpenLayersMap {
       }
 
       if (opt_options.click) {
-        var interaction = new SelectInteraction({
+        if (this.addedKmlLayersSelectInteraction_ !== undefined) {
+          this.removeInteraction(this.addedKmlLayersSelectInteraction_);
+          this.addedKmlLayersSelectInteraction_ = undefined;
+        }
+        this.addedKmlLayersSelectInteraction_ = new SelectInteraction({
           layers: this.addedKmlLayers_
         });
         this.getLayers().on('remove', function(event) {
           if (event.element == vector) {
-            this.removeInteraction(interaction);
+            if (this.addedKmlLayersSelectInteraction_ !== undefined) {
+              this.removeInteraction(this.addedKmlLayersSelectInteraction_);
+              this.addedKmlLayersSelectInteraction_ = undefined;
+            }
           }
         }.bind(this));
-        this.addInteraction(interaction);
+        this.addInteraction(this.addedKmlLayersSelectInteraction_);
         if (opt_options.onClick) {
-          interaction.on('select', function (e) {
+          this.addedKmlLayersSelectInteraction_.on('select', function (e) {
             var features = e.target.getFeatures();
-            var curLayer = interaction.getLayer(features.getArray()[0]);
+            var curLayer = this.addedKmlLayersSelectInteraction_.getLayer(features.getArray()[0]);
             for (var iLayer = 0; iLayer < this.addedKmlLayers_.length; iLayer++) {
               if (this.addedKmlLayers_[iLayer] == curLayer) {
                 this.addedKmlOnClick_[iLayer].call(null, features, e.mapBrowserEvent.coordinate);
               }
             }
-            interaction.getFeatures().clear();
+            this.addedKmlLayersSelectInteraction_.getFeatures().clear();
           }.bind(this));
         } else {
-          interaction.on('select', function (e) {
+          this.addedKmlLayersSelectInteraction_.on('select', function (e) {
             if (popup) {
               this.removeOverlay(popup);
             }
@@ -2265,7 +2278,7 @@ class Map extends OpenLayersMap {
             }
             var element = lux.buildPopupLayout(html, function () {
               this.removeOverlay(popup);
-              interaction.getFeatures().clear();
+              this.addedKmlLayersSelectInteraction_.getFeatures().clear();
             }.bind(this));
             popup = new Overlay({
               element: element,
