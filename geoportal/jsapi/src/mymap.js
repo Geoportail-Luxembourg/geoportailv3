@@ -280,7 +280,9 @@ lux.MyMap.prototype.onFeatureSelected_ = function(event) {
 
   if (properties.description) {
     var description = document.createElement('P');
-    description.appendChild(properties.description);
+    var descriptionText = document.createTextNode(properties.description);
+    description.appendChild(descriptionText);
+    content.appendChild(description);
   }
   if (properties.thumbnail) {
     var link = document.createElement('A');
