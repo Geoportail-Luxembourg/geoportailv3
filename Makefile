@@ -59,6 +59,7 @@ DOCKER_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_geoportal_1
 DOCKER_WEBPACK_DEV_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_webpack_dev_server_1
 APP_JS_FILES = $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
 APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/ngeo/src/misc -type f -name '*.html' 2> /dev/null)
 APP_HTML_FILES += $(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
 
