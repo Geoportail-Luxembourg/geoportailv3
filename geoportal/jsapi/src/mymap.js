@@ -603,7 +603,7 @@ class MyMap {
 
       console.assert(geom instanceof Point);
 
-      elevationEl.appendChild(document.createTextNode('N/A'));
+      //elevationEl.appendChild(document.createTextNode('N/A'));
       getElevation(/** @type{!Point} */(geom).getCoordinates()).then(
         function (json) {
           if (json['dhm'] > 0) {
