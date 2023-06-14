@@ -605,7 +605,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
 
     console.assert(geom instanceof ol.geom.Point);
 
-    elevationEl.appendChild(document.createTextNode('N/A'));
+    //elevationEl.appendChild(document.createTextNode('N/A'));
     lux.getElevation(/** @type{!ol.geom.Point} */ (geom).getCoordinates()).then(
       function(json) {
         if (json['dhm'] > 0) {
