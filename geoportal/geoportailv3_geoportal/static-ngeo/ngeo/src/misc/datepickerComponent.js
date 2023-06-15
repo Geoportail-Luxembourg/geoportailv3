@@ -11,7 +11,7 @@ import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/i18n/datepicker-fr.js';
 import 'jquery-ui/ui/i18n/datepicker-en-GB.js';
 import 'jquery-ui/ui/i18n/datepicker-de.js';
-import 'jquery-ui/ui/i18n/datepicker-it.js';
+import 'jquery-ui/ui/i18n/datepicker-lb.js';
 
 
 /**
