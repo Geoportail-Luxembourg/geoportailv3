@@ -131,6 +131,8 @@ export function getElevation(coordinate) {
  *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
  * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
  * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
+ * @property {boolean} [showPopup] If true, the popup is displayed on click. Default is True.
+ * @property {function(Array<ol.Feature>)} [onClick] If set, the function is called when clicking on the object and the popup is not displayed.
  */
 
 
