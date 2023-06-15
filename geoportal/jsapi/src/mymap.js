@@ -46,6 +46,8 @@ import d3Elevation from '@geoblocks/d3profile';
  *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
  * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
  * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
+ * @property {boolean} [showPopup] If true, the popup is displayed on click. Default is True.
+ * @property {function(Array<ol.Feature>)} [onClick] If set, the function is called when clicking on the object and the popup is not displayed.
  */
 
 
@@ -161,6 +163,17 @@ class MyMap {
      * @private
      */
     this.onload_ = options.onload;
+
+    /**
+     * @type {function(Array<Feature>)|undefined}
+     * @private
+     */
+    this.onClick_ = options.onClick;
+
+    this.showPopup_ = true;
+    if (options.showPopup !== undefined) {
+      this.showPopup_ = options.showPopup;
+    }
 
     /**
      * @private
@@ -284,7 +297,12 @@ class MyMap {
    */
   onFeatureSelected_(event) {
     var features = event.selected;
-
+    if (this.onClick_ !== undefined) {
+      this.onClick_.call(this, features);
+    }
+    if (!this.showPopup_) {
+      return ;
+    }
     if (this.popup_) {
       this.map_.removeOverlay(this.popup_);
       this.popup_ = null;
