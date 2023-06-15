@@ -139,6 +139,18 @@ lux.MyMap = function(options) {
    */
   this.onload_ = options.onload;
 
+    /**
+     * @type {function(Array<Feature>)|undefined}
+     * @private
+     */
+    this.onClick_ = options.onClick;
+
+    this.showPopup_ = true;
+    if (options.showPopup !== undefined) {
+      this.showPopup_ = options.showPopup;
+    }
+
+
   /**
    * @private
    * @type {ol.format.KML}
@@ -261,7 +273,12 @@ lux.MyMap.prototype.loadFeatures_ = function() {
  */
 lux.MyMap.prototype.onFeatureSelected_ = function(event) {
   var features = event.selected;
-
+  if (this.onClick_ !== undefined) {
+    this.onClick_.call(this, features);
+  }
+  if (!this.showPopup_) {
+    return ;
+  }
   if (this.popup_) {
     this.map_.removeOverlay(this.popup_);
     this.popup_ = null;
