@@ -485,6 +485,20 @@ luxx.MyMapOptions.prototype.profileTarget;
 luxx.MyMapOptions.prototype.onload;
 
 /**
+ * If set, the function is called when clicking on the object and the popup is not displayed.
+ * @type {function(Array<ol.Feature>)|undefined}
+ * @api
+ */
+luxx.MyMapOptions.prototype.onClick;
+
+/**
+ * If true, the popup is displayed on click. Default is True.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MyMapOptions.prototype.showPopup;
+
+/**
  * Object literal with config options for the feature recenter.
  * @typedef {Object}
  */
