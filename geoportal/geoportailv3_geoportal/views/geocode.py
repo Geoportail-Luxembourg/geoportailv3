@@ -50,8 +50,8 @@ class Geocode(object):
 
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", northing) is None:
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", northing) is None:
 
             return HTTPBadRequest("Missing or invalid coordinates")
 
@@ -90,6 +90,7 @@ class Geocode(object):
                             "street": address['road'] if 'road' in address else "",
                             "number": address['house_number'] if 'house_number' in address else "",
                             "locality": address['town'] if 'town' in address else "",
+                            "municipality": address['municipality'] if 'municipality' in address else "",
                             "postal_code": address['postcode'] if 'postcode' in address else "",
                             "country": address['country'] if 'country' in address else "",
                             "country_code": address['country_code'] if 'country_code' in address else "",
