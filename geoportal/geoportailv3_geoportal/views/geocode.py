@@ -47,11 +47,10 @@ class Geocode(object):
             if pointgeom is not None:
                 easting = str(pointgeom.centroid.x)
                 northing = str(pointgeom.centroid.y)
-
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", northing) is None:
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", northing) is None:
 
             return HTTPBadRequest("Missing or invalid coordinates")
 
@@ -91,12 +90,14 @@ class Geocode(object):
                 locality = address['municipality'] if 'municipality' in address else ""
             if  len(locality) == 0:
                 locality = address['village'] if 'village' in address else ""
+
             results.append({"id_caclr_locality": None,
                             "id_caclr_street": None,
                             "id_caclr_bat": None,
                             "street": address['road'] if 'road' in address else "",
                             "number": address['house_number'] if 'house_number' in address else "",
                             "locality": locality,
+                            "municipality": address['municipality'] if 'municipality' in address else "",
                             "postal_code": address['postcode'] if 'postcode' in address else "",
                             "country": address['country'] if 'country' in address else "",
                             "country_code": address['country_code'] if 'country_code' in address else "",
