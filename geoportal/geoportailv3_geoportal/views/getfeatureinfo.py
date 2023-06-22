@@ -1224,6 +1224,7 @@ class Getfeatureinfo(object):
                                 else:
                                     attributes['measurements'].append(cur_measurement)
                         else:
+                            cur_measurement = {}
                             cur_measurement['measurementNumber'] = mesurage_num
                             cur_measurement['parcelId'] = fid
                             cur_measurement['document_id'] = None
@@ -1235,7 +1236,7 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_mymaps(self, layer_id, rows, attributes_to_remove):
+    def get_info_from_mymaps(self, layer_id, rows, attributes_to_remove, mymaps_engine='mymaps'):
         features = []
         ids = []
         for row in rows:
@@ -1252,7 +1253,7 @@ class Getfeatureinfo(object):
                 geometry = geojson_loads(row['st_asgeojson'])
                 only_points = False
                 if geometry['type'] == "Point":
-                    session = self._get_session("mymaps")
+                    session = self._get_session(mymaps_engine)
                     query = "select count(*) as cnt\
                             , sum(ST_Length(geometry)) as length FROM\
                              public.feature_with_map_with_colors where\
@@ -1265,7 +1266,7 @@ class Getfeatureinfo(object):
                 if not only_points or\
                    geometry['type'] == "LineString" or\
                    geometry['type'] == "MultiLineString":
-                    session = self._get_session("mymaps")
+                    session = self._get_session(mymaps_engine)
                     query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
                             , sum(ST_Length(geometry)) as length FROM\
                              public.feature_with_map_with_colors where\
@@ -1348,7 +1349,6 @@ class Getfeatureinfo(object):
         try:
             DBSession.rollback()
             result = urllib.request.urlopen(query, None, 15)
-            log.error(query)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -1521,7 +1521,6 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
-        log.error(query)
         try:
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)

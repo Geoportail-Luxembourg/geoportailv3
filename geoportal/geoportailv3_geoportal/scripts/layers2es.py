@@ -145,7 +145,7 @@ class Import:
             settings = yaml.load(f)
 
         self.languages = settings["vars"]["available_locale_names"]
-        exluded_themes_string = settings["vars"]["excluded_themes_from_search"]
+        exluded_themes_string = os.environ["EXCLUDED_THEMES_FROM_SEARCH"]
         exluded_themes = []
         if exluded_themes_string is not None:
             exluded_themes = exluded_themes_string.split(",")

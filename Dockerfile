@@ -10,7 +10,8 @@ ENV CONFIG_VARS sqlalchemy.url sqlalchemy.pool_recycle sqlalchemy.pool_size sqla
     checker check_collector default_max_age package srid \
     reset_password fulltextsearch global_headers headers authorized_referers hooks stats db_chooser \
     dbsessions urllogin host_forward_host smtp c2c.base_path welcome_email \
-    lingua_extractor interfaces_config interfaces devserver_url api authentication intranet metrics pdfreport
+    lingua_extractor interfaces_config interfaces devserver_url api authentication intranet metrics pdfreport \
+    arcgis_token
 
 # Custom config vars
 ENV CONFIG_VARS ${CONFIG_VARS} \
@@ -71,7 +72,7 @@ RUN \
     mkdir --parent /usr/local/tomcat/webapps/ROOT/ && \
     if [ -e /tmp/config/print ]; then mv /tmp/config/print/print-apps /usr/local/tomcat/webapps/ROOT/; fi && \
     mv /tmp/config/geoportal/geoportailv3_geoportal/ /etc/geomapfish/ && \
-    chmod g+w -R /etc /usr/local/tomcat/webapps && \
+    chmod g+w -R /usr/local/tomcat/webapps && \
     adduser www-data root && \
     sed 's#bind :80#bind *:443 ssl crt /etc/haproxy_dev/localhost.pem#g' /etc/haproxy/haproxy.cfg.tmpl \
         > /etc/haproxy_dev/haproxy.cfg.tmpl && \

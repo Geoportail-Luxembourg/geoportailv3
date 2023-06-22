@@ -119,7 +119,9 @@ exports.prototype.hasLegend = function(layer) {
     if (!(legendUrl in this.promises_)) {
       this.promises_[legendUrl] = this.$http_.get(legendUrl).then(
         function(resp) {
-          this.results_[legendUrl] = this.sce_.trustAsHtml(resp.data);
+          if (resp.data !== null && resp.data.length > 0) {
+            this.results_[legendUrl] = this.sce_.trustAsHtml(resp.data);
+          }
         }.bind(this));
     }
     return (legendUrl in this.results_);

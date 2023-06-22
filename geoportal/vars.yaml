@@ -3,6 +3,12 @@
 extends: CONST_vars.yaml
 
 vars:
+  arcgis_token:
+    arcgis_token_url: '{ARCGIS_TOKEN_URL}'
+    arcgis_token_validity: '{ARCGIS_TOKEN_VALIDITY}'
+    arcgis_token_referer: '{ARCGIS_TOKEN_REFERER}'
+    arcgis_token_username: '{ARCGIS_USER}'
+    arcgis_token_password: '{ARCGIS_PASS}'
   global_headers:
     - pattern: '.*'
       headers:
@@ -335,7 +341,7 @@ vars:
     mymaps: {url: '{DB_MYMAPS}'}
     pgroute: {url: '{DB_PGROUTE}'}
     poi: {url: '{DB_POI}'}
-
+    mymaps_geoportal: {url: '{DB_MYMAPS_GEOPORTAL}'}
   fulltextsearch:
     languages:
       fr: french
@@ -455,6 +461,11 @@ vars:
         distributed_lock: True
 
 runtime_environment:
+  - {name: ARCGIS_TOKEN_URL}
+  - {name: ARCGIS_TOKEN_VALIDITY}
+  - {name: ARCGIS_TOKEN_REFERER}
+  - {name: ARCGIS_USER}
+  - {name: ARCGIS_PASS}
   - {name: AGE_CRUES_EMAIL, default: ''}
   - {name: AGE_CRUES_LAYERS, default: ''}
   - {name: AGE_CRUES_MAP_ID, default: ''}
@@ -479,6 +490,7 @@ runtime_environment:
   - {name: CASIPO_SMTP_SERVER}
   - {name: CASIPO_BCC_ADDRESS}
   - {name: DB_MYMAPS}
+  - {name: DB_MYMAPS_GEOPORTAL, default: 'postgresql://172.17.0.1:5433/dummy'}
   - {name: DB_PGROUTE}
   - {name: DB_ECADASTRE}
   - {name: DB_POI}

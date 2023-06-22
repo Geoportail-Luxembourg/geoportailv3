@@ -81,7 +81,7 @@ class FullTextSearchView(object):
                 { "name": "Adresse", "boost": 8 },
                 { "name": "nom_de_rue", "boost": 2 },
                 { "name": "Commune", "boost": 10 },
-                { "name": "Localité", "boost": 8 },
+                { "name": "Localité", "boost": 9 },
                 { "name": "lieu_dit", "boost": 7 },
                 { "name": "Parcelle", "boost": 1 },
                 { "name": "FLIK", "boost": 1 },
