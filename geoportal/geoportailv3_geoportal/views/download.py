@@ -185,7 +185,7 @@ class Download(object):
                 self.request.user, self.request.referer):
                 return HTTPUnauthorized()
 
-            url = f"{base_url}/document/{document_id}/download/"
+            url = f"{base_url}/document/file/{document_id}/?document_format=pdf"
             req = urllib.request.Request(url, headers=hdr)
             response = urllib.request.urlopen(req)
             headers = {"Content-Type": "application/pdf",
@@ -222,7 +222,7 @@ class Download(object):
         base_url = os.environ["API-ARCHIMET-URL"]
         api_key = os.environ["API-ARCHIMET-KEY"]
         document_id = self.request.params.get("document_id", None)
-        url = f"{base_url}/document/{document_id}/preview/?blur=3"
+        url = f"{base_url}/document/preview/{document_id}/?variant=public"
         hdr = {'api-key': api_key}
         req = urllib.request.Request(url, headers=hdr)
         response = urllib.request.urlopen(req)
@@ -252,7 +252,7 @@ class Download(object):
             self.request.user, self.request.referer):
             return self.preview_measurement()
 
-        url = f"{base_url}/document/{document_id}/preview/"
+        url = f"{base_url}/document/preview/{document_id}/"
         req = urllib.request.Request(url, headers=hdr)
         response = urllib.request.urlopen(req)
 

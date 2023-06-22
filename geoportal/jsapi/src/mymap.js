@@ -45,6 +45,9 @@ import d3Elevation from '@geoblocks/d3profile';
  * @property {string} [profileTarget]  The id of the element in which to put the profile (without #).
  *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
  * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
+ * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
+ * @property {boolean} [showPopup] If true, the popup is displayed on click. Default is True.
+ * @property {function(Array<ol.Feature>)} [onClick] If set, the function is called when clicking on the object and the popup is not displayed.
  */
 
 
@@ -83,11 +86,21 @@ class MyMap {
      * @private
      */
     this.ids_ = [];
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.layerVisibility_ = true;
+
     if (options.mapIds !== undefined) {
       this.ids_ = options.mapIds;
     }
     if (options.mapId !== undefined) {
       this.ids_.push(options.mapId);
+    }
+    if (options.layerVisibility !== undefined) {
+      this.layerVisibility_ = options.layerVisibility;
     }
 
     console.assert(Array.isArray(this.ids_) && this.ids_.length > 0, 'mapId or mapids must be defined');
@@ -150,6 +163,17 @@ class MyMap {
      * @private
      */
     this.onload_ = options.onload;
+
+    /**
+     * @type {function(Array<Feature>)|undefined}
+     * @private
+     */
+    this.onClick_ = options.onClick;
+
+    this.showPopup_ = true;
+    if (options.showPopup !== undefined) {
+      this.showPopup_ = options.showPopup;
+    }
 
     /**
      * @private
@@ -221,7 +245,8 @@ class MyMap {
     this.sourceFeatures_ = new VectorSource();
     var vector = new VectorLayer({
       source: this.sourceFeatures_,
-      name: this.layerName_
+      name: this.layerName_,
+      visible: this.layerVisibility_
     });
     this.map_.addLayer(vector);
     this.selectInteraction_ = new Select({
@@ -272,7 +297,12 @@ class MyMap {
    */
   onFeatureSelected_(event) {
     var features = event.selected;
-
+    if (this.onClick_ !== undefined) {
+      this.onClick_.call(this, features);
+    }
+    if (!this.showPopup_) {
+      return ;
+    }
     if (this.popup_) {
       this.map_.removeOverlay(this.popup_);
       this.popup_ = null;
@@ -291,7 +321,9 @@ class MyMap {
 
     if (properties.description) {
       var description = document.createElement('P');
-      description.appendChild(properties.description);
+      var descriptionText = document.createTextNode(properties.description);
+      description.appendChild(descriptionText);
+      content.appendChild(description);
     }
     if (properties.thumbnail) {
       var link = document.createElement('A');
@@ -589,7 +621,7 @@ class MyMap {
 
       console.assert(geom instanceof Point);
 
-      elevationEl.appendChild(document.createTextNode('N/A'));
+      //elevationEl.appendChild(document.createTextNode('N/A'));
       getElevation(/** @type{!Point} */(geom).getCoordinates()).then(
         function (json) {
           if (json['dhm'] > 0) {
@@ -635,7 +667,6 @@ class MyMap {
           this.hideProfile_();
         }.bind(this));
       }.bind(this));
-
     }
 
     link = document.createElement('A');

@@ -52,7 +52,7 @@ def upgrade():
         "res_login_father VARCHAR;"
         "c_father Cursor  (p_login VARCHAR) FOR "
         "Select login_father From %(schema)s.lux_user_inheritance Where "
-        "login = p_login;"
+        "lower(login) = lower(p_login);"
         "BEGIN "
         "cur_login_father := child_login;"
         "LOOP "

@@ -18,7 +18,7 @@ var map = new lux.Map({
   target: 'map1',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099]
+  position: [76771, 72205]
 });
         </pre>
 
@@ -35,7 +35,7 @@ var map1a = new lux.Map({
   target: 'map1a',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099]
+  position: [76771, 72205]
 });
 &lt;button onclick="map1a.print();"&gt;Print the current map&lt;/button&gt;
         </pre>
@@ -53,7 +53,7 @@ var map1b = new lux.Map({
   target: 'map1b',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099],
+  position: [76771, 72205],
   mousePosition    : {
     target: 'map1b',
     srs : 2169
@@ -76,7 +76,7 @@ var map1c = new lux.Map({
   target: 'map1c',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099],
+  position: [76771, 72205],
   mousePosition    : {
     target: 'coord1c',
     srs : 2169
@@ -94,7 +94,7 @@ var map1c = new lux.Map({
         <h2>Basic example with marker</h2>
         This is a simple map with a marker
         <pre>
-var position = [75977, 75099 ];
+var position = [76771, 72205];
 var map2 = new lux.Map({
   target: 'map2',
   bgLayer: 'basemap_2015_global',
@@ -120,7 +120,7 @@ map2.showMarker(
         <h2>Basic example with marker on click</h2>
         This is a simple map with a marker on click
         <pre>
-var position = [75977, 75099 ];
+var position = [76771, 72205];
 var map2a = new lux.Map({
   target: 'map2a',
   bgLayer: 'basemap_2015_global',
@@ -147,7 +147,7 @@ map2a.showMarker(
         <h2>Basic example with marker in other position</h2>
         This is a simple map with a marker in another position than the center
         <pre>
-var position = [75950, 75050];
+var position = [77213, 71822];
 var map2b = new lux.Map({
   target: 'map2b',
   bgLayer: 'streets_jpeg',
@@ -155,7 +155,7 @@ var map2b = new lux.Map({
   position: position
 });
 
-var position2 = [75977, 75099];
+var position2 = [76771, 72205];
 map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
@@ -174,7 +174,7 @@ map2b.showMarker(
         <h2>Basic example with marker on click</h2>
         This is a simple map with a marker showing popup on click in div
         <pre>
-var position = [75977, 75099 ];
+var position = [76771, 72205];
 var map2c = new lux.Map({
   target: 'map2c',
   bgLayer: 'basemap_2015_global',
@@ -201,7 +201,7 @@ map2c.showMarker(
         <h2>Basic example with markers position with different SRS</h2>
         This is a simple map with 2 markers displayed in different SRS.
         <pre>
-var position2d2169 = [75977, 75099];
+var position2d2169 = [76771, 72205];
 var position2d4326 = [6.11149,49.61062];
 var map2d = new lux.Map({
   target: 'map2d',
@@ -481,7 +481,7 @@ var map11 = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359'
   }
 });
@@ -504,7 +504,7 @@ var map11b = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359',
     click: true
   }
@@ -527,7 +527,7 @@ var map11c = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359',
     click: true
   }
@@ -554,9 +554,9 @@ var map12 = new lux.Map({
 });
 
 lux.geocode({
-  num: 54,
-  street: 'avenue gaston diderich',
-  zip: 1420,
+  num: 1,
+  street: 'Rue Charles Darwin',
+  zip: 1433,
   locality: 'luxembourg'
 }, function(position) {
   map12.showMarker({
@@ -657,10 +657,10 @@ var map16 = new lux.Map({
    target: 'map16',
    bgLayer: 'basemap_2015_global',
    zoom: 18,
-   position: [75977, 75099 ]
+   position: [76771, 72205]
 });
 var cadastreFeature = new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.transform([75977, 75099], 'EPSG:2169', 'EPSG:3857')),
+  geometry: new ol.geom.Point(ol.proj.transform([76771, 72205], 'EPSG:2169', 'EPSG:3857')),
   name: 'Cadastre'
 });
 var iconStyle = new ol.style.Style({
@@ -710,7 +710,7 @@ var map17 = new lux.Map({
    bgLayer     : 'blank',
    layers: ['parcels','parcels_labels'],
    zoom: 14,
-   position: [75977, 75099 ],
+   position: [76771, 72205],
    showLayerInfoPopup : false,
    popupTarget: 'info17'
 });
@@ -746,7 +746,7 @@ map17.on('click', function(evt) {
             // Eventually, to allow printing
             // bgLayerStyleXYZ: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png',
             zoom: 18,
-            position: [75977, 75099]
+            position: [76771, 72205]
           });
         </pre>
       </div>
@@ -801,7 +801,7 @@ map17.on('click', function(evt) {
             bgLayer: 'basemap_2015_global',
             bgLayerStyle: customJson,
             zoom: 10,
-            position: [75977, 75099]
+            position: [76771, 72205]
           });
         </pre>
       </div>
@@ -818,11 +818,9 @@ lux.setPopupSize([400, 150]);
 
 var map1 = new lux.Map({
   target: 'map1',
-  bgLayer     : 'basemap_2015_global',
-
-
+  bgLayer : 'basemap_2015_global',
   zoom: 18,
-  position: [   75977 , 75099 ]
+  position: [76771, 72205]
 
 });
 
@@ -830,14 +828,14 @@ var map1a = new lux.Map({
   target: 'map1a',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099]
+  position: [76771, 72205]
 });
 
 var map1b = new lux.Map({
   target: 'map1b',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099],
+  position: [76771, 72205],
   mousePosition    : {
     target: 'map1b',
     srs : 2169
@@ -848,14 +846,14 @@ var map1c = new lux.Map({
   target: 'map1c',
   bgLayer: 'basemap_2015_global',
   zoom: 18,
-  position: [75977, 75099],
+  position: [76771, 72205],
   mousePosition    : {
     target: 'coord1c',
     srs : 2169
 },
 });
 
-var position = [75977, 75099 ];
+var position = [76771, 72205];
 var map2 = new lux.Map({
   target: 'map2',
   bgLayer     : 'basemap_2015_global',
@@ -870,7 +868,7 @@ map2.showMarker({
 });
 
 
-var position = [75977, 75099 ];
+var position = [76771, 72205];
 var map2a = new lux.Map({
   target: 'map2a',
   bgLayer: 'basemap_2015_global',
@@ -886,7 +884,7 @@ map2a.showMarker(
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
 
-var position = [75950, 75050];
+var position = [77213, 71822];
 var map2b = new lux.Map({
   target: 'map2b',
   bgLayer: 'streets_jpeg',
@@ -894,7 +892,7 @@ var map2b = new lux.Map({
   position: position
 });
 
-var position2 = [75977, 75099];
+var position2 = [76771, 72205];
 map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
@@ -917,7 +915,7 @@ map2c.showMarker(
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
 
-var position2d2169 = [75977, 75099];
+var position2d2169 = [76771, 72205];
 var position2d4326 = [6.11149,49.61062];
 var map2d = new lux.Map({
   target: 'map2d',
@@ -958,7 +956,7 @@ var map3 = new lux.Map({
     target: 'bgMap3'
   },
   zoom: 12,
-  position: [       76825 , 75133  ]
+  position: [76825 , 75133]
 
 });
 
@@ -1079,7 +1077,7 @@ var map11 = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359'
   }
 });
@@ -1089,7 +1087,7 @@ var map11b = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359',
     click: true
   }
@@ -1100,7 +1098,7 @@ var map11c = new lux.Map({
   bgLayer: 'blank',
   layers: ['parcels','parcels_labels'],
   features    : {
-    ids   : ['061F00614004236'],
+    ids   : ['061C00204002980'],
     layer : '359',
     click: true,
     target: info11c
@@ -1114,9 +1112,9 @@ var map12 = new lux.Map({
 });
 
 lux.geocode({
-  num: 54,
-  street: 'avenue gaston diderich',
-  zip: 1420,
+  num: 1,
+  street: 'Rue Charles Darwin',
+  zip: 1433,
   locality: 'luxembourg'
 }, function(position) {
   map12.showMarker({
@@ -1166,10 +1164,10 @@ var map16 = new lux.Map({
    target: 'map16',
    bgLayer: 'basemap_2015_global',
    zoom: 18,
-   position: [75977, 75099 ]
+   position: [76771, 72205]
 });
 var cadastreFeature = new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.transform([75977, 75099], 'EPSG:2169', 'EPSG:3857')),
+  geometry: new ol.geom.Point(ol.proj.transform([76771, 72205], 'EPSG:2169', 'EPSG:3857')),
   name: 'Cadastre'
 });
 var iconStyle = new ol.style.Style({
@@ -1205,7 +1203,7 @@ var map17 = new lux.Map({
    bgLayer     : 'blank',
    layers: ['parcels','parcels_labels'],
    zoom: 14,
-   position: [75977, 75099 ],
+   position: [76771, 72205],
    showLayerInfoPopup : false,
    popupTarget: 'info17'
 });
@@ -1230,7 +1228,7 @@ let map18 = new lux.Map({
   // Eventually, to allow printing
   // bgLayerStyleXYZ: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png',
   zoom: 18,
-  position: [75977, 75099]
+  position: [76771, 72205]
 });
 
 const customJson = {
@@ -1276,7 +1274,7 @@ let map19 = new lux.Map({
   bgLayerStyle: customJson,
   // printing will not work here without bgLayerStyleXYZ
   zoom: 10,
-  position: [75977, 75099]
+  position: [76771, 72205]
 });
 </script>
 </body>

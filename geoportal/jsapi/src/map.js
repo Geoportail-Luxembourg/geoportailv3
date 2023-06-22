@@ -122,6 +122,21 @@ export function getElevation(coordinate) {
 }
 
 /**
+ * @typedef {Object} MyMapOptions
+ * @property {boolean} [fitToExtent=true]  Fit to the mymaps extent.
+ * @property {string} [mapId] The map identifier.
+ * @property {Array<string>} [mapIds] An array of map identifiers.
+ * @property {string} [name] The name of the mymaps layer.
+ * @property {string} [profileTarget]  The id of the element in which to put the profile (without #).
+ *     Optional. It is recommended to set the display style to none at first. The display will then be set to block adequately.
+ * @property {function(Array<ol.Feature>)} [onload] The function called once the map is loaded.
+ * @property {boolean} [layerVisibility] The layer visibility. Default is visible.
+ * @property {boolean} [showPopup] If true, the popup is displayed on click. Default is True.
+ * @property {function(Array<ol.Feature>)} [onClick] If set, the function is called when clicking on the object and the popup is not displayed.
+ */
+
+
+/**
  * @typedef {Object} LayerMetadataOptions
  * @property {string} exclusion
  */
@@ -254,7 +269,7 @@ function findLayerByName_(name, layers) {
  *   target: 'map1',
  *   bgLayer: 'basemap_2015_global',
  *   zoom: 18,
- *   position: [75977, 75099]
+ *   position: [76771, 72205]
  * });
  * @constructor
  * @export
@@ -437,10 +452,10 @@ class Map extends OpenLayersMap {
       }
     }.bind(this));
 
-    this.grantedUrls = ['visitluxembourg.com', 'mullerthal-trail.lu', 'traveltrade.visitluxembourg.com', 'visit-eislek.lu', 'visitguttland.lu',
-      'visitmoselle.lu', 'visitminett.lu', 'mullerthal.lu', 'gites.lu', 'vins-cremants.lu', 'visitbeaufort.lu', 'visitberdorf.lu',
-      'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu', 'visitmondorf.lu',
-      'visitwasserbillig.lu', 'si-schengen.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'visit-wincrange.lu',
+    this.grantedUrls = ['visitluxembourg.com', 'mullerthal-trail.lu', 'visit-eislek.lu', 'visitguttland.lu', 'luxembourgtravel.lu',
+      'visitmoselle.lu', 'visitminett.lu', 'mullerthal.lu', 'gites.lu', 'vins-cremants.lu', 'visitbeaufort.lu', 'visitberdorf.lu', 'minetttour.lu',
+      'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu',
+      'visitwasserbillig.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'minetttrail.lu', 'minettcycle.lu',
       'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
       'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online'];
 
@@ -468,6 +483,12 @@ class Map extends OpenLayersMap {
      * @type {Array}
      */
     this.addedKmlLayers_ = [];
+
+    /**
+     * @type {SelectInteraction | undefined}
+     * @private
+     */
+    this.addedKmlLayersSelectInteraction_ = undefined;
 
     /**
      * @private
@@ -678,12 +699,8 @@ class Map extends OpenLayersMap {
     listen(this, MapBrowserEventType.POINTERMOVE, function (evt) {
       var pixel = this.getEventPixel(evt.originalEvent);
       var hit = this.hasFeatureAtPixel(pixel);
-      var pixelHit = this.forEachLayerAtPixel(pixel, function (colors) {
-        return true;
-      }, this, function (l) {
-        return this.getLayers().getArray()[0] !== l;
-      }.bind(this), this);
-      this.getTargetElement().style.cursor = (hit || pixelHit) ? 'pointer' : '';
+
+      this.getTargetElement().style.cursor = (hit) ? 'pointer' : '';
     }.bind(this));
 
     if (options.callback !== undefined) {
@@ -861,14 +878,17 @@ class Map extends OpenLayersMap {
    * Only html and pdf are supported.
    * [{'url': 'http://url1', 'html'},{'url': 'http://url2' 'pdf'}]
    * @param {function()=} callback Optional callback function.
+   * @param {String=} format the output format. Default value is pdf.
    * @example
    * map.print();
    * @export
    * @api
    */
-  print(name, layout, scale, firstPagesUrls, callback) {
+  print(name, layout, scale, firstPagesUrls, callback, format) {
     var dpi = 127;
-    var format = 'pdf';
+    if (format === undefined || format === null) {
+      format = 'pdf';
+    }
 
     var pm = new PrintManager(lux.printUrl, this);
     if (firstPagesUrls === undefined || firstPagesUrls === null) {
@@ -2114,6 +2134,32 @@ class Map extends OpenLayersMap {
   }
 
   /**
+   * It displays a GeoJSON object on the map.
+   * The default data projection is EPSG:4326.
+   * @param {Object} geojson The GeoJSON object.
+   * @param {VectorOptions=} opt_options Options.
+   * @return {Promise} The vector layer promise.
+   * @export
+   * @api
+   */
+  addGeoJSONObject(geojson, opt_options = {}) {
+    var opt_format = {
+        dataProjection: 'EPSG:4326',
+        featureProjection: this.getView().getProjection()
+      };
+    if (opt_options.dataProjection !== undefined) {
+      opt_format['dataProjection'] = opt_options.dataProjection;
+    }
+    var vector = new VectorLayer(opt_options);
+    const vectorSource = new VectorSource({
+      features: new GeoJSON(opt_format).readFeatures(geojson),
+    });
+    vector.setSource(vectorSource);
+    this.addLayer(vector);
+    return Promise.resolve(vector);
+  }
+
+  /**
    * Adds a KML or gpx file on the map
    * @param {string} url Url to the vector file
    * @param {GPX|KML|GeoJSON} format The format.
@@ -2174,7 +2220,7 @@ class Map extends OpenLayersMap {
       this.addLayer(vector);
       this.addedKmlLayers_.push(vector);
       this.addedKmlOnClick_.push(opt_options.onClick);
-      if (fit || opt_options.onFeatureAdded !== undefined) {
+      if (fit || opt_options.onFeatureAdd !== undefined) {
         listen(vector.getSource(), VectorEventType.ADDFEATURE,
           function (evt) {
             if (fit) {
@@ -2190,28 +2236,35 @@ class Map extends OpenLayersMap {
       }
 
       if (opt_options.click) {
-        var interaction = new SelectInteraction({
+        if (this.addedKmlLayersSelectInteraction_ !== undefined) {
+          this.removeInteraction(this.addedKmlLayersSelectInteraction_);
+          this.addedKmlLayersSelectInteraction_ = undefined;
+        }
+        this.addedKmlLayersSelectInteraction_ = new SelectInteraction({
           layers: this.addedKmlLayers_
         });
         this.getLayers().on('remove', function(event) {
           if (event.element == vector) {
-            this.removeInteraction(interaction);
+            if (this.addedKmlLayersSelectInteraction_ !== undefined) {
+              this.removeInteraction(this.addedKmlLayersSelectInteraction_);
+              this.addedKmlLayersSelectInteraction_ = undefined;
+            }
           }
         }.bind(this));
-        this.addInteraction(interaction);
+        this.addInteraction(this.addedKmlLayersSelectInteraction_);
         if (opt_options.onClick) {
-          interaction.on('select', function (e) {
+          this.addedKmlLayersSelectInteraction_.on('select', function (e) {
             var features = e.target.getFeatures();
-            var curLayer = interaction.getLayer(features.getArray()[0]);
+            var curLayer = this.addedKmlLayersSelectInteraction_.getLayer(features.getArray()[0]);
             for (var iLayer = 0; iLayer < this.addedKmlLayers_.length; iLayer++) {
               if (this.addedKmlLayers_[iLayer] == curLayer) {
                 this.addedKmlOnClick_[iLayer].call(null, features, e.mapBrowserEvent.coordinate);
               }
             }
-            interaction.getFeatures().clear();
+            this.addedKmlLayersSelectInteraction_.getFeatures().clear();
           }.bind(this));
         } else {
-          interaction.on('select', function (e) {
+          this.addedKmlLayersSelectInteraction_.on('select', function (e) {
             if (popup) {
               this.removeOverlay(popup);
             }
@@ -2240,7 +2293,7 @@ class Map extends OpenLayersMap {
             }
             var element = lux.buildPopupLayout(html, function () {
               this.removeOverlay(popup);
-              interaction.getFeatures().clear();
+              this.addedKmlLayersSelectInteraction_.getFeatures().clear();
             }.bind(this));
             popup = new Overlay({
               element: element,
@@ -2301,7 +2354,7 @@ class Map extends OpenLayersMap {
    * map8.addMyMapLayer({
    *   mapId: '0416ef680fbe4cdaa2d8009262d1127c'
    * });
-   * @param {luxx.MyMapOptions} options The options.
+   * @param {MyMapOptions} options The options.
    * @return {Promise} Promise of the mymaps object.
    * @export
    * @api

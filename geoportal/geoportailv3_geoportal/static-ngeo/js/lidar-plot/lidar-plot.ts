@@ -9,7 +9,7 @@ export class LidarPlot extends LuxBaseElement {
     @property()
     active: boolean;
 
-    constructor() {
+        constructor() {
         super();
     }
 

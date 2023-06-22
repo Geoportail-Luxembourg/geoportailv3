@@ -48,6 +48,9 @@ from c2cgeoportal_geoportal.lib.bashcolor import RED, colorize
 from c2cgeoportal_geoportal.lib.caching import init_region
 from c2cgeoportal_geoportal.views.layers import Layers, get_layer_class
 
+from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
+from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+
 config = c2cgeoportal_commons.configuration
 
 import logging
@@ -129,7 +132,8 @@ class _Request:  # pragma: no cover
     params: Dict[str, str] = {}
     matchdict: Dict[str, str] = {}
     GET: Dict[str, str] = {}
-
+    session: Dict[str, str] = {} 
+    
     def __init__(self, settings=None):
         self.registry: _Registry = _Registry(settings)
 
@@ -989,7 +993,13 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     ESRI legend extractor
     """
     extensions = [".ini"]
-
+    def __init__(self) -> None:
+        super().__init__()
+        if os.path.exists("/etc/geomapfish/config.yaml"):
+            config.init("/etc/geomapfish/config.yaml")
+            self.config = config.get_config()['arcgis_token']
+        else:
+            self.config = None
     def _extract_messages(self):
         print('Entering into ESRI extractor')
 
@@ -1007,10 +1017,20 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     def _load_result(self, result):
         data = None
         if result.rest_url is not None and len(result.rest_url) > 0:
+            query_params = {'f': 'pjson'}
             full_url = result.rest_url + '/legend?f=pjson'
             try:
-                f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
-                data = json.load(f)
+                if result.use_auth:
+                    auth_token = get_arcgis_token(_Request(self.config), log)
+                    if 'token' in auth_token:
+                        query_params["token"] = auth_token['token']
+                full_url = result.rest_url + '/legend?' + urllib.parse.urlencode(query_params)
+
+                url_request = urllib.request.Request(full_url)
+                esri_result = read_request_with_token(url_request, _Request(self.config), log)
+                content = esri_result.data
+                data = json.loads(content)
+
             except Exception as e:
                 log.error(full_url)
                 log.exception(e)
@@ -1034,6 +1054,13 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
     Tooltip extractor
     """
     extensions = [".ini"]
+    def __init__(self) -> None:
+        super().__init__()
+        if os.path.exists("/etc/geomapfish/config.yaml"):
+            config.init("/etc/geomapfish/config.yaml")
+            self.config = config.get_config()['arcgis_token']
+        else:
+            self.config = None
 
     @staticmethod
     def _get_url_with_token(url):
@@ -1052,7 +1079,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             traceback.print_exc(file=sys.stdout)
         return None
 
-    def _get_external_data(self, url, bbox=None, layer=None):
+    def _get_external_data(self, url, bbox=None, layer=None, use_auth=False):
 
         body = {'f': 'pjson',
                 'geometry': '',
@@ -1084,9 +1111,16 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
         try:
             content = ""
             print('Requesting %s' % query)
-            result = urllib.request.urlopen(query, None, self.TIMEOUT)
-            content = result.read()
-            esricoll = geojson_loads(content)
+            if use_auth is True:
+                url_request = urllib.request.Request(query)
+                esri_result = read_request_with_token(url_request, _Request(self.config), log)
+                content = esri_result.data
+                esricoll = geojson_loads(content)
+            else:
+                result = urllib.request.urlopen(query, None, self.TIMEOUT)
+                content = result.read()
+                esricoll = geojson_loads(content)
+
         except Exception as e:
             log.error("-----------------------------")
             log.error(query)
@@ -1194,10 +1228,13 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                   filter(LuxGetfeatureDefinition.remote_template == False).\
                   filter(
                       LuxGetfeatureDefinition.template.in_
-                      (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols']))  # noqa
+                      (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols', 'default_attachment_no_prefix.html']))  # noqa
 
         print("%d results" % results.count())
         for result in results:
+            has_prefix = True
+            if result.template == 'default_attachment_no_prefix.html':
+                has_prefix = False
             engine = DBSessions[result.engine_gfi]
             first_row = None
             if result.query is not None and len(result.query) > 0:
@@ -1214,7 +1251,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 first_row = self._get_external_data(
                     result.rest_url,
                     '96958.90059551848,61965.61097091329,' +
-                    '97454.77280739773,62463.21618929457', result.layer)
+                    '97454.77280739773,62463.21618929457', result.layer, result.use_auth)
             if ((result.rest_url is None or len(result.rest_url) == 0) and
                 (result.query is None or len(result.query) == 0)):
                 x = "831.1112060546875"
@@ -1248,7 +1285,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             if attributes is not None:
                 for attribute in attributes:
                     self._insert_attribute(
-                        "f_" + attribute,
+                        "f_" + attribute if has_prefix else attribute,
                         (("engine:%(engine)s *"
                          "Role:%(role)s Layer" % {
                              "engine": result.engine_gfi,
