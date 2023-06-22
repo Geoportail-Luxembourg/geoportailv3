@@ -16,7 +16,7 @@
   "dependencies": {
     },
   "devDependencies": {
-    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#GSLUX-602-Integration-v3"
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#main"
   ,
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
