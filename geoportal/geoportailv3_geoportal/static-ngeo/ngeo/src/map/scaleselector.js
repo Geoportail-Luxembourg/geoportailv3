@@ -135,8 +135,7 @@ const ScaleselectorController = function($scope, $element, $attrs) {
    * @type {ol.Map}
    * @private
    */
-  this.map_ = /** @type {ol.Map} */ ($scope.$eval(mapExpr));
-  googAsserts.assertInstanceof(this.map_, olMap);
+  this.map_;
 
   const optionsExpr = $attrs['ngeoScaleselectorOptions'];
   const options = $scope.$eval(optionsExpr);
@@ -181,6 +180,10 @@ const ScaleselectorController = function($scope, $element, $attrs) {
 
 };
 
+ScaleselectorController.prototype.$onInit = function() {
+  this.map_ = this['map'];  
+  googAsserts.assertInstanceof(this.map_, olMap);
+}
 
 /**
  * @param {?} options Options after expression evaluation.
