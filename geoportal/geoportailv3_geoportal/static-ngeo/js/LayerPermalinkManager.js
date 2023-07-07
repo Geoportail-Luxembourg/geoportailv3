@@ -571,11 +571,19 @@ exports.prototype.init = function(scope, map, selectedLayers) {
   this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-  listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
-    this.initBgLayers_().then(() =>{
-      this.initFlatCatalog_(selectedLayers);
-    })
-  });
+  // listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
+  //   this.initBgLayers_().then(() =>{
+  //     this.initFlatCatalog_(selectedLayers);
+  //   })
+  // });
+
+  // ------------------------------------------ //
+  // --------  UPDATE With new Lux lib -------- //
+  // ------------------------------------------ //
+  // - deactivate listeners on layers and bg layer in state (commented code above)
+  // - set initialized to true
+  // ------------------------------------------ //
+  this.initialized_ = true;
 };
 
 exports.prototype.initBgLayers_ = function() {
