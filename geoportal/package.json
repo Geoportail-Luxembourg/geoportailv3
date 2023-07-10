@@ -16,7 +16,7 @@
   "dependencies": {
     },
   "devDependencies": {
-    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#main"
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#demo-202307100941-prod"
   ,
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
