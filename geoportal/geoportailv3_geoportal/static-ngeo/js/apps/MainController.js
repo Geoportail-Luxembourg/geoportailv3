@@ -18,11 +18,11 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
-import { app, App, i18next as Luxi18next, createElementInstance, defineCustomElement, 
-  createPinia, VueDOMPurifyHTML, backend, I18NextVue, storeToRefs, watch,
-  DropdownList, LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
+import { app, i18next as Luxi18next, createElementInstance,
+  storeToRefs, watch,
+  LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
   useMap, useAppStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
-  themeSelectorService } 
+  themeSelectorService, SliderComparator } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 statePersistorLayersService.bootstrap()
@@ -46,8 +46,8 @@ customElements.define('layer-metadata', LayerMetadataElement)
 const RemoteLayersElement = createElementInstance(RemoteLayers, app)
 customElements.define('remote-layers', RemoteLayersElement)
 
-
-
+const SliderComparatorElement = createElementInstance(SliderComparator, app)
+customElements.define('slider-comparator', SliderComparatorElement)
 
 import i18next from 'i18next';
 
@@ -175,8 +175,6 @@ import '../../less/geoportailv3.less';
  import appShareShareController from '../share/ShareController.js';
  import appShareShorturlDirective from '../share/shorturlDirective.js';
  import appShareShorturlController from '../share/ShorturlController.js';
- import appSliderSliderDirective from '../slider/SliderDirective.js';
- import appSliderSliderController from '../slider/SliderController.js';
  import appStreetviewStreetviewDirective from '../streetview/streetviewDirective.js';
  import appStreetviewStreetviewController from '../streetview/StreetviewController.js';
  import appThemeswitcherThemeswitcherDirective from '../themeswitcher/themeswitcherDirective.js';
