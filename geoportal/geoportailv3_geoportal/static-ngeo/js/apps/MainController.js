@@ -1469,11 +1469,13 @@ MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
       notify: this.notify_,
       gettextCatalog: this.gettextCatalog_,
       scope: this.scope_,
-      window: this.window_
+      window: this.window_,
+      target: document.querySelector("map-container") // since lib lux integration, force target to Custom Element <map-container>
     }));
     this.map_.addControl(locationControl);
     if (isActive) {
-      this.map_.once('change:view', (e) => {
+      // this.map_.once('change:view', (e) => {
+      this.map_.once('postrender', (e) => { // since lib lux integration, force recenter on postrender
         locationControl.handleCenterToLocation();
       });
     }
