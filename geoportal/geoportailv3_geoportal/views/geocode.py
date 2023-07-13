@@ -7,7 +7,7 @@ from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
 from geoportailv3_geoportal.geocode import CountryLimAdm, Address, WKPOI, \
-    Neighbourhood, Parcel
+    Neighbourhood, Parcel, CommunesLimAdm
 from c2cgeoportal_commons.models import DBSessions
 from shapely.wkt import loads
 from shapely.wkb import loads as wkb_loads
@@ -126,12 +126,19 @@ class Geocode(object):
                     func.ST_AsGeoJSON((func.ST_Transform(Address.geom, 4326))).
                     label("geomlonlat"),
                     distcol.label("distance")).order_by(distcol).limit(1):
+                communes = self.db_ecadastre.query(CommunesLimAdm). \
+                        filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
+                            "x": easting,
+                            "y": northing
+                        }, srid=2169), CommunesLimAdm.geom)
+                    ).first()
                 results.append({"id_caclr_locality": feature.id_caclr_loca,
                                 "id_caclr_street": feature.id_caclr_rue,
                                 "id_caclr_bat": feature.id_caclr_bat,
                                 "street": feature.rue,
                                 "number": feature.numero,
                                 "locality": feature.localite,
+                                "commune": communes.commune,
                                 "postal_code": feature.code_postal,
                                 "country": "Luxembourg",
                                 "country_code": "lu",
