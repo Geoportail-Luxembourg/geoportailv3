@@ -9,7 +9,7 @@ from geoalchemy2.elements import WKTElement, WKBElement
 from geoportailv3_geoportal.geocode import CountryLimAdm, Address, WKPOI, \
     Neighbourhood, Parcel, CommunesLimAdm
 from c2cgeoportal_commons.models import DBSessions
-from shapely.wkt import loads as wkt_loads
+from shapely.wkt import loads
 from shapely.wkb import loads as wkb_loads
 from shapely.geometry import asShape
 from geojson import dumps as geojson_dumps
@@ -44,16 +44,16 @@ class Geocode(object):
         lon = self.request.params.get('lon', None)
 
         if lat is not None and lon is not None:
+            log.error(lon)
+            log.error(lat)
             pointgeom = self.transform_to_luref(lon, lat)
             if pointgeom is not None:
                 easting = str(pointgeom.centroid.x)
                 northing = str(pointgeom.centroid.y)
-
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
-           re.match("^[0-9]*[.]{0,1}[0-9]*$", northing) is None:
-
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
+           re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", northing) is None:
             return HTTPBadRequest("Missing or invalid coordinates")
 
         distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
@@ -98,6 +98,7 @@ class Geocode(object):
                             "street": address['road'] if 'road' in address else "",
                             "number": address['house_number'] if 'house_number' in address else "",
                             "locality": locality,
+                            "municipality": address['municipality'] if 'municipality' in address else "",
                             "postal_code": address['postcode'] if 'postcode' in address else "",
                             "country": address['country'] if 'country' in address else "",
                             "country_code": address['country_code'] if 'country_code' in address else "",
@@ -524,6 +525,7 @@ class Geocode(object):
                 geom = loads(geom)
             return geom
         except Exception as e:
+            log.error(e)
             self.db_ecadastre.rollback()
         return None
 
