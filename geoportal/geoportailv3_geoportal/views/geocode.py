@@ -90,6 +90,7 @@ class Geocode(object):
                 locality = address['municipality'] if 'municipality' in address else ""
             if  len(locality) == 0:
                 locality = address['village'] if 'village' in address else ""
+
             results.append({"id_caclr_locality": None,
                             "id_caclr_street": None,
                             "id_caclr_bat": None,
