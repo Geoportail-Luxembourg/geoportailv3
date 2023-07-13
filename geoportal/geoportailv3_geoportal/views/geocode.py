@@ -44,8 +44,6 @@ class Geocode(object):
         lon = self.request.params.get('lon', None)
 
         if lat is not None and lon is not None:
-            log.error(lon)
-            log.error(lat)
             pointgeom = self.transform_to_luref(lon, lat)
             if pointgeom is not None:
                 easting = str(pointgeom.centroid.x)
