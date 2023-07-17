@@ -104,7 +104,6 @@
     "ls": "0.2.1",
     "mapbox-gl": "1.7.0",
     "moment": "2.22.1",
-    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/b178a9e7451a4b660c728fedcf015e9f9854cd50",
     "ol": "6.5.0",
     "phantomjs-polyfill-string-includes": "1.0.0",
     "phantomjs-prebuilt": "2.1.16",

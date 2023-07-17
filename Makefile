@@ -38,13 +38,17 @@ help:
 build: docker-build-ldap
 	./build
 
-.PHONY: docker-build-geoportal
-docker-build-geoportal:
-	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) geoportal
+.PHONY: build-geoportal
+build-geoportal:
+	./build --geoportal
 
-.PHONY: docker-build-config
-docker-build-config:
-	cd config && docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
+.PHONY: build-config
+build-config:
+	./build --config
+
+.PHONY: build-dev
+build-dev:
+	./build --dev
 
 .PHONY: docker-build-print
 docker-build-print:
@@ -139,7 +143,7 @@ run: build
 	docker-compose down; docker-compose up
 
 .PHONY: dev
-dev: build
+dev: build-config build-dev
 	echo "Once the composition is up open the following URL:"
 	echo "browse http://localhost:8080/dev/main.html"
 	docker-compose down; docker-compose up
