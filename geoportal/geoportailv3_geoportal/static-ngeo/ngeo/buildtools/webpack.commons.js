@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginCleanCSS = require('less-plugin-clean-css');
 const LessPluginAutoprefix = require('less-plugin-autoprefix');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production'
 
@@ -280,8 +279,7 @@ const config = function(hardSourceConfig) {
       // /^\.\/luxembourg-geoportail$/, 
       // /node_modules\/luxembourg-geoportail$/, 
       // /luxembourg-geoportail$/
-      ),
-      new HardSourceWebpackPlugin(hardSourceConfig || {})
+      )
     ],
     // externals: {
     //   'luxembourg-geoportail': 'luxembourg-geoportail',
