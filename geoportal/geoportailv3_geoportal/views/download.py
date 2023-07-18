@@ -286,3 +286,27 @@ class Download(object):
 
         DBSession.add(mesurage_download)
         transaction.commit()
+
+    @view_config(route_name='rapport_forage_virtuel')
+    def rapport_forage_virtuel(self):
+        x = self.request.params.get('x', None)
+        y = self.request.params.get('y', None)
+
+        if x is None or x is None:
+            return HTTPBadRequest()
+
+        buffer_distance = 200;
+        xmin = str(round(int(x) - buffer_distance, 0))
+        ymin = str(round(int(y) - buffer_distance, 0))
+        xmax = str(round(int(x) + buffer_distance, 0))
+        ymax = str(round(int(y) + buffer_distance, 0))
+        url_with_token = os.environ["URL_FME_FORAGE_VIRTUEL"] 
+        url = f"{url_with_token}&coord_X={x}&coord_Y={y}&xmin={xmin}&ymin={ymin}&xmax={xmax}&ymax={ymax}"
+        try:
+            response = urllib.request.urlopen(url, None, 360)
+            if response is not None:
+                return Response(response.read(), headers=response.headers)
+        except Exception as e:
+            log.exception(e)
+            log.error(url)
+        return HTTPBadRequest()
