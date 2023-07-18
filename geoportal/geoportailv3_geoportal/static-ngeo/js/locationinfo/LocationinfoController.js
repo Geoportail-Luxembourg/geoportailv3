@@ -23,6 +23,7 @@ import {intersects} from 'ol/extent.js';
  * @constructor
  * @param {angular.Scope} $scope The scope.
  * @param {angular.$timeout} $timeout The timeout service.
+ * @param {angular.$http} $http The Angular $http service.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.GetElevation} appGetElevation The elevation service.
  * @param {app.CoordinateString} appCoordinateString The coordinate to string
@@ -45,13 +46,12 @@ import {intersects} from 'ol/extent.js';
  * @ngInject
  */
 const exports = function(
-        $scope, $timeout,
+        $scope, $timeout, $http,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
-        appRouting, $sce, appActivetool,
-        appUserManager) {
+        appRouting, $sce, appActivetool, appUserManager) {
 
   this.scope_ = $scope;
   this.bboxLidar_ = bboxLidar;
@@ -62,6 +62,7 @@ const exports = function(
 
   this.timeout_ = $timeout;
 
+  this.http_ = $http;
   /**
    * @type {app.UserManager}
    * @private
@@ -307,6 +308,12 @@ const exports = function(
    */
   this.clickCoordinate = null;
 
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.downloadingRepport = false;
+  
   $scope.$watch(function() {
     return this.clickCoordinate;
   }.bind(this), function(newVal, oldVal) {
@@ -469,6 +476,59 @@ exports.prototype.updateLocation_ = function(coordinate) {
   }
 };
 
+/**
+ * @return {string} The url.
+ * @export
+ */
+exports.prototype.getRapportForageVirtuelUrl = function() {
+  var coordX = Math.round(this.clickCoordinateLuref_[0], 1);
+  var coordY = Math.round(this.clickCoordinateLuref_[1], 1);
+  return "/getRapportForageVirtuel?x="+coordX+"&y="+coordY;
+}
+
+/**
+ * @return {boolean} True if we want to show cyclomedia button.
+ * @export
+ */
+exports.prototype.isRapportForageVirtuelAvailable = function() {
+  if (this.appUserManager_.getRole() == 'ACT') {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * @return {string} The url.
+ * @export
+ */
+exports.prototype.downloadRapportForageVirtuel = function() {
+  this.map_.getViewport().style.cursor = 'wait';
+  document.body.style.cursor = 'wait';
+  this.downloadingRepport = true;
+  var url = this.getRapportForageVirtuelUrl();
+  this.http_.get(url, { responseType: 'blob' })
+    .then(function(response) {
+      var blob = new Blob([response.data], { type: response.headers('Content-Type') });
+      var downloadUrl = URL.createObjectURL(blob);
+      var anchor = angular.element('<a></a>');
+      anchor.attr({
+        href: downloadUrl,
+        download: ''
+      });
+      anchor[0].click();
+      URL.revokeObjectURL(downloadUrl);
+      this.map_.getTargetElement().style.cursor = '';
+      document.body.style.cursor = '';
+      this.downloadingRepport = false;
+    }.bind(this))
+    .catch(function(error) {
+      // La requête a échoué
+      console.log(error);
+      this.map_.getTargetElement().style.cursor = '';
+      document.body.style.cursor = '';
+      this.downloadingRepport = false;
+    }.bind(this));;
+}
 
 /**
  * @export
