@@ -1412,13 +1412,12 @@ const MainController = function(
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
 
-  // TODO: init sentry at a later stage of the integration. requests currently bother dev
-  // Sentry.init({
-  //   dsn: 'https://afe219319897490e9ba927b06afdf934@sentry.geoportail.lu/3',
-  //   integrations: [
-  //     new Integrations.Angular(),
-  //   ],
-  // });
+  Sentry.init({
+    dsn: 'https://afe219319897490e9ba927b06afdf934@sentry.geoportail.lu/3',
+    integrations: [
+      new Integrations.Angular(),
+    ],
+  });
 
   $('#editor-simple').on('show.bs.collapse', function(){
     this.trackOpenVTEditor('openVTSimpleEditor');
