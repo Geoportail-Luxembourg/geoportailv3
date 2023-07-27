@@ -13,11 +13,8 @@
   "bugs": {
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
-  "dependencies": {
-    },
   "devDependencies": {
-    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#demo-202307100941-prod"
-  ,
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail.git#e0d5b174dc448fa9bb42391b4d8978f1be2c25c6",
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
     "@babel/plugin-proposal-decorators": "7.16.0",
