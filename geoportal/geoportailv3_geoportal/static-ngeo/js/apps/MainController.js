@@ -1171,17 +1171,31 @@ const MainController = function(
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
+        // close style editor when switching tools and sidebar stays open
+        useAppStore().closeStyleEditorPanel()
       } else {
         this['lidarOpen'] = false;
       }
     });
     // listen to layersOpen changes in store (clicking close button on custom element)
-    const { layersOpen } = storeToRefs(useAppStore())
+    const { layersOpen, styleEditorOpen } = storeToRefs(useAppStore())
     watch(
       layersOpen,
       layersOpen => {
         if(layersOpen === false) {
           this.closeSidebar()
+          $scope.$apply()
+        }
+      },
+      { immediate: true }
+    )
+    // listen to styleEditorOpen to open legacy vectorEditor
+    watch(
+      styleEditorOpen,
+      styleEditorOpen => {
+        if(styleEditorOpen === true) {
+          this.vectorEditorOpen = true;
+          this.trackOpenVTEditor('openVTEditor');
           $scope.$apply()
         }
       },
@@ -1733,6 +1747,8 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
+  // close style editor when closing sidebar
+  useAppStore().closeStyleEditorPanel()
 };
 
 
