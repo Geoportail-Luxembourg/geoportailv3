@@ -1764,10 +1764,11 @@ class Map extends OpenLayersMap {
    * @param {Element|string} target Dom element or id of the element to render search widget in.
    * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
    * @param {function(Event, String, Element)=} onSelect Optional function called when result is selected.
+   * @param {boolean=} selectFirst Optional True select the first result element on enter.
    * @export
    * @api
    */
-  addSearch(target, dataSets, onSelect) {
+  addSearch(target, dataSets, onSelect, selectFirst) {
     var layers = [];
     var searchCoordinates = false;
     if (dataSets !== undefined && dataSets.length > 0) {
@@ -1847,7 +1848,10 @@ class Map extends OpenLayersMap {
     this.searchLayer_.setMap(this);
 
     var format = new GeoJSON();
-
+    if (selectFirst == undefined) {
+      selectFirst = false;
+    }
+    var first = selectFirst;
     /* eslint-disable no-undef */
     new autoComplete({
       'selector': input,
@@ -1855,6 +1859,7 @@ class Map extends OpenLayersMap {
       'cache': 0,
       'menuClass': 'lux-search-suggestions',
       'source': function (term, suggest) {
+        first = selectFirst;
         var coordResults = [];
         if (searchCoordinates) {
           coordResults = this.matchCoordinate_(term);
@@ -1876,7 +1881,12 @@ class Map extends OpenLayersMap {
         var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
         var geom = /** @type {Point} */ (format.readGeometry(item.geometry));
         var bbox = (!item['bbox'] || !item['bbox']['join']) ? geom.getExtent() : item['bbox'];
-        return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
+        var suggestionClass = 'autocomplete-suggestion';
+        if (first) {
+          suggestionClass = 'autocomplete-suggestion selected';
+        }
+        first = false;
+        return '<div class="'+ suggestionClass +'" data-val="' + label + '"' +
           ' data-coord="' + geom.getCoordinates().join(',') + '"' +
           ' data-layer="' + layerName + '"' +
           ' data-extent="' + bbox.join(',') + '">' +
