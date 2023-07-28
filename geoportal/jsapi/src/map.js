@@ -173,6 +173,7 @@ export function getElevation(coordinate) {
  * @property {Element|string} target The container for the map, either the element itself or the `id` of the element.
  * @property {string} [dataSets] A dataSets Array of layer used as search sources. Default is Adresse. Possible values are 'Adresse' and 'Coordinates'.
  * @property {function(Event, string, Element)} [onSelect]
+ * @property {boolean=} selectFirst Optional True select the first result element when pressing enter key.
  */
 
 /**
@@ -447,8 +448,12 @@ class Map extends OpenLayersMap {
         var searchTarget = options.search.target;
         var searchDataSets = options.search.dataSets;
         var onSelect = options.search.onSelect;
+        var selectFirst = options.search.selectFirst;
+        if (selectFirst == undefined) {
+          selectFirst = false;
+        }
         delete options.search;
-        this.addSearch(searchTarget, searchDataSets, onSelect);
+        this.addSearch(searchTarget, searchDataSets, onSelect, selectFirst);
       }
     }.bind(this));
 
