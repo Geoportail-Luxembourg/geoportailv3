@@ -2710,28 +2710,30 @@ class Map extends OpenLayersMap {
             curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
           }
         }
-        if (curHtml !== undefined) {
+        if (curHtml !== undefined && curHtml !== null && curHtml.length > 0) {
           htmls.push(curHtml);
         }
       }.bind(this));
       if (this.showLayerInfoPopup_) {
-        if (this.popupTarget_) {
-          this.popupTarget_.innerHTML = htmls.join('');
-        } else {
-          var element = lux.buildPopupLayout(htmls.join('<hr>'), function () {
-            this.removeOverlay(this.queryPopup_);
-          }.bind(this));
-          this.queryPopup_ = new Overlay({
-            element: element,
-            position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
-            positioning: 'bottom-center',
-            offset: [0, -20],
-            insertFirst: false,
-            autoPan: this.popupAutoPan_
-          });
-          this.addOverlay(this.queryPopup_);
-          this.renderSync();
-          this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+        if (htmls.length > 0) {
+          if (this.popupTarget_) {
+            this.popupTarget_.innerHTML = htmls.join('');
+          } else {
+            var element = lux.buildPopupLayout(htmls.join('<hr>'), function () {
+              this.removeOverlay(this.queryPopup_);
+            }.bind(this));
+            this.queryPopup_ = new Overlay({
+              element: element,
+              position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+              positioning: 'bottom-center',
+              offset: [0, -20],
+              insertFirst: false,
+              autoPan: this.popupAutoPan_
+            });
+            this.addOverlay(this.queryPopup_);
+            this.renderSync();
+            this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+          }
         }
       }
     }.bind(this));
