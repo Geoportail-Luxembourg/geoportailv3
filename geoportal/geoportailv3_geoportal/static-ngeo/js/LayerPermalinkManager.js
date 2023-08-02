@@ -622,12 +622,19 @@ exports.prototype.initBgLayers_ = function() {
       stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
     }
     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
-    if (mapId === undefined || hasBgLayerInUrl) {
-      var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-      if (layer !== undefined) {
-        this.backgroundLayerMgr_.set(this.map_, layer);
-      }
-    }
+
+    // ------------------------------------------ //
+    // --------  UPDATE With new Lux lib -------- //
+    // ------------------------------------------ //
+    // - deactivate setting bg here as this is now handled by Permalink v4
+    // ------------------------------------------ //
+
+    // if (mapId === undefined || hasBgLayerInUrl) {
+    //   var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
+    //   if (layer !== undefined) {
+    //     this.backgroundLayerMgr_.set(this.map_, layer);
+    //   }
+    // }
   });
 }
 

@@ -129,26 +129,26 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
     this.version_ = this.initialState_.hasOwnProperty('version') ?
         clamp(+this.initialState_['version'], 2, 3) : 2;
   }
-  var mapId = this.ngeoLocation_.getParam('map_id');
-  if (mapId === undefined &&
-      !((this.initialState_.hasOwnProperty('bgLayer') &&
-      this.initialState_['bgLayer'].length > 0 &&
-      this.initialState_['bgLayer'] != 'blank') ||
-      (this.initialState_.hasOwnProperty('layers') &&
-      this.initialState_['layers'].length > 0) ||
-      (this.initialState_.hasOwnProperty('fid') &&
-      this.initialState_['fid'].length > 0))) {
-    this.initialState_['bgLayer'] = 'basemap_2015_global';
-    this.ngeoLocation_.updateParams({'bgLayer': 'basemap_2015_global'});
-    var msg = this.gettextCatalog_.getString(
-        'Aucune couche n\'étant définie pour cette carte,' +
-        ' une couche de fond a automatiquement été ajoutée.');
-    this.notify_(msg, appNotifyNotificationType.INFO);
-  }
+  // var mapId = this.ngeoLocation_.getParam('map_id');
+  // if (mapId === undefined &&
+  //     !((this.initialState_.hasOwnProperty('bgLayer') &&
+  //     this.initialState_['bgLayer'].length > 0 &&
+  //     this.initialState_['bgLayer'] != 'blank') ||
+  //     (this.initialState_.hasOwnProperty('layers') &&
+  //     this.initialState_['layers'].length > 0) ||
+  //     (this.initialState_.hasOwnProperty('fid') &&
+  //     this.initialState_['fid'].length > 0))) {
+  //   this.initialState_['bgLayer'] = 'basemap_2015_global';
+  //   this.ngeoLocation_.updateParams({'bgLayer': 'basemap_2015_global'});
+  //   var msg = this.gettextCatalog_.getString(
+  //       'Aucune couche n\'étant définie pour cette carte,' +
+  //       ' une couche de fond a automatiquement été ajoutée.');
+  //   this.notify_(msg, appNotifyNotificationType.INFO);
+  // }
 
   console.assert(this.version_ != -1);
 
-  this.ngeoLocation_.updateParams({'version': 3});
+  // this.ngeoLocation_.updateParams({'version': 3});
 };
 
 

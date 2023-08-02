@@ -48,8 +48,8 @@
   </head>
 
   <body ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
-    
-    
+    <alert-notifications></alert-notifications>
+
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
