@@ -1963,6 +1963,8 @@ MainController.prototype.showTab = function(selector) {
  * @export
  */
 MainController.prototype.toggleThemeSelector = function() {
+  const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(useAppStore())
+
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
   var themeTab = $('#catalog');
@@ -1980,6 +1982,19 @@ MainController.prototype.toggleThemeSelector = function() {
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+  }
+
+  if (!layersOpen.value) {
+    useAppStore().setLayersOpen(true)
+    myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
+    useAppStore().setThemeGridOpen(true)
+  } else if (layersOpen.value) {
+    if (themeGridOpen.value) {
+      useAppStore().setLayersOpen(false)
+    } else {
+      myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
+      useAppStore().setThemeGridOpen(true)
+    }
   }
 };
 
