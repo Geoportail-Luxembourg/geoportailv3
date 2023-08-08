@@ -1169,10 +1169,12 @@ const MainController = function(
       return this['layersOpen'];
     }, newVal => {
       if (newVal === false) {
-        $('app-catalog .themes-switcher').collapse('show');
-        $('app-themeswitcher #themes-content').collapse('hide');
+        // $('app-catalog .themes-switcher').collapse('show');
+        // $('app-themeswitcher #themes-content').collapse('hide');
+
         // close style editor when switching tools and sidebar stays open
         useAppStore().closeStyleEditorPanel()
+        useAppStore().setThemeGridOpen(false)
       } else {
         this['lidarOpen'] = false;
       }
@@ -1760,6 +1762,8 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
   // close style editor when closing sidebar
   useAppStore().closeStyleEditorPanel()
+  useAppStore().setLayersOpen(false) // For info, this also closes the themeGrid
+  useAppStore().setMyLayersTabOpen(false)
 };
 
 
