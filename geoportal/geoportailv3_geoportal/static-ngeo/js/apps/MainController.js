@@ -21,7 +21,7 @@ import 'angular-dynamic-locale';
 import { app, i18next as Luxi18next, createElementInstance,
   storeToRefs, watch,
   LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useAppStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
+  useMap, useAppStore, useMapStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
   themeSelectorService, SliderComparator } 
   from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
@@ -1217,6 +1217,18 @@ const MainController = function(
         }
       },
       { immediate: true }
+    )
+    // listen to changes of bgLayer to send piwik request formerly sent from BackgroundselectorController
+    const { bgLayer } = storeToRefs(useMapStore())
+    watch(
+      bgLayer,
+      bgLayer => {
+        const piwik = /** @type {Piwik} */ (this.window_['_paq']);
+        if (piwik && bgLayer) {
+          piwik.push(['setDocumentTitle', 'BackgroundAdded/' + bgLayer.name]);
+          piwik.push(['trackPageView']);
+        }
+      }
     )
     $scope.$watch(() => {
       return this['mymapsOpen'] || this['infosOpen'] ||
