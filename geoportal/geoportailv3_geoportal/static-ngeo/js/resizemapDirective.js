@@ -14,11 +14,14 @@
 
 import appModule from './module.js';
 import olMap from 'ol/Map.js';
-
+import offlineUtils from 'ngeo/offline/utils.js';
 
 function resizeMap(map) {
   map.updateSize();
   map.renderSync();
+
+  // TODO: To be commented when PR no-ol in v4 is OK
+  // For newer version of Ol
   map.getAllLayers().forEach(layer => {
     if (layer.maplibreMap) {
       layer.maplibreMap.resize();
@@ -28,6 +31,18 @@ function resizeMap(map) {
       layer.getMapBoxMap().resize();
     }
   });
+
+  // TODO: To be uncommented when PR no-ol in v4 is OK
+  // Rollback traverse layers since we downgraded ol version in v4 (map.getAllLayers() not available)
+  // offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
+  //   if (layer.maplibreMap) {
+  //     layer.maplibreMap.resize();
+  //   }
+
+  //   if (layer.getMapBoxMap) {
+  //     layer.getMapBoxMap().resize();
+  //   }
+  // });
 }
 
 /**
