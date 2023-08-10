@@ -1169,10 +1169,12 @@ const MainController = function(
       return this['layersOpen'];
     }, newVal => {
       if (newVal === false) {
-        $('app-catalog .themes-switcher').collapse('show');
-        $('app-themeswitcher #themes-content').collapse('hide');
+        // $('app-catalog .themes-switcher').collapse('show');
+        // $('app-themeswitcher #themes-content').collapse('hide');
+
         // close style editor when switching tools and sidebar stays open
         useAppStore().closeStyleEditorPanel()
+        useAppStore().setThemeGridOpen(false)
       } else {
         this['lidarOpen'] = false;
       }
@@ -1760,6 +1762,8 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
   // close style editor when closing sidebar
   useAppStore().closeStyleEditorPanel()
+  useAppStore().setLayersOpen(false) // For info, this also closes the themeGrid
+  useAppStore().setMyLayersTabOpen(false)
 };
 
 
@@ -1963,6 +1967,8 @@ MainController.prototype.showTab = function(selector) {
  * @export
  */
 MainController.prototype.toggleThemeSelector = function() {
+  const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(useAppStore())
+
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
   var themeTab = $('#catalog');
@@ -1980,6 +1986,19 @@ MainController.prototype.toggleThemeSelector = function() {
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+  }
+
+  if (!layersOpen.value) {
+    useAppStore().setLayersOpen(true)
+    myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
+    useAppStore().setThemeGridOpen(true)
+  } else if (layersOpen.value) {
+    if (themeGridOpen.value) {
+      useAppStore().setLayersOpen(false)
+    } else {
+      myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
+      useAppStore().setThemeGridOpen(true)
+    }
   }
 };
 
