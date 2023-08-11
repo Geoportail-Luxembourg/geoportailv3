@@ -48,8 +48,8 @@
   </head>
 
   <body ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
-    
-    
+    <alert-notifications></alert-notifications>
+
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
@@ -109,10 +109,14 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}"
-      class="flex grow">
-      <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
+    <div id="main-container"
+      ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}"
+      >
+      <div id="sidebar"
+        style="z-index: 50;"
+        ng-class="{open: mainCtrl.sidebarOpen()}"
+        app-resizemap="mainCtrl.map"
+        app-resizemap-state="mainCtrl.sidebarOpen()">
         <!-- Layers -->
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <layer-panel></layer-panel>
@@ -336,9 +340,11 @@
           </div>
           </div>
         </div>
-      </div>
-    <div class="map-wrapper grow relative">
-      <map-container app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.open">
+    </div>
+    <div class="map-wrapper relative">
+      <map-container
+        style="position: relative; width:auto; overflow: hidden;"
+        >
         <app-toggle-offline></app-toggle-offline>
         <app-toggle-3d></app-toggle-3d>
         <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
@@ -373,9 +379,9 @@
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector> -->
-    </div>
-    <div class="absolute right-1" style="top: 1rem">
-      <background-selector></background-selector>
+      <div class="absolute right-1" style="top: 1rem">
+        <background-selector></background-selector>
+      </div>
     </div>
     <layer-metadata></layer-metadata>
     <remote-layers></remote-layers>
