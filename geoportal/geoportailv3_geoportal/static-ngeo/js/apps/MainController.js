@@ -18,15 +18,35 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
-import { app, i18next as Luxi18next, createElementInstance,
-  storeToRefs, watch,
-  LayerPanel, MapContainer, BackgroundSelector, LayerMetadata, RemoteLayers, HeaderBar, 
-  useMap, useAppStore, useMapStore, useThemeStore, statePersistorLayersService, statePersistorThemeService,
-  themeSelectorService, SliderComparator } 
-  from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { 
+  app,
+  i18next as Luxi18next,
+  createElementInstance,
+  storeToRefs,
+  watch,
+  AlertNotifications,
+  LayerPanel,
+  MapContainer,
+  BackgroundSelector,
+  LayerMetadata,
+  RemoteLayers,
+  HeaderBar, 
+  useMap,
+  useAppStore,
+  useMapStore,
+  useThemeStore,
+  statePersistorBgLayerService,
+  statePersistorLayersService,
+  statePersistorThemeService,
+  statePersistorMyMapService,
+  themeSelectorService, SliderComparator
+} from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
+// Important! keep order
+statePersistorMyMapService.bootstrap()
 statePersistorLayersService.bootstrap()
 statePersistorThemeService.bootstrap()
+statePersistorBgLayerService.bootstrap()
 
 // LayerPanel includes Catalog, ThemeSelector, LayerManager
 // Note: Themes are now handled by new theme-selector
@@ -48,6 +68,9 @@ customElements.define('remote-layers', RemoteLayersElement)
 
 const SliderComparatorElement = createElementInstance(SliderComparator, app)
 customElements.define('slider-comparator', SliderComparatorElement)
+
+const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
+customElements.define('alert-notifications', AlertNotificationsElement)
 
 import i18next from 'i18next';
 
