@@ -35,6 +35,7 @@ import {
   useOpenLayers,
   useAppStore,
   useMapStore,
+  useStyleStore,
   useThemeStore,
   statePersistorBgLayerService,
   statePersistorLayersService,
@@ -501,7 +502,7 @@ const MainController = function(
   }
 
   this.debouncedSaveStyle_ = ngeoDebounce(() => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const isPublished = false;
     const dataObject = {
       medium: this.mediumStylingData,
@@ -561,6 +562,11 @@ const MainController = function(
     // Then we select this item
     selectedItem['selected'] = true;
 
+    this.styleStore_.setSimpleStyle(selectedItem)
+    return
+
+    ////////////////////////////////////////////////////////////////////////
+
     const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
@@ -582,6 +588,11 @@ const MainController = function(
   };
 
   this.onMediumStylingChanged = item => {
+    this.styleStore_.setStyle(item)
+    return
+
+    ////////////////////////////////////////////////////////////////////////
+
     const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const mbMap =  bgLayer.getMapBoxMap();
     applyStyleFromItem(mbMap, item, bgLayer.get('label'));
@@ -719,6 +730,10 @@ const MainController = function(
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   this.mapStore_ = useMapStore()
+  this.styleStore_ = useStyleStore()
+  this.styleStore_.setRegisterUrl("get", 'https://map.geoportail.lu/getvtstyle')
+  this.styleStore_.setRegisterUrl("upload", 'https://map.geoportail.lu/uploadvtstyle')
+  this.styleStore_.setRegisterUrl("delete", 'https://map.geoportail.lu/deletevtstyle')
 
   /**
    * @type {app.draw.DrawnFeatures}
@@ -1018,7 +1033,7 @@ const MainController = function(
   this.map_.superHackIsItOKToSaveOffline = () => {
     const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
     if (isIOS) {
-      const layer = this.backgroundLayerMgr_.get(this.map);
+      const layer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
       return layer && !layer.getMapBoxMap;
     }
     return true;
@@ -1070,9 +1085,9 @@ const MainController = function(
     }
   }.bind(this));
 
-  listen(this.backgroundLayerMgr_, 'change', evt => {
-    const previous = evt.detail.previous;
-    const current = evt.detail.current;
+  this.updateStyleWidgetsForBgLayer = (newBgLayer, oldBgLayer) => {
+    const previous = useOpenLayers().getLayerFromCache(oldBgLayer);
+    const current = useOpenLayers().getLayerFromCache(newBgLayer) || this.blankLayer_.blankLayer_;
 
     // avoid if the layer is the same or first initialization
     if (current !== previous) {
@@ -1117,7 +1132,7 @@ const MainController = function(
         });
       }
     }
-  });
+  };
 
   this.appExport_.init(this.map_);
 
@@ -1249,12 +1264,13 @@ const MainController = function(
     const { bgLayer } = storeToRefs(useMapStore())
     watch(
       bgLayer,
-      bgLayer => {
+      (bgLayer, oldBgLayer) => {
         const piwik = /** @type {Piwik} */ (this.window_['_paq']);
         if (piwik && bgLayer) {
           piwik.push(['setDocumentTitle', 'BackgroundAdded/' + bgLayer.name]);
           piwik.push(['trackPageView']);
         }
+        this.updateStyleWidgetsForBgLayer(bgLayer, oldBgLayer);
       }
     )
     $scope.$watch(() => {
@@ -1386,7 +1402,7 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
       const isPublished = true;
 
@@ -1415,7 +1431,12 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.styleStore_.setStyle(null)
+    return
+
+    /////////////////////////////////////////////////////////////////////////
+
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
@@ -1437,7 +1458,7 @@ const MainController = function(
   };
 
   this.downloadCustomStyleFile = () => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());
     const fileName = 'styles.json';
     if (!content) {
@@ -1475,7 +1496,7 @@ const MainController = function(
  * @export
  */
 MainController.prototype.getUrlVtStyle = function() {
-  const bgLayer = this.backgroundLayerMgr_.get(this.map);
+  const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
   if (bgLayer !== null && bgLayer !== undefined) {
     return this.appMvtStylingService.getUrlVtStyle(bgLayer);
   }
@@ -1487,11 +1508,11 @@ MainController.prototype.getUrlVtStyle = function() {
  * @param {boolean} active 3d state
  */
 MainController.prototype.enable3dCallback_ = function(active) {
-  if (!active) {
-    this.appMvtStylingService.unpublishIfSerial(this.map_);
-    return;
-  }
-  this.appMvtStylingService.publishIfSerial(this.map_);
+  // if (!active) {
+  //   this.appMvtStylingService.unpublishIfSerial(this.map_);
+  //   return;
+  // }
+  // this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {
@@ -1947,7 +1968,7 @@ MainController.prototype.initCesium3D_ = function(cesiumURL, $rootScope, $scope)
 MainController.prototype.compareLayers_ = function() {
   if (this.appMymaps_.isEditable()) {
     this['layersChanged'] = false;
-    var backgroundLayer = this.backgroundLayerMgr_.get(this.map_);
+    var backgroundLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     if (backgroundLayer &&
         this.appMymaps_.mapBgLayer !== backgroundLayer.get('label')) {
       this['layersChanged'] = true;
