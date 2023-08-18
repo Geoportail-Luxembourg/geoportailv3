@@ -20,9 +20,15 @@ function resizeMap(map) {
   map.updateSize();
   map.renderSync();
 
-  // TODO: To be commented when PR no-ol in v4 is OK
-  // For newer version of Ol
-  map.getAllLayers().forEach(layer => {
+  // TODO: To be uncommented when PR no-ol in v4 is OK
+  // Rollback traverse layers since we downgraded ol version in v4 (map.getAllLayers() not available)
+
+  // TODO: offline tools recursive tree traversal remains active as long as OL is not updated.
+  // newer OL versions have the method getAllLayers
+  // map.getAllLayers().forEach(layer => {
+  // maplibre in V4 migth go along with OL update
+  offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
+
     if (layer.maplibreMap) {
       layer.maplibreMap.resize();
     }
@@ -30,19 +36,8 @@ function resizeMap(map) {
     if (layer.getMapBoxMap) {
       layer.getMapBoxMap().resize();
     }
+    return true;
   });
-
-  // TODO: To be uncommented when PR no-ol in v4 is OK
-  // Rollback traverse layers since we downgraded ol version in v4 (map.getAllLayers() not available)
-  // offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
-  //   if (layer.maplibreMap) {
-  //     layer.maplibreMap.resize();
-  //   }
-
-  //   if (layer.getMapBoxMap) {
-  //     layer.getMapBoxMap().resize();
-  //   }
-  // });
 }
 
 /**

@@ -32,6 +32,7 @@ import {
   RemoteLayers,
   HeaderBar, 
   useMap,
+  useOpenLayers,
   useAppStore,
   useMapStore,
   useThemeStore,
@@ -560,11 +561,11 @@ const MainController = function(
     // Then we select this item
     selectedItem['selected'] = true;
 
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
     const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
-    const mbMap =  bgLayer.getMapBoxMap();
+    const mbMap =  bgLayer.getMapLibreMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
       const item = mediumStyles[i];
       item.color = selectedItem['colors'][i];
@@ -581,7 +582,7 @@ const MainController = function(
   };
 
   this.onMediumStylingChanged = item => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const mbMap =  bgLayer.getMapBoxMap();
     applyStyleFromItem(mbMap, item, bgLayer.get('label'));
     this.debouncedSaveStyle_();
@@ -717,6 +718,7 @@ const MainController = function(
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+  this.mapStore_ = useMapStore()
 
   /**
    * @type {app.draw.DrawnFeatures}
@@ -1349,7 +1351,7 @@ const MainController = function(
    */
   $scope.$on('authenticated', () => {
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     if (bgLayer && bgLayer.getMapBoxMap) {
       this.appMvtStylingService.getBgStyle().then(configs => {
         const config = configs.find(config => config.label === bgLayer.get('label'));
