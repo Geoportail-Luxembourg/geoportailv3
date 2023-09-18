@@ -25,3 +25,4 @@ transifex-client
 pyyaml
 gdal==2.2
 arcgis2geojson==2.0.1
+geojson==3.0.1
