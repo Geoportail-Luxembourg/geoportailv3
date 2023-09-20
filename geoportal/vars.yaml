@@ -315,10 +315,10 @@ vars:
     - {name: start_y, type: float}
     - {name: start_zoom, type: float}
     - {name: time_config}
-    - {name: geocatalog_publish_open_data, type: boolean}
-    - {name: geocatalog_frequency, type: liste, regex: 'once|daily|weekly|monthly'}
-    - {name: geocatalog_last_update, type: datetime}
-    - {name: geocatalog_data-public-lu_dataset_id, type: string}
+    - {name: geocatalog_open_data_publish_flag, type: boolean}
+    - {name: geocatalog_open_data_update_frequency, type: liste, regex: 'once|daily|weekly|monthly'}
+    - {name: geocatalog_open_data_last_update_date, type: datetime}
+    - {name: geocatalog_open_data_uuid, type: string}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
