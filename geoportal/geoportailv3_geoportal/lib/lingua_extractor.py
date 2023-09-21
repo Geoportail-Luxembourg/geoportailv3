@@ -1263,10 +1263,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                     LuxLayerInternalWMS.id == result.layer).\
                     first()
-                if internal_wms is not None:
+                if internal_wms is not None  and internal_wms.url is not None:
                     url = internal_wms.url
                     ogc_layers = internal_wms.layers
-
                     first_row = self._ogc_getfeatureinfo(
                         DBSession,
                         url, x, y, width, height,
