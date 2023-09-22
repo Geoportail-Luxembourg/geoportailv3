@@ -9,6 +9,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
+import { useOpenLayers, useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 
 class Wrap3dLayer {
@@ -39,11 +40,9 @@ const exports = class extends ngeoOlcsManager {
    * @param {Array<string>} tiles3dLayers 3D tiles layers.
    * @param {string} tiles3dUrl 3D tiles server url.
    * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
-   * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
-   *     manager.
    */
   constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
-              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
+              tiles3dLayers, tiles3dUrl, appBlankLayer,
               appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {map});
     /**
@@ -52,11 +51,6 @@ const exports = class extends ngeoOlcsManager {
      */
     this.$rootScope_ = $rootScope;
 
-    /**
-     * @type {ngeo.map.BackgroundLayerMgr}
-     * @private
-     */
-    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
     /**
      * @type {app.backgroundlayer.BlankLayer}
      * @private
@@ -140,6 +134,8 @@ const exports = class extends ngeoOlcsManager {
      */
     this.mode_ = 'MESH';
     this.currentBgLayer;
+
+    this.mapStore_ = useMapStore();
 
   }
 
@@ -549,9 +545,9 @@ const exports = class extends ngeoOlcsManager {
     // prevent the mesh from being hidden by parts of the (blank/white) terrain
     this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = false;
     if (this.currentBgLayer === undefined) {
-      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+      this.currentBgLayer = this.mapStore_.bgLayer;
       this.disable_2D_layers();
-      this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+      this.mapStore_.bgLayer = null;
     }
   }
 
@@ -562,8 +558,8 @@ const exports = class extends ngeoOlcsManager {
   }
 
   restore_2D_layers_and_background() {
-    if (this.currentBgLayer !== undefined) {
-      this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+    if (this.currentBgLayer !== undefined && this.currentBgLayer !== null) {
+      this.mapStore_.bgLayer = this.currentBgLayer;
       this.currentBgLayer = undefined;
     }
     this.restore_2D_layers();
@@ -571,23 +567,12 @@ const exports = class extends ngeoOlcsManager {
 
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
-    this.map.getLayers().getArray().forEach(l => {
-      if (l !== this.backgroundLayerMgr_.get(this.map)) {
-        this.previous_2D_layers.push(l)
-      }
-    });
-    this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
+    this.previous_2D_layers = [...this.mapStore_.layers]
+    this.mapStore_.removeAllLayers()
   }
 
   restore_2D_layers() {
-    this.previous_2D_layers.forEach(l => {
-      if (l !== this.backgroundLayerMgr_.get(this.map)) {
-        //hack: opacity is reset during add map
-        let opacity = l.getOpacity();
-        this.map.addLayer(l)
-        l.setOpacity(opacity);
-      }
-    });
+    this.mapStore_.addLayers(...this.previous_2D_layers);
     this.previous_2D_layers = [];
   }
 
