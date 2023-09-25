@@ -9,7 +9,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
-import { useOpenLayers, useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useOpenLayers, useMapStore, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 
 class Wrap3dLayer {
@@ -136,6 +136,18 @@ const exports = class extends ngeoOlcsManager {
     this.currentBgLayer;
 
     this.mapStore_ = useMapStore();
+
+    const { layers_3d } = storeToRefs(this.mapStore_)
+    watch(
+      layers_3d,
+      (layers_3d, oldLayers_3d) => {
+        console.log(layers_3d, oldLayers_3d);
+        const addedLayers = layers_3d.filter((el) => !oldLayers_3d.includes(el))
+        const removedLayers = oldLayers_3d.filter((el) => !layers_3d.includes(el))
+        addedLayers.forEach((layer) => this.add3dTile(layer));
+        removedLayers.forEach((layer) => this.remove3dLayer(layer, true));
+      }
+    )
 
   }
 
