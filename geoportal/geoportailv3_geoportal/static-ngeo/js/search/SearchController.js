@@ -33,7 +33,7 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
-import { useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useLayers, useThemes, useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 
 /**
@@ -447,7 +447,7 @@ const exports = function($scope, $window, $compile,
             '<button ng-click="click($event)">i</button>' +
             '</p>';
         scope['switchTheme'] = function(themeId) {
-          this.appTheme_.setCurrentTheme(themeId);
+          useThemes().setTheme(themeId)
         }.bind(this);
         scope['click'] = function(event) {
           var node = this.layers_.find(function(element) {
@@ -835,6 +835,10 @@ exports.prototype.setBackgroundLayer_ = function(input) {
  * @param {string | undefined} key The key.
  * @private
  */
+exports.prototype.addLayerToStore_ = function(input) {
+  useLayers().toggleLayer(input, true, false)
+}
+
 exports.prototype.addLayerToMap_ = function(input, key) {
   var layer = undefined;
   if (typeof input === 'string' || typeof input === 'number') {
@@ -948,9 +952,12 @@ exports.selected_ =
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
       } else if (dataset === 'layers') { //Layer
         if (suggestion.layer_id !== undefined) {
-          this.addLayerToMap_(/** @type {number} */ (suggestion.layer_id), 'id');
+          this.addLayerToStore_(suggestion.layer_id)
         } else {
-          this.addLayerToMap_(/** @type {string} */ (suggestion.name), 'name');
+          const layerToAdd = useThemes().findByName(suggestion.name, this.themeStore_.theme)
+          if (layer) {
+            this.addLayerToStore_(layerToAdd.id)
+          }
         }
       } else if (dataset === 'backgroundLayers') { //BackgroundLayer
         this.setBackgroundLayer_(
