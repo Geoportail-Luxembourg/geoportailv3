@@ -558,7 +558,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   restore_2D_layers_and_background() {
-    if (this.currentBgLayer !== undefined && this.currentBgLayer !== null) {
+    if (this.currentBgLayer) {
       this.mapStore_.bgLayer = this.currentBgLayer;
       this.currentBgLayer = undefined;
     }
