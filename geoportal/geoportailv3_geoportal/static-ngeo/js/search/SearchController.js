@@ -33,6 +33,9 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
+import { useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+
+
 /**
  * @ngInject
  * @constructor
@@ -236,6 +239,8 @@ const exports = function($scope, $window, $compile,
    */
   this.appThemes_ = appThemes;
 
+  this.themeStore_ = useThemeStore()
+
   /**
    * @type {Array}
    * @private
@@ -350,13 +355,13 @@ const exports = function($scope, $window, $compile,
     display: function(feature) {
       if (feature) {
         feature['dataset'] = 'backgroundLayers'
-        return this.gettextCatalog.getString(feature.get('label'))
+        return this.gettextCatalog.getString(feature.name)
       }
     }.bind(this),
     templates: /** @type {TypeaheadTemplates} */({
       header: () => `<div class="header">${bgLabel}</div>`,
       suggestion: s => s
-        ? `<p>${this.gettextCatalog.getString(s.get('label'))}
+        ? `<p>${this.gettextCatalog.getString(s.name)}
           (${this.gettextCatalog.getString('Background')})
           </p>`
         : undefined
@@ -783,26 +788,22 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
  * @private
  */
 exports.prototype.createLocalBackgroundLayerData_ =
-    function(appThemes, fuse, gettextCatalog) {
-      appThemes.getBgLayers(this.map).then(
-      function(bgLayers) {
-        var suggestions = bgLayers.map(
-            /**
-             * @param {ol.layer.Layer} bgLayer The current bg layer.
-             * @return {app.search.BackgroundLayerSuggestion} The suggestion.
-             */
-            (function(bgLayer) {
-              return /** @type {app.search.BackgroundLayerSuggestion} */({
-                'bgLayer': bgLayer,
-                'translatedName': gettextCatalog.getString(
-                    /** @type {string} */ (bgLayer.get('label')))
-              });
-            })
-            );
-        fuse.set(suggestions);
-      }.bind(this)
-  );
-    };
+  function(appThemes, fuse, gettextCatalog) {
+    const { bgLayers } = storeToRefs(this.themeStore_)
+    watch (
+      bgLayers,
+      (bgLayers) => {
+        var suggestions = bgLayers.map((bgLayer) => {
+          return {
+            'bgLayer': bgLayer,
+            'translatedName': gettextCatalog.getString(
+              /** @type {string} */ (bgLayer.name))
+          }
+        })
+        fuse.set(suggestions)
+      }
+    )
+  };
 
 
 /**
@@ -825,7 +826,7 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this.map_, input);
+  useBackgroundLayer().setBgLayer(input.id)
 };
 
 
