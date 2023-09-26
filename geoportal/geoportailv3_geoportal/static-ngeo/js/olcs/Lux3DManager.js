@@ -9,7 +9,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
-import { useOpenLayers, useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useOpenLayers, useMapStore, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 
 class Wrap3dLayer {
@@ -137,6 +137,17 @@ const exports = class extends ngeoOlcsManager {
 
     this.mapStore_ = useMapStore();
 
+    const { layers_3d } = storeToRefs(this.mapStore_)
+    watch(
+      layers_3d,
+      (layers_3d, oldLayers_3d) => {
+        const addedLayers = layers_3d.filter((el) => !oldLayers_3d.includes(el))
+        const removedLayers = oldLayers_3d.filter((el) => !layers_3d.includes(el))
+        addedLayers.forEach((layer) => this.add3dTile(layer));
+        removedLayers.forEach((layer) => this.remove3dLayer(layer, true));
+      }
+    )
+
   }
 
   /**
@@ -251,7 +262,9 @@ const exports = class extends ngeoOlcsManager {
     ).filter(l => this.isMeshLayer(l));
   }
   removeMeshLayers() {
-    this.getActiveMeshLayers().forEach(l => this.remove3dLayer(l.layer));
+    this.getActiveMeshLayers().forEach(l => {
+      this.remove3dLayer(l)
+    });
   }
 
   getActive3dLayers() {
@@ -296,6 +309,7 @@ const exports = class extends ngeoOlcsManager {
       return;
     }
     this.activeTiles3dLayers_.push(layerName);
+    this.mapStore_.add3dLayers(layer)
     this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
     let base_url = layer.url;
     // TODO set ipv6 url for IOS
@@ -382,8 +396,10 @@ const exports = class extends ngeoOlcsManager {
     this.dispatchEvent(event);
   }
 
-  remove3dLayer(layerName, checkNoMeshes = true) {
+  remove3dLayer(layer, checkNoMeshes = true) {
+    const layerName = layer.layer
     const idx = this.activeTiles3dLayers_.indexOf(layerName);
+    this.mapStore_.removeLayers(layer.id)
     if (idx >= 0) {
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
@@ -536,7 +552,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   remove3DLayers(checkNoMeshes = true) {
-    this.availableTiles3dLayers_.map(e => e.layer).forEach(function(layer) {
+    this.availableTiles3dLayers_.forEach(function(layer) {
       this.remove3dLayer(layer, checkNoMeshes);
     }.bind(this));
   }
@@ -578,7 +594,9 @@ const exports = class extends ngeoOlcsManager {
 
   onToggle(doInit) {
     if (this.is3dEnabled()) {
+      this.mapStore_.is_3d_active = true
       if (this.mode_ === 'MESH') {
+        this.mapStore_.is_3d_mesh = true
         this.disable_2D_layers_and_terrain();
         if (doInit) {
           this.remove3DLayers(false);
@@ -587,6 +605,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dMeshes();
         }
       } else {
+        this.mapStore_.is_3d_mesh = false
         this.restore_2D_layers_and_terrain();
         this.removeMeshLayers();
         const scene = this.ol3d.getCesiumScene();
@@ -598,6 +617,7 @@ const exports = class extends ngeoOlcsManager {
       }
       this.scheduleMinimumZoomDistanceUpdate()
     } else {
+      this.mapStore_.is_3d_active = false
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
       this.ngeoLocation_.deleteParam('3d_layers');
