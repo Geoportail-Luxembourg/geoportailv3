@@ -141,7 +141,6 @@ const exports = class extends ngeoOlcsManager {
     watch(
       layers_3d,
       (layers_3d, oldLayers_3d) => {
-        console.log(layers_3d, oldLayers_3d);
         const addedLayers = layers_3d.filter((el) => !oldLayers_3d.includes(el))
         const removedLayers = oldLayers_3d.filter((el) => !layers_3d.includes(el))
         addedLayers.forEach((layer) => this.add3dTile(layer));
