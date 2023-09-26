@@ -597,6 +597,7 @@ const exports = class extends ngeoOlcsManager {
     if (this.is3dEnabled()) {
       this.mapStore_.is_3d_active = true
       if (this.mode_ === 'MESH') {
+        this.mapStore_.is_3d_mesh = true
         this.disable_2D_layers_and_terrain();
         if (doInit) {
           this.remove3DLayers(false);
@@ -605,6 +606,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dMeshes();
         }
       } else {
+        this.mapStore_.is_3d_mesh = false
         this.restore_2D_layers_and_terrain();
         this.removeMeshLayers();
         const scene = this.ol3d.getCesiumScene();
