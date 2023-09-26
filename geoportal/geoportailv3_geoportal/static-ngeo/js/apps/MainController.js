@@ -32,6 +32,7 @@ import {
   RemoteLayers,
   HeaderBar, 
   useMap,
+  useMvtStyles,
   useOpenLayers,
   useAppStore,
   useMapStore,
@@ -464,6 +465,14 @@ const MainController = function(
   this.mediumStylingData = getDefaultMediumStyling();
 
   function applyStyleFromItem(mbMap, item, label) {
+    try {
+      doApplyStyleFromItem(mbMap, item, label);
+    } catch {
+      console.log(`style item ${item} not available in layer ${mbMap}`)
+    }
+  }
+
+  function doApplyStyleFromItem(mbMap, item, label) {
     appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleSetter(label, true);
     (item.fills || []).forEach(path => {
       if (item.color) {
@@ -588,6 +597,11 @@ const MainController = function(
   };
 
   this.onMediumStylingChanged = item => {
+    let appliedStyle = useMvtStyles().applyDefaultStyle(
+      this.mapStore_.bgLayer,
+      this.styleStore_.bgVectorBaseStyles,
+      this.styleStore_.bgStyle
+    )
     this.styleStore_.setStyle(item)
     return
 
@@ -1622,7 +1636,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitu
   console.assert(this.map_ !== null && this.map_ !== undefined);
   return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
-                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
+                                 this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
