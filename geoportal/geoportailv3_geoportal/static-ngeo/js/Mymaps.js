@@ -25,6 +25,8 @@ import olStyleStyle from 'ol/style/Style.js';
 import {get as getProj, transform} from 'ol/proj.js';
 import olcsCore from 'olcs/core.js';
 
+import { useMapStore, useThemeStore, useBackgroundLayer, useLayers, useThemes, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+
 /**
  * @constructor
  * @param {angular.$http} $http The angular http service.
@@ -332,6 +334,9 @@ const exports = function($http, $q, $rootScope, mymapsMapsUrl, mymapsUrl, appSta
    */
   this.mapLayers = [];
 
+  this.mapStore_ = useMapStore()
+  this.themeStore_ = useThemeStore()
+
   /**
    * The opacity of layers.
    * @type {Array<string>}
@@ -507,6 +512,8 @@ exports.prototype.setCurrentMapId = function(mapId, collection) {
     // Clear map to remove the alreay selected layers
     // Don't do it offline because other layer won't be loaded.
     this.map.getLayers().clear();
+    this.mapStore_.layers = [];
+    this.mapStore_.bgLayer = null;
   }
 
   return this.loadMapInformation().then(function(mapinformation) {
@@ -518,6 +525,11 @@ exports.prototype.setCurrentMapId = function(mapId, collection) {
     return null;
   }.bind(this));
 };
+
+
+exports.prototype.getLayersFromStore = function() {
+  return this.mapStore_.layers
+}
 
 
 /**
@@ -786,49 +798,64 @@ exports.prototype.loadFeatures_ = function() {
  */
 exports.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
-  this.appThemes_.getBgLayers(this.map).then(
-      /**
-       * @param {Array.<ol.layer.Base>} bgLayers The bg layer.
-       */
-      (function(bgLayers) {
-        var layer = /** @type {ol.layer.Base} */
-            (bgLayers.find(function(layer) {
-              return layer.get('label') === curBgLayer;
-            }));
-        if (layer) {
-          this.backgroundLayerMgr_.set(this.map, layer);
-        }
-      }).bind(this));
+  const { bgLayers } = storeToRefs(this.themeStore_)
+  const setBgLayer = (bgLayers, curBgLayer) => {
+    if (curBgLayer === 'blank') {
+      useBackgroundLayer().setBgLayer(null)
+      return
+    }
+    var layer = bgLayers.find(function(layer) {
+      return layer.name === curBgLayer;
+    })
+    if (layer) {
+      useBackgroundLayer().setBgLayer(layer.id)
+    }
+  }
+  // wait for themes to be loaded
+  if (bgLayers.value) {
+    setBgLayer(bgLayers.value, this.mapBgLayer)
+  } else {
+    const bgWatch = watch(
+      bgLayers,
+      (bgLayers) => {
+        setBgLayer(bgLayers.value, this.mapBgLayer)
+      }
+    )
+  }
 
   var curMapLayers = this.mapLayers;
   var curMapOpacities = this.mapLayersOpacities;
   var curMapVisibilities = this.mapLayersVisibilities;
   if (this.mapTheme) {
-    this.appTheme_.setCurrentTheme(this.mapTheme);
+    useThemes().setTheme(this.mapTheme)
   }
-  this.appThemes_.getFlatCatalog()
-  .then(function(flatCatalogue) {
-    curMapLayers.forEach(function(item, layerIndex) {
-      var node = flatCatalogue.find(
-              function(catalogueLayer) {
-                return catalogueLayer['name'] === item;
-              });
-      if (node) {
-        var layer = this.getLayerFunc_(node);
-        if (layer && this.map.getLayers().getArray().indexOf(layer) <= 0) {
-          this.map.addLayer(layer);
-        }
-        if (curMapOpacities) {
-          layer.setOpacity(parseFloat(curMapOpacities[layerIndex]));
-        }
-        if (curMapVisibilities) {
-          if (curMapVisibilities[layerIndex] === 'false') {
-            layer.setOpacity(0);
-          }
-        }
+  const setLayers = (curMapLayers, curMapOpacities, curMapVisibilities) => {
+    const myLayers = curMapLayers.map((l) => useThemes().findByName(l))
+    myLayers.forEach((l, i) => {
+      if (curMapVisibilities[i] === 'true') {
+        l.opacity = parseFloat(curMapOpacities[i])
+      } else if (curMapVisibilities[i] === 'false') {
+        l.opacity = 0
+        l.previousOpacity = parseFloat(curMapOpacities[i])
       }
-    }, this);
-  }.bind(this));
+    })
+    this.mapStore_.layers = myLayers
+  }
+
+  const myLayers = curMapLayers.map((l) => useThemes().findByName(l))
+  // check if layers are not undefined
+  if (myLayers.every((l) => l)) {
+      setLayers(curMapLayers, curMapOpacities, curMapVisibilities)
+  } else {
+    const { theme } = storeToRefs(this.themeStore_)
+    // wait for themes to be loaded
+    const layerWatch = watch(
+      theme,
+      (theme) => {
+        setLayers(curMapLayers, curMapOpacities, curMapVisibilities, theme)
+      }
+    )
+  }
 };
 
 
