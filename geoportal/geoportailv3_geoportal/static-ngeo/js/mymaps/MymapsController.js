@@ -456,7 +456,7 @@ exports.prototype.toggleClippingLineMode = function() {
  * @export
  */
 exports.prototype.resetLayers = function() {
-  this.selectedLayers_.length = 0;
+  this['layersChanged'] = false;
   this.appMymaps_.updateLayers();
 };
 
@@ -479,19 +479,20 @@ exports.prototype.trustAsHtml = function(content) {
  */
 exports.prototype.saveLayers = function() {
   var bgLayer = /** @type {string} */
-      (this.backgroundLayerMgr_.get(this.map_).get('label'));
+      (this.backgroundLayerMgr_.get(this.map_)?.get('label')) || 'blank';
   var bgOpacity = '1';
   var layersLabels = [];
   var layersOpacities = [];
   var layersVisibilities = [];
   var layersIndices = [];
-  this.selectedLayers_.forEach(function(item, index) {
-    layersLabels.push(item.get('label'));
-    layersOpacities.push('' + item.getOpacity());
-    if (item.getOpacity() === 0) {
+  this.appMymaps_.getLayersFromStore().reverse().forEach(function(item, index) {
+    layersLabels.push(item.name);
+    if (item.opacity === 0) {
       layersVisibilities.push('false');
+      layersOpacities.push('' + item.previousOpacity);
     } else {
       layersVisibilities.push('true');
+      layersOpacities.push('' + item.opacity);
     }
     layersIndices.push('' + index);
   });
