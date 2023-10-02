@@ -563,7 +563,7 @@ const exports = class extends ngeoOlcsManager {
     if (this.currentBgLayer === undefined) {
       this.currentBgLayer = this.mapStore_.bgLayer;
       this.disable_2D_layers();
-      this.mapStore_.bgLayer = null;
+      this.mapStore_.setBgLayer(null);
     }
   }
 
@@ -575,7 +575,7 @@ const exports = class extends ngeoOlcsManager {
 
   restore_2D_layers_and_background() {
     if (this.currentBgLayer) {
-      this.mapStore_.bgLayer = this.currentBgLayer;
+      this.mapStore_.setBgLayer(this.currentBgLayer);
       this.currentBgLayer = undefined;
     }
     this.restore_2D_layers();
@@ -594,9 +594,9 @@ const exports = class extends ngeoOlcsManager {
 
   onToggle(doInit) {
     if (this.is3dEnabled()) {
-      this.mapStore_.is_3d_active = true
+      this.mapStore_.setIs3dActive(true)
       if (this.mode_ === 'MESH') {
-        this.mapStore_.is_3d_mesh = true
+        this.mapStore_.setIs3dMesh(true)
         this.disable_2D_layers_and_terrain();
         if (doInit) {
           this.remove3DLayers(false);
@@ -605,7 +605,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dMeshes();
         }
       } else {
-        this.mapStore_.is_3d_mesh = false
+        this.mapStore_.setIs3dMesh(false)
         this.restore_2D_layers_and_terrain();
         this.removeMeshLayers();
         const scene = this.ol3d.getCesiumScene();
@@ -617,7 +617,7 @@ const exports = class extends ngeoOlcsManager {
       }
       this.scheduleMinimumZoomDistanceUpdate()
     } else {
-      this.mapStore_.is_3d_active = false
+      this.mapStore_.setIs3dActive(false)
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
       this.ngeoLocation_.deleteParam('3d_layers');

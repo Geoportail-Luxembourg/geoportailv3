@@ -570,7 +570,7 @@ exports.prototype.init = function(scope, map, selectedLayers) {
    */
   this.initialVersion_ = this.stateManager_.getVersion();
 
-  this.mapStore_.is_3d_active = this.stateManager_.getInitialValue('3d_enabled')
+  this.mapStore_.setIs3dActive(this.stateManager_.getInitialValue('3d_enabled'))
 
   /**
    * @type {boolean}
