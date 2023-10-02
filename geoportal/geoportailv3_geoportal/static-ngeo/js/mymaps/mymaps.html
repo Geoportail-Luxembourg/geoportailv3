@@ -316,7 +316,7 @@
 
 
 <!-- Modification Modal -->
-<ngeo-modal ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
+<ngeo-modal style="z-index:1050" ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title" ng-show="ctrl.modal === 'MODIFY'" translate>Modify title and description of the map</h4>
