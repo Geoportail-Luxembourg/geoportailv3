@@ -485,7 +485,6 @@ exports.prototype.saveLayers = function() {
   var layersOpacities = [];
   var layersVisibilities = [];
   var layersIndices = [];
-  // this.selectedLayers_.forEach(function(item, index) {
   this.appMymaps_.getLayersFromStore().reverse().forEach(function(item, index) {
     layersLabels.push(item.name);
     if (item.opacity === 0) {
