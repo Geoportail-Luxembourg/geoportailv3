@@ -143,7 +143,7 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
           map.removeLayer(layer2);
         } else {
           // 3D layer case
-          this.lux3dMgr_.remove3dLayer(layer2.layer_.layer);
+          this.lux3dMgr_.remove3dLayer(layer2.layer_);
         }
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_.getLayer());

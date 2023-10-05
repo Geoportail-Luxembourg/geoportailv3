@@ -9,6 +9,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
+import { useOpenLayers, useMapStore, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 
 class Wrap3dLayer {
@@ -39,11 +40,9 @@ const exports = class extends ngeoOlcsManager {
    * @param {Array<string>} tiles3dLayers 3D tiles layers.
    * @param {string} tiles3dUrl 3D tiles server url.
    * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
-   * @param {ngeo.map.BackgroundLayerMgr2} ngeoBackgroundLayerMgr Background layer
-   *     manager.
    */
   constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
-              tiles3dLayers, tiles3dUrl, appBlankLayer, ngeoBackgroundLayerMgr,
+              tiles3dLayers, tiles3dUrl, appBlankLayer,
               appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {map});
     /**
@@ -52,11 +51,6 @@ const exports = class extends ngeoOlcsManager {
      */
     this.$rootScope_ = $rootScope;
 
-    /**
-     * @type {ngeo.map.BackgroundLayerMgr}
-     * @private
-     */
-    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
     /**
      * @type {app.backgroundlayer.BlankLayer}
      * @private
@@ -141,6 +135,19 @@ const exports = class extends ngeoOlcsManager {
     this.mode_ = 'MESH';
     this.currentBgLayer;
 
+    this.mapStore_ = useMapStore();
+
+    const { layers3d } = storeToRefs(this.mapStore_)
+    watch(
+      layers3d,
+      (layers3d, oldlayers3d) => {
+        const addedLayers = layers3d.filter((el) => !oldlayers3d.includes(el))
+        const removedLayers = oldlayers3d.filter((el) => !layers3d.includes(el))
+        addedLayers.forEach((layer) => this.add3dTile(layer));
+        removedLayers.forEach((layer) => this.remove3dLayer(layer, true));
+      }
+    )
+
   }
 
   /**
@@ -223,12 +230,12 @@ const exports = class extends ngeoOlcsManager {
 
     this.setMode('3D');
 
-    const layers_3d = this.ngeoLocation_.getParam('3d_layers');
+    const layers3d = this.ngeoLocation_.getParam('3d_layers');
 
-    if (layers_3d) {
+    if (layers3d) {
       // the memorization of preload 3D layers is needed because tree/theme loading and 3D activation from
       // URL parameters are asynchronous and it is not deterministic which one is ready first
-      this.activeTiles3dLayersPreload_ = layers_3d.split(',');
+      this.activeTiles3dLayersPreload_ = layers3d.split(',');
       this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
     this.scheduleMinimumZoomDistanceUpdate()
@@ -255,7 +262,9 @@ const exports = class extends ngeoOlcsManager {
     ).filter(l => this.isMeshLayer(l));
   }
   removeMeshLayers() {
-    this.getActiveMeshLayers().forEach(l => this.remove3dLayer(l.layer));
+    this.getActiveMeshLayers().forEach(l => {
+      this.remove3dLayer(l)
+    });
   }
 
   getActive3dLayers() {
@@ -300,6 +309,7 @@ const exports = class extends ngeoOlcsManager {
       return;
     }
     this.activeTiles3dLayers_.push(layerName);
+    this.mapStore_.add3dLayers(layer)
     this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
     let base_url = layer.url;
     // TODO set ipv6 url for IOS
@@ -374,6 +384,7 @@ const exports = class extends ngeoOlcsManager {
 
     if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
       this.setMode("MESH");
+      this.mapStore_.setIs3dMesh(true);
       // prevent the mesh from being hidden by parts of the (blank/white) terrain
       scene.globe.depthTestAgainstTerrain = false;
       this.disable_2D_layers_and_terrain()
@@ -386,8 +397,10 @@ const exports = class extends ngeoOlcsManager {
     this.dispatchEvent(event);
   }
 
-  remove3dLayer(layerName, checkNoMeshes = true) {
+  remove3dLayer(layer, checkNoMeshes = true) {
+    const layerName = layer.layer
     const idx = this.activeTiles3dLayers_.indexOf(layerName);
+    this.mapStore_.removeLayers(layer.id)
     if (idx >= 0) {
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
@@ -540,7 +553,7 @@ const exports = class extends ngeoOlcsManager {
   }
 
   remove3DLayers(checkNoMeshes = true) {
-    this.availableTiles3dLayers_.map(e => e.layer).forEach(function(layer) {
+    this.availableTiles3dLayers_.forEach(function(layer) {
       this.remove3dLayer(layer, checkNoMeshes);
     }.bind(this));
   }
@@ -549,9 +562,9 @@ const exports = class extends ngeoOlcsManager {
     // prevent the mesh from being hidden by parts of the (blank/white) terrain
     this.ol3d.getCesiumScene().globe.depthTestAgainstTerrain = false;
     if (this.currentBgLayer === undefined) {
-      this.currentBgLayer = this.backgroundLayerMgr_.get(this.map);
+      this.currentBgLayer = this.mapStore_.bgLayer;
       this.disable_2D_layers();
-      this.backgroundLayerMgr_.set(this.map, this.blankLayer_.getLayer());
+      this.mapStore_.setBgLayer(null);
     }
   }
 
@@ -562,8 +575,8 @@ const exports = class extends ngeoOlcsManager {
   }
 
   restore_2D_layers_and_background() {
-    if (this.currentBgLayer !== undefined) {
-      this.backgroundLayerMgr_.set(this.map, this.currentBgLayer);
+    if (this.currentBgLayer) {
+      this.mapStore_.setBgLayer(this.currentBgLayer);
       this.currentBgLayer = undefined;
     }
     this.restore_2D_layers();
@@ -571,29 +584,20 @@ const exports = class extends ngeoOlcsManager {
 
   disable_2D_layers() {
     // push all active 2D layers into this.previous_2D_layers and deactivate them
-    this.map.getLayers().getArray().forEach(l => {
-      if (l !== this.backgroundLayerMgr_.get(this.map)) {
-        this.previous_2D_layers.push(l)
-      }
-    });
-    this.previous_2D_layers.forEach(l => this.map.removeLayer(l));
+    this.previous_2D_layers = [...this.mapStore_.layers]
+    this.mapStore_.removeAllLayers()
   }
 
   restore_2D_layers() {
-    this.previous_2D_layers.forEach(l => {
-      if (l !== this.backgroundLayerMgr_.get(this.map)) {
-        //hack: opacity is reset during add map
-        let opacity = l.getOpacity();
-        this.map.addLayer(l)
-        l.setOpacity(opacity);
-      }
-    });
+    this.mapStore_.addLayers(...this.previous_2D_layers);
     this.previous_2D_layers = [];
   }
 
   onToggle(doInit) {
     if (this.is3dEnabled()) {
+      this.mapStore_.setIs3dActive(true)
       if (this.mode_ === 'MESH') {
+        this.mapStore_.setIs3dMesh(true)
         this.disable_2D_layers_and_terrain();
         if (doInit) {
           this.remove3DLayers(false);
@@ -602,6 +606,7 @@ const exports = class extends ngeoOlcsManager {
           this.init3dMeshes();
         }
       } else {
+        this.mapStore_.setIs3dMesh(false)
         this.restore_2D_layers_and_terrain();
         this.removeMeshLayers();
         const scene = this.ol3d.getCesiumScene();
@@ -613,6 +618,8 @@ const exports = class extends ngeoOlcsManager {
       }
       this.scheduleMinimumZoomDistanceUpdate()
     } else {
+      this.mapStore_.setIs3dActive(false)
+      this.mapStore_.setIs3dMesh(false)
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
       this.ngeoLocation_.deleteParam('3d_layers');

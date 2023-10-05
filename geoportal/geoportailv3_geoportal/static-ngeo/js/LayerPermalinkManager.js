@@ -11,6 +11,8 @@ import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {listen, unlistenByKey} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
+import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+
 
 /**
  * @constructor
@@ -107,6 +109,8 @@ const exports = function(appStateManager,
    * @private
    */
   this.stateManager_ = appStateManager;
+
+  this.mapStore_ = useMapStore();
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -565,6 +569,8 @@ exports.prototype.init = function(scope, map, selectedLayers) {
    * @private
    */
   this.initialVersion_ = this.stateManager_.getVersion();
+
+  this.mapStore_.setIs3dActive(this.stateManager_.getInitialValue('3d_enabled'))
 
   /**
    * @type {boolean}
