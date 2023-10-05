@@ -137,12 +137,12 @@ const exports = class extends ngeoOlcsManager {
 
     this.mapStore_ = useMapStore();
 
-    const { layers_3d } = storeToRefs(this.mapStore_)
+    const { layers3d } = storeToRefs(this.mapStore_)
     watch(
-      layers_3d,
-      (layers_3d, oldLayers_3d) => {
-        const addedLayers = layers_3d.filter((el) => !oldLayers_3d.includes(el))
-        const removedLayers = oldLayers_3d.filter((el) => !layers_3d.includes(el))
+      layers3d,
+      (layers3d, oldlayers3d) => {
+        const addedLayers = layers3d.filter((el) => !oldlayers3d.includes(el))
+        const removedLayers = oldlayers3d.filter((el) => !layers3d.includes(el))
         addedLayers.forEach((layer) => this.add3dTile(layer));
         removedLayers.forEach((layer) => this.remove3dLayer(layer, true));
       }
@@ -230,12 +230,12 @@ const exports = class extends ngeoOlcsManager {
 
     this.setMode('3D');
 
-    const layers_3d = this.ngeoLocation_.getParam('3d_layers');
+    const layers3d = this.ngeoLocation_.getParam('3d_layers');
 
-    if (layers_3d) {
+    if (layers3d) {
       // the memorization of preload 3D layers is needed because tree/theme loading and 3D activation from
       // URL parameters are asynchronous and it is not deterministic which one is ready first
-      this.activeTiles3dLayersPreload_ = layers_3d.split(',');
+      this.activeTiles3dLayersPreload_ = layers3d.split(',');
       this.availableTiles3dLayers_.filter(l => this.activeTiles3dLayersPreload_.includes(l.layer)).forEach(l => this.add3dTile(l));
     }
     this.scheduleMinimumZoomDistanceUpdate()
