@@ -576,24 +576,24 @@ const MainController = function(
 
     ////////////////////////////////////////////////////////////////////////
 
-    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    const label = bgLayer.get('label');
-    this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
-    const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
-    const mbMap =  bgLayer.getMapLibreMap();
-    for (let i = 0; i < selectedItem['colors'].length; ++i) {
-      const item = mediumStyles[i];
-      item.color = selectedItem['colors'][i];
-      item.visible = true;
-      applyStyleFromItem(mbMap, item, label);
-    }
+    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    // const label = bgLayer.get('label');
+    // this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
+    // const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
+    // const mbMap =  bgLayer.getMapLibreMap();
+    // for (let i = 0; i < selectedItem['colors'].length; ++i) {
+    //   const item = mediumStyles[i];
+    //   item.color = selectedItem['colors'][i];
+    //   item.visible = true;
+    //   applyStyleFromItem(mbMap, item, label);
+    // }
 
-    const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
-    hillshadeItem.visible = false;
-    applyStyleFromItem(mbMap, hillshadeItem, label)
+    // const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
+    // hillshadeItem.visible = false;
+    // applyStyleFromItem(mbMap, hillshadeItem, label)
 
-    this.debouncedSaveStyle_();
-    this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
+    // this.debouncedSaveStyle_();
+    // this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
   this.onMediumStylingChanged = item => {
@@ -607,11 +607,11 @@ const MainController = function(
 
     ////////////////////////////////////////////////////////////////////////
 
-    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    const mbMap =  bgLayer.getMapBoxMap();
-    applyStyleFromItem(mbMap, item, bgLayer.get('label'));
-    this.debouncedSaveStyle_();
-    this.checkSelectedSimpleData();
+    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    // const mbMap =  bgLayer.getMapBoxMap();
+    // applyStyleFromItem(mbMap, item, bgLayer.get('label'));
+    // this.debouncedSaveStyle_();
+    // this.checkSelectedSimpleData();
   };
 
   if (navigator.serviceWorker) {
@@ -1450,15 +1450,15 @@ const MainController = function(
 
     /////////////////////////////////////////////////////////////////////////
 
-    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    this.appMvtStylingService.removeStyles(bgLayer);
-    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
-    this.resetLayerFor3d_();
-    this.resetSelectedSimpleData();
-    this.checkSelectedSimpleData();
-    this.ngeoLocation_.deleteParam('serial');
-    this.ngeoLocation_.deleteParam('serialLayer');
+    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    // this.appMvtStylingService.removeStyles(bgLayer);
+    // bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
+    // this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
+    // this.resetLayerFor3d_();
+    // this.resetSelectedSimpleData();
+    // this.checkSelectedSimpleData();
+    // this.ngeoLocation_.deleteParam('serial');
+    // this.ngeoLocation_.deleteParam('serialLayer');
   };
 
   /**
