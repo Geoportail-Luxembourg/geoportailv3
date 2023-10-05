@@ -384,6 +384,7 @@ const exports = class extends ngeoOlcsManager {
 
     if (this.isMeshLayer(layer) && (this.getMode() !== 'MESH')) {
       this.setMode("MESH");
+      this.mapStore_.setIs3dMesh(true);
       // prevent the mesh from being hidden by parts of the (blank/white) terrain
       scene.globe.depthTestAgainstTerrain = false;
       this.disable_2D_layers_and_terrain()
@@ -618,6 +619,7 @@ const exports = class extends ngeoOlcsManager {
       this.scheduleMinimumZoomDistanceUpdate()
     } else {
       this.mapStore_.setIs3dActive(false)
+      this.mapStore_.setIs3dMesh(false)
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
       this.ngeoLocation_.deleteParam('3d_layers');
