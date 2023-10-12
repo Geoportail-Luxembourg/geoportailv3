@@ -342,13 +342,12 @@
         </div>
     </div>
     <div class="map-wrapper relative">
+      <app-toggle-offline></app-toggle-offline>
+      <app-toggle-3d></app-toggle-3d>
+      <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
       <map-container
         style="position: relative; width:auto; overflow: hidden;"
-        >
-        <app-toggle-offline></app-toggle-offline>
-        <app-toggle-3d></app-toggle-3d>
-        <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
-      </map-container>
+        ></map-container>
       <slider-comparator></slider-comparator>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
