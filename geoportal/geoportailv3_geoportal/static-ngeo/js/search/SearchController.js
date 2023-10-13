@@ -831,60 +831,68 @@ exports.prototype.setBackgroundLayer_ = function(input) {
 
 
 /**
- * @param {(Object|string|number)} input The input.
- * @param {string | undefined} key The key.
+ * @param {string} layerId
  * @private
  */
-exports.prototype.addLayerToStore_ = function(input) {
-  useLayers().toggleLayer(input, true, false)
+exports.prototype.addLayerToStore_ = function(layerId) {
+  useLayers().toggleLayer(layerId, true, false)
 }
 
-exports.prototype.addLayerToMap_ = function(input, key) {
-  var layer = undefined;
-  if (typeof input === 'string' || typeof input === 'number') {
-    var node = this.layers_.find(function(element) {
-      if (key == undefined) {
-         for (var k in /** @type {Object} */ (element)) {
-          if (/** @type {Object} */ (element)[k] == input) {
-            return true;
-          }
-        }
-      } else if (key in /** @type {Object} */ (element)) {
-        if (/** @type {Object} */ (element)[key] == input) {
-          return true
-        }
-      }
-      return false;
-    });
-    if (node !== undefined) {
-      layer = this.getLayerFunc_(node);
-    }
-  } else if (typeof input === 'object') {
-    layer = this.getLayerFunc_(input);
-  }
-  var map = this.map_;
-  if (layer !== undefined) {
-    if (map.getLayers().getArray().indexOf(layer) <= 0) {
-      map.addLayer(layer);
-    }
-    var layerMetadata = layer.get('metadata');
-    if (layerMetadata.hasOwnProperty('linked_layers')) {
-      var layers = layerMetadata['linked_layers'];
-      layers.forEach(function(layerId) {
-        this.appThemes_.getFlatCatalog().then(
-          function(flatCatalog) {
-            var node2 = flatCatalog.find(function(catItem) {
-              return catItem.id === Number(layerId);
-            });
-            if (node2 !== undefined) {
-              var linked_layer = this.getLayerFunc_(node2);
-              map.addLayer(linked_layer);
-            }
-          }.bind(this));
-      }, this);
-    }
-  }
-};
+// -------------
+// v4 migration: this function is deprecated,
+// use addLayerToStore_(layerToAdd.id) instead
+// -------------
+// /**
+//  * @param {(Object|string|number)} input The input.
+//  * @param {string | undefined} key The key.
+//  * @private
+//  */
+// exports.prototype.addLayerToMap_ = function(input, key) {
+//   var layer = undefined;
+//   if (typeof input === 'string' || typeof input === 'number') {
+//     var node = this.layers_.find(function(element) {
+//       if (key == undefined) {
+//          for (var k in /** @type {Object} */ (element)) {
+//           if (/** @type {Object} */ (element)[k] == input) {
+//             return true;
+//           }
+//         }
+//       } else if (key in /** @type {Object} */ (element)) {
+//         if (/** @type {Object} */ (element)[key] == input) {
+//           return true
+//         }
+//       }
+//       return false;
+//     });
+//     if (node !== undefined) {
+//       layer = this.getLayerFunc_(node);
+//     }
+//   } else if (typeof input === 'object') {
+//     layer = this.getLayerFunc_(input);
+//   }
+//   var map = this.map_;
+//   if (layer !== undefined) {
+//     if (map.getLayers().getArray().indexOf(layer) <= 0) {
+//       map.addLayer(layer);
+//     }
+//     var layerMetadata = layer.get('metadata');
+//     if (layerMetadata.hasOwnProperty('linked_layers')) {
+//       var layers = layerMetadata['linked_layers'];
+//       layers.forEach(function(layerId) {
+//         this.appThemes_.getFlatCatalog().then(
+//           function(flatCatalog) {
+//             var node2 = flatCatalog.find(function(catItem) {
+//               return catItem.id === Number(layerId);
+//             });
+//             if (node2 !== undefined) {
+//               var linked_layer = this.getLayerFunc_(node2);
+//               map.addLayer(linked_layer);
+//             }
+//           }.bind(this));
+//       }, this);
+//     }
+//   }
+// };
 
 
 /**
@@ -935,7 +943,12 @@ exports.selected_ =
               var layers = /** @type {Array<string>} */
               (this.layerLookup_[suggestion.get('layer_name')] || []);
               layers.forEach(function(layer) {
-                this.addLayerToMap_(/** @type {string} */ (layer));
+                // this.addLayerToMap_(/** @type {string} */ (layer));
+                // ------------
+                // v4 migration, use addLayerToStore_ instead
+                // ------------
+                const layerToAdd = useThemes().findByName(layer, this.themeStore_.theme);
+                this.addLayerToStore_(layerToAdd.id);
               }.bind(this));
             } else {
               feature.setGeometry(
