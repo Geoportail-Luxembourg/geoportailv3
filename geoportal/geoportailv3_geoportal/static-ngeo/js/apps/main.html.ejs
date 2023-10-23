@@ -113,7 +113,6 @@
       ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}"
       >
       <div id="sidebar"
-        style="z-index: 50;"
         ng-class="{open: mainCtrl.sidebarOpen()}"
         app-resizemap="mainCtrl.map"
         app-resizemap-state="mainCtrl.sidebarOpen()">
@@ -341,12 +340,12 @@
           </div>
         </div>
     </div>
-    <div class="map-wrapper relative">
+    <div class="map-wrapper">
       <app-toggle-offline></app-toggle-offline>
       <app-toggle-3d></app-toggle-3d>
       <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
       <map-container
-        style="position: relative; width:auto; overflow: hidden;"
+        style="width:auto; overflow: hidden;"
         ></map-container>
       <slider-comparator></slider-comparator>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
