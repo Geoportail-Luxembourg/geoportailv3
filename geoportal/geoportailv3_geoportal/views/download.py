@@ -304,9 +304,7 @@ class Download(object):
         url_with_token = os.environ["URL_FME_FORAGE_VIRTUEL"] 
         url = f"{url_with_token}&coord_X={x}&coord_Y={y}&xmin={xmin}&ymin={ymin}&xmax={xmax}&ymax={ymax}&client_mail={email}&opt_servicemode=async"
         try:
-            log.error(url)
             response = urllib.request.urlopen(url, None, 360)
-            log.error(url)
             if response is not None:
                 return Response(response.read(), headers=response.headers)
         except Exception as e:
