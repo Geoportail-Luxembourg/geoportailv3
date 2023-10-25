@@ -293,8 +293,8 @@ class Download(object):
         y = self.request.params.get('y', None)
         email = self.request.params.get('email', None)
 
-        if x is None or x is None or email is None:
-            return HTTPBadRequest()
+        if x is None or y is None or email is None:
+            return HTTPBadRequest("a parameter is missing")
 
         buffer_distance = 200;
         xmin = str(round(float(x) - buffer_distance, 0))
