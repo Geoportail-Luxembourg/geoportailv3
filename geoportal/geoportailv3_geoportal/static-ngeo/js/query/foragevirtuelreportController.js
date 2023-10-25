@@ -10,12 +10,11 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {app.UserManager} appUserManager The usermanager service.
- * @param {string} casipoUrl Url to Casipo Report Controller.
  * @export
  * @ngInject
  */
 const exports = function($http, appNotify, gettextCatalog,
-    appUserManager, casipoUrl) {
+    appUserManager) {
   /**
    * @type {app.UserManager}
    * @private
@@ -47,13 +46,6 @@ const exports = function($http, appNotify, gettextCatalog,
   if (this.appUserManager_.isAuthenticated()) {
     this.mail_ = /** @type {string} */ (this.appUserManager_.getEmail());
   }
-
-  /**
-   * @type {string}
-   * @private
-   */
-  this.casipoUrl_ = casipoUrl;
-
 };
 
 
