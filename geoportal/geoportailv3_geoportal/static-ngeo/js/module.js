@@ -152,6 +152,7 @@ exports.constant('appMymapsTemplateUrl', 'templatecache/appMymapsTemplateUrl');
 exports.constant('appRoutingTemplateUrl', 'templatecache/appRoutingTemplateUrl');
 exports.constant('appPagreportTemplateUrl', 'templatecache/appPagreportTemplateUrl');
 exports.constant('appCasiporeportTemplateUrl', 'templatecache/appCasiporeportTemplateUrl');
+exports.constant('appForagevirtuelreportTemplateUrl', 'templatecache/appForagevirtuelreportTemplateUrl');
 exports.constant('appPdsreportTemplateUrl', 'templatecache/appPdsreportTemplateUrl');
 exports.constant('appExternalDataTemplateUrl', 'templatecache/appExternalDataTemplateUrl');
 exports.constant('appWmsTreeTemplateUrl', 'templatecache/appWmsTreeTemplateUrl');
@@ -200,7 +201,7 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appMymapsTemplateUrl', require('./mymaps/mymaps.html'));
   $templateCache.put('templatecache/appRoutingTemplateUrl', require('./routing/routing.html'));
   $templateCache.put('templatecache/appPagreportTemplateUrl', require('./query/pagreport.html'));
-  $templateCache.put('templatecache/appCasiporeportTemplateUrl', require('./query/casiporeport.html'));
+  $templateCache.put('templatecache/appForagevirtuelreportTemplateUrl', require('./query/foragevirtuelreport.html'));
   $templateCache.put('templatecache/appPdsreportTemplateUrl', require('./query/pdsreport.html'));
   $templateCache.put('templatecache/appExternalDataTemplateUrl', require('./externaldata/externaldata.html'));
   $templateCache.put('templatecache/appWmsTreeTemplateUrl', require('./externaldata/wmstree.html'));

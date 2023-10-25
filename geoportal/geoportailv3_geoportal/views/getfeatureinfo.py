@@ -724,7 +724,6 @@ class Getfeatureinfo(object):
 
         the_box = box(float(coords[0]), float(coords[1]),
                       float(coords[2]), float(coords[3]))
-
         for feature in features:
             s = asShape(feature['geometry'])
             try:
@@ -1341,6 +1340,19 @@ class Getfeatureinfo(object):
         if metadata is not None:
             url = metadata.value
 
+        # if no remote service to call then returns the clicked point
+        if url is None:
+            box2 = self.request.params.get('box2', None)
+            coords = box2.split(',')
+            the_box = box(float(coords[0]), float(coords[1]),
+                float(coords[2]), float(coords[3]))
+            geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
+            f = self.to_feature(layer_id, None,
+                                geometry,
+                                [],
+                                attributes_to_remove,
+                                columns_order)
+            return [f]
         separator = "?"
         if url.find(separator) > 0:
             separator = "&"
