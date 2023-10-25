@@ -127,6 +127,8 @@ import '../../less/geoportailv3.less';
  import appQueryPagreportController from '../query/PagreportController.js';
  import appQueryCasiporeportDirective from '../query/casiporeportDirective.js';
  import appQueryCasiporeportController from '../query/CasiporeportController.js';
+ import appQueryForagevirtuelreportDirective from '../query/foragevirtuelreportDirective.js';
+ import appQueryForagevirtuelreportController from '../query/foragevirtuelreportController.js';
  import appQueryPdsreportDirective from '../query/pdsreportDirective.js';
  import appQueryPdsreportController from '../query/PdsreportController.js';
  import appOfflineBar from '../offline/offlinebar.js'
