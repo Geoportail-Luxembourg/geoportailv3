@@ -291,17 +291,18 @@ class Download(object):
     def rapport_forage_virtuel(self):
         x = self.request.params.get('x', None)
         y = self.request.params.get('y', None)
+        email = self.request.params.get('email', None)
 
-        if x is None or x is None:
+        if x is None or x is None or email is None:
             return HTTPBadRequest()
 
         buffer_distance = 200;
-        xmin = str(round(int(x) - buffer_distance, 0))
-        ymin = str(round(int(y) - buffer_distance, 0))
-        xmax = str(round(int(x) + buffer_distance, 0))
-        ymax = str(round(int(y) + buffer_distance, 0))
+        xmin = str(round(float(x) - buffer_distance, 0))
+        ymin = str(round(float(y) - buffer_distance, 0))
+        xmax = str(round(float(x) + buffer_distance, 0))
+        ymax = str(round(float(y) + buffer_distance, 0))
         url_with_token = os.environ["URL_FME_FORAGE_VIRTUEL"] 
-        url = f"{url_with_token}&coord_X={x}&coord_Y={y}&xmin={xmin}&ymin={ymin}&xmax={xmax}&ymax={ymax}"
+        url = f"{url_with_token}&coord_X={x}&coord_Y={y}&xmin={xmin}&ymin={ymin}&xmax={xmax}&ymax={ymax}&client_mail={email}&opt_servicemode=async"
         try:
             response = urllib.request.urlopen(url, None, 360)
             if response is not None:

@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 goog.require('app.query.casiporeportDirective');
+goog.require('app.query.foragevirtuelreportDirective');
 goog.require('app.draw.FeatureHash');
 goog.require('app.layerinfo.layerinfoDirective');
 
