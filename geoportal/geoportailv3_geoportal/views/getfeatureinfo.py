@@ -724,7 +724,6 @@ class Getfeatureinfo(object):
 
         the_box = box(float(coords[0]), float(coords[1]),
                       float(coords[2]), float(coords[3]))
-        log.error("ICI")
         for feature in features:
             s = asShape(feature['geometry'])
             try:
@@ -743,7 +742,6 @@ class Getfeatureinfo(object):
                             features_to_keep.append(feature)
             except:
                 features_to_keep.append(feature)
-        log.error("la")
         return features_to_keep
 
     def to_feature(self, layer_id, fid, geometry, attributes,
