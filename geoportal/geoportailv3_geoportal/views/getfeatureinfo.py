@@ -342,6 +342,32 @@ class Getfeatureinfo(object):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
+            if (luxgetfeaturedefinition is not None):
+                metadata = DBSession.query(Metadata).filter(Metadata.item_id == luxgetfeaturedefinition.layer).\
+                    filter(Metadata.name == "return_clicked_point").first()
+                if metadata is not None and metadata.value.lower() == 'true':
+                    is_ordered = luxgetfeaturedefinition.columns_order is not None\
+                        and len(luxgetfeaturedefinition.columns_order) > 0
+                    box2 = self.request.params.get('box2', None)
+                    coords = box2.split(',')
+                    the_box = box(float(coords[0]), float(coords[1]),
+                        float(coords[2]), float(coords[3]))
+                    geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
+                    f = self.to_feature(luxgetfeaturedefinition.layer, None,
+                                        geometry,
+                                        [],
+                                        [],
+                                        None)
+                    results.append(
+                        self.to_featureinfo(
+                            [f],
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.template,
+                            is_ordered,
+                            luxgetfeaturedefinition.has_profile,
+                            luxgetfeaturedefinition.remote_template,
+                            1))
+                    continue
             if not self.is_zoom_ok(p_zoom, luxgetfeaturedefinition.zoom_level):
                 continue
             if (luxgetfeaturedefinition is not None and
@@ -1340,19 +1366,6 @@ class Getfeatureinfo(object):
         if metadata is not None:
             url = metadata.value
 
-        # if no remote service to call then returns the clicked point
-        if url is None:
-            box2 = self.request.params.get('box2', None)
-            coords = box2.split(',')
-            the_box = box(float(coords[0]), float(coords[1]),
-                float(coords[2]), float(coords[3]))
-            geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
-            f = self.to_feature(layer_id, None,
-                                geometry,
-                                [],
-                                attributes_to_remove,
-                                columns_order)
-            return [f]
         separator = "?"
         if url.find(separator) > 0:
             separator = "&"

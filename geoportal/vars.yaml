@@ -285,6 +285,7 @@ vars:
     - {name: is_queryable, type: boolean}
     - {name: is_expanded, type: boolean}
     - {name: legend_name}
+    - {name: return_clicked_point}
     - {name: link, type: url}
     - {name: link_title}
     - {name: linked_layers, type: list}
