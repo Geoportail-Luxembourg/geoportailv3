@@ -342,6 +342,8 @@ class Getfeatureinfo(object):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
+            if not self.is_zoom_ok(p_zoom, luxgetfeaturedefinition.zoom_level):
+                continue
             if (luxgetfeaturedefinition is not None):
                 metadata = DBSession.query(Metadata).filter(Metadata.item_id == luxgetfeaturedefinition.layer).\
                     filter(Metadata.name == "return_clicked_point").first()
@@ -368,8 +370,6 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinition.remote_template,
                             1))
                     continue
-            if not self.is_zoom_ok(p_zoom, luxgetfeaturedefinition.zoom_level):
-                continue
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.engine_gfi is not None and
                 luxgetfeaturedefinition.query is not None and
