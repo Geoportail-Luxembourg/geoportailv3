@@ -1226,12 +1226,16 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
         results = DBSession.query(LuxGetfeatureDefinition).\
                   filter(LuxGetfeatureDefinition.remote_template == False).\
+                  filter(LuxGetfeatureDefinition.layer == '540').\
                   filter(
                       LuxGetfeatureDefinition.template.in_
                       (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols', 'default_attachment_no_prefix.html']))  # noqa
 
         print("%d results" % results.count())
         for result in results:
+            rest_url = result.rest_url
+            if rest_url is not None and len(rest_url) > 0 and "f=geojson" in rest_url:
+                rest_url = rest_url.replace("f=geojson", "")
             has_prefix = True
             if result.template == 'default_attachment_no_prefix.html':
                 has_prefix = False
@@ -1247,12 +1251,12 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                     print(colorize('query FAILED : SELECT * FROM ' + result.query, RED))
                     if os.environ.get("IGNORE_I18N_ERRORS", "FALSE") != "TRUE":
                         raise
-            if result.rest_url is not None and len(result.rest_url) > 0:
+            if rest_url is not None and len(rest_url) > 0:
                 first_row = self._get_external_data(
-                    result.rest_url,
+                    rest_url,
                     '96958.90059551848,61965.61097091329,' +
                     '97454.77280739773,62463.21618929457', result.layer, result.use_auth)
-            if ((result.rest_url is None or len(result.rest_url) == 0) and
+            if ((rest_url is None or len(rest_url) == 0) and
                 (result.query is None or len(result.query) == 0)):
                 x = "831.1112060546875"
                 y = "253.3333396911621"
