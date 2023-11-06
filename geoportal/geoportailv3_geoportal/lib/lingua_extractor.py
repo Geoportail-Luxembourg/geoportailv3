@@ -1226,7 +1226,6 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
         results = DBSession.query(LuxGetfeatureDefinition).\
                   filter(LuxGetfeatureDefinition.remote_template == False).\
-                  filter(LuxGetfeatureDefinition.layer == '540').\
                   filter(
                       LuxGetfeatureDefinition.template.in_
                       (['default.html', 'default_table.html', 'feedbackanf.html', 'default_attachment.html', 'automatic_sols', 'default_attachment_no_prefix.html']))  # noqa
