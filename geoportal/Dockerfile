@@ -1,4 +1,4 @@
-FROM camptocamp/geomapfish-tools:2.5.0.139 as builder
+FROM camptocamp/geomapfish-tools:2.5.0.139 as base
 LABEL maintainer Camptocamp "info@camptocamp.com"
 
 
@@ -25,10 +25,32 @@ RUN mv /etc/apt/sources.list.d/nodesource.list.disabled /etc/apt/sources.list.d/
 RUN apt update && apt-get install libgnutls30
 RUN apt update && apt install git -y && apt-get dist-upgrade -y
 COPY package.json /app
+
 RUN npm set progress=false && \
     npm-packages --src=/app/package.json --dst=/tmp/npm-packages && \
-    npm install --no-optional --global --unsafe-perm --no-package-lock `cat /tmp/npm-packages` && \
-    npm cache clear --force
+    npm install --no-optional --global --unsafe-perm --no-package-lock `cat /tmp/npm-packages`
+
+from base as dev
+COPY webpack.*.js Makefile CONST_Makefile /app/
+COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
+RUN rm -rf /usr/lib/node_modules/ngeo
+RUN cp -r /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
+
+COPY . /app
+
+RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot?#iefix && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.svg#fontawesome && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot?#iefix && \
+    ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg#fontawesome
+
+RUN make build
+RUN mv webpack.apps.js webpack.apps.js.tmpl
+ENTRYPOINT [ "/usr/bin/eval-templates" ]
+CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
+
+
+from base as builder
+RUN npm cache clear --force
 
 COPY webpack.*.js Makefile CONST_Makefile /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo

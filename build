@@ -45,6 +45,7 @@ def main():
     parser.add_argument("--verbose", help="Display the docker build commands")
     parser.add_argument("--config", action="store_true", help="Build only the configuration image")
     parser.add_argument("--geoportal", action="store_true", help="Build only the geoportal image")
+    parser.add_argument("--dev", action="store_true", help="Build only the dev image")
     parser.add_argument("--upgrade", help="Start upgrading the project to version")
     parser.add_argument("env", nargs="*", help="The environment config")
     args = parser.parse_args()
@@ -102,7 +103,7 @@ def main():
     if "https_proxy" in env:
         https_proxy = env["https_proxy"]
 
-    default = not (args.config or args.geoportal)
+    default = not (args.config or args.geoportal or args.dev)
 
     if default or args.config:
         call(
@@ -132,12 +133,13 @@ def main():
                 "geoportal",
             ],
         )
+    if args.dev:
         call(
             args.verbose,
             [
                 "docker",
                 "build",
-                "--target=builder",
+                "--target=dev",
                 "--tag={}-geoportal-dev{}".format(base, tag),
                 "--build-arg=HTTP_PROXY_URL=" + http_proxy,
                 "--build-arg=HTTPS_PROXY_URL=" + https_proxy,
