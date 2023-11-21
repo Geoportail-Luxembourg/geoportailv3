@@ -1028,14 +1028,10 @@ class Getfeatureinfo(object):
                         feature['attributes'][key] =\
                             "<iframe width='260 px' src='%s'></iframe>"\
                             % (value)
-                    elif 'hyperlin' in key.lower():
+                    elif 'hyperlin' in key.lower() or 'Fiche station' in key:
+                        splitted_value = value.rsplit("/", 1)
                         feature['attributes'][key] =\
-                            "<a href='%s' target='_blank'>%s</a>"\
-                            % (value, value.rsplit("/", 1)[1])
-                    elif 'Fiche station' in key:
-                        feature['attributes'][key] =\
-                            "<a href='%s' target='_blank'>%s</a>"\
-                            % (value, value.rsplit("/", 1)[1])
+                            f"<a href='{value}' target='_blank'>{splitted_value[1] if len(splitted_value)>1 else splitted_value[0]}</a>"
                     elif 'Photo station' in key:
                         feature['attributes'][key] =\
                             "<img src='%s' width='300px'/>" % (value)
