@@ -18,6 +18,7 @@ RUN git clone --depth=1 --branch=backport/9911-to-2.5-lux https://github.com/cam
 
 WORKDIR /app
 RUN mv /etc/apt/sources.list.d/nodesource.list /etc/apt/sources.list.d/nodesource.list.disabled
+RUN sed -i 's/apt.postgresql.org/apt-archive.postgresql.org/g' /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get  install -y ca-certificates
