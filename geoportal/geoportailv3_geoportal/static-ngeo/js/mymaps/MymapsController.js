@@ -21,6 +21,7 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import * as olExtent from 'ol/extent.js';
+import JSZip from 'jszip';
 
 /**
  * @param {!angular.Scope} $scope Scope.
