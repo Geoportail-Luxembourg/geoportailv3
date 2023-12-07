@@ -320,6 +320,7 @@ vars:
     - {name: geocatalog_open_data_update_frequency, type: liste, regex: 'once|daily|weekly|monthly'}
     - {name: geocatalog_open_data_last_update_date, type: datetime}
     - {name: geocatalog_open_data_uuid, type: string}
+    - {name: geocatalog_open_data_only_add_gpkg, type: boolean}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
