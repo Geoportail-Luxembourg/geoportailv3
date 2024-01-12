@@ -43,7 +43,7 @@ class Legends(object):
             url = \
                   "https://wiki.geoportail.lu/doku.php?" \
                   "id=%s:legend:%s&do=export_html" % \
-                  (lang, name)
+                  (lang, urllib.parse.quote(name))
 
         legend_buffer = BytesIO()
         weasyprint.HTML(url, media_type="screen").write_png(
@@ -138,7 +138,7 @@ class Legends(object):
         url = \
             "https://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
-            (lang, name)
+            (lang, urllib.parse.quote(name))
 
         f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
         data = f.read()
