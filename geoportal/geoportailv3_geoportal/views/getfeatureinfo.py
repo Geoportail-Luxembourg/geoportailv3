@@ -152,12 +152,12 @@ class Getfeatureinfo(object):
                     url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
                 try:
-                    log.error(url2)
                     url_request = urllib.request.Request(url2)
                     result = read_request_with_token(url_request, self.request, log)
                     data = result.data
                 except Exception as e:
                     log.exception(e)
+                    log.error(url2)
                     return HTTPBadRequest()
 
                 headers = {"Content-Type": "application/pdf",
@@ -1543,12 +1543,12 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
-            log.error(query)
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
         except ESRITokenException as e:
             log.exception(e)
+            log.error(url)
             content = "{}"
         except Exception as e:
             log.exception(e)
