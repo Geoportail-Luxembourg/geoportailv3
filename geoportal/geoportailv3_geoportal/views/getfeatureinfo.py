@@ -114,7 +114,6 @@ class Getfeatureinfo(object):
                 sketch_id = self.request.params.get('sketch_id', None)
                 timeout = 15
                 url = luxgetfeaturedefinition.rest_url
-                log.error(url)
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
                 if luxgetfeaturedefinition.use_auth:
@@ -122,7 +121,6 @@ class Getfeatureinfo(object):
                     url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
                 else:
                     url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
-                log.error(url1)
                 pdf_id = None
                 pdf_name = None
                 try:
@@ -132,8 +130,7 @@ class Getfeatureinfo(object):
                     attachmentInfos = json.loads(data)["attachmentInfos"]
                     for info in attachmentInfos:
                         contentType = info["contentType"]
-                        if info["contentType"] == "application/pdf" or\
-                            info["contentType"] == "pdf":
+                        if info["contentType"] == "application/pdf":
                             pdf_id = info["id"]
                             pdf_name = info["name"]
                             if ".pdf" not in pdf_name:
@@ -161,7 +158,6 @@ class Getfeatureinfo(object):
                     data = result.data
                 except Exception as e:
                     log.exception(e)
-                    log.error(url2)
                     return HTTPBadRequest()
 
                 headers = {"Content-Type": "application/pdf",
@@ -1553,7 +1549,6 @@ class Getfeatureinfo(object):
             content = result.data
         except ESRITokenException as e:
             log.exception(e)
-            log.error(url)
             content = "{}"
         except Exception as e:
             log.exception(e)
