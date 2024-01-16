@@ -261,7 +261,9 @@ class Getfeatureinfo(object):
         zoom = self.request.params.get('zoom', None)
         fid = self.request.params.get('fid', None)
         fids = self.request.params.get('fids', None)
-        query_limit = int(self.request.params.get('max_features', '20'))
+        query_limit = self.request.params.get('max_features', '20')
+        offset = self.request.params.get('start_index', None)
+
         fids_array = []
         if fids is not None:
             fids_array = fids.split(',')
@@ -273,7 +275,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit)
+                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit, offset)
             return results
 
         layers = self.request.params.get('layers', None)
@@ -292,7 +294,7 @@ class Getfeatureinfo(object):
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
-                None, results, layers, None, geometry, zoom, query_limit)
+                None, results, layers, None, geometry, zoom, query_limit, offset)
             if len(fc) > 0 and 'features' in fc[0]:
                 s = shape(wkt_loads(geometry))
                 for feature in fc[0]['features']:
@@ -317,7 +319,7 @@ class Getfeatureinfo(object):
             return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box, None, zoom, query_limit)
+            coordinates_small_box, results, layers, big_box, None, zoom, query_limit, offset)
 
     def is_zoom_ok(self, cur_zoom, zoom_definition):
         if cur_zoom is None or len(cur_zoom) == 0:
@@ -338,7 +340,7 @@ class Getfeatureinfo(object):
         return False
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit=20):
+                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
@@ -418,7 +420,7 @@ class Getfeatureinfo(object):
                             % {'geometry': p_geometry,
                                'geom': luxgetfeaturedefinition.geometry_column,
                                'geometry_srs': geometry_srs}
-                    query_limit = p_query_limit
+                    query_limit = int(p_query_limit)
                     if luxgetfeaturedefinition.query_limit is not None:
                         query_limit = luxgetfeaturedefinition.query_limit
                     if query_limit > 0:
@@ -432,12 +434,16 @@ class Getfeatureinfo(object):
                         query = query_1 + " id = '" + fid + "'"
 
                 session = self._get_session(luxgetfeaturedefinition.engine_gfi)
-                res = session.execute(query)
+                if offset is not None:
+                    res = session.execute(query + " OFFSET " + str(int(offset)))
+                else:
+                    res = session.execute(query)
                 rows = res.fetchall()
                 try:
                     session = self._get_session(luxgetfeaturedefinition.engine_gfi)
                     query_cnt = "SELECT COUNT(*) FROM (" + query + ") as request"
                     query_cnt = query_cnt.replace("LIMIT " + str(query_limit), "" , 1)
+
                     res_cnt = session.execute(query_cnt)
                     rows_cnt = res_cnt.fetchall()[0][0]
                 except Exception as e:
