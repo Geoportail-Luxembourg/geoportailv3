@@ -114,6 +114,7 @@ class Getfeatureinfo(object):
                 sketch_id = self.request.params.get('sketch_id', None)
                 timeout = 15
                 url = luxgetfeaturedefinition.rest_url
+                log.error(url)
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
                 if luxgetfeaturedefinition.use_auth:
@@ -121,6 +122,7 @@ class Getfeatureinfo(object):
                     url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
                 else:
                     url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
+                log.error(url1)
                 pdf_id = None
                 pdf_name = None
                 try:
@@ -130,7 +132,8 @@ class Getfeatureinfo(object):
                     attachmentInfos = json.loads(data)["attachmentInfos"]
                     for info in attachmentInfos:
                         contentType = info["contentType"]
-                        if info["contentType"] == "application/pdf":
+                        if info["contentType"] == "application/pdf" or\
+                            info["contentType"] == "pdf":
                             pdf_id = info["id"]
                             pdf_name = info["name"]
                             if ".pdf" not in pdf_name:
@@ -152,6 +155,7 @@ class Getfeatureinfo(object):
                     url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
                 try:
+                    log.error(url2)
                     url_request = urllib.request.Request(url2)
                     result = read_request_with_token(url_request, self.request, log)
                     data = result.data
@@ -261,6 +265,7 @@ class Getfeatureinfo(object):
         zoom = self.request.params.get('zoom', None)
         fid = self.request.params.get('fid', None)
         fids = self.request.params.get('fids', None)
+        query_limit = int(self.request.params.get('max_features', '20'))
         fids_array = []
         if fids is not None:
             fids_array = fids.split(',')
@@ -272,7 +277,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers, None, None, zoom)
+                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit)
             return results
 
         layers = self.request.params.get('layers', None)
@@ -285,14 +290,13 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         geometry_type = self.request.params.get('geometry_type', 'wkt')
-
         if geometry_type.lower() != 'wkt':
             geometry = shape(geojson_loads(geometry)).wkt
 
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
-                None, results, layers, None, geometry, zoom)
+                None, results, layers, None, geometry, zoom, query_limit)
             if len(fc) > 0 and 'features' in fc[0]:
                 s = shape(wkt_loads(geometry))
                 for feature in fc[0]['features']:
@@ -317,7 +321,7 @@ class Getfeatureinfo(object):
             return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box, None, zoom)
+            coordinates_small_box, results, layers, big_box, None, zoom, query_limit)
 
     def is_zoom_ok(self, cur_zoom, zoom_definition):
         if cur_zoom is None or len(cur_zoom) == 0:
@@ -338,7 +342,7 @@ class Getfeatureinfo(object):
         return False
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, p_geometry=None, p_zoom=None):
+                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit=20):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
@@ -418,7 +422,7 @@ class Getfeatureinfo(object):
                             % {'geometry': p_geometry,
                                'geom': luxgetfeaturedefinition.geometry_column,
                                'geometry_srs': geometry_srs}
-                    query_limit = 20
+                    query_limit = p_query_limit
                     if luxgetfeaturedefinition.query_limit is not None:
                         query_limit = luxgetfeaturedefinition.query_limit
                     if query_limit > 0:
@@ -1543,6 +1547,7 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
+            log.error(query)
             url_request = urllib.request.Request(query)
             result = read_request_with_token(url_request, self.request, log)
             content = result.data
