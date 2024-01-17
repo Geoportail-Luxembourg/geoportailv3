@@ -27,12 +27,12 @@ export function matchCoordinate(searchString, mapEpsgCode, maxExtent, coordinate
       epsgCode: 'EPSG:32632'
     },
     'EPSG:2169': {
-      regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]\s*?\d{0,3})\s*([E|N])?/,
+      regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}\s*[\,\.\|]\s*?\d{0,3})\s*([E|N])?/,
       label: 'LUREF',
       epsgCode: 'EPSG:2169'
     },
     'EPSG:2169:V2': {
-      regex: /(\d{4,6})\s*([E|N])?[\,\.]\s*(\d{4,6})\s*([E|N])?/,
+      regex: /(\d{4,6})\s*([E|N])?\s*[\,\.\|]\s*(\d{4,6})\s*([E|N])?/,
       label: 'LUREF',
       epsgCode: 'EPSG:2169'
     },
