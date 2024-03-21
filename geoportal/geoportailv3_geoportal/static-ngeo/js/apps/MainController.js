@@ -28,6 +28,7 @@ import {
   LayerPanel,
   MapContainer,
   BackgroundSelector,
+  StyleSelector,
   LayerMetadata,
   RemoteLayers,
   HeaderBar, 
@@ -42,6 +43,7 @@ import {
   statePersistorLayersService,
   statePersistorThemeService,
   statePersistorMyMapService,
+  statePersistorStyleService,
   themeSelectorService, SliderComparator
 } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
@@ -49,6 +51,7 @@ import {
 statePersistorMyMapService.bootstrap()
 statePersistorLayersService.bootstrap()
 statePersistorThemeService.bootstrap()
+statePersistorStyleService.bootstrapStyle()
 statePersistorBgLayerService.bootstrap()
 
 // LayerPanel includes Catalog, ThemeSelector, LayerManager
@@ -62,6 +65,9 @@ customElements.define('map-container', MapContainerElement)
 
 const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
 customElements.define('background-selector', BackgroundSelectorElement)
+
+const StyleSelectorElement = createElementInstance(StyleSelector, app)
+customElements.define('style-selector', StyleSelectorElement)
 
 const LayerMetadataElement = createElementInstance(LayerMetadata, app)
 customElements.define('layer-metadata', LayerMetadataElement)
