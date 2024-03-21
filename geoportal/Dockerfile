@@ -18,6 +18,7 @@ RUN git clone --depth=1 --branch=backport/9911-to-2.5-lux https://github.com/cam
 
 WORKDIR /app
 RUN mv /etc/apt/sources.list.d/nodesource.list /etc/apt/sources.list.d/nodesource.list.disabled
+RUN sed -i 's/apt.postgresql.org/apt-archive.postgresql.org/g' /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get  install -y ca-certificates
@@ -135,7 +136,10 @@ RUN c2cwsgiutils_genversion.py ${GIT_HASH}
 
 ARG PGSCHEMA
 ENV PGSCHEMA=${PGSCHEMA}
-
+RUN apt-get update && apt-get  install --assume-yes sudo openssh-client krb5-user krb5-config
+RUN echo "www-data:www-data" | sudo chpasswd
+RUN echo "root:www-data" | sudo chpasswd
+RUN usermod -aG sudo www-data
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
 RUN ln -s . geoportal
