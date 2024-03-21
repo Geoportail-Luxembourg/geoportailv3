@@ -1708,6 +1708,9 @@ MainController.prototype.manageSelectedLayers_ =
           if (layer instanceof MaskLayer) {
             return false;
           }
+          if (useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer) === layer) {
+            return false;
+          }
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
         }.bind(this)
       );
