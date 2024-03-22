@@ -346,8 +346,10 @@
       <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
       <map-container
         style="width:auto; overflow: hidden;"
-        ></map-container>
-      <slider-comparator></slider-comparator>
+        >
+        <slider-comparator class="absolute top-0" style="z-index: 1;height:100%;"></slider-comparator>
+      </map-container>
+
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
       <lux-offline-alert></lux-offline-alert>
