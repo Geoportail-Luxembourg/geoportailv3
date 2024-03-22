@@ -504,10 +504,16 @@ app-locationinfo {
     padding-left: 0px;
   }
 }
+//force border width for legacy style editor to avoid conflict with tailwind class
 app-simple-style {
   .selectedstyleline {
     border-style: dotted;
+    border-width: 3px !important;
   }
+}
+//force visibility for legacy style editor to avoid conflict with tailwind class
+#vectoreditor .collapse {
+  visibility: visible !important;
 }
 #accordion .panel {
   margin-bottom: initial;

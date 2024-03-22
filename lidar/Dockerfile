@@ -40,7 +40,7 @@ WORKDIR /app
 
 RUN apt-get update \
   && apt-get -y install python3 python-is-python3 python3-pip \
-  && apt-get -y install libtbb2 \
+  && apt-get -y install libtbbmalloc2 \
   && apt-get -y install wget vim \
   && apt-get -y autoremove --purge && apt-get -y autoclean
 
@@ -53,8 +53,8 @@ RUN wget http://ftp.de.debian.org/debian/pool/main/l/laszip/liblaszip-dev_3.4.3-
     && dpkg -i liblaszip8_3.4.3-2_amd64.deb \
     && dpkg -i liblaszip-dev_3.4.3-2_amd64.deb
 
-RUN python -m pip install --upgrade pip \
-  && pip3 install -r requirements.txt
+RUN python -m pip install --break-system-packages --upgrade pip \
+  && pip3 install --break-system-packages -r requirements.txt
 RUN apt-get -y install python3 libtbb-dev
 COPY . ./
 COPY --from=extract_profile_builder /app/build/extract_profile /app/geoportailv3_geoportal/locale/

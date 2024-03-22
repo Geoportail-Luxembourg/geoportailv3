@@ -12,6 +12,9 @@ import olSourceTileWMS from 'ol/source/TileWMS.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import ngeoLayerHelper from 'ngeo/map/LayerHelper.js';
 
+import { useMapStore, useOpenLayers, useBackgroundLayer } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+
+
 const BACKGROUNDLAYERGROUP_NAME = 'background';
 
 export default class BackgroundLayerMgr extends olObservable {
@@ -77,6 +80,8 @@ export default class BackgroundLayerMgr extends olObservable {
      */
     this.ngeoLayerHelper_ = ngeoLayerHelper;
 
+    this.mapStore_ = useMapStore();
+
   };
 
 
@@ -88,6 +93,7 @@ export default class BackgroundLayerMgr extends olObservable {
    * @export
    */
   get(map) {
+    return useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer)
     const mapUid = olBase.getUid(map).toString();
     return mapUid in this.mapUids_ ? map.getLayers().item(0) : null;
   };
@@ -102,6 +108,8 @@ export default class BackgroundLayerMgr extends olObservable {
    * @export
    */
   set(map, layer) {
+    useBackgroundLayer().setBgLayer(layer.id)
+    return
     const ZIndex = -200;
     map.getTargetElement().classList.toggle('blankBackground', layer.get('role') === 'blank' || layer.get('role') === 'mapboxBackground' || layer.get('role') === undefined);
     const mapUid = olBase.getUid(map).toString();

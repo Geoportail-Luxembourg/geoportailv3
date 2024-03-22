@@ -11,6 +11,8 @@ import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {listen, unlistenByKey} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
+import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+
 
 /**
  * @constructor
@@ -107,6 +109,8 @@ const exports = function(appStateManager,
    * @private
    */
   this.stateManager_ = appStateManager;
+
+  this.mapStore_ = useMapStore();
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -566,6 +570,8 @@ exports.prototype.init = function(scope, map, selectedLayers) {
    */
   this.initialVersion_ = this.stateManager_.getVersion();
 
+  this.mapStore_.setIs3dActive(this.stateManager_.getInitialValue('3d_enabled'))
+
   /**
    * @type {boolean}
    * @private
@@ -573,11 +579,19 @@ exports.prototype.init = function(scope, map, selectedLayers) {
   this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-  listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
-    this.initBgLayers_().then(() =>{
-      this.initFlatCatalog_(selectedLayers);
-    })
-  });
+  // listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
+  //   this.initBgLayers_().then(() =>{
+  //     this.initFlatCatalog_(selectedLayers);
+  //   })
+  // });
+
+  // ------------------------------------------ //
+  // --------  UPDATE With new Lux lib -------- //
+  // ------------------------------------------ //
+  // - deactivate listeners on layers and bg layer in state (commented code above)
+  // - set initialized to true
+  // ------------------------------------------ //
+  this.initialized_ = true;
 };
 
 exports.prototype.initBgLayers_ = function() {
@@ -614,12 +628,19 @@ exports.prototype.initBgLayers_ = function() {
       stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
     }
     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
-    if (mapId === undefined || hasBgLayerInUrl) {
-      var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-      if (layer !== undefined) {
-        this.backgroundLayerMgr_.set(this.map_, layer);
-      }
-    }
+
+    // ------------------------------------------ //
+    // --------  UPDATE With new Lux lib -------- //
+    // ------------------------------------------ //
+    // - deactivate setting bg here as this is now handled by Permalink v4
+    // ------------------------------------------ //
+
+    // if (mapId === undefined || hasBgLayerInUrl) {
+    //   var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
+    //   if (layer !== undefined) {
+    //     this.backgroundLayerMgr_.set(this.map_, layer);
+    //   }
+    // }
   });
 }
 

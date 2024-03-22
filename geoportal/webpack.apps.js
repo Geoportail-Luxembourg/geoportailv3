@@ -94,6 +94,7 @@ module.exports = {
       'olcs': '/usr/lib/node_modules/ol-cesium/src/olcs',
       'jquery-ui/datepicker': '/usr/lib/node_modules/jquery-ui/ui/widgets/datepicker', // For angular-ui-date
       'proj4': '/usr/lib/node_modules/proj4/lib',
+      'luxembourg-geoportail': '/usr/lib/node_modules/luxembourg-geoportail',
     }
   },
 };

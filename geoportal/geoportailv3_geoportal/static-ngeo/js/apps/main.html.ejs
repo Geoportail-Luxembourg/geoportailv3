@@ -17,6 +17,9 @@
     <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
     <% } %>
 
+    <!--TODO: ol styles in style.css are conflicting with legacy styles and need to be deleted-->
+    <link rel="stylesheet" href="/static-ngeo/web-components/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
     <link rel="apple-touch-icon" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114.png" />
@@ -44,7 +47,9 @@
     </script>
   </head>
 
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+  <body ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+    <alert-notifications></alert-notifications>
+
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
@@ -104,44 +109,16 @@
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
-    <div id="main-container" ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}">
-      <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
-
+    <div id="main-container"
+      ng-class="{'gmf-lidarprofile-chart-active': mainCtrl.lidarOpen}"
+      >
+      <div id="sidebar"
+        ng-class="{open: mainCtrl.sidebarOpen()}"
+        app-resizemap="mainCtrl.map"
+        app-resizemap-state="mainCtrl.sidebarOpen()">
         <!-- Layers -->
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
-          <h2 translate>layers</h2>
-          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-            ✕
-          </button>
-          <ul class="nav nav-tabs">
-            <li role="presentation" class="my-layers-tab">
-              <a href="#mylayers" data-toggle="tab">
-                <span translate>my_layers</span>
-                <span ng-if="mainCtrl.selectedLayersLength() > 0">({{mainCtrl.selectedLayersLength()}})</span>
-              </a>
-            </li>
-            <li role="presentation" class="active catalog-tab">
-              <a href="#catalog" data-toggle="tab" translate>Catalog</a>
-            </li>
-          </ul>
-          <div class="tab-content">
-            <div id="mylayers" class="tab-pane col-xs-12">
-              <app-layermanager app-layermanager-map="::mainCtrl.map"
-                app-layermanager-layers="::mainCtrl.selectedLayers"
-                app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
-              </app-layermanager>
-              <div class="text-center add-layers">
-                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
-                <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
-              </div>
-            </div>
-            <div id="catalog" class="tab-pane active">
-              <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
-                                 app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
-              <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
-            </div>
-          </div>
+          <layer-panel></layer-panel>
         </div>
 
         <!-- MyMaps -->
@@ -362,20 +339,19 @@
           </div>
           </div>
         </div>
-      </div>
+    </div>
     <div class="map-wrapper">
+      <app-toggle-offline></app-toggle-offline>
+      <app-toggle-3d></app-toggle-3d>
+      <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
+      <map-container
+        style="width:auto; overflow: hidden;"
+        >
+        <slider-comparator class="absolute top-0" style="z-index: 1;height:100%;"></slider-comparator>
+      </map-container>
+
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
-      <app-map app-map-map="::mainCtrl.map"></app-map>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
-      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
-           app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
-        <div class="slider-line"></div>
-        <div class="slider-arrows">
-          <div class="slider-arrow-left"></div>
-          <div class="slider-arrow-right"></div>
-        </div>
-        <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
-      </div>
       <lux-offline-alert></lux-offline-alert>
       <lux-offline-reload></lux-offline-reload>
       <lux-offline-error></lux-offline-error>
@@ -398,13 +374,17 @@
           ng-show="!mainCtrl.embedded"
       >
       </ngeo-offline>
-      <app-backgroundselector
+      <!-- <app-backgroundselector
         ng-if="!mainCtrl.ol3dm_.isMeshEnabled()"
         class="background-layer"
         app-backgroundselector-map="::mainCtrl.map">
-      </app-backgroundselector>
+      </app-backgroundselector> -->
+      <div class="absolute right-1" style="top: 1rem">
+        <background-selector></background-selector>
+      </div>
     </div>
-
+    <layer-metadata></layer-metadata>
+    <remote-layers></remote-layers>
   </div>
 
     <!-- Begin bottom bar -->

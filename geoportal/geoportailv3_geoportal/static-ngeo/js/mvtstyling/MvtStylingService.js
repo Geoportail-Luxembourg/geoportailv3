@@ -1,6 +1,7 @@
 import { _ } from 'core-js';
 import appModule from '../module.js';
-import {isValidSerial} from '../utils.js';
+import { isValidSerial } from '../utils.js';
+import { useOpenLayers, useMapStore , useMvtStyles } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 function hasLocalStorage() {
     try {
@@ -63,6 +64,8 @@ class MvtStylingService {
         this.getvtstyleUrl_ = getvtstyleUrl;
         this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
         this.ngeoLocation_ = ngeoLocation;
+        this.mapStore_ = useMapStore();
+        // this.styleStore_ = useStyleStore();
     }
 
     getBgStyle() {
@@ -188,13 +191,16 @@ class MvtStylingService {
         if (serial && !isValidSerial(serial)) {
             setTimeout(() => {
                 try {
-                    const bgLayer = this.backgroundLayerMgr_.get(map);
+                    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+                    // const bgLayer = this.backgroundLayerMgr_.get(map);
                     let lsData = JSON.parse(window.localStorage.getItem(bgLayer.get('label')));
                     if (lsData !== null) {
                       this.publishStyle(bgLayer).then((result) => {
                           // for OL-Cesium to refresh the background layer counterpart
                           // and thus request tiles with custom style
-                          this.backgroundLayerMgr_.set(map, bgLayer);
+                          // useOpenLayers().removeFromCache(bgLayer.id)
+                          // useOpenLayers().setBgLayer(map, this.mapStore_.bgLayer, this.styleStore_.bgVectorSources)
+                          useMvtStyles().setCustomStyleSerial(this.mapStore_.bgLayer, bgLayer.get('xyz_custom'))
 
                           // For deprovisionning, keep the id stored
                           if (lsData !== null) {
