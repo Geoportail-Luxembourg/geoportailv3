@@ -244,11 +244,11 @@ class Profile(Raster):
                 values = {}
                 has_one = False
                 for ref in rasters.keys():
-                    value = self.moving_average(coords, i_coord , 4, ref)
+                    value = self.get_value(coords, i_coord, ref)
                     if value is not None and value != 0:
                         has_one = True
                         values[ref] = value
-
+                        break
                 if has_one:
                     # 10cm accuracy is enough for distances
                     rounded_dist = Decimal(str(dist)).quantize(Decimal("0.1"))
