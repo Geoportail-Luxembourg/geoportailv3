@@ -40,11 +40,13 @@ class Metadata(object):
             log.error(url)
             return HTTPBadGateway()
         if lang != 'fr':
+            data_fr = []
             try:
                 url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs["fr"], id)
                 f = urllib.request.urlopen(url, None, timeout)
                 data_fr = json.loads(f.read())
             except Exception as e:
+                data_fr = []
                 log.exception(e)
                 log.error(url)
             if 'metadata' in data and 'responsibleParty' in data['metadata']:
