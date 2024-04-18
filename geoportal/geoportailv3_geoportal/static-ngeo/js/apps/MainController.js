@@ -30,7 +30,8 @@ import {
   BackgroundSelector,
   LayerMetadata,
   RemoteLayers,
-  HeaderBar, 
+  HeaderBar,
+  proxyUrlHelper,
   useMap,
   useMvtStyles,
   useOpenLayers,
@@ -42,7 +43,8 @@ import {
   statePersistorLayersService,
   statePersistorThemeService,
   statePersistorMyMapService,
-  themeSelectorService, SliderComparator
+  themeSelectorService,
+  SliderComparator
 } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 // Important! keep order
@@ -50,6 +52,8 @@ statePersistorMyMapService.bootstrap()
 statePersistorLayersService.bootstrap()
 statePersistorThemeService.bootstrap()
 statePersistorBgLayerService.bootstrap()
+
+const luxAppStore = useAppStore()
 
 // LayerPanel includes Catalog, ThemeSelector, LayerManager
 // Note: Themes are now handled by new theme-selector
@@ -451,7 +455,9 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
     appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer,
+    proxyWmsUrl,
+    httpsProxyUrl) {
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -461,6 +467,13 @@ const MainController = function(
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
+
+  // Lux lib, intialize proxyUrlHelper to create OL layers
+  // enabling passing conf from v3 to lux lib v4
+  proxyUrlHelper.init(
+    proxyWmsUrl,
+    httpsProxyUrl
+  )
 
   this.mediumStylingData = getDefaultMediumStyling();
 
@@ -1227,14 +1240,14 @@ const MainController = function(
         // $('app-themeswitcher #themes-content').collapse('hide');
 
         // close style editor when switching tools and sidebar stays open
-        useAppStore().closeStyleEditorPanel()
-        useAppStore().setThemeGridOpen(false)
+        luxAppStore.closeStyleEditorPanel()
+        luxAppStore.setThemeGridOpen(false)
       } else {
         this['lidarOpen'] = false;
       }
     });
     // listen to layersOpen changes in store (clicking close button on custom element)
-    const { layersOpen, styleEditorOpen } = storeToRefs(useAppStore())
+    const { layersOpen, styleEditorOpen } = storeToRefs(luxAppStore)
     watch(
       layersOpen,
       layersOpen => {
@@ -1316,8 +1329,7 @@ const MainController = function(
       return this.sidebarOpen();
     }, newVal => {
       // setLayersOpen in store from legacy components
-      const { setLayersOpen } = useAppStore()
-      setLayersOpen(newVal)
+      luxAppStore.setLayersOpen(newVal)
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -1824,9 +1836,9 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
   // close style editor when closing sidebar
-  useAppStore().closeStyleEditorPanel()
-  useAppStore().setLayersOpen(false) // For info, this also closes the themeGrid
-  useAppStore().setMyLayersTabOpen(false)
+  luxAppStore.closeStyleEditorPanel()
+  luxAppStore.setLayersOpen(false) // For info, this also closes the themeGrid
+  luxAppStore.setMyLayersTabOpen(false)
 };
 
 
@@ -2030,7 +2042,7 @@ MainController.prototype.showTab = function(selector) {
  * @export
  */
 MainController.prototype.toggleThemeSelector = function() {
-  const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(useAppStore())
+  const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(luxAppStore)
 
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
@@ -2052,15 +2064,15 @@ MainController.prototype.toggleThemeSelector = function() {
   }
 
   if (!layersOpen.value) {
-    useAppStore().setLayersOpen(true)
-    myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
-    useAppStore().setThemeGridOpen(true)
+    luxAppStore.setLayersOpen(true)
+    myLayersTabOpen.value && luxAppStore.setMyLayersTabOpen(false)
+    luxAppStore.setThemeGridOpen(true)
   } else if (layersOpen.value) {
     if (themeGridOpen.value) {
-      useAppStore().setLayersOpen(false)
+      luxAppStore.setLayersOpen(false)
     } else {
-      myLayersTabOpen.value && useAppStore().setMyLayersTabOpen(false)
-      useAppStore().setThemeGridOpen(true)
+      myLayersTabOpen.value && luxAppStore.setMyLayersTabOpen(false)
+      luxAppStore.setThemeGridOpen(true)
     }
   }
 };
