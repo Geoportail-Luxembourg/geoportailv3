@@ -470,7 +470,7 @@ const MainController = function(
 
   // Lux lib, intialize proxyUrlHelper to create OL layers
   // enabling passing conf from v3 to lux lib v4
-  proxyUrlHelper.init(
+  proxyUrlHelper.init_v3(
     proxyWmsUrl,
     httpsProxyUrl
   )
