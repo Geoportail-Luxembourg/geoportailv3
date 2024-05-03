@@ -1167,7 +1167,6 @@ const MainController = function(
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then((themes) => {
-    useThemeStore().setThemes(themes);
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             if (appOverviewMapShow) {
@@ -1697,7 +1696,8 @@ MainController.prototype.manageUserRoleChange_ = function(scope) {
  * @return {?angular.$q.Promise} Promise.
  */
 MainController.prototype.loadThemes_ = function() {
-  return this.appThemes_.loadThemes(this.appUserManager_.roleId);
+  return this.appThemes_.loadThemes(this.appUserManager_.roleId)
+    .then((themes) => useThemeStore().setThemes(themes));
 };
 
 
