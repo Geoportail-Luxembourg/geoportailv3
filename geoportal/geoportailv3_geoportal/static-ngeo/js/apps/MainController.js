@@ -1174,7 +1174,6 @@ const MainController = function(
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then((themes) => {
-    useThemeStore().setThemes(themes);
     statePersistorStyleService.bootstrapStyle()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
