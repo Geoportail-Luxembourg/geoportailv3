@@ -28,6 +28,7 @@ import {
   LayerPanel,
   MapContainer,
   BackgroundSelector,
+  StyleSelector,
   LayerMetadata,
   RemoteLayers,
   HeaderBar,
@@ -43,6 +44,7 @@ import {
   statePersistorLayersService,
   statePersistorThemeService,
   statePersistorMyMapService,
+  statePersistorStyleService,
   themeSelectorService,
   SliderComparator
 } from "luxembourg-geoportail/bundle/lux.dist.mjs";
@@ -51,6 +53,8 @@ import {
 statePersistorMyMapService.bootstrap()
 statePersistorLayersService.bootstrap()
 statePersistorThemeService.bootstrap()
+// styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
+// statePersistorStyleService.bootstrapStyle()
 statePersistorBgLayerService.bootstrap()
 
 const luxAppStore = useAppStore()
@@ -66,6 +70,9 @@ customElements.define('map-container', MapContainerElement)
 
 const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
 customElements.define('background-selector', BackgroundSelectorElement)
+
+const StyleSelectorElement = createElementInstance(StyleSelector, app)
+customElements.define('style-selector', StyleSelectorElement)
 
 const LayerMetadataElement = createElementInstance(LayerMetadata, app)
 customElements.define('layer-metadata', LayerMetadataElement)
@@ -1167,6 +1174,8 @@ const MainController = function(
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then((themes) => {
+    useThemeStore().setThemes(themes);
+    statePersistorStyleService.bootstrapStyle()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             if (appOverviewMapShow) {

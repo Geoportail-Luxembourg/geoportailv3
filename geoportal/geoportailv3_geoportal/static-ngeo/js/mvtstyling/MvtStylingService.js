@@ -1,7 +1,7 @@
 import { _ } from 'core-js';
 import appModule from '../module.js';
 import { isValidSerial } from '../utils.js';
-import { useOpenLayers, useMapStore , useMvtStyles } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useOpenLayers, useMapStore , useMvtStyles, useStyleStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.mjs";
 
 function hasLocalStorage() {
     try {
@@ -69,112 +69,15 @@ class MvtStylingService {
     }
 
     getBgStyle() {
-        const layerLabelList = ['basemap_2015_global', 'topogr_global', 'topo_bw_jpeg'];
-        const promises = [];
-        layerLabelList.forEach(label => promises.push( this.setConfigForLayer_(label)));
-        return Promise.all(promises);
-    }
-
-    setConfigForLayer_(label) {
-        let lsData = JSON.parse(window.localStorage.getItem(label));
-        let xyz_custom = undefined;
-        if (!!lsData && lsData.serial) {
-            xyz_custom = this.createXYZCustom_(lsData.serial);
-        }
-
-        const keyword = getKeywordForLayer(label);
-        const defaultMapBoxStyle = getDefaultMapBoxStyleUrl(keyword);
-        const defaultMapBoxStyleXYZ = getDefaultMapBoxStyleXYZ(keyword);
-
-        const config = {
-            label,
-            defaultMapBoxStyle,
-            defaultMapBoxStyleXYZ,
-            xyz: xyz_custom || defaultMapBoxStyleXYZ,
-            xyz_custom,
-            style: defaultMapBoxStyle
-        };
-
-        const serial = new URLSearchParams(window.location.search).get('serial');
-        const serialLayer = new URLSearchParams(window.location.search).get('serialLayer');
-        if (serial) {
-            // if serial is number id, retrieve style form it
-            if (isValidSerial(serial)) {
-                // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
-                if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
-                    console.log(`Load mvt style for ${label} from serial uuid`);
-                    this.isCustomStyle = this.isCustomStyleSetter(label, true);
-                    const style_url = `${this.getvtstyleUrl_}?id=${serial}`
-                    fetch(style_url).then(function(resp) {
-                      if (resp.code == 200) {
-                        config.style = style_url;
-                      }
-                      return config;
-                    });
-                    return Promise.resolve(config);
-                } else {
-                    console.log(`Default mvt style for ${label}`);
-                    return Promise.resolve(config);
+        const { bgStyle } = storeToRefs(useStyleStore())
+        return new Promise((resolve, reject) => {
+            let intervalId = setInterval(() => {
+                if (bgStyle.value) {
+                    clearInterval(intervalId);
+                    resolve(bgStyle.value);
                 }
-            } else {
-                // if label and serialLayer are equal, or fallback to roadmap layer if serialLayer is null
-                if (label === serialLayer || (label === 'basemap_2015_global' && serialLayer === null)) {
-                    console.log(`Load mvt style for ${label} from serialized config`);
-                    this.isCustomStyle = this.isCustomStyleSetter(label, true);
-                    config.style = this.apply_mvt_config(serial, label);
-                    return Promise.resolve(config);
-                } else {
-                    console.log(`Default mvt style for ${label}`);
-                    return Promise.resolve(config);
-                }
-            }
-        } else if (this.appUserManager_.isAuthenticated()) {
-            const options = {
-                method: 'get',
-                headers: { 'Content-Type': 'application/json' }
-            }
-            return fetch(url_get + "?key=" + label, options).then(resultsFromDB => {
-                return resultsFromDB.json().then(result => {
-                    if (result.length > 0) {
-                        const data = JSON.parse(result[0]['value']);
-                        console.log(`Load mvt style for ${label} from database and save it to local storage`);
-                        this.isCustomStyle = this.isCustomStyleSetter(label, true);
-                        window.localStorage.setItem(label, JSON.stringify(data));
-                        config.style = data['background'];
-                        return config;
-                    } else {
-                        // Default style if no existing in LS or DB
-                        console.log(`Default mvt style for ${label}`);
-                        this.isCustomStyle = this.isCustomStyleSetter(label, false);
-                        return config;
-                    }
-                });
-            });
-        } else if (hasLocalStorage() && !!window.localStorage.getItem(label)) {
-            if (lsData.serial) {
-                // If there is a mvt expert style in the local storage, force parameter in the url
-                this.ngeoLocation_.updateParams({
-                    'serial': JSON.stringify(lsData.serial),
-                    'serialLayer': JSON.stringify(label)
-                });
-            }
-            if (lsData.medium) {
-                // If there is a mvt medium config in the local storage, force parameter in the url
-                this.ngeoLocation_.updateParams({
-                    'serial': JSON.stringify(lsData.medium),
-                    'serialLayer': JSON.stringify(label)
-                });
-            }
-            console.log(`Load mvt style for ${label} from local storage`);
-            this.isCustomStyle = this.isCustomStyleSetter(label, true);
-            config.style = lsData.background; // Should work offline as well
-            return Promise.resolve(config);
-        } else {
-            // Default style if no existing in LS or DB
-            console.log(`Default mvt style for ${label}`);
-            this.isCustomStyle = this.isCustomStyleSetter(label, false);
-            return Promise.resolve(config);
-        }
+            }, 100);
+        });
     }
 
     createXYZCustom_(id) {
