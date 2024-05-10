@@ -65,7 +65,8 @@ export const PRINT_LAYOUTS = [
   'A1 portrait',
   'A0 landscape',
   'A0 portrait',
-  'a4_landscape_notext'
+  'a4_landscape_notext',
+  'thumbnail'
 ];
 
 /**
