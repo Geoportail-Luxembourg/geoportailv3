@@ -50,11 +50,19 @@ class Upload(object):
         else:
             dir = "/tmp"
 
-        file_path = os.path.join(dir, '%s.json' %id)
+        file_path = os.path.join(dir, '%s.json' % id)
         if not os.path.exists(file_path):
             return HTTPBadRequest("File does not exist")
         with open(file_path) as json_file:
             data = json.load(json_file)
+
+        data["glyphs"] = "https://vectortiles.geoportail.lu/fonts/" + data["glyphs"].strip()
+        for source in data["sources"]:
+            data["sources"][source]["url"] = (
+                data["sources"][source]["url"]
+                .replace("mbtiles://{", "https://vectortiles.geoportail.lu/data/")
+                .replace("}", ".json")
+            )
 
         return data
 
