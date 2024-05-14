@@ -33,7 +33,7 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
-import { useLayers, useThemes, useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useLayers, useThemes, useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**

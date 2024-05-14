@@ -107,7 +107,7 @@ $(APP_OUTPUT_DIR)/vendor%: /opt/vendor%
 
 apps: webpack.apps.js
 	rm --force $(addprefix $(APP_OUTPUT_DIR)/, $(addsuffix .*, $(NGEO_INTERFACES)))
-	webpack $(WEBPACK_ARGS)
+	node --max-old-space-size=4096 /usr/lib/node_modules/webpack/bin/webpack.js $(WEBPACK_ARGS)
 	for interface in $(NGEO_INTERFACES); \
 	do \
 		mv $(APP_OUTPUT_DIR)/$${interface}.html $(APP_OUTPUT_DIR)/$${interface}.html.tmpl; \

@@ -11,7 +11,7 @@ import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {listen, unlistenByKey} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
-import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**

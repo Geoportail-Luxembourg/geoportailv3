@@ -12,7 +12,7 @@ import olSourceTileWMS from 'ol/source/TileWMS.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import ngeoLayerHelper from 'ngeo/map/LayerHelper.js';
 
-import { useMapStore, useOpenLayers, useBackgroundLayer } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useMapStore, useOpenLayers, useBackgroundLayer } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 const BACKGROUNDLAYERGROUP_NAME = 'background';

@@ -1,6 +1,6 @@
 import RasterSynchronizer from 'olcs/RasterSynchronizer';
 import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
-import {MapLibreLayer} from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import {MapLibreLayer} from "luxembourg-geoportail/bundle/lux.dist.js";
 import {XYZ} from 'ol/source';
 import {Tile as TileLayer} from 'ol/layer';
 
