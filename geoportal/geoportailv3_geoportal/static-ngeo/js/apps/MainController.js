@@ -47,7 +47,7 @@ import {
   statePersistorStyleService,
   themeSelectorService,
   SliderComparator
-} from "luxembourg-geoportail/bundle/lux.dist.mjs";
+} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 // Important! keep order
 statePersistorMyMapService.bootstrap()

@@ -9,7 +9,7 @@ import * as olMath from 'ol/math.js';
 import olStyleRegularShape from 'ol/style/RegularShape.js';
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
-import {MapLibreLayer} from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import {MapLibreLayer} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);

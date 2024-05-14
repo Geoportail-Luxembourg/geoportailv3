@@ -1,7 +1,7 @@
 import { _ } from 'core-js';
 import appModule from '../module.js';
 import { isValidSerial } from '../utils.js';
-import { useOpenLayers, useMapStore , useMvtStyles, useStyleStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useOpenLayers, useMapStore , useMvtStyles, useStyleStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 function hasLocalStorage() {
     try {
