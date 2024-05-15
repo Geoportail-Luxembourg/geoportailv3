@@ -373,7 +373,13 @@ Themes.findTheme_ = function(themes, themeName) {
 };
 
 
-appModule.service('appThemes', Themes);
+appModule.service('appThemes', ['$window', '$http', 'gmfTreeUrl', 'isThemePrivateUrl',
+  'appGetWmtsLayer', 'appBlankLayer', 'appGetDevice', 'appMvtStylingService', 
+  function($window, $http, gmfTreeUrl, isThemePrivateUrl,
+    appGetWmtsLayer, appBlankLayer, appGetDevice, appMvtStylingService) {
+  return new Themes($window, $http, gmfTreeUrl, isThemePrivateUrl,
+    appGetWmtsLayer, appBlankLayer, appGetDevice, appMvtStylingService);
+}]);
 
 
 export default Themes;
