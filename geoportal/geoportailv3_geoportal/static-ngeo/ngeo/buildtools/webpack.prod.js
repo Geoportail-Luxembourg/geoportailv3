@@ -48,10 +48,6 @@ module.exports = function(UglifyJsPluginCache) {
           uglifyOptions: {
             compress: false
           },
-          exclude: [
-            '**/node_modules/luxembourg-geoportail/bundle/*',
-            '**/node_modules/mapbox-gl/dist/*'
-          ],
         })
       ]
     },
