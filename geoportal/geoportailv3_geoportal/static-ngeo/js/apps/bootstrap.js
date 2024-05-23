@@ -68,7 +68,9 @@ function bootstrap(module) {
     }
     setupI18n();
 
-    angular.bootstrap(document, [`App${interface_}`]);
+    angular.bootstrap(document, [`App${interface_}`], {
+      strictDi: true
+    });
   });
 }
 
