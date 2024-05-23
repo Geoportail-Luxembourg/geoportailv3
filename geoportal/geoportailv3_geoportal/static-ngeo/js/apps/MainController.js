@@ -1294,11 +1294,23 @@ const MainController = function(
       },
       { immediate: true }
     )
+    const { bgLayer, layers } = storeToRefs(useMapStore())
+    // monitor changes in layers to update state of mymaps
+    watch(
+      layers,
+      (layers) => {
+        this['selectedLayers'] = layers.map((l) => useOpenLayers().getLayerFromCache(l)).reverse();
+        this.compareLayers_();
+        $scope.$digest();
+      }
+    )
+    // monitor change of BG layer to update state of mymaps
     // listen to changes of bgLayer to send piwik request formerly sent from BackgroundselectorController
-    const { bgLayer } = storeToRefs(useMapStore())
     watch(
       bgLayer,
       (bgLayer, oldBgLayer) => {
+        this.compareLayers_();
+        $scope.$digest();
         const piwik = /** @type {Piwik} */ (this.window_['_paq']);
         if (piwik && bgLayer) {
           piwik.push(['setDocumentTitle', 'BackgroundAdded/' + bgLayer.name]);
@@ -1719,18 +1731,28 @@ MainController.prototype.manageSelectedLayers_ =
         this.map_.getLayers().getArray(),
         this['selectedLayers'], true, scope,
         function(layer) {
+          if (!layer) {
+            // to prevent strange behaviour where ngeoMiscSyncArrays tries to add undefined layers to the map
+            return false;
+          }
           if (layer instanceof olLayerVector && layer.get('altitudeMode') === 'clampToGround') {
             return false;
           }
           if (layer instanceof LayerGroup && layer.get('groupName') === 'background') {
             return false;
           }
+          if (layer.get('queryable_id') === this.mapStore_.bgLayer?.id) return false
           if (layer instanceof MaskLayer) {
             return false;
           }
           if (useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer) === layer) {
             return false;
           }
+          // Ignore layer for measurements
+          if (layer.get('role') === "MeasureController") {
+            return false;
+          }
+
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
         }.bind(this)
       );
@@ -2006,8 +2028,7 @@ MainController.prototype.compareLayers_ = function() {
   if (this.appMymaps_.isEditable()) {
     this['layersChanged'] = false;
     var backgroundLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    if (backgroundLayer &&
-        this.appMymaps_.mapBgLayer !== backgroundLayer.get('label')) {
+    if (this.appMymaps_.mapBgLayer !== (backgroundLayer?.get('label') || 'blank')) {
       this['layersChanged'] = true;
     } else {
       if (this['selectedLayers'].length !== this.appMymaps_.mapLayers.length) {
@@ -2025,7 +2046,9 @@ MainController.prototype.compareLayers_ = function() {
           this['layersChanged'] = true;
         } else {
           if (selectedOpacities.join(',') !==
-              this.appMymaps_.mapLayersOpacities.join(',')) {
+              this.appMymaps_.mapLayersVisibilities.map(
+                (visible, i) => (visible === 'true')?this.appMymaps_.mapLayersOpacities[i]:0
+              ).join(',')) {
             this['layersChanged'] = true;
           }
         }
