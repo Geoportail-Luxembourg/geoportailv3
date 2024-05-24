@@ -25,7 +25,7 @@ import olStyleStyle from 'ol/style/Style.js';
 import {get as getProj, transform} from 'ol/proj.js';
 import olcsCore from 'olcs/core.js';
 
-import { useMapStore, useThemeStore, useBackgroundLayer, useLayers, useThemes, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.mjs";
+import { useMapStore, useThemeStore, useBackgroundLayer, useLayers, useThemes, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
