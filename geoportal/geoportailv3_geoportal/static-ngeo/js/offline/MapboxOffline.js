@@ -1,5 +1,9 @@
 import {XYZ} from 'ol/source';
 import {fromLonLat, transformExtent} from 'ol/proj';
+import {
+  useOffline,
+  useStyleStore,
+} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 // Copied from worker!
@@ -61,7 +65,9 @@ function fetchAndStoreResponseHelper(url, clone) {
     .then(r => (response = (clone ? r.clone() : null), r.blob()))
     .then(blob => blobToDataUrl(blob))
     .then(dataUrl => storeData(dbPromise, url, dataUrl))
-    .then(() => response);
+    .then(() => response)
+    // Don't block the whole process if one request fails
+    .catch(error => console.warn(error))
 }
 
 function fetchBlobsAndStore(urls, progressCallback, i) {
@@ -183,7 +189,7 @@ export default class MapBoxOffline {
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
-    fetch('/switch-lux-offline').then(() => {
+    fetch('/dev/main.html/switch-lux-offline').then(() => {
       let style;
       try {
         style = map.getStyle();
@@ -191,8 +197,18 @@ export default class MapBoxOffline {
         console.log('No defined style, using default one');
         style = layer.get('defaultMapBoxStyle');
       }
-      map.setStyle(null);
-      map.setStyle(style);
+
+      // Deactivate v3 setStyle(), use v4 setStyle() instead
+      // map.setStyle(null);
+      // map.setStyle(style);
+
+      // V4
+      const styleStore = useStyleStore();
+      styleStore.setStyle([style]);
+
+      // Deactivate catalog tab when offline
+      useOffline.setOffline(true);
+
     }, 0);
   }
 }
