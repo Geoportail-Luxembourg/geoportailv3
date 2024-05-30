@@ -279,7 +279,13 @@ const exports = class extends olObservable {
           layerSerialization = this.serDes_.serializeTileLayer(layer, source);
         } else if (layer instanceof olLayerVector) {
           layerType = 'vector';
+        } else {
+          console.log("instance = ", layer.constructor.name)
         }
+
+        console.log("this.ngeoBackgroundLayerMgr_.get(map) = ", this.ngeoBackgroundLayerMgr_.get(map));
+        console.log("layer = ", layer);
+        console.log("backgroundLayer = ", this.ngeoBackgroundLayerMgr_.get(map) === layer);
 
         const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map) === layer;
         layersItems.push({

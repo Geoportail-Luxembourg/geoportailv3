@@ -63,7 +63,10 @@ const OfflineRestorer = class extends Restorer {
         this.appMapBoxOffline_.restore(mapBoxLayer);
         this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
       }
-      map.addLayer(this.appDrawnFeatures_.drawLayer);
+
+      // Deactivate legacy v3 for restoring drawn features (v4 is not removing drawn features)
+      // map.addLayer(this.appDrawnFeatures_.drawLayer);
+
       this.restoring = false;
       return extent;
     });
