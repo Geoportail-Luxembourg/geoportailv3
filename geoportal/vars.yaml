@@ -179,6 +179,7 @@ vars:
         lidarProfileUrl: '{LIDAR_PROFILE_URL}'
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+        vectortilesUrl: '{VECTORTILESURL}'
         wmtsUrl: '{WMTSURL}'
         ipv6Substitution:
           regularServerRoot: geoportail.lu
@@ -529,6 +530,7 @@ runtime_environment:
   - {name: ROUTING_MAPQUEST_API_KEY, default: null}
   - {name: SHORTENER_ALLOWED_HOST}
   - {name: SHORTENER_BASE_URL}
+  - {name: VECTORTILESURL, default: 'https://vectortiles.geoportail.lu'}
   - {name: WMTSURL, default: ''}
 
 update_paths:
