@@ -765,9 +765,9 @@ const MainController = function(
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   this.mapStore_ = useMapStore()
   this.styleStore_ = useStyleStore()
-  this.styleStore_.setRegisterUrl("get", 'https://map.geoportail.lu/getvtstyle')
-  this.styleStore_.setRegisterUrl("upload", 'https://map.geoportail.lu/uploadvtstyle')
-  this.styleStore_.setRegisterUrl("delete", 'https://map.geoportail.lu/deletevtstyle')
+  this.styleStore_.setRegisterUrl("get", '/getvtstyle')
+  this.styleStore_.setRegisterUrl("upload", '/uploadvtstyle')
+  this.styleStore_.setRegisterUrl("delete", '/deletevtstyle')
 
   /**
    * @type {app.draw.DrawnFeatures}
