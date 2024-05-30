@@ -464,7 +464,8 @@ const MainController = function(
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer,
     proxyWmsUrl,
-    httpsProxyUrl) {
+    httpsProxyUrl,
+    getvtstyleUrl, uploadvtstyleUrl, deletevtstyleUrl, vectortilesUrl) {
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -765,9 +766,13 @@ const MainController = function(
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   this.mapStore_ = useMapStore()
   this.styleStore_ = useStyleStore()
-  this.styleStore_.setRegisterUrl("get", '/getvtstyle')
-  this.styleStore_.setRegisterUrl("upload", '/uploadvtstyle')
-  this.styleStore_.setRegisterUrl("delete", '/deletevtstyle')
+  this.styleService_ = useMvtStyles()
+  this.styleService_.setRegisterUrl_v3({
+    get: getvtstyleUrl,
+    upload: uploadvtstyleUrl,
+    delete: deletevtstyleUrl,
+    vectortiles: vectortilesUrl
+  })
 
   /**
    * @type {app.draw.DrawnFeatures}
