@@ -228,7 +228,7 @@ encodeMap_(scale, object) {
       }
       this.encodeLayer(object.layers, layer, viewResolution);
     }
-  }, this);
+  }.bind(this));
 
   var overlays = this.map_.getOverlays();
   overlays.forEach(function (layer) {
@@ -268,7 +268,7 @@ encodeMap_(scale, object) {
         }
       }
     }
-  }, this);
+  }.bind(this));
 }
 
 /**
