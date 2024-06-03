@@ -104,6 +104,8 @@ services:
       - LDAP_BASE_DN
       - PAG_FILE_SERVER
       - ROUTING_GRAPHHOPPER_API_KEY
+      - PROXYWMSURL
+      - VECTORTILESURL
     ports:
       - 8080:8080
 
