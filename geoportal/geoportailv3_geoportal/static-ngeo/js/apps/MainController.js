@@ -767,12 +767,15 @@ const MainController = function(
   this.mapStore_ = useMapStore()
   this.styleStore_ = useStyleStore()
   this.styleService_ = useMvtStyles()
+
   this.styleService_.setRegisterUrl_v3({
     get: getvtstyleUrl,
     upload: uploadvtstyleUrl,
     delete: deletevtstyleUrl,
     vectortiles: vectortilesUrl
   })
+
+  this.styleService_.initBackgroundsConfigs()
 
   /**
    * @type {app.draw.DrawnFeatures}
