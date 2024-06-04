@@ -3,7 +3,7 @@
  */
 import ngeoMapBackgroundLayerMgr from 'ngeo/map/BackgroundLayerMgr.js';
 
-import { useMapStore, useThemeStore, useBackgroundLayer, useLayers, useThemes, storeToRefs, watch, clearLayersCache } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useMapStore, useOfflineLayers, clearLayersCache } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 class Restorer {
 

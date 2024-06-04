@@ -18,6 +18,9 @@ import ngeoCustomEvent from 'ngeo/CustomEvent.js';
 import utils from 'ngeo/offline/utils.js';
 import {defaultImageLoadFunction} from 'ol/source/Image.js';
 
+
+import { useMapStore, useOfflineLayers, clearLayersCache } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 import * as realLocalforage from 'localforage';
 
 /**
@@ -340,6 +343,9 @@ const exports = class extends olObservable {
       const serialization = offlineLayer.layerSerialization;
       const tileLoadFunction = this.createTileLoadFunction_(offlineLayer);
       const layer = this.serDes_.deserializeTileLayer(serialization, tileLoadFunction);
+
+      useOfflineLayers().createOfflineLayer(offlineLayer)
+      
       return layer;
     }
     return null;
