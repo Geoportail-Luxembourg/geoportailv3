@@ -189,6 +189,10 @@ export default class MapBoxOffline {
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
+
+    // Deactivate catalog tab when offline
+    useOffline().setIsOffline(true);
+
     fetch('/dev/main.html/switch-lux-offline').then(() => {
       let style;
       try {
@@ -207,7 +211,7 @@ export default class MapBoxOffline {
       styleStore.setStyle([style]);
 
       // Deactivate catalog tab when offline
-      useOffline.setOffline(true);
+      useOffline().setIsOffline(true);
 
     }, 0);
   }
