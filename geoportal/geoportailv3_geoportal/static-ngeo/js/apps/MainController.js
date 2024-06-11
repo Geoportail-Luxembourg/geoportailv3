@@ -33,6 +33,7 @@ import {
   RemoteLayers,
   HeaderBar,
   proxyUrlHelper,
+  styleUrlHelper,
   useMap,
   useMvtStyles,
   useOpenLayers,
@@ -465,7 +466,7 @@ const MainController = function(
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer,
     proxyWmsUrl,
     httpsProxyUrl,
-    getvtstyleUrl, uploadvtstyleUrl, deletevtstyleUrl, vectortilesUrl) {
+    getvtpermalinkUrl, uploadvtpermalinkUrl, deletevtpermalinkUrl, vectortilesUrl) {
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -766,12 +767,10 @@ const MainController = function(
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   this.mapStore_ = useMapStore()
   this.styleStore_ = useStyleStore()
-  this.styleService_ = useMvtStyles()
-
-  this.styleService_.setRegisterUrl_v3({
-    get: getvtstyleUrl,
-    upload: uploadvtstyleUrl,
-    delete: deletevtstyleUrl,
+  styleUrlHelper.setRegisterUrl_v3({
+    get: getvtpermalinkUrl,
+    upload: uploadvtpermalinkUrl,
+    delete: deletevtpermalinkUrl,
     vectortiles: vectortilesUrl
   })
 
@@ -1561,11 +1560,11 @@ MainController.prototype.getUrlVtStyle = function() {
  * @param {boolean} active 3d state
  */
 MainController.prototype.enable3dCallback_ = function(active) {
-  // if (!active) {
-  //   this.appMvtStylingService.unpublishIfSerial(this.map_);
-  //   return;
-  // }
-  // this.appMvtStylingService.publishIfSerial(this.map_);
+  if (!active) {
+    this.appMvtStylingService.unpublishIfSerial(this.map_);
+    return;
+  }
+  this.appMvtStylingService.publishIfSerial(this.map_);
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {
