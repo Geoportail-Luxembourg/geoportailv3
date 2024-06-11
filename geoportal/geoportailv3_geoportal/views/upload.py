@@ -31,7 +31,7 @@ class Upload(object):
 
                 for source in data["sources"]:
                     data["sources"][source]["url"] = data["sources"][source]["url"].replace("https://vectortiles.geoportail.lu/data/", "mbtiles://{").replace(".json", "}")
-           
+
             except:
                 return {"status":"KO"}
             data = json.dumps(data).replace('&gt;', '>' ).replace('&lt;', '<' )
@@ -72,3 +72,58 @@ class Upload(object):
 
         return {"status":"OK"}
 
+
+    @view_config(route_name='upload_permalink_style', renderer='json')
+    def upload_vt_permalink_style(self):
+        input_file = self.request.POST['style'].file
+        if 'VT_PERMALINK_DIR' in os.environ:
+            dir = os.environ['VT_PERMALINK_DIR']
+        else:
+            dir = "/tmp"
+        id = uuid.uuid4()
+        file_path = os.path.join(dir, '%s.json' %id)
+
+        input_file.seek(0)
+        with open(file_path, 'w') as output_file:
+            try:
+                data = json.load(input_file)
+
+            except:
+                return {"status": "KO"}
+            data = json.dumps(data).replace('&gt;', '>').replace('&lt;', '<')
+            data = json.loads(data)
+
+            json.dump(data, output_file)
+
+            return {"status": "OK", "id": str(id)}
+
+    @view_config(route_name='get_permalink_style', renderer='json')
+    def get_vt_permalink_style(self):
+        # id = self.request.matchdict['id']
+        id = self.request.params.get("id")
+        if 'VT_PERMALINK_DIR' in os.environ:
+            dir = os.environ['VT_PERMALINK_DIR']
+        else:
+            dir = "/tmp"
+
+        file_path = os.path.join(dir, '%s.json' %id)
+        if not os.path.exists(file_path):
+            return HTTPBadRequest("File does not exist")
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+
+        return data
+
+    @view_config(route_name='delete_permalink_style', renderer='json')
+    def delete_vt_permalink_style(self):
+        id = self.request.params.get("id")
+        if 'VT_PERMALINK_DIR' in os.environ:
+            dir = os.environ['VT_PERMALINK_DIR']
+        else:
+            dir = "/tmp"
+
+        file_path = os.path.join(dir, '%s.json' %id)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        return {"status": "OK"}
