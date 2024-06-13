@@ -50,7 +50,7 @@ class MvtStylingService {
      * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
      * @ngInject
      */
-  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, vectortilesUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
+  constructor($http, appUserManager, uploadvtstyleUrl, uploadvtstyleUrlOverride, deletevtstyleUrl, deletevtstyleUrlOverride, getvtstyleUrl, vectortilesUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
         this.http_ = $http;
         this.appUserManager_ = appUserManager;
         this.isCustomStyle = false;
@@ -59,8 +59,8 @@ class MvtStylingService {
             topogr_global: false,
             topo_bw_jpeg: false
         };
-        this.uploadvtstyleUrl_ = uploadvtstyleUrl;
-        this.deletevtstyleUrl_ = deletevtstyleUrl;
+        this.uploadvtstyleUrl_ = uploadvtstyleUrlOverride ? uploadvtstyleUrlOverride : uploadvtstyleUrl;
+        this.deletevtstyleUrl_ = deletevtstyleUrlOverride ? deletevtstyleUrlOverride : deletevtstyleUrl;
         this.getvtstyleUrl_ = getvtstyleUrl;
         this.vectortilesUrl_ = vectortilesUrl;
         this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
