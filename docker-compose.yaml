@@ -105,6 +105,8 @@ services:
       - PAG_FILE_SERVER
       - ROUTING_GRAPHHOPPER_API_KEY
       - PROXYWMSURL
+      - UPLOAD_VT_STYLE_URL
+      - DELETE_VT_STYLE_URL
       - VECTORTILESURL
     ports:
       - 8080:8080

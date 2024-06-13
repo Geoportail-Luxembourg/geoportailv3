@@ -50,7 +50,7 @@ class MvtStylingService {
      * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
      * @ngInject
      */
-    constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
+  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, vectortilesUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
         this.http_ = $http;
         this.appUserManager_ = appUserManager;
         this.isCustomStyle = false;
@@ -62,6 +62,7 @@ class MvtStylingService {
         this.uploadvtstyleUrl_ = uploadvtstyleUrl;
         this.deletevtstyleUrl_ = deletevtstyleUrl;
         this.getvtstyleUrl_ = getvtstyleUrl;
+        this.vectortilesUrl_ = vectortilesUrl;
         this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
         this.ngeoLocation_ = ngeoLocation;
         this.mapStore_ = useMapStore();
@@ -81,7 +82,7 @@ class MvtStylingService {
     }
 
     createXYZCustom_(id) {
-        return `https://vectortiles.geoportail.lu/styles/${id}/{z}/{x}/{y}.png`;
+        return `${this.vectortilesUrl_}/styles/${id}/{z}/{x}/{y}.png`;
     }
 
     createRemoteItemKey_(label) {
