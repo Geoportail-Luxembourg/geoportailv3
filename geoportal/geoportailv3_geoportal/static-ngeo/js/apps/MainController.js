@@ -774,7 +774,7 @@ const MainController = function(
     vectortiles: vectortilesUrl
   })
 
-  this.styleService_.initBackgroundsConfigs()
+  useMvtStyles().initBackgroundsConfigs()
 
   /**
    * @type {app.draw.DrawnFeatures}
