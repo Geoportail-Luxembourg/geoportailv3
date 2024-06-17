@@ -10,6 +10,10 @@ from pyramid.httpexceptions import HTTPBadRequest
 class Upload(object):
     def __init__(self, request):
         self.request = request
+        self.vectortilesUrl_ = os.environ.get(
+            'VECTORTILESURL',
+            'https://vectortiles.geoportail.lu'
+        )
 
     @view_config(route_name='upload_vt_style', renderer='json')
     def upload_vt_style(self):
@@ -27,10 +31,10 @@ class Upload(object):
             try:
                 data = json.load(input_file)
 
-                data["glyphs"] = data["glyphs"].replace("https://vectortiles.geoportail.lu/fonts/", "")
+                data["glyphs"] = data["glyphs"].replace(f"{self.vectortilesUrl_}/fonts/", "")
 
                 for source in data["sources"]:
-                    data["sources"][source]["url"] = data["sources"][source]["url"].replace("https://vectortiles.geoportail.lu/data/", "mbtiles://{").replace(".json", "}")
+                    data["sources"][source]["url"] = data["sources"][source]["url"].replace(f"{self.vectortilesUrl_}/data/", "mbtiles://{").replace(".json", "}")
 
             except:
                 return {"status":"KO"}
@@ -50,11 +54,19 @@ class Upload(object):
         else:
             dir = "/tmp"
 
-        file_path = os.path.join(dir, '%s.json' %id)
+        file_path = os.path.join(dir, '%s.json' % id)
         if not os.path.exists(file_path):
             return HTTPBadRequest("File does not exist")
         with open(file_path) as json_file:
             data = json.load(json_file)
+
+        data["glyphs"] = f"{self.vectortilesUrl_}/fonts/" + data["glyphs"].strip()
+        for source in data["sources"]:
+            data["sources"][source]["url"] = (
+                data["sources"][source]["url"]
+                .replace("mbtiles://{", f"{self.vectortilesUrl_}/data/")
+                .replace("}", ".json")
+            )
 
         return data
 
