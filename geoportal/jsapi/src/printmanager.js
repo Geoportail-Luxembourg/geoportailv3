@@ -475,7 +475,7 @@ encodeVectorLayer_(arr, layer, resolution) {
     var styleData = null;
     var styleFunction = originalFeature.getStyleFunction();
     if (styleFunction !== undefined) {
-      styleData = styleFunction.call(originalFeature, resolution);
+      styleData = styleFunction.call(originalFeature, originalFeature, resolution);
     } else {
       styleFunction = layer.getStyleFunction();
       if (styleFunction !== undefined) {
