@@ -1538,8 +1538,7 @@ class Getfeatureinfo(object):
                 points = []
                 for geom in s.geoms:
                     for coord in list(geom.coords):
-                        points.append('{"x" : %(x)s, "y": %(y)s}' %{'x': coord[0], 'y': coord[1]})
-                log.error(",".join(points))
+                        points.append('[%(x)s,%(y)s]' %{'x': coord[0], 'y': coord[1]})
                 body['geometry'] = f'{{"points": [{ ",".join(points)}], "spatialReference" : {{"wkid" : {srs_geometry}}}}}'
                 body['geometryType'] = 'esriGeometryMultipoint '
             body['spatialRel'] = 'esriSpatialRelIntersects'
