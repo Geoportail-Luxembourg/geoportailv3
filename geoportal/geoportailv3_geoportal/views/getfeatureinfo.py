@@ -1533,7 +1533,15 @@ class Getfeatureinfo(object):
                 for coord in list(s.coords):
                     body['geometry'] = '{"x" : %(x)s, "y": %(y)s, "spatialReference" : {"wkid" : %(srs_geometry)s}}'%{'x': coord[0], 'y': coord[1], 'srs_geometry': srs_geometry}
                 body['geometryType'] = 'esriGeometryPoint'
-
+            elif s.geom_type == 'MultiPoint':
+                coords = []
+                points = []
+                for geom in s.geoms:
+                    for coord in list(geom.coords):
+                        points.append('{"x" : %(x)s, "y": %(y)s}' %{'x': coord[0], 'y': coord[1]})
+                log.error(",".join(points))
+                body['geometry'] = f'{{"points": [{ ",".join(points)}], "spatialReference" : {{"wkid" : {srs_geometry}}}}}'
+                body['geometryType'] = 'esriGeometryMultipoint '
             body['spatialRel'] = 'esriSpatialRelIntersects'
         elif where_clause is not None:
             body['where'] = where_clause
