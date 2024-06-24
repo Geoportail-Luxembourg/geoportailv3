@@ -11,6 +11,12 @@ import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import {DEVICE_PIXEL_RATIO} from 'ol/has.js';
 import MaskLayer from './Mask.js';
 
+
+import {
+  useOffline,
+  useStyleStore,
+} from "luxembourg-geoportail/bundle/lux.dist.js";
+
 /**
  * @type {!angular.Module}
  */
@@ -402,6 +408,9 @@ exports.Controller = class {
       this.menuDisplayed = false;
       this.displayExtent_();
       this.offlineMode.enable();
+      
+      // Deactivate catalog tab when offline
+      useOffline().setIsOffline(true);
     });
   }
 

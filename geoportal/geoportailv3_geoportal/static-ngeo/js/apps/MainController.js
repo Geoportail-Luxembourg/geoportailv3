@@ -39,6 +39,7 @@ import {
   useOpenLayers,
   useAppStore,
   useMapStore,
+  useOfflineLayers,
   useStyleStore,
   useThemeStore,
   statePersistorBgLayerService,
