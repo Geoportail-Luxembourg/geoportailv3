@@ -45,7 +45,7 @@ class Restorer {
     // map.getLayerGroup().getLayers().clear();
 
     // V4
-    useOffline().doRestore(offlineContent.layers);
+    useOffline().doRestore(offlineContent);
 
     // DEACTIVATE v3 offline layer creation
     // ------

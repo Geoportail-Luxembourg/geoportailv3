@@ -49,20 +49,25 @@ const OfflineRestorer = class extends Restorer {
    */
   restore(map) {
     this.restoring = true;
-    const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
+    // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map); // Deactivate legacy v3 - bgLayer is handled in v4
+
     return super.restore(map).then((extent) => {
+
+      // Deactivate legacy v3 - bgLayer is handled in v4
       // Keep a reference to the original mapbox layer
-      let mapBoxLayer = null;
-      if (bgLayer && bgLayer.getMapBoxMap) {
-        mapBoxLayer = bgLayer;
-      }
+      // let mapBoxLayer = null;
+      // if (bgLayer && bgLayer.getMapBoxMap) {
+      //   mapBoxLayer = bgLayer;
+      // }
 
       this.appMymapsOffline_.restore();
-      if (mapBoxLayer) {
-        console.log('Restoring MapBox');
-        this.appMapBoxOffline_.restore(mapBoxLayer);
-        this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
-      }
+
+      // Deactivate legacy v3
+      // if (mapBoxLayer) {
+      //   console.log('Restoring MapBox');
+      //   this.appMapBoxOffline_.restore(mapBoxLayer);
+      //   this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
+      // }
 
       // Deactivate legacy v3 for restoring drawn features (v4 is not removing drawn features)
       // map.addLayer(this.appDrawnFeatures_.drawLayer);
@@ -79,10 +84,10 @@ const OfflineRestorer = class extends Restorer {
    * @override
    */
   doRestore(map, offlineContent) {
-    const view = map.getView();
-    const {zooms} = offlineContent;
-    view.setMinZoom(zooms[0]);
-    view.setMaxZoom(zooms[zooms.length - 1 ]);
+    // const view = map.getView();
+    // const {zooms} = offlineContent;
+    // view.setMinZoom(zooms[0]);
+    // view.setMaxZoom(zooms[zooms.length - 1 ]);
     return super.doRestore(map, offlineContent);
   }
 
