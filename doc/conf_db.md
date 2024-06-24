@@ -132,10 +132,11 @@ Layers displayed by default on first activation of 3D mode can be defined via th
 
 `ol3d_options` can hand over options to the creation of the Cesium 3d tileset. The parameters are defined as a JSON dict.
 
-There are 3 luxembourg custom parameters:
+There are 4 luxembourg custom parameters:
 - heightOffset
 - latOffset
 - longOffset
+- cesium3DTileStyle
 
 The other parameters can be any parameters accepted by [Cesium tilesets](https://cesium.com/learn/cesiumjs/ref-doc/Cesium3DTileset.html)
 
