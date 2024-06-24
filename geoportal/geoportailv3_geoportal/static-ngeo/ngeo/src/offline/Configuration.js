@@ -19,7 +19,7 @@ import utils from 'ngeo/offline/utils.js';
 import {defaultImageLoadFunction} from 'ol/source/Image.js';
 
 
-import { useMapStore, useOfflineLayers, clearLayersCache } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useOffline, useOfflineLayers } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 import * as realLocalforage from 'localforage';
 
@@ -39,6 +39,8 @@ const exports = class extends olObservable {
 
     this.localforage_ = this.createLocalforage();
     this.configureLocalforage();
+
+    useOffline().initLocalforage_v3(this.localforage_);
 
     /**
      * @private
@@ -282,13 +284,7 @@ const exports = class extends olObservable {
           layerSerialization = this.serDes_.serializeTileLayer(layer, source);
         } else if (layer instanceof olLayerVector) {
           layerType = 'vector';
-        } else {
-          console.log("instance = ", layer.constructor.name)
         }
-
-        console.log("this.ngeoBackgroundLayerMgr_.get(map) = ", this.ngeoBackgroundLayerMgr_.get(map));
-        console.log("layer = ", layer);
-        console.log("backgroundLayer = ", this.ngeoBackgroundLayerMgr_.get(map) === layer);
 
         const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map) === layer;
         layersItems.push({
@@ -340,15 +336,14 @@ const exports = class extends olObservable {
    */
   recreateOfflineLayer(offlineLayer) {
     if (offlineLayer.layerType === 'tile') {
-      const serialization = offlineLayer.layerSerialization;
-      const tileLoadFunction = this.createTileLoadFunction_(offlineLayer);
-      const layer = this.serDes_.deserializeTileLayer(serialization, tileLoadFunction);
-
-      useOfflineLayers().createOfflineLayer(offlineLayer)
-      
-      return layer;
+      // DEACTIVATE v3 offline layer creation
+      // ------
+      // const serialization = offlineLayer.layerSerialization;
+      // const tileLoadFunction = this.createTileLoadFunction_(offlineLayer);
+      // const layer = this.serDes_.deserializeTileLayer(serialization, tileLoadFunction);      
+      // return layer;
     }
-    return null;
+    // return null;
   }
 
   /**

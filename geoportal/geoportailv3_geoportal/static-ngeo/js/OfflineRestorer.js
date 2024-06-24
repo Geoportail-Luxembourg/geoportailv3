@@ -53,7 +53,7 @@ const OfflineRestorer = class extends Restorer {
     return super.restore(map).then((extent) => {
       // Keep a reference to the original mapbox layer
       let mapBoxLayer = null;
-      if (bgLayer.getMapBoxMap) {
+      if (bgLayer && bgLayer.getMapBoxMap) {
         mapBoxLayer = bgLayer;
       }
 
