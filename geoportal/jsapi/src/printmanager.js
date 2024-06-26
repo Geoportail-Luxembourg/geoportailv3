@@ -282,7 +282,7 @@ encodeLayer(arr, layer, resolution) {
     this.encodeImageLayer_(arr, layer);
   } else if (layer instanceof TileLayer) {
     this.encodeTileLayer_(arr, layer);
-  } else if (layer instanceof VectorLayer) {
+  } else if (layer instanceof VectorLayer || layer instanceof ol.layer.Vector) {
     this.encodeVectorLayer_(arr, layer, resolution);
   }
 }
@@ -614,6 +614,7 @@ encodeVectorStyle_(object, geometryType, style, styleId, featureStyleProp) {
       this.encodeVectorStylePoint_(styleObject.symbolizers, imageStyle);
     }
   }
+
   if (textStyle !== null) {
     this.encodeTextStyle_(styleObject.symbolizers, textStyle);
   }
@@ -676,7 +677,7 @@ encodeVectorStyleLine_(symbolizers, strokeStyle) {
  */
 encodeVectorStylePoint_(symbolizers, imageStyle) {
   var symbolizer;
-  if (imageStyle instanceof CircleStyle) {
+  if (imageStyle instanceof CircleStyle || imageStyle instanceof ol.style.Circle) {
     symbolizer = /** @type {MapFishPrintSymbolizerPoint} */ ({
       type: 'point'
     });
