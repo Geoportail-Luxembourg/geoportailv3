@@ -3,6 +3,7 @@
  */
 import ngeoMapBackgroundLayerMgr from 'ngeo/map/BackgroundLayerMgr.js';
 
+import { useMapStore, useOffline, clearLayersCache } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 class Restorer {
 
@@ -40,16 +41,23 @@ class Restorer {
    * @return {ol.Extent} The extent of the restored area
    */
   doRestore(map, offlineContent) {
-    map.getLayerGroup().getLayers().clear();
-    for (const offlineLayer of offlineContent.layers) {
-      const layer = this.configuration_.recreateOfflineLayer(offlineLayer);
-      if (layer) {
-        map.addLayer(layer);
-        if (offlineLayer.backgroundLayer) {
-          this.ngeoBackgroundLayerMgr_.set(map, layer);
-        }
-      }
-    }
+    // v3
+    // map.getLayerGroup().getLayers().clear();
+
+    // V4
+    useOffline().doRestore(offlineContent);
+
+    // DEACTIVATE v3 offline layer creation
+    // ------
+    // for (const offlineLayer of offlineContent.layers) {
+    //   const layer = this.configuration_.recreateOfflineLayer(offlineLayer);
+    //   // if (layer) {
+    //   //   map.addLayer(layer);
+    //   //   if (offlineLayer.backgroundLayer) {
+    //   //     this.ngeoBackgroundLayerMgr_.set(map, layer);
+    //   //   }
+    //   // }
+    // }
     return offlineContent.extent;
   }
 }

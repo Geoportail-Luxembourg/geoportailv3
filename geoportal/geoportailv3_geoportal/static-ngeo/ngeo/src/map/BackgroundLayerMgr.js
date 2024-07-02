@@ -94,6 +94,8 @@ export default class BackgroundLayerMgr extends olObservable {
    */
   get(map) {
     return useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer)
+
+    // Deactivate legacy v3 for retrieving bgLayer
     const mapUid = olBase.getUid(map).toString();
     return mapUid in this.mapUids_ ? map.getLayers().item(0) : null;
   };
@@ -108,8 +110,10 @@ export default class BackgroundLayerMgr extends olObservable {
    * @export
    */
   set(map, layer) {
-    useBackgroundLayer().setBgLayer(layer.id)
+    useBackgroundLayer().setBgLayer(layer.get('id'))
     return
+
+    // Deactivate legacy v3 for setting bgLayer
     const ZIndex = -200;
     map.getTargetElement().classList.toggle('blankBackground', layer.get('role') === 'blank' || layer.get('role') === 'mapboxBackground' || layer.get('role') === undefined);
     const mapUid = olBase.getUid(map).toString();

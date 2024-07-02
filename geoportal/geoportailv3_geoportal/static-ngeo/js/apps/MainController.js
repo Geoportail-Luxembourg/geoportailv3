@@ -39,6 +39,7 @@ import {
   useOpenLayers,
   useAppStore,
   useMapStore,
+  useOfflineLayers,
   useStyleStore,
   useThemeStore,
   statePersistorBgLayerService,
@@ -594,32 +595,32 @@ const MainController = function(
     selectedItem['selected'] = true;
 
     this.styleStore_.setSimpleStyle(selectedItem)
-    return
+    // return
 
     ////////////////////////////////////////////////////////////////////////
 
-    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    // const label = bgLayer.get('label');
-    // this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
-    // const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
-    // const mbMap =  bgLayer.getMapLibreMap();
-    // for (let i = 0; i < selectedItem['colors'].length; ++i) {
-    //   const item = mediumStyles[i];
-    //   item.color = selectedItem['colors'][i];
-    //   item.visible = true;
-    //   applyStyleFromItem(mbMap, item, label);
-    // }
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    const label = bgLayer.get('label');
+    this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
+    const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
+    const mbMap =  bgLayer.getMapLibreMap();
+    for (let i = 0; i < selectedItem['colors'].length; ++i) {
+      const item = mediumStyles[i];
+      item.color = selectedItem['colors'][i];
+      item.visible = true;
+      applyStyleFromItem(mbMap, item, label);
+    }
 
-    // const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
-    // hillshadeItem.visible = false;
-    // applyStyleFromItem(mbMap, hillshadeItem, label)
+    const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
+    hillshadeItem.visible = false;
+    applyStyleFromItem(mbMap, hillshadeItem, label)
 
-    // this.debouncedSaveStyle_();
-    // this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
+    this.debouncedSaveStyle_();
+    this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
   this.onMediumStylingChanged = item => {
-    let appliedStyle = useMvtStyles().applyDefaultStyle(
+    styleService_.applyDefaultStyle(
       this.mapStore_.bgLayer,
       this.styleStore_.bgVectorBaseStyles,
       this.styleStore_.bgStyle
