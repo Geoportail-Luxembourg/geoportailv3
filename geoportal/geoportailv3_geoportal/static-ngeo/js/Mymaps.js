@@ -815,7 +815,7 @@ exports.prototype.updateLayers = function() {
   if (bgLayers.value) {
     setBgLayer(bgLayers.value, this.mapBgLayer)
   } else {
-    const bgWatch = watch(
+    watch(
       bgLayers,
       (bgLayers) => {
         setBgLayer(bgLayers.value, this.mapBgLayer)

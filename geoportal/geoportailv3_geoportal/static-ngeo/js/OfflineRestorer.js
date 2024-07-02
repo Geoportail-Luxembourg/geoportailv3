@@ -51,7 +51,18 @@ const OfflineRestorer = class extends Restorer {
     this.restoring = true;
     // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map); // Deactivate legacy v3 - bgLayer is handled in v4
 
-    return super.restore(map).then((extent) => {
+    return this.appMymapsOffline_
+        .restore()
+        .then(() => {
+          return super.restore(map)
+            .then((extent) => {
+              this.restoring = false;
+              return extent;
+            });
+        });
+
+    // Deactivate legacy v3 - bgLayer is handled in v4
+    // return super.restore(map).then((extent) => {
 
       // Deactivate legacy v3 - bgLayer is handled in v4
       // Keep a reference to the original mapbox layer
@@ -60,7 +71,11 @@ const OfflineRestorer = class extends Restorer {
       //   mapBoxLayer = bgLayer;
       // }
 
-      this.appMymapsOffline_.restore();
+      // this.appMymapsOffline_
+      //   .restore()
+      //   .then(() => {
+      //     map.addLayer(this.appDrawnFeatures_.drawLayer);
+      //   });
 
       // Deactivate legacy v3
       // if (mapBoxLayer) {
@@ -72,9 +87,9 @@ const OfflineRestorer = class extends Restorer {
       // Deactivate legacy v3 for restoring drawn features (v4 is not removing drawn features)
       // map.addLayer(this.appDrawnFeatures_.drawLayer);
 
-      this.restoring = false;
-      return extent;
-    });
+    //   this.restoring = false;
+    //   return extent;
+    // });
   }
 
   /**
