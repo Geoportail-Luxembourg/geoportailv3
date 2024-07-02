@@ -66,7 +66,6 @@ class MvtStylingService {
         this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
         this.ngeoLocation_ = ngeoLocation;
         this.mapStore_ = useMapStore();
-        // this.styleStore_ = useStyleStore();
     }
 
     getBgStyle() {
