@@ -10,6 +10,7 @@ let offlineEnabled = {};
  * @param {string} url
  */
 function normalizeUrl(url) {
+  if (url.includes('cdnjs')) {return url};
   if (url.startsWith('http')) {
     const idx = url.substr(9).indexOf('/');
     url = url.substr(9 + idx);
@@ -26,6 +27,7 @@ function normalizeUrl(url) {
   if (url.endsWith(horrorSuffix)) {
     url = url.substr(0, url.length - horrorSuffix.length);
   }
+  url = url.replace('dev/build/_/_/_/_/app/geoportailv3_geoportal/', '');
 
   if (!url) {
     url = '/';
