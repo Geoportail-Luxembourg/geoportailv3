@@ -400,7 +400,10 @@ exports.Controller = class {
    * Zoom to the extent of that data and restore the data.
    * @export
    */
-  activateOfflineMode() {
+  activateOfflineMode() {      
+    // Deactivate catalog tab when offline
+    useOffline().setIsOffline(true);
+
     this.ngeoOfflineServiceManager_.restore(this.map).then((extent) => {
       this.dataPolygon_ = this.createPolygonFromExtent_(extent);
       const size = /** @type {ol.Size} */ (this.map.getSize());
@@ -408,9 +411,6 @@ exports.Controller = class {
       this.menuDisplayed = false;
       this.displayExtent_();
       this.offlineMode.enable();
-      
-      // Deactivate catalog tab when offline
-      useOffline().setIsOffline(true);
     });
   }
 

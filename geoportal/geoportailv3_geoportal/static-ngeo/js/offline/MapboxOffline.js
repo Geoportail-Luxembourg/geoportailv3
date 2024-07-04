@@ -185,12 +185,12 @@ export default class MapBoxOffline {
 
   restore(layer) {
     console.log('Activate MapBox offline data');
-    const map = layer.getMapBoxMap();
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
 
     fetch('/dev/main.html/switch-lux-offline').then(() => {
+      const map = layer && layer.getMapBoxMap ? layer.getMapBoxMap() : null;
       let style;
       try {
         style = map.getStyle();
