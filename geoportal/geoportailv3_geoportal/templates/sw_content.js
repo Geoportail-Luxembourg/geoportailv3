@@ -170,6 +170,10 @@ if (typeof self === 'object') {
     const url = event.request.url;
     const switchOffline = url.includes('/switch-lux-offline');
     const switchOnline = url.includes('/switch-lux-online');
+    if (url.includes('/ping')) {
+      event.respondWith(fetch(event.request));
+      return;
+    }
     if (switchOffline || switchOnline) {
       const value = offlineEnabled[event.clientId] = switchOffline;
       console.log('Offline of mode of client', event.clientId, 'is now', value);
