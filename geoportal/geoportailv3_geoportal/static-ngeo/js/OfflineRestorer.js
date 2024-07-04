@@ -54,6 +54,10 @@ const OfflineRestorer = class extends Restorer {
     return this.appMymapsOffline_
         .restore()
         .then(() => {
+          const bgLayer = this.ngeoBackgroundLayerMgr_.get(map); // Deactivate legacy v3 - bgLayer is handled in v4
+          const mapBoxLayer = bgLayer && bgLayer.getMapBoxMap ? bgLayer : null;
+          this.appMapBoxOffline_.restore(mapBoxLayer);
+
           return super.restore(map)
             .then((extent) => {
               this.restoring = false;
