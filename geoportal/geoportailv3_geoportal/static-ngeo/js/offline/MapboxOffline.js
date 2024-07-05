@@ -3,6 +3,11 @@ import {fromLonLat, transformExtent} from 'ol/proj';
 import {
   useOffline,
   useStyleStore,
+  useOpenLayers,
+  useMapStore,
+  useMap,
+  useBackgroundLayer,
+  useThemes,
 } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
@@ -199,13 +204,53 @@ export default class MapBoxOffline {
         style = layer.get('defaultMapBoxStyle');
       }
 
+      // V4
+      const styleStore = useStyleStore();
+      // styleStore.setStyle([style]);
+      const bgSources = styleStore.bgVectorSources
+      const bgId = layer.get('id')
+
+      let styleDef = {
+        ...bgSources.get(bgId),
+        "defaultMapBoxStyle": style,
+        style,
+        "defaultMapBoxStyleXYZ": layer.get('xyz'),
+        "xyz": layer.get('xyz'),
+        // "xyz_custom": "",
+      };
+      const ol = useOpenLayers()
+
+      // remove existing definitions
+      // bgSources.delete(layer.get('id'))
+      // styleStore.setBgVectorSources(bgSources);
+      ol.removeFromCache(bgId);
+
+      bgSources.set(bgId, styleDef);
+      styleStore.setBgVectorSources(bgSources);
+
+      const theme = useThemes()
+      const ll = theme.findBgLayerById(bgId)
+      const olMap = useMap().getOlMap()
+      const bg = useBackgroundLayer();
+      ol.setBgLayer(olMap, ll, bgSources);
+      const layerStack = olMap.getLayers();
+
+      // does not seem to trigger
+      const lBg = layerStack.findIndex(layer => layer.getZIndex() === -200);
+      if (lBg.getMapLibreMap().loaded()) {
+        bg.setBgLayer(bgId);
+      } else {
+        new Promise(resolve =>
+          olLayer.getMapLibreMap().once('data', resolve)
+        ).then(() =>
+          bg.setBgLayer(bgId)
+        )
+      }
+
+
       // Deactivate v3 setStyle(), use v4 setStyle() instead
       // map.setStyle(null);
       // map.setStyle(style);
-
-      // V4
-      const styleStore = useStyleStore();
-      styleStore.setStyle([style]);
 
     }, 0);
   }
