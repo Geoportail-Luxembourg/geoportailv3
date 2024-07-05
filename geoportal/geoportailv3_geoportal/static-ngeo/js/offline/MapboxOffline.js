@@ -231,22 +231,7 @@ export default class MapBoxOffline {
       const theme = useThemes()
       const ll = theme.findBgLayerById(bgId)
       const olMap = useMap().getOlMap()
-      const bg = useBackgroundLayer();
       ol.setBgLayer(olMap, ll, bgSources);
-      const layerStack = olMap.getLayers();
-
-      // does not seem to trigger
-      const lBg = layerStack.findIndex(layer => layer.getZIndex() === -200);
-      if (lBg.getMapLibreMap().loaded()) {
-        bg.setBgLayer(bgId);
-      } else {
-        new Promise(resolve =>
-          olLayer.getMapLibreMap().once('data', resolve)
-        ).then(() =>
-          bg.setBgLayer(bgId)
-        )
-      }
-
 
       // Deactivate v3 setStyle(), use v4 setStyle() instead
       // map.setStyle(null);
