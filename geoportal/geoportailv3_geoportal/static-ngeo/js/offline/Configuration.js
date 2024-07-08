@@ -155,7 +155,7 @@ const exports = class extends NgeoConfiguration {
    */
   createLayerMetadatas(map, userExtent) {
     const layersItems = super.createLayerMetadatas(map, userExtent);
-    return layersItems.filter(item => item.layerType === 'tile');
+    return layersItems.filter(item => item.layerType === 'tile' || item.layerType === 'bg_vector');
   }
 
   /**

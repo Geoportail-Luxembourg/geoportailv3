@@ -272,7 +272,7 @@ const exports = class extends olObservable {
      * @param {Array<ol.layer.Group>} ancestors .
      * @return {boolean} whether to traverse this layer children.
      */
-    const visitLayer = (layer, ancestors) => {
+    const visitLayer = (layer, ancestors, saveBackground = false) => {
       if (layer instanceof olLayerLayer) {
         const extentByZoom = this.getExtentByZoom(map, layer, ancestors, userExtent);
         const projection = olProj.get(map.getView().getProjection());
@@ -284,9 +284,20 @@ const exports = class extends olObservable {
           layerSerialization = this.serDes_.serializeTileLayer(layer, source);
         } else if (layer instanceof olLayerVector) {
           layerType = 'vector';
+        } else if (layer.getMapBoxMap) {
+          layerType = 'bg_vector';
         }
 
         const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map) === layer;
+
+
+        if (!saveBackground && backgroundLayer) {
+          // Fix for v4, if this is not a bg and it is not explicitly
+          // said that must savebg, do not save
+          // because map.getLayers() cannot retrieve the bg layer when bg is vector (but can when bg raster)
+          return;
+        }
+
         layersItems.push({
           backgroundLayer,
           map,
@@ -300,9 +311,18 @@ const exports = class extends olObservable {
       }
       return true;
     };
+
+    // Save all layer
     map.getLayers().forEach((root) => {
       utils.traverseLayer(root, [], visitLayer);
     });
+
+    // Fix for v4, retrieve bg vector from store
+    // because map.getLayers() cannot retrieve the bg layer when bg is vector (but can when bg raster)
+
+    const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map);
+    visitLayer(backgroundLayer, [], true);
+
     return layersItems;
   }
 
