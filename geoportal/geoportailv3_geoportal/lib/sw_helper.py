@@ -32,6 +32,12 @@ def get_urls(request):
         urls.append('/dev/main.html')
         urls.append('/dev/main.css')
         urls.append('/dev/main.js')
+        urls.append('/static-ngeo/web-components/style.css')
+        urls.append('/static-ngeo/webfonts/geoportail-icons.woff')
+        urls.append('/static-ngeo/images/gov-light.png')
+        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css')
+        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.woff2')
+        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.ttf')
 
     woffs = glob.glob('/etc/static-ngeo/*.woff')
     for stuff in get_built_filenames('*.woff'):
