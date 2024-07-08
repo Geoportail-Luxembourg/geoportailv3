@@ -25,19 +25,20 @@ def get_urls(request):
         request.static_path('geoportailv3_geoportal:static-ngeo/images/arrow.png'),
         main_js_url,
         main_css_url,
-        gov_light_url
+        gov_light_url,
+        '/static-ngeo/web-components/style.css',
+        '/static-ngeo/webfonts/geoportail-icons.woff',
+        '/static-ngeo/images/gov-light.png',
+
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.woff2',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.ttf',
     ]
 
     if 'dev' in request.params:
         urls.append('/dev/main.html')
         urls.append('/dev/main.css')
         urls.append('/dev/main.js')
-        urls.append('/static-ngeo/web-components/style.css')
-        urls.append('/static-ngeo/webfonts/geoportail-icons.woff')
-        urls.append('/static-ngeo/images/gov-light.png')
-        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css')
-        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.woff2')
-        urls.append('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.ttf')
 
     woffs = glob.glob('/etc/static-ngeo/*.woff')
     for stuff in get_built_filenames('*.woff'):
