@@ -23,6 +23,9 @@ import olGeomLineString from 'ol/geom/LineString.js';
 import * as olExtent from 'ol/extent.js';
 import JSZip from 'jszip';
 
+import { useAppStore } from "luxembourg-geoportail/bundle/lux.dist.js";
+
+
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
@@ -820,6 +823,9 @@ exports.prototype.closeMap = function() {
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
   this.appFeaturePopup_.hide();
+
+  // v4 Set map id MyMaps in lib
+  useAppStore().setMapId(undefined);
 };
 
 
