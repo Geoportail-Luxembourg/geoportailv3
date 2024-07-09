@@ -15,7 +15,7 @@ from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, rea
 
 import logging
 log = logging.getLogger(__name__)
-
+geojson.geometry.DEFAULT_PRECISION = 9
 
 class FullTextSearchView(object):
 

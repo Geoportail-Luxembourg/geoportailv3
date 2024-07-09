@@ -12,6 +12,14 @@ class CountryLimAdm(Base):
     id = Column(Unicode, primary_key=True)
     geom = Column(Geometry(srid=2169))
 
+class CommunesLimAdm(Base):
+    __table_args__ = ({'schema': 'diffdata', 'autoload': False})
+    __tablename__ = 'limadm_communes'
+    id = Column(Unicode, primary_key=True)
+    geom = Column(Geometry(srid=2169))
+    commune = Column(Unicode)
+    canton = Column(Unicode)
+    district = Column(Unicode)
 
 class Parcel(Base):
     __table_args__ = ({'schema': 'diffdata', 'autoload': False})

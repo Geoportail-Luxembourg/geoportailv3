@@ -4,53 +4,13 @@
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, 'f_')">
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')" class="row">
-        <span ng-if="!ctrl.isEmpty(entry['value']) && (!(layers.layer == '2407' && (entry['key'] == 'f_Cl_erosion' || entry['key'] == 'f_Erosion_kl' || entry['key'] == 'f_Erosion_Cl' || entry['key'] == 'f_Erosioun_K')))">
-          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-4">
-            <label>{{entry['key'] | translate}}</label> 
-          </div>
-          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-8">
-            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          </div>
-          <div ng-if="ctrl.isLink(entry['value'])" class="col-xs-4">
-          </div>
-          <div ng-if="ctrl.isLink(entry['value'])" class="col-xs-8">
-            <a ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
-          </div>
-        </span>
-        <span ng-if="!ctrl.isEmpty(entry['value']) && layers.layer == '2407' && ctrl.language == 'de' && entry['key'] == 'f_Erosion_kl'">
-          <div ng-if="ctrl.language == 'de'" class="col-xs-4">
-            <label>{{'f_Erosion_kl' | translate}}</label> 
-          </div>
-          <div ng-if="ctrl.language == 'de'" class="col-xs-8">
-            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          </div>
-        </span>
-        <span ng-if="!ctrl.isEmpty(entry['value']) && layers.layer == '2407' && ctrl.language == 'fr' && entry['key'] == 'f_Cl_erosion'">
-          <div ng-if="ctrl.language == 'fr'" class="col-xs-4">
-            <label>{{'f_Cl_erosion' | translate}}</label> 
-          </div>
-          <div ng-if="ctrl.language == 'fr'" class="col-xs-8">
-            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          </div>
-        </span>
-        <span ng-if="!ctrl.isEmpty(entry['value']) && layers.layer == '2407' && ctrl.language == 'en' && entry['key'] == 'f_Erosion_Cl'">
-          <div ng-if="ctrl.language == 'en'" class="col-xs-4">
-            <label>{{'f_Erosion_Cl' | translate}}</label> 
-          </div>
-          <div ng-if="ctrl.language == 'en'" class="col-xs-8">
-            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          </div>
-        </span>
-        <span ng-if="!ctrl.isEmpty(entry['value']) && layers.layer == '2407' && ctrl.language == 'lb' && entry['key'] == 'f_Erosioun_K'">
-          <div ng-if="ctrl.language == 'lb'" class="col-xs-4">
-            <label>{{'f_Erosioun_K' | translate}}</label> 
-          </div>
-          <div ng-if="ctrl.language == 'lb'" class="col-xs-8">
-            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          </div>
+        <span ng-if="!ctrl.isEmpty(entry['value']) && ctrl.showAttributesByLang(entry, layers.layer)">
+          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-4"><label>{{entry['key'] | translate}}</label> </div>
+          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-8"><span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span></div>
+          <div ng-if="ctrl.isLink(entry['value'])" class="col-xs-4"></div>
+          <div ng-if="ctrl.isLink(entry['value'])" class="col-xs-8"><a ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a></div>
         </span>
       </div>
-      
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">
         <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
       </div>

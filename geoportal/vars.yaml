@@ -291,6 +291,7 @@ vars:
     - {name: is_queryable, type: boolean}
     - {name: is_expanded, type: boolean}
     - {name: legend_name}
+    - {name: return_clicked_point}
     - {name: link, type: url}
     - {name: link_title}
     - {name: linked_layers, type: list}
@@ -300,7 +301,7 @@ vars:
     - {name: ogc_info_srs}
     - {name: ogc_query_layers, type: list}
     - {name: ol3d_defaultlayer, type: boolean}
-    - {name: ol3d_options, type: json, error_message: 'ol3d_options must be valid JSON and may contain the following options: heightOffset, latOffset, longOffset, as well as any options that can be given to Cesium.Cesium3DTileset'}
+    - {name: ol3d_options, type: json, error_message: 'ol3d_options must be valid JSON and may contain the following options: heightOffset, latOffset, longOffset,cesium3DTileStyle as well as any options that can be given to Cesium.Cesium3DTileset'}
     - {name: ol3d_type, type: string, regex: 'data|terrain|mesh', error_message: 'ol3d_type must be data, terrain or mesh        ####### comment: type: regex does not work correctly with get_typed in c2cgeoportal, so a non validated string is used :-('}
     - {name: page_title}
     - {name: print_img}
@@ -321,6 +322,11 @@ vars:
     - {name: start_y, type: float}
     - {name: start_zoom, type: float}
     - {name: time_config}
+    - {name: geocatalog_open_data_publish_flag, type: boolean}
+    - {name: geocatalog_open_data_update_frequency, type: string}
+    - {name: geocatalog_open_data_last_update_date, type: string}
+    - {name: geocatalog_open_data_uuid, type: string}
+    - {name: geocatalog_open_data_only_add_gpkg, type: boolean}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:

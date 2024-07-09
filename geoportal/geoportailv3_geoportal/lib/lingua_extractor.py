@@ -1232,6 +1232,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
         print("%d results" % results.count())
         for result in results:
+            rest_url = result.rest_url
+            if rest_url is not None and len(rest_url) > 0 and "f=geojson" in rest_url:
+                rest_url = rest_url.replace("f=geojson", "")
             has_prefix = True
             if result.template == 'default_attachment_no_prefix.html':
                 has_prefix = False
@@ -1247,12 +1250,12 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                     print(colorize('query FAILED : SELECT * FROM ' + result.query, RED))
                     if os.environ.get("IGNORE_I18N_ERRORS", "FALSE") != "TRUE":
                         raise
-            if result.rest_url is not None and len(result.rest_url) > 0:
+            if rest_url is not None and len(rest_url) > 0:
                 first_row = self._get_external_data(
-                    result.rest_url,
+                    rest_url,
                     '96958.90059551848,61965.61097091329,' +
                     '97454.77280739773,62463.21618929457', result.layer, result.use_auth)
-            if ((result.rest_url is None or len(result.rest_url) == 0) and
+            if ((rest_url is None or len(rest_url) == 0) and
                 (result.query is None or len(result.query) == 0)):
                 x = "831.1112060546875"
                 y = "253.3333396911621"
@@ -1263,10 +1266,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                     LuxLayerInternalWMS.id == result.layer).\
                     first()
-                if internal_wms is not None:
+                if internal_wms is not None  and internal_wms.url is not None:
                     url = internal_wms.url
                     ogc_layers = internal_wms.layers
-
                     first_row = self._ogc_getfeatureinfo(
                         DBSession,
                         url, x, y, width, height,

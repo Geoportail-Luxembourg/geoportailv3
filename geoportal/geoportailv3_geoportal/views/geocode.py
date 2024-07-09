@@ -7,10 +7,11 @@ from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
 from geoportailv3_geoportal.geocode import CountryLimAdm, Address, WKPOI, \
-    Neighbourhood, Parcel
+    Neighbourhood, Parcel, CommunesLimAdm
 from c2cgeoportal_commons.models import DBSessions
 from shapely.wkt import loads
 from shapely.wkb import loads as wkb_loads
+from shapely.geometry import asShape
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
 from sqlalchemy.sql import text
@@ -51,7 +52,6 @@ class Geocode(object):
            len(easting) == 0 or len(northing) == 0 or\
            re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
            re.match("^[-]?[0-9]*[.]{0,1}[0-9]*$", northing) is None:
-
             return HTTPBadRequest("Missing or invalid coordinates")
 
         distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
@@ -122,16 +122,25 @@ class Geocode(object):
                     Address.numero.label("numero"),
                     Address.localite.label("localite"),
                     Address.code_postal.label("code_postal"),
+                    Address.geom.label("geometry"),
                     func.ST_AsGeoJSON(Address.geom).label("geom"),
                     func.ST_AsGeoJSON((func.ST_Transform(Address.geom, 4326))).
                     label("geomlonlat"),
                     distcol.label("distance")).order_by(distcol).limit(1):
+                shapely_geom = to_shape(feature.geometry)
+                communes = self.db_ecadastre.query(CommunesLimAdm). \
+                        filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
+                            "x": shapely_geom.x,
+                            "y": shapely_geom.y
+                        }, srid=2169), CommunesLimAdm.geom)
+                    ).first()
                 results.append({"id_caclr_locality": feature.id_caclr_loca,
                                 "id_caclr_street": feature.id_caclr_rue,
                                 "id_caclr_bat": feature.id_caclr_bat,
                                 "street": feature.rue,
                                 "number": feature.numero,
                                 "locality": feature.localite,
+                                "commune": communes.commune,
                                 "postal_code": feature.code_postal,
                                 "country": "Luxembourg",
                                 "country_code": "lu",
@@ -515,6 +524,7 @@ class Geocode(object):
                 geom = loads(geom)
             return geom
         except Exception as e:
+            log.error(e)
             self.db_ecadastre.rollback()
         return None
 

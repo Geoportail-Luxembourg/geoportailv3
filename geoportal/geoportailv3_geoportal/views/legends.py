@@ -43,7 +43,7 @@ class Legends(object):
             url = \
                   "https://wiki.geoportail.lu/doku.php?" \
                   "id=%s:legend:%s&do=export_html" % \
-                  (lang, name)
+                  (lang, urllib.parse.quote(name))
 
         legend_buffer = BytesIO()
         weasyprint.HTML(url, media_type="screen").write_png(
@@ -135,35 +135,42 @@ class Legends(object):
 
             else:
                 log.info(f'Found metadata for layer -- legend_name: {metadatas[0].value} -> using doku server')
-        url = \
-            "https://wiki.geoportail.lu/doku.php?" \
-            "id=%s:legend:%s&do=export_html" % \
-            (lang, name)
+        if name is None:
+            return Response("")
+        try:
+            log.error(name)
+            url = \
+                "https://wiki.geoportail.lu/doku.php?" \
+                "id=%s:legend:%s&do=export_html" % \
+                (lang, urllib.parse.quote(name))
 
-        f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
-        data = f.read()
-        data = data.replace(
-            b"/lib/exe/fetch.php",
-            b"https://wiki.geoportail.lu/lib/exe/fetch.php")
-        data = data.replace(
-            b"src=\"img/",
-            b"src=\"https://wiki.geoportail.lu/img/")
-        data = data.replace(
-            b"/lib/exe/detail.php",
-            b"https://wiki.geoportail.lu/lib/exe/detail.php")
+            f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
+            data = f.read()
+            data = data.replace(
+                b"/lib/exe/fetch.php",
+                b"https://wiki.geoportail.lu/lib/exe/fetch.php")
+            data = data.replace(
+                b"src=\"img/",
+                b"src=\"https://wiki.geoportail.lu/img/")
+            data = data.replace(
+                b"/lib/exe/detail.php",
+                b"https://wiki.geoportail.lu/lib/exe/detail.php")
 
-        soup = BeautifulSoup(data, "lxml")
-        a_tags = soup.find_all("a")
-        for a_tag in a_tags:
-            if a_tag.get('class') is not None and\
-               'media' in a_tag.get('class'):
-                a_tag['target'] = '_blank'
-        img_tags = soup.find_all("img")
-        for img_tag in img_tags:
-            if img_tag.get('style') is None:
-                img_tag['style'] = 'max-width:290px;'
+            soup = BeautifulSoup(data, "lxml")
+            a_tags = soup.find_all("a")
+            for a_tag in a_tags:
+                if a_tag.get('class') is not None and\
+                   'media' in a_tag.get('class'):
+                    a_tag['target'] = '_blank'
+            img_tags = soup.find_all("img")
+            for img_tag in img_tags:
+                if img_tag.get('style') is None:
+                    img_tag['style'] = 'max-width:290px;'
 
-        res = soup.find("div", {"class": "dokuwiki export"})
+            res = soup.find("div", {"class": "dokuwiki export"})
+        except Exception as e:
+            log.exception(e)
+            return Response("")
 
         if res is not None:
             data = res.encode_contents()

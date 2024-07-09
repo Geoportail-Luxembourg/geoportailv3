@@ -60,21 +60,37 @@ lux.requestScheme = 'http';
  * @type {string}
  */
 lux.layersUrl = 'jsapilayers';
+/**
+ * @type {string}
+ */
+lux.layersResource = 'jsapilayers';
 
 /**
  * @type {string}
  */
 lux.searchUrl = 'fulltextsearch?';
+/**
+ * @type {string}
+ */
+lux.searchResource = 'fulltextsearch?';
 
 /**
  * @type {string}
  */
 lux.profileUrl = 'profile.json';
+/**
+ * @type {string}
+ */
+lux.profileResource = 'profile.json';
 
 /**
  * @type {string}
  */
 lux.exportCsvUrl = 'profile/echocsv';
+/**
+ * @type {string}
+ */
+lux.exportCsvResource = 'profile/echocsv';
 
 /**
  * @type {string?}
@@ -148,59 +164,95 @@ lux.setBaseUrl = function(url, requestScheme) {
     lux.i18nUrl = '../lang_fr.json';
     url = 'https://apiv4.geoportail.lu/';
   } else {
-    lux.layersUrl = wsBaseUrl + lux.layersUrl;
+    lux.layersUrl = wsBaseUrl + lux.layersResource;
     // lux.layersUrl = url + lux.layersUrl;
-    lux.i18nUrl = url + lux.i18nUrl;
+    lux.i18nUrl = url + lux.i18nResource;
   }
 
-  lux.searchUrl = url + lux.searchUrl;
-  lux.mymapsUrl = url + lux.mymapsUrl;
-  lux.elevationUrl = url + lux.elevationUrl;
-  lux.geocodeUrl = url + lux.geocodeUrl;
-  lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
-  lux.queryUrl = wsBaseUrl + lux.queryUrl;
-  lux.profileUrl = url + lux.profileUrl;
-  lux.exportCsvUrl = url + lux.exportCsvUrl;
-  lux.printUrl = url + lux.printUrl;
-  lux.htmlLegendUrl = url + lux.htmlLegendUrl;
-  lux.pagUrl = url + lux.pagUrl;
+  lux.searchUrl = url + lux.searchResource;
+  lux.mymapsUrl = url + lux.mymapsResource;
+  lux.elevationUrl = url + lux.elevationResource;
+  lux.geocodeUrl = url + lux.geocodeResource;
+  lux.reverseGeocodeUrl = url + lux.reverseGeocodeResource;
+  lux.queryUrl = wsBaseUrl + lux.queryResource;
+  lux.profileUrl = url + lux.profileResource;
+  lux.exportCsvUrl = url + lux.exportCsvResource;
+  lux.printUrl = url + lux.printResource;
+  lux.htmlLegendUrl = url + lux.htmlLegendResource;
+  lux.pagUrl = url + lux.pagResource;
   lux.baseUrl = url;
 };
+/**
+ * @type {string}
+ */
+lux.htmlLegendUrl = 'legends/get_html';
+/**
+ * @type {string}
+ */
+lux.htmlLegendResource = 'legends/get_html';
 
 /**
  * @type {string}
  */
 lux.pagUrl = 'pag';
+/**
+ * @type {string}
+ */
+lux.pagResource = 'pag';
 
 /**
  * @type {string}
  */
 lux.mymapsUrl = 'mymaps';
+/**
+ * @type {string}
+ */
+lux.mymapsResource = 'mymaps';
 
 /**
  * @type {string}
  */
 lux.elevationUrl = 'raster';
+/**
+ * @type {string}
+ */
+lux.elevationResource = 'raster';
 
 /**
  * @type {string}
  */
 lux.queryUrl = 'getfeatureinfo?';
+/**
+ * @type {string}
+ */
+lux.queryResource = 'getfeatureinfo?';
 
 /**
  * @type {string}
  */
 lux.geocodeUrl = 'geocode/search';
+/**
+ * @type {string}
+ */
+lux.geocodeResource = 'geocode/search';
 
 /**
  * @type {string}
  */
 lux.reverseGeocodeUrl = 'geocode/reverse';
+/**
+ * @type {string}
+ */
+lux.reverseGeocodeResource = 'geocode/reverse';
 
 /**
  * @type {string}
  */
 lux.printUrl = 'printproxy';
+/**
+ * @type {string}
+ */
+lux.printResource = 'printproxy';
 
 /**
  * @param {string} url Url to jsapilayers service.
@@ -224,6 +276,11 @@ lux.setWmtsCrossOrigin = function(crossorigin) {
  * @type {string}
  */
 lux.i18nUrl = 'proj/api/build/locale/xx/geoportailv3.json';
+
+/**
+ * @type {string}
+ */
+lux.i18nResource = 'proj/api/build/locale/xx/geoportailv3.json';
 
 /**
  * @type {string}

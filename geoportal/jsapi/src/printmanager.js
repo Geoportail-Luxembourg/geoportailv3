@@ -65,7 +65,8 @@ export const PRINT_LAYOUTS = [
   'A1 portrait',
   'A0 landscape',
   'A0 portrait',
-  'a4_landscape_notext'
+  'a4_landscape_notext',
+  'thumbnail'
 ];
 
 /**
@@ -228,7 +229,7 @@ encodeMap_(scale, object) {
       }
       this.encodeLayer(object.layers, layer, viewResolution);
     }
-  }, this);
+  }.bind(this));
 
   var overlays = this.map_.getOverlays();
   overlays.forEach(function (layer) {
@@ -268,7 +269,7 @@ encodeMap_(scale, object) {
         }
       }
     }
-  }, this);
+  }.bind(this));
 }
 
 /**
@@ -281,7 +282,7 @@ encodeLayer(arr, layer, resolution) {
     this.encodeImageLayer_(arr, layer);
   } else if (layer instanceof TileLayer) {
     this.encodeTileLayer_(arr, layer);
-  } else if (layer instanceof VectorLayer) {
+  } else if (layer instanceof VectorLayer || layer instanceof ol.layer.Vector) {
     this.encodeVectorLayer_(arr, layer, resolution);
   }
 }
@@ -475,7 +476,7 @@ encodeVectorLayer_(arr, layer, resolution) {
     var styleData = null;
     var styleFunction = originalFeature.getStyleFunction();
     if (styleFunction !== undefined) {
-      styleData = styleFunction.call(originalFeature, resolution);
+      styleData = styleFunction.call(originalFeature, originalFeature, resolution);
     } else {
       styleFunction = layer.getStyleFunction();
       if (styleFunction !== undefined) {
@@ -613,6 +614,7 @@ encodeVectorStyle_(object, geometryType, style, styleId, featureStyleProp) {
       this.encodeVectorStylePoint_(styleObject.symbolizers, imageStyle);
     }
   }
+
   if (textStyle !== null) {
     this.encodeTextStyle_(styleObject.symbolizers, textStyle);
   }
@@ -675,7 +677,7 @@ encodeVectorStyleLine_(symbolizers, strokeStyle) {
  */
 encodeVectorStylePoint_(symbolizers, imageStyle) {
   var symbolizer;
-  if (imageStyle instanceof CircleStyle) {
+  if (imageStyle instanceof CircleStyle || imageStyle instanceof ol.style.Circle) {
     symbolizer = /** @type {MapFishPrintSymbolizerPoint} */ ({
       type: 'point'
     });

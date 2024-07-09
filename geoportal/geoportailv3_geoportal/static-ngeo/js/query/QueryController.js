@@ -1235,7 +1235,31 @@ exports.prototype.showAttributesByLang =
       var key = elem['key'];
       var value = elem['value'];
       var ok = false;
-      if (layerid == '2444' && (key == 'f_Betriebsform' ||
+      if (layerid == '2407' && (key == 'f_Cl_erosion' ||
+        key == 'f_Erosion_kl' || key == 'f_Erosion_Cl' || 
+        key == 'f_Erosioun_K')) {
+          if (this['language'] == 'fr' && key == 'f_Cl_erosion') {
+            ok = true;
+          } else if (this['language'] == 'de' && key == 'f_Erosion_kl') {
+            ok = true;
+          } else if (this['language'] == 'en' && key == 'f_Erosion_Cl') {
+            ok = true;
+          } else if (this['language'] == 'lb' && key == 'f_Erosioun_K') {
+            ok = true;
+          }
+      } else if (layerid == '2714' && (key == 'f_LABEL_eng' ||
+        key == 'f_LC_class_name_fr' || key == 'f_LC_class_name_de' || 
+        key == 'f_LC_class_name')) {
+          if (this['language'] == 'fr' && key == 'f_LC_class_name_fr') {
+            ok = true;
+          } else if (this['language'] == 'de' && key == 'f_LC_class_name_de') {
+            ok = true;
+          } else if (this['language'] == 'en' && key == 'f_LABEL_eng') {
+            ok = true;
+          } else if (this['language'] == 'lb' && key == 'f_LC_class_name') {
+            ok = true;
+          }
+      } else if (layerid == '2444' && (key == 'f_Betriebsform' ||
         key == 'f_Forme_d_entreprise' || key == 'f_Operation_Form' || 
         key == 'f_Form_vun_Geschaeft')) {
           if (this['language'] == 'fr' && key == 'f_Forme_d_entreprise') {

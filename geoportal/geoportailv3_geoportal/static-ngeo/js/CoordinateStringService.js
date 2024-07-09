@@ -127,9 +127,10 @@ function service() {
     var dd = x / 3600;
     var m = (dd - Math.floor(dd)) * 60;
 
+    var c = (m % 1).toString();
     var res = Math.floor(dd) + '\u00b0 ' +
         padNumber(Math.floor(m), 2) + ',' +
-        Math.floor((m - Math.floor(m)) * 100000) +
+        c.substring(c.indexOf('.') + 1).substring(0,5) +
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;
   }

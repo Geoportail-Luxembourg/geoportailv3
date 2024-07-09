@@ -261,6 +261,9 @@ class Getfeatureinfo(object):
         zoom = self.request.params.get('zoom', None)
         fid = self.request.params.get('fid', None)
         fids = self.request.params.get('fids', None)
+        query_limit = self.request.params.get('max_features', '20')
+        offset = self.request.params.get('start_index', None)
+
         fids_array = []
         if fids is not None:
             fids_array = fids.split(',')
@@ -272,7 +275,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers, None, None, zoom)
+                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit, offset)
             return results
 
         layers = self.request.params.get('layers', None)
@@ -285,14 +288,13 @@ class Getfeatureinfo(object):
         small_box = self.request.params.get('box2', None)
         geometry = self.request.params.get('geometry', None)
         geometry_type = self.request.params.get('geometry_type', 'wkt')
-
         if geometry_type.lower() != 'wkt':
             geometry = shape(geojson_loads(geometry)).wkt
 
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
-                None, results, layers, None, geometry, zoom)
+                None, results, layers, None, geometry, zoom, query_limit, offset)
             if len(fc) > 0 and 'features' in fc[0]:
                 s = shape(wkt_loads(geometry))
                 for feature in fc[0]['features']:
@@ -317,7 +319,7 @@ class Getfeatureinfo(object):
             return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box, None, zoom)
+            coordinates_small_box, results, layers, big_box, None, zoom, query_limit, offset)
 
     def is_zoom_ok(self, cur_zoom, zoom_definition):
         if cur_zoom is None or len(cur_zoom) == 0:
@@ -338,12 +340,38 @@ class Getfeatureinfo(object):
         return False
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, p_geometry=None, p_zoom=None):
+                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if not self.is_zoom_ok(p_zoom, luxgetfeaturedefinition.zoom_level):
                 continue
+            if (luxgetfeaturedefinition is not None):
+                metadata = DBSession.query(Metadata).filter(Metadata.item_id == luxgetfeaturedefinition.layer).\
+                    filter(Metadata.name == "return_clicked_point").first()
+                if metadata is not None and metadata.value.lower() == 'true':
+                    is_ordered = luxgetfeaturedefinition.columns_order is not None\
+                        and len(luxgetfeaturedefinition.columns_order) > 0
+                    box2 = self.request.params.get('box2', None)
+                    coords = box2.split(',')
+                    the_box = box(float(coords[0]), float(coords[1]),
+                        float(coords[2]), float(coords[3]))
+                    geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
+                    f = self.to_feature(luxgetfeaturedefinition.layer, None,
+                                        geometry,
+                                        [],
+                                        [],
+                                        None)
+                    results.append(
+                        self.to_featureinfo(
+                            [f],
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.template,
+                            is_ordered,
+                            luxgetfeaturedefinition.has_profile,
+                            luxgetfeaturedefinition.remote_template,
+                            1))
+                    continue
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.engine_gfi is not None and
                 luxgetfeaturedefinition.query is not None and
@@ -392,7 +420,7 @@ class Getfeatureinfo(object):
                             % {'geometry': p_geometry,
                                'geom': luxgetfeaturedefinition.geometry_column,
                                'geometry_srs': geometry_srs}
-                    query_limit = 20
+                    query_limit = int(p_query_limit)
                     if luxgetfeaturedefinition.query_limit is not None:
                         query_limit = luxgetfeaturedefinition.query_limit
                     if query_limit > 0:
@@ -406,12 +434,16 @@ class Getfeatureinfo(object):
                         query = query_1 + " id = '" + fid + "'"
 
                 session = self._get_session(luxgetfeaturedefinition.engine_gfi)
-                res = session.execute(query)
+                if offset is not None:
+                    res = session.execute(query + " OFFSET " + str(int(offset)))
+                else:
+                    res = session.execute(query)
                 rows = res.fetchall()
                 try:
                     session = self._get_session(luxgetfeaturedefinition.engine_gfi)
                     query_cnt = "SELECT COUNT(*) FROM (" + query + ") as request"
                     query_cnt = query_cnt.replace("LIMIT " + str(query_limit), "" , 1)
+
                     res_cnt = session.execute(query_cnt)
                     rows_cnt = res_cnt.fetchall()[0][0]
                 except Exception as e:
@@ -724,7 +756,6 @@ class Getfeatureinfo(object):
 
         the_box = box(float(coords[0]), float(coords[1]),
                       float(coords[2]), float(coords[3]))
-
         for feature in features:
             s = asShape(feature['geometry'])
             try:
@@ -1003,14 +1034,10 @@ class Getfeatureinfo(object):
                         feature['attributes'][key] =\
                             "<iframe width='260 px' src='%s'></iframe>"\
                             % (value)
-                    elif 'hyperlin' in key.lower():
+                    elif 'hyperlin' in key.lower() or 'Fiche station' in key:
+                        splitted_value = value.rsplit("/", 1)
                         feature['attributes'][key] =\
-                            "<a href='%s' target='_blank'>%s</a>"\
-                            % (value, value.rsplit("/", 1)[1])
-                    elif 'Fiche station' in key:
-                        feature['attributes'][key] =\
-                            "<a href='%s' target='_blank'>%s</a>"\
-                            % (value, value.rsplit("/", 1)[1])
+                            f"<a href='{value}' target='_blank'>{splitted_value[1] if len(splitted_value)>1 else splitted_value[0]}</a>"
                     elif 'Photo station' in key:
                         feature['attributes'][key] =\
                             "<img src='%s' width='300px'/>" % (value)
@@ -1506,7 +1533,14 @@ class Getfeatureinfo(object):
                 for coord in list(s.coords):
                     body['geometry'] = '{"x" : %(x)s, "y": %(y)s, "spatialReference" : {"wkid" : %(srs_geometry)s}}'%{'x': coord[0], 'y': coord[1], 'srs_geometry': srs_geometry}
                 body['geometryType'] = 'esriGeometryPoint'
-
+            elif s.geom_type == 'MultiPoint':
+                coords = []
+                points = []
+                for geom in s.geoms:
+                    for coord in list(geom.coords):
+                        points.append('[%(x)s,%(y)s]' %{'x': coord[0], 'y': coord[1]})
+                body['geometry'] = f'{{"points": [{ ",".join(points)}], "spatialReference" : {{"wkid" : {srs_geometry}}}}}'
+                body['geometryType'] = 'esriGeometryMultipoint '
             body['spatialRel'] = 'esriSpatialRelIntersects'
         elif where_clause is not None:
             body['where'] = where_clause

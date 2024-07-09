@@ -354,9 +354,16 @@ const exports = class extends ngeoOlcsManager {
     // if (this.isMeshLayer(layer)) {
     //   terrainProvider = this.noTerrainProvider;
     // }
-
+    let cesium3DTileStyle = undefined;
+    if (cs3d_options.cesium3DTileStyle  !== undefined) {
+      cesium3DTileStyle = cs3d_options.cesium3DTileStyle;
+      delete cs3d_options.cesium3DTileStyle;
+    }
     const tileset = new Cesium.Cesium3DTileset(cs3d_options);
 
+    if (cesium3DTileStyle !== undefined) {
+      tileset.style = new Cesium.Cesium3DTileStyle (cesium3DTileStyle);
+    }
     this.tilesets3d.push(tileset);
     this.ol3d.getCesiumScene().primitives.add(tileset);
     // Adjust a tileset's height from the globe's surface.
