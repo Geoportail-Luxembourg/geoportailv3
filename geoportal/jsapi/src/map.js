@@ -173,6 +173,7 @@ export function getElevation(coordinate) {
  * @property {Element|string} target The container for the map, either the element itself or the `id` of the element.
  * @property {string} [dataSets] A dataSets Array of layer used as search sources. Default is Adresse. Possible values are 'Adresse' and 'Coordinates'.
  * @property {function(Event, string, Element)} [onSelect]
+ * @property {boolean=} selectFirst Optional True select the first result element when pressing enter key.
  */
 
 /**
@@ -447,8 +448,12 @@ class Map extends OpenLayersMap {
         var searchTarget = options.search.target;
         var searchDataSets = options.search.dataSets;
         var onSelect = options.search.onSelect;
+        var selectFirst = options.search.selectFirst;
+        if (selectFirst == undefined) {
+          selectFirst = false;
+        }
         delete options.search;
-        this.addSearch(searchTarget, searchDataSets, onSelect);
+        this.addSearch(searchTarget, searchDataSets, onSelect, selectFirst);
       }
     }.bind(this));
 
@@ -1764,10 +1769,11 @@ class Map extends OpenLayersMap {
    * @param {Element|string} target Dom element or id of the element to render search widget in.
    * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
    * @param {function(Event, String, Element)=} onSelect Optional function called when result is selected.
+   * @param {boolean=} selectFirst Optional True select the first result element on enter.
    * @export
    * @api
    */
-  addSearch(target, dataSets, onSelect) {
+  addSearch(target, dataSets, onSelect, selectFirst) {
     var layers = [];
     var searchCoordinates = false;
     if (dataSets !== undefined && dataSets.length > 0) {
@@ -1847,7 +1853,10 @@ class Map extends OpenLayersMap {
     this.searchLayer_.setMap(this);
 
     var format = new GeoJSON();
-
+    if (selectFirst == undefined) {
+      selectFirst = false;
+    }
+    var first = selectFirst;
     /* eslint-disable no-undef */
     new autoComplete({
       'selector': input,
@@ -1855,6 +1864,7 @@ class Map extends OpenLayersMap {
       'cache': 0,
       'menuClass': 'lux-search-suggestions',
       'source': function (term, suggest) {
+        first = selectFirst;
         var coordResults = [];
         if (searchCoordinates) {
           coordResults = this.matchCoordinate_(term);
@@ -1876,7 +1886,12 @@ class Map extends OpenLayersMap {
         var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
         var geom = /** @type {Point} */ (format.readGeometry(item.geometry));
         var bbox = (!item['bbox'] || !item['bbox']['join']) ? geom.getExtent() : item['bbox'];
-        return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
+        var suggestionClass = 'autocomplete-suggestion';
+        if (first) {
+          suggestionClass = 'autocomplete-suggestion selected';
+        }
+        first = false;
+        return '<div class="'+ suggestionClass +'" data-val="' + label + '"' +
           ' data-coord="' + geom.getCoordinates().join(',') + '"' +
           ' data-layer="' + layerName + '"' +
           ' data-extent="' + bbox.join(',') + '">' +
@@ -2695,28 +2710,30 @@ class Map extends OpenLayersMap {
             curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
           }
         }
-        if (curHtml !== undefined) {
+        if (curHtml !== undefined && curHtml !== null && curHtml.length > 0) {
           htmls.push(curHtml);
         }
       }.bind(this));
       if (this.showLayerInfoPopup_) {
-        if (this.popupTarget_) {
-          this.popupTarget_.innerHTML = htmls.join('');
-        } else {
-          var element = lux.buildPopupLayout(htmls.join('<hr>'), function () {
-            this.removeOverlay(this.queryPopup_);
-          }.bind(this));
-          this.queryPopup_ = new Overlay({
-            element: element,
-            position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
-            positioning: 'bottom-center',
-            offset: [0, -20],
-            insertFirst: false,
-            autoPan: this.popupAutoPan_
-          });
-          this.addOverlay(this.queryPopup_);
-          this.renderSync();
-          this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+        if (htmls.length > 0) {
+          if (this.popupTarget_) {
+            this.popupTarget_.innerHTML = htmls.join('');
+          } else {
+            var element = lux.buildPopupLayout(htmls.join('<hr>'), function () {
+              this.removeOverlay(this.queryPopup_);
+            }.bind(this));
+            this.queryPopup_ = new Overlay({
+              element: element,
+              position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+              positioning: 'bottom-center',
+              offset: [0, -20],
+              insertFirst: false,
+              autoPan: this.popupAutoPan_
+            });
+            this.addOverlay(this.queryPopup_);
+            this.renderSync();
+            this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
+          }
         }
       }
     }.bind(this));

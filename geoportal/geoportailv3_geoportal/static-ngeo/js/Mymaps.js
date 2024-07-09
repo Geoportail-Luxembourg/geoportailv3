@@ -1561,7 +1561,9 @@ exports.prototype.createStyleFunction = function(curMap) {
   var symbolUrl = this.mymapsSymbolUrl_;
   var arrowUrl = this.arrowUrl_;
   const arrowModelUrl = this.arrowModelUrl_;
-
+  if (curMap == null && this['map'] != null) {
+    curMap = this['map'];
+  }
   const colorStringToRgba = (colorString, opacity = 1) => {
     var r = parseInt(colorString.substr(1, 2), 16);
     var g = parseInt(colorString.substr(3, 2), 16);
