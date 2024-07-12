@@ -356,21 +356,33 @@ class Getfeatureinfo(object):
                     coords = box2.split(',')
                     the_box = box(float(coords[0]), float(coords[1]),
                         float(coords[2]), float(coords[3]))
+
                     geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
-                    f = self.to_feature(luxgetfeaturedefinition.layer, None,
-                                        geometry,
-                                        [],
-                                        [],
-                                        None)
+
+                    features = self._get_external_data(
+                        luxgetfeaturedefinition.layer,
+                        luxgetfeaturedefinition.rest_url,
+                        None,
+                        None, None, None, None,
+                        None,
+                        use_auth=luxgetfeaturedefinition.use_auth,
+                        p_geometry=the_box.centroid.wkt, srs_geometry="2169")
+                    f = []
+                    if len(features) > 0:
+                        f = [self.to_feature(luxgetfeaturedefinition.layer, None,
+                                            geometry,
+                                            [],
+                                            [],
+                                            None)]
                     results.append(
                         self.to_featureinfo(
-                            [f],
+                            f,
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.template,
                             is_ordered,
                             luxgetfeaturedefinition.has_profile,
                             luxgetfeaturedefinition.remote_template,
-                            1))
+                            len(f)))
                     continue
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.engine_gfi is not None and
