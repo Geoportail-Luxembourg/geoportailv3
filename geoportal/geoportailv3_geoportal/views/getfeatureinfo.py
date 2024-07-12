@@ -358,22 +358,28 @@ class Getfeatureinfo(object):
                         float(coords[2]), float(coords[3]))
 
                     geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
-
-                    features = self._get_external_data(
-                        luxgetfeaturedefinition.layer,
-                        luxgetfeaturedefinition.rest_url,
-                        None,
-                        None, None, None, None,
-                        None,
-                        use_auth=luxgetfeaturedefinition.use_auth,
-                        p_geometry=the_box.centroid.wkt, srs_geometry="2169")
                     f = []
-                    if len(features) > 0:
-                        f = [self.to_feature(luxgetfeaturedefinition.layer, None,
-                                            geometry,
-                                            [],
-                                            [],
-                                            None)]
+                    if luxgetfeaturedefinition.rest_url is not None and len(luxgetfeaturedefinition.rest_url) > 0:
+                        features = self._get_external_data(
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.rest_url,
+                            None,
+                            None, None, None, None,
+                            None,
+                            use_auth=luxgetfeaturedefinition.use_auth,
+                            p_geometry=the_box.centroid.wkt, srs_geometry="2169")
+                        if len(features) > 0:
+                            f.append(self.to_feature(luxgetfeaturedefinition.layer, None,
+                                                    geometry,
+                                                    [],
+                                                    [],
+                                                    None))
+                    else:
+                        f.append(self.to_feature(luxgetfeaturedefinition.layer, None,
+                                                geometry,
+                                                [],
+                                                [],
+                                                None))
                     results.append(
                         self.to_featureinfo(
                             f,
