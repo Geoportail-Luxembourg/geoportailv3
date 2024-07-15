@@ -1949,6 +1949,8 @@ MainController.prototype.switchLanguage = function(lang, track) {
  * @export
  */
 MainController.prototype.getCurrentTheme = function() {
+  console.log("MainController.js getCurrentTheme()", this.appTheme_.getCurrentTheme())
+
   return this.appTheme_.getCurrentTheme();
 };
 
