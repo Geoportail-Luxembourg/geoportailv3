@@ -25,7 +25,7 @@ import olStyleStyle from 'ol/style/Style.js';
 import {get as getProj, transform} from 'ol/proj.js';
 import olcsCore from 'olcs/core.js';
 
-import { useMapStore, useThemeStore, useBackgroundLayer, useLayers, useThemes, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useAppStore, useMapStore, useThemeStore, useBackgroundLayer, useThemes, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -485,6 +485,9 @@ exports.prototype.setMapId = function(mapId) {
   this.stateManager_.updateState({
     'map_id': this.mapId_
   });
+
+  // v4 Set map id MyMaps in lib
+  useAppStore().setMapId(this.mapId_);
 };
 
 
