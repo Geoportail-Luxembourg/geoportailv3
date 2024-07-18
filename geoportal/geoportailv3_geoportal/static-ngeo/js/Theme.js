@@ -6,6 +6,12 @@
  */
 
 import appModule from './module.js';
+import {transformExtent} from 'ol/proj.js';
+import olView from 'ol/View.js';
+
+import { 
+  useMap
+} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -14,7 +20,33 @@ import appModule from './module.js';
  * @param {app.Themes} appThemes The themes services.
  * @ngInject
  */
-const exports = function($window, ngeoLocation, appThemes) {
+const exports = function(
+  $window,
+  ngeoLocation,
+  appThemes,
+  appStateManager,
+  appScalesService,
+  maxExtent
+  ) {
+
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.appStateManager_ = appStateManager;
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ =
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+
+  /**
+   * @type {app.ScalesService}
+   * @private
+   */
+  this.scales_ = appScalesService;
 
   /**
    * @const
@@ -158,6 +190,52 @@ exports.prototype.themeInUrl = function(pathElements) {
       pathElements.indexOf('theme') == pathElements.length - 2;
 };
 
+/**
+ * COPY FROM Catalog, as Catalog controller is no longer used (switch to v4 component)
+ * @param {Object} tree Tree object for the theme.
+ * Set the maximum scale regarding the loaded theme.
+ */
+exports.prototype.setThemeZooms = function(tree) {
+  var map = useMap().getOlMap();
+  
+  var maxZoom = 19;
+  if (tree !== null) {
+    console.assert('metadata' in tree);
+    if (tree['metadata']['resolutions']) {
+      var resolutions = tree['metadata']['resolutions'];
+      maxZoom = resolutions.length + 7;
+    }
+
+    var currentView = map.getView();
+
+    let rotation = 0;
+    if (this.ngeoLocation_.getParam('rotation') !== undefined) {
+      rotation = Number(this.ngeoLocation_.getParam('rotation'));
+    }
+
+    // map.setView(new olView({
+    //   maxZoom: maxZoom,
+    //   minZoom: 8,
+    //   extent: this.maxExtent_,
+    //   center: currentView.getCenter(),
+    //   enableRotation: true,
+    //   zoom: currentView.getZoom(),
+    //   constrainResolution: true,
+    //   rotation,
+    // }));
+
+    currentView.setMaxZoom(maxZoom)
+    currentView.setMinZoom(8)
+    currentView.setConstrainResolution(true)
+    currentView.setRotation(rotation)
+  }
+
+  this.scales_.setMaxZoomLevel(maxZoom);
+  var viewZoom = map.getView().getZoom();
+  this.appStateManager_.updateState({
+    'zoom': viewZoom
+  });
+};
 
 /**
  * @const

@@ -1295,11 +1295,20 @@ const MainController = function(
       theme => {
         if (theme) {
           // set color for custom elements (which is currently not called, since in header of vue app)
-          themeSelectorService.setCurrentThemeColors(theme.name)
+          themeSelectorService.setCurrentThemeColors(theme.name);
+
           // set current theme for legacy components
           this.appTheme_.setCurrentTheme(theme.name);
+
           // set 'data-theme' attribute for legacy component colors
-          document.getElementsByTagName('body')[0].setAttribute('data-theme', theme.name)
+          document.getElementsByTagName('body')[0].setAttribute('data-theme', theme.name);
+
+          // set max zooms (was previously done in CataloggController)
+          this.appTheme_.setThemeZooms(theme);
+
+          try {
+            $scope.$apply(); // Force apply on theme switcher to update theme name
+          } catch (e) {}
         }
       },
       { immediate: true }
