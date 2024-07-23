@@ -1208,9 +1208,10 @@ const MainController = function(
         this.ol3dm_.setTree(struct3D.tree);
         this.ol3dm_.load().then(
           () => {
-            appLayerPermalinkManager.initBgLayers_().then(
-              () => this.ol3dm_.init3dTilesFromLocation()
-            );
+            // appLayerPermalinkManager.initBgLayers_().then(
+            //   () => 
+                this.ol3dm_.init3dTilesFromLocation()
+            // );
           }
         );
       }
