@@ -1305,6 +1305,10 @@ const MainController = function(
 
           // set max zooms (was previously done in CataloggController)
           this.appTheme_.setThemeZooms(theme);
+          
+          try {
+            $scope.$digest(); // Force apply on theme switcher to update theme name
+          } catch (e) {}
         }
       },
       { immediate: true }
