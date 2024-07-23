@@ -36,13 +36,6 @@ const exports = function(
   this.appStateManager_ = appStateManager;
 
   /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.maxExtent_ =
-      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
-
-  /**
    * @type {app.ScalesService}
    * @private
    */
@@ -212,17 +205,6 @@ exports.prototype.setThemeZooms = function(tree) {
     if (this.ngeoLocation_.getParam('rotation') !== undefined) {
       rotation = Number(this.ngeoLocation_.getParam('rotation'));
     }
-
-    // map.setView(new olView({
-    //   maxZoom: maxZoom,
-    //   minZoom: 8,
-    //   extent: this.maxExtent_,
-    //   center: currentView.getCenter(),
-    //   enableRotation: true,
-    //   zoom: currentView.getZoom(),
-    //   constrainResolution: true,
-    //   rotation,
-    // }));
 
     currentView.setMaxZoom(maxZoom)
     currentView.setMinZoom(8)
