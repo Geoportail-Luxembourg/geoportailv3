@@ -120,12 +120,15 @@ const Downloader = class {
         key: this.configuration_.getLayerKey(layerItem),
       });
 
-      layerItem.extentByZoom.forEach((obj) => {
-        const zoom = obj.zoom;
-        if (zooms.indexOf(zoom) < 0) {
-          zooms.push(zoom);
-        }
-      });
+      // do not include zooms for background layers to restrict offline mode to the thematic layers zoom levels
+      if (layerItem.backgroundLayer === false) {
+        layerItem.extentByZoom.forEach((obj) => {
+          const zoom = obj.zoom;
+          if (zooms.indexOf(zoom) < 0) {
+            zooms.push(zoom);
+          }
+        });
+      }
     }
 
     /**
