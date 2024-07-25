@@ -18,10 +18,14 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
-import { 
-  app,
+import useLuxLib, {
+  createApp,
+  h,
+  backend,
+  App,
+  defineCustomElement,
+  getCurrentInstance,
   i18next as Luxi18next,
-  createElementInstance,
   storeToRefs,
   watch,
   AlertNotifications,
@@ -48,8 +52,39 @@ import {
   statePersistorMyMapService,
   statePersistorStyleService,
   themeSelectorService,
-  SliderComparator
+  SliderComparator,
+  backend as Luxi18backend,
+  I18NextVue,
+  createPinia,
+  VueDOMPurifyHTML
 } from "luxembourg-geoportail/bundle/lux.dist.js";
+
+const i18nextConfig = {
+  ns: 'client',
+  nonExplicitWhitelist: true,
+  returnEmptyString: false,
+  fallbackLng: 'en',
+  debug: false,
+  backend: {
+    loadPath: async (lng, ns) => {
+      if (ns === 'app') {
+        return '/static-ngeo/locales/{{app}}.{{lng}}.json'
+      }
+
+      const response = await fetch("/dynamic.json");
+      const dynamicUrls = await response.json();
+
+      return dynamicUrls.constants.langUrls[lng]
+    },
+    parse: function(data, lng, ns) {
+      return JSON.parse(data)[lng]
+    }
+  },
+  nsSeparator: '|', // ! force separator to '|' instead of ':' because some i18n keys have ':' (otherwise, i18next doesn't find the key)
+};
+
+const luxLib = useLuxLib({ i18nextConfig });
+const { app, createElementInstance } =  luxLib;
 
 // Important! keep order
 statePersistorMyMapService.bootstrap()
