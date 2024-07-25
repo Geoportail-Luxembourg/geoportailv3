@@ -93,6 +93,8 @@ const exports = function($scope, $window, $compile,
   this.layerLookup_ = {
     'Adresse': ['addresses'],
     'Parcelle': ['parcels', 'parcels_labels'],
+    'Parcelle_go': ['parcels_go', 'parcels_labels_go'],
+    'Parcelle_prof': ['parcels_prof', 'parcels_labels'],
     'lieu_dit': ['toponymes'],
     'FLIK': ['asta_flik_parcels'],
     'FLIK_Provisoire': ['asta_flik_parcels_provisoire'],
@@ -927,8 +929,13 @@ exports.selected_ =
               if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
                 features.push(feature);
               }
+              var cur_suggestion_layer = suggestion.get('layer_name');
+              if (cur_suggestion_layer === 'Parcelle' &&
+                  arrayIncludes(['go', 'prof'], this.appTheme_.getCurrentTheme())) {
+                    cur_suggestion_layer = cur_suggestion_layer + '_' + this.appTheme_.getCurrentTheme();
+                  }
               var layers = /** @type {Array<string>} */
-              (this.layerLookup_[suggestion.get('layer_name')] || []);
+              (this.layerLookup_[cur_suggestion_layer] || []);
               layers.forEach(function(layer) {
                 this.addLayerToMap_(/** @type {string} */ (layer));
               }.bind(this));
