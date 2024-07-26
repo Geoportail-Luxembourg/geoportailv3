@@ -594,55 +594,56 @@ exports.prototype.init = function(scope, map, selectedLayers) {
   this.initialized_ = true;
 };
 
-exports.prototype.initBgLayers_ = function() {
-  return this.appThemes_.getBgLayers(this.map_).then((bgLayers) => {
-    var stateBgLayerLabel, stateBgLayerOpacity;
-    var mapId = this.ngeoLocation_.getParam('map_id');
-    if (!this.initialized_) {
-      stateBgLayerLabel = this.stateManager_.getInitialValue('bgLayer');
-      stateBgLayerOpacity = this.stateManager_.getInitialValue('bgOpacity');
-      if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
-          ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) && parseInt(stateBgLayerOpacity, 0) === 0)) {
-        if (this.initialVersion_ === 2 && stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
-          stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
-          if (stateBgLayerLabel === undefined) {
-            stateBgLayerLabel = "basemap_2015_global";
-          }
-        } else if (this.initialVersion_ === 2 && parseInt(stateBgLayerOpacity, 0) === 0) {
-          stateBgLayerLabel = 'orthogr_2013_global';
-        }
-      } else {
-        if (mapId === undefined) {
-          stateBgLayerLabel = 'basemap_2015_global';
-        } else {
-          if (this.appTheme_.getCurrentTheme() === 'tourisme') {
-            stateBgLayerLabel = 'topo_bw_jpeg';
-          } else {
-            stateBgLayerLabel = 'topogr_global';
-          }
-        }
-        stateBgLayerOpacity = 0;
-      }
-    } else {
-      stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
-      stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
-    }
-    var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
+// This function is not called anymore at all
+// exports.prototype.initBgLayers_ = function() {
+//   return this.appThemes_.getBgLayers(this.map_).then((bgLayers) => {
+//     var stateBgLayerLabel, stateBgLayerOpacity;
+//     var mapId = this.ngeoLocation_.getParam('map_id');
+//     if (!this.initialized_) {
+//       stateBgLayerLabel = this.stateManager_.getInitialValue('bgLayer');
+//       stateBgLayerOpacity = this.stateManager_.getInitialValue('bgOpacity');
+//       if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
+//           ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) && parseInt(stateBgLayerOpacity, 0) === 0)) {
+//         if (this.initialVersion_ === 2 && stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
+//           stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+//           if (stateBgLayerLabel === undefined) {
+//             stateBgLayerLabel = "basemap_2015_global";
+//           }
+//         } else if (this.initialVersion_ === 2 && parseInt(stateBgLayerOpacity, 0) === 0) {
+//           stateBgLayerLabel = 'orthogr_2013_global';
+//         }
+//       } else {
+//         if (mapId === undefined) {
+//           stateBgLayerLabel = 'basemap_2015_global';
+//         } else {
+//           if (this.appTheme_.getCurrentTheme() === 'tourisme') {
+//             stateBgLayerLabel = 'topo_bw_jpeg';
+//           } else {
+//             stateBgLayerLabel = 'topogr_global';
+//           }
+//         }
+//         stateBgLayerOpacity = 0;
+//       }
+//     } else {
+//       stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
+//       stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
+//     }
+//     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
 
-    // ------------------------------------------ //
-    // --------  UPDATE With new Lux lib -------- //
-    // ------------------------------------------ //
-    // - deactivate setting bg here as this is now handled by Permalink v4
-    // ------------------------------------------ //
+//     // ------------------------------------------ //
+//     // --------  UPDATE With new Lux lib -------- //
+//     // ------------------------------------------ //
+//     // - deactivate setting bg here as this is now handled by Permalink v4
+//     // ------------------------------------------ //
 
-    // if (mapId === undefined || hasBgLayerInUrl) {
-    //   var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-    //   if (layer !== undefined) {
-    //     this.backgroundLayerMgr_.set(this.map_, layer);
-    //   }
-    // }
-  });
-}
+//     // if (mapId === undefined || hasBgLayerInUrl) {
+//     //   var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
+//     //   if (layer !== undefined) {
+//     //     this.backgroundLayerMgr_.set(this.map_, layer);
+//     //   }
+//     // }
+//   });
+// }
 
 /**
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
