@@ -107,6 +107,9 @@ const Downloader = class {
     const persistentLayers = [];
     const queue = [];
     const zooms = [];
+    const backgroundLayerPresent = layersMetadatas.some((layer) => layer.backgroundLayer === true);
+    const thematicLayerPresent = layersMetadatas.some((layer) => layer.backgroundLayer === false);
+    const onlyBackgroundLayerPresent = backgroundLayerPresent && !thematicLayerPresent;
     for (const layerItem of layersMetadatas) {
       if (layerItem.layerType === 'tile') {
         const tiles = [];
@@ -120,12 +123,15 @@ const Downloader = class {
         key: this.configuration_.getLayerKey(layerItem),
       });
 
-      layerItem.extentByZoom.forEach((obj) => {
-        const zoom = obj.zoom;
-        if (zooms.indexOf(zoom) < 0) {
-          zooms.push(zoom);
-        }
-      });
+      // if thematic layers present, do not include zooms for background layers to restrict offline mode to the thematic layers zoom levels
+      if (onlyBackgroundLayerPresent || layerItem.backgroundLayer === false) {
+        layerItem.extentByZoom.forEach((obj) => {
+          const zoom = obj.zoom;
+          if (zooms.indexOf(zoom) < 0) {
+            zooms.push(zoom);
+          }
+        });
+      }
     }
 
     /**
