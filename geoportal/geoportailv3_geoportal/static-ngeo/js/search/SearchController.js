@@ -957,9 +957,11 @@ exports.selected_ =
               features.push(feature);
             }
           }
-          for (var i = 0; i < features.length; ++i) {
-            this.featureOverlay.addFeature(features[i]);
-          }
+          setTimeout(() => {
+            for (var i = 0; i < features.length; ++i) {
+              this.featureOverlay.addFeature(features[i]);
+            }
+          }, 0)
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
