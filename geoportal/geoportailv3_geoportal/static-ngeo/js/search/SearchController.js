@@ -33,7 +33,7 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
-import { useLayers, useThemes, useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useLayers, useThemes, useThemeStore, useMapStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**
@@ -955,7 +955,9 @@ exports.selected_ =
                 // v4 migration, use addLayerToStore_ instead
                 // ------------
                 const layerToAdd = useThemes().findByName(layer, this.themeStore_.theme);
-                this.addLayerToStore_(layerToAdd.id);
+                if (!useMapStore().hasLayer(layerToAdd.id)) {
+                  this.addLayerToStore_(layerToAdd.id);
+                }
               }.bind(this));
             } else {
               feature.setGeometry(
