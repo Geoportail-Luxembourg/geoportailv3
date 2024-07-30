@@ -33,7 +33,7 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
-import { useLayers, useThemes, useThemeStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useLayers, useThemes, useThemeStore, useMapStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**
@@ -96,6 +96,8 @@ const exports = function($scope, $window, $compile,
   this.layerLookup_ = {
     'Adresse': ['addresses'],
     'Parcelle': ['parcels', 'parcels_labels'],
+    'Parcelle_go': ['parcels_go', 'parcels_labels_go'],
+    'Parcelle_prof': ['parcels_prof', 'parcels_labels'],
     'lieu_dit': ['toponymes'],
     'FLIK': ['asta_flik_parcels'],
     'FLIK_Provisoire': ['asta_flik_parcels_provisoire'],
@@ -940,15 +942,22 @@ exports.selected_ =
               if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
                 features.push(feature);
               }
+              var cur_suggestion_layer = suggestion.get('layer_name');
+              if (cur_suggestion_layer === 'Parcelle' &&
+                  arrayIncludes(['go', 'prof'], this.appTheme_.getCurrentTheme())) {
+                    cur_suggestion_layer = cur_suggestion_layer + '_' + this.appTheme_.getCurrentTheme();
+                  }
               var layers = /** @type {Array<string>} */
-              (this.layerLookup_[suggestion.get('layer_name')] || []);
+              (this.layerLookup_[cur_suggestion_layer] || []);
               layers.forEach(function(layer) {
                 // this.addLayerToMap_(/** @type {string} */ (layer));
                 // ------------
                 // v4 migration, use addLayerToStore_ instead
                 // ------------
                 const layerToAdd = useThemes().findByName(layer, this.themeStore_.theme);
-                this.addLayerToStore_(layerToAdd.id);
+                if (!useMapStore().hasLayer(layerToAdd.id)) {
+                  this.addLayerToStore_(layerToAdd.id);
+                }
               }.bind(this));
             } else {
               feature.setGeometry(
@@ -957,9 +966,11 @@ exports.selected_ =
               features.push(feature);
             }
           }
-          for (var i = 0; i < features.length; ++i) {
-            this.featureOverlay.addFeature(features[i]);
-          }
+          setTimeout(() => {
+            for (var i = 0; i < features.length; ++i) {
+              this.featureOverlay.addFeature(features[i]);
+            }
+          }, 0)
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
