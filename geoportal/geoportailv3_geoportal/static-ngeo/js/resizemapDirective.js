@@ -17,8 +17,6 @@ import olMap from 'ol/Map.js';
 import offlineUtils from 'ngeo/offline/utils.js';
 
 function resizeMap(map) {
-  console.log("resizeMap ---")
-
   map.updateSize();
   map.renderSync();
 
