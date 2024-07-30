@@ -57,10 +57,7 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
 # RUN make checks
 RUN make build
 
-RUN curl -L https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/$(cat v4_release.txt)/bundle.tgz > /tmp/bundle.tgz && \
-    tar -xzvf /tmp/bundle.tgz -C /tmp && \
-    mkdir -p /usr/lib/node_modules/luxembourg-geoportail && \
-    mv /tmp/bundle/ /usr/lib/node_modules/luxembourg-geoportail
+RUN npm install --global https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/$(cat v4_release.txt)/luxembourg-geoportail-0.0.0-dev.tar.gz
 
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
