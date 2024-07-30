@@ -1198,6 +1198,7 @@ const MainController = function(
               config = JSON.parse(style)['serial'];
             }
             this.ngeoLocation_.updateParams({
+              'bgLayer': label,
               'serial': config,
               'serialLayer': label
             });
