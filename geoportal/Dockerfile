@@ -36,7 +36,8 @@ COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
 RUN rm -rf /usr/lib/node_modules/ngeo
 RUN mv /app/geoportailv3_geoportal/static-ngeo/ngeo /usr/lib/node_modules/ngeo
 
-COPY . /app
+RUN mkdir -p /app
+COPY ./package.json /app
 
 # jsapi generation
 ADD ./jsapi /etc/apiv4/
@@ -45,6 +46,7 @@ RUN node --version
 RUN npm install --no-optional && npm cache clear --force
 RUN /etc/apiv4/rebuild_api.sh
 
+COPY . /app
 WORKDIR /app
 # sad fix, to allow webpack's file-loader to find files with query string & hash added
 RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot?#iefix && \
@@ -52,9 +54,13 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
     ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot?#iefix && \
     ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg#fontawesome
 
-
 # RUN make checks
 RUN make build
+
+RUN curl -L https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/$(cat v4_release.txt)/bundle.tgz > /tmp/bundle.tgz && \
+    tar -xzvf /tmp/bundle.tgz -C /tmp && \
+    mkdir -p /usr/lib/node_modules/luxembourg-geoportail && \
+    mv /tmp/bundle/ /usr/lib/node_modules/luxembourg-geoportail
 
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
