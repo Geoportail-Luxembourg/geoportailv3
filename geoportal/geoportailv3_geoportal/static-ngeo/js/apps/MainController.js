@@ -46,6 +46,7 @@ import useLuxLib, {
   useOfflineLayers,
   useStyleStore,
   useThemeStore,
+  statePersistorAppService,
   statePersistorBgLayerService,
   statePersistorLayersService,
   statePersistorThemeService,
@@ -90,8 +91,9 @@ const { app, createElementInstance } =  luxLib;
 statePersistorMyMapService.bootstrap()
 statePersistorLayersService.bootstrap()
 statePersistorThemeService.bootstrap()
+statePersistorAppService.bootstrap()
 // styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
-// statePersistorStyleService.bootstrapStyle()
+// statePersistorStyleService.bootstrap()
 statePersistorBgLayerService.bootstrap()
 
 const luxAppStore = useAppStore()
@@ -1220,7 +1222,7 @@ const MainController = function(
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then((themes) => {
-    statePersistorStyleService.bootstrapStyle()
+    statePersistorStyleService.bootstrap()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             if (appOverviewMapShow) {
