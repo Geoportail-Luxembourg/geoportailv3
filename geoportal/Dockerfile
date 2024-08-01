@@ -57,8 +57,6 @@ RUN ln -s /usr/lib/node_modules/@fortawesome/fontawesome-free/webfonts/fa-regula
 # RUN make checks
 RUN make build
 
-RUN npm install --global https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/$(cat v4_release.txt)/luxembourg-geoportail-0.0.0-dev.tar.gz
-
 RUN make apps
 RUN mv webpack.apps.js webpack.apps.js.tmpl
 # copy web component styles and translations from bundle to static-ngeo
