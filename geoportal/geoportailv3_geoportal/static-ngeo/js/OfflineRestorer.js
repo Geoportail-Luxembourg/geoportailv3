@@ -56,15 +56,11 @@ const OfflineRestorer = class extends Restorer {
         .then(() => {
 
           return super.restore(map)
-            .then(async (extent) => {
-              // Deactivate legacy v3 - bgLayer is handled in v4
-              // await new Promise((r, s) => setTimeout(r, 2000))
-              await fetch('/dev/main.html/switch-lux-offline')
-
-              // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
-              // // const bgLayer = useOpenLayers().getOrCreateLayer(useMapStore().bgLayer)
-              // const mapBoxLayer = bgLayer && bgLayer.getMapBoxMap ? bgLayer : null;
-              // this.appMapBoxOffline_.restore(mapBoxLayer);
+            .then((extent) => {
+               // Deactivate legacy v3 - bgLayer is handled in v4
+              const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
+              const mapBoxLayer = bgLayer && bgLayer.getMapBoxMap ? bgLayer : null;
+              this.appMapBoxOffline_.restore(mapBoxLayer);
 
               this.restoring = false;
               return extent;
