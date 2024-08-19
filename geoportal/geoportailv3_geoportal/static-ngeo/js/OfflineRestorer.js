@@ -58,7 +58,6 @@ const OfflineRestorer = class extends Restorer {
           return super.restore(map)
             .then(async (extent) => {
               // Deactivate legacy v3 - bgLayer is handled in v4
-              // await new Promise((r, s) => setTimeout(r, 2000))
               await fetch('/dev/main.html/switch-lux-offline')
 
               // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
