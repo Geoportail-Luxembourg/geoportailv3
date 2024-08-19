@@ -1803,7 +1803,7 @@ MainController.prototype.manageSelectedLayers_ =
           if (layer instanceof MaskLayer) {
             return false;
           }
-          if (useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer) === layer) {
+          if (this.mapStore_.bgLayer.id === layer.get('id')) {
             return false;
           }
           // Ignore layer for measurements
