@@ -6,7 +6,7 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3_geoportal.geocode import CountryLimAdm, Address, WKPOI, \
+from geoportailv3_geoportal.geocode import CommunesLimAdm, Address, WKPOI, \
     Neighbourhood, Parcel, CommunesLimAdm
 from c2cgeoportal_commons.models import DBSessions
 from shapely.wkt import loads
@@ -62,11 +62,11 @@ class Geocode(object):
         if os.environ.get('FAKE_REVERSE_GEOCODING') == '1':
             return json.loads('{"count": 1, "results": [{"id_caclr_street": "461", "distance": 33.7389366951768, "street": "Rue Jean-Pierre Brasseur", "postal_code": "1258", "id_caclr_bat": "21478", "geom": {"type": "Point", "coordinates": [76302.2077999998, 75334.6180995487]}, "locality": "Luxembourg", "number": "16"}]}')  # noqa
 
-        cnt = self.db_ecadastre.query(CountryLimAdm.id). \
+        cnt = self.db_ecadastre.query(CommunesLimAdm.id). \
             filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
                 "x": easting,
                 "y": northing
-            }, srid=2169), CountryLimAdm.geom)
+            }, srid=2169), CommunesLimAdm.geom)
         ).all()
         results = []
         # Check if point is inside luxembourg or not
