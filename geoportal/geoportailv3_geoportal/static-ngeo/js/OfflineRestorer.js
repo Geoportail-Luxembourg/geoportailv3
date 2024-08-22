@@ -3,6 +3,9 @@
  */
 import appModule from './module.js';
 import Restorer from 'ngeo/offline/Restorer.js';
+import {
+  useMapStore,
+} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**
@@ -49,56 +52,21 @@ const OfflineRestorer = class extends Restorer {
    */
   restore(map) {
     this.restoring = true;
-    // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map); // Deactivate legacy v3 - bgLayer is handled in v4
 
     return this.appMymapsOffline_
-        .restore()
-        .then(() => {
+      .restore()
+      .then(() => {
+        return super.restore(map)
+          .then(async (extent) => {
+            await fetch('/dev/main.html/switch-lux-offline')
 
-          return super.restore(map)
-            .then(async (extent) => {
-              // Deactivate legacy v3 - bgLayer is handled in v4
-              await fetch('/dev/main.html/switch-lux-offline')
+            const mapStore = useMapStore()
+            this.appMapBoxOffline_.restoreFromId(mapStore.bgLayer.id);
 
-              // const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
-              // // const bgLayer = useOpenLayers().getOrCreateLayer(useMapStore().bgLayer)
-              // const mapBoxLayer = bgLayer && bgLayer.getMapBoxMap ? bgLayer : null;
-              // this.appMapBoxOffline_.restore(mapBoxLayer);
-
-              this.restoring = false;
-              return extent;
-            });
-        });
-
-    // Deactivate legacy v3 - bgLayer is handled in v4
-    // return super.restore(map).then((extent) => {
-
-      // Deactivate legacy v3 - bgLayer is handled in v4
-      // Keep a reference to the original mapbox layer
-      // let mapBoxLayer = null;
-      // if (bgLayer && bgLayer.getMapBoxMap) {
-      //   mapBoxLayer = bgLayer;
-      // }
-
-      // this.appMymapsOffline_
-      //   .restore()
-      //   .then(() => {
-      //     map.addLayer(this.appDrawnFeatures_.drawLayer);
-      //   });
-
-      // Deactivate legacy v3
-      // if (mapBoxLayer) {
-      //   console.log('Restoring MapBox');
-      //   this.appMapBoxOffline_.restore(mapBoxLayer);
-      //   this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
-      // }
-
-      // Deactivate legacy v3 for restoring drawn features (v4 is not removing drawn features)
-      // map.addLayer(this.appDrawnFeatures_.drawLayer);
-
-    //   this.restoring = false;
-    //   return extent;
-    // });
+            this.restoring = false;
+            return extent;
+          });
+      });
   }
 
   /**

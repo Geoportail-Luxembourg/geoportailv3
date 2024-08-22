@@ -188,55 +188,28 @@ export default class MapBoxOffline {
     this.getUrlsPromise(style, extentByZoom).then(urls => fetchBlobsAndStore(urls, progressCallback)));
   }
 
-  restore(layer) {
+  restoreFromId(bgId) {
     console.log('Activate MapBox offline data');
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
 
     fetch('/dev/main.html/switch-lux-offline').then(() => {
-      const map = layer && layer.getMapBoxMap ? layer.getMapBoxMap() : null;
-      let style;
-      try {
-        style = map.getStyle();
-      } catch (e) {
-        console.log('No defined style, using default one');
-        style = layer.get('defaultMapBoxStyle');
-      }
 
       // V4
       const styleStore = useStyleStore();
-      // styleStore.setStyle([style]);
       const bgSources = styleStore.bgVectorSources
-      const bgId = layer.get('id')
 
-      let styleDef = {
-        ...bgSources.get(bgId),
-        "defaultMapBoxStyle": style,
-        style,
-        "defaultMapBoxStyleXYZ": layer.get('xyz'),
-        "xyz": layer.get('xyz'),
-        // "xyz_custom": "",
-      };
-      const ol = useOpenLayers()
+      if (bgSources.has(bgId)) {
+        const ol = useOpenLayers()
 
-      // remove existing definitions
-      // bgSources.delete(layer.get('id'))
-      // styleStore.setBgVectorSources(bgSources);
-      ol.removeFromCache(bgId);
+        ol.removeFromCache(bgId);
 
-      bgSources.set(bgId, styleDef);
-      styleStore.setBgVectorSources(bgSources);
-
-      const theme = useThemes()
-      const ll = theme.findBgLayerById(bgId)
-      const olMap = useMap().getOlMap()
-      ol.setBgLayer(olMap, ll, bgSources);
-
-      // Deactivate v3 setStyle(), use v4 setStyle() instead
-      // map.setStyle(null);
-      // map.setStyle(style);
-
+        const theme = useThemes()
+        const ll = theme.findBgLayerById(bgId)
+        const olMap = useMap().getOlMap()
+        ol.setBgLayer(olMap, ll, bgSources);
+      }
     }, 0);
   }
 }
