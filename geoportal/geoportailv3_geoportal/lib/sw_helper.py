@@ -29,6 +29,7 @@ def get_urls(request):
         '/static-ngeo/web-components/style.css',
         '/static-ngeo/webfonts/geoportail-icons.woff',
         '/static-ngeo/images/gov-light.png',
+        '/static-ngeo/images/favicon.ico',
 
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-regular-400.woff2',
