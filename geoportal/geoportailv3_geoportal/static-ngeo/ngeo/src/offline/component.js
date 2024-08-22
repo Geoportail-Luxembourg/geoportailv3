@@ -108,8 +108,9 @@ exports.Controller = class {
    * @ngdoc controller
    * @ngname ngeoOfflineController
    */
-  constructor($timeout, ngeoFeatureOverlayMgr, ngeoOfflineServiceManager, ngeoOfflineConfiguration, ngeoOfflineMode, ngeoNetworkStatus, appOfflineBar) {
+  constructor($scope, $timeout, ngeoFeatureOverlayMgr, ngeoOfflineServiceManager, ngeoOfflineConfiguration, ngeoOfflineMode, ngeoNetworkStatus, appOfflineBar) {
 
+    this.scope_ = $scope;
     /**
      * @type {angular.$timeout}
      * @private
@@ -411,6 +412,7 @@ exports.Controller = class {
       this.menuDisplayed = false;
       this.displayExtent_();
       this.offlineMode.enable();
+      this.scope_.$digest()
     });
   }
 
