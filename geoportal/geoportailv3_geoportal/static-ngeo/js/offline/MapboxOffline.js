@@ -200,15 +200,16 @@ export default class MapBoxOffline {
       const styleStore = useStyleStore();
       const bgSources = styleStore.bgVectorSources
 
-      const ol = useOpenLayers()
+      if (bgSources.has(bgId)) {
+        const ol = useOpenLayers()
 
-      ol.removeFromCache(bgId);
+        ol.removeFromCache(bgId);
 
-      const theme = useThemes()
-      const ll = theme.findBgLayerById(bgId)
-      const olMap = useMap().getOlMap()
-      ol.setBgLayer(olMap, ll, bgSources);
-
+        const theme = useThemes()
+        const ll = theme.findBgLayerById(bgId)
+        const olMap = useMap().getOlMap()
+        ol.setBgLayer(olMap, ll, bgSources);
+      }
     }, 0);
   }
 }
