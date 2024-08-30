@@ -296,6 +296,7 @@ vars:
     - {name: ogc_query_layers, type: list}
     - {name: ol3d_defaultlayer, type: boolean}
     - {name: ol3d_options, type: json, error_message: 'ol3d_options must be valid JSON and may contain the following options: heightOffset, latOffset, longOffset,cesium3DTileStyle as well as any options that can be given to Cesium.Cesium3DTileset'}
+    - {name: ol3d_clipping_polygons, type: json}
     - {name: ol3d_type, type: string, regex: 'data|terrain|mesh', error_message: 'ol3d_type must be data, terrain or mesh        ####### comment: type: regex does not work correctly with get_typed in c2cgeoportal, so a non validated string is used :-('}
     - {name: page_title}
     - {name: print_img}
