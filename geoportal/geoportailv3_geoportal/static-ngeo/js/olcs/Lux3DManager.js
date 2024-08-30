@@ -294,7 +294,7 @@ const exports = class extends ngeoOlcsManager {
     tileset.show = visible;
   }
 
-  add3dTile(layer) {
+  async add3dTile(layer) {
     let layerName = layer.layer
     if (this.activeTiles3dLayers_.indexOf(layerName) >= 0) {
       return;
@@ -306,7 +306,6 @@ const exports = class extends ngeoOlcsManager {
     const url = base_url + '/' + layerName + '/tileset.json';
     // Magic numbers are based on example at https://cesium.com/docs/cesiumjs-ref-doc/Cesium3DTileset.html and optimised for wintermesh layer.
     const cs3d_options = {
-      url: url,
       skipLevelOfDetail: true,
       baseScreenSpaceError: 623,
       skipScreenSpaceErrorFactor: 8,
@@ -349,7 +348,53 @@ const exports = class extends ngeoOlcsManager {
       cesium3DTileStyle = cs3d_options.cesium3DTileStyle;
       delete cs3d_options.cesium3DTileStyle;
     }
-    const tileset = new Cesium.Cesium3DTileset(cs3d_options);
+    let polygons = [];
+    if (layer.metadata.ol3d_clipping_polygons !== undefined) {
+      polygons = layer.metadata.ol3d_clipping_polygons;
+    }
+
+    const tileset = await Cesium.Cesium3DTileset.fromUrl(url, cs3d_options);
+
+    const clippingPolygons = new Cesium.ClippingPolygonCollection();
+    const czml = [{
+      id: "document",
+      name: "CZML Geometries: Polygons",
+      version: "1.0",
+    }];
+
+    polygons.forEach((polygon, index) => {
+      const positions = Cesium.Cartesian3.fromDegreesArray(polygon.polygon_positions);
+
+      // Convert the Cartesian3 positions to an array of cartographic degrees
+      const cartographicPositions = positions.map(position => {
+        const cartographic = Cesium.Cartographic.fromCartesian(position);
+        return [Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0];
+      }).flat();
+
+      // Add CZML entry
+      czml.push({
+        id: `polygon${index}`,
+        name: `Polygon ${index}`,
+        polygon: {
+          positions: {
+            cartographicDegrees: cartographicPositions,
+          },
+          material: polygon.polygon_material,
+          extrudedHeight: polygon.polygon_height,
+        },
+      });
+
+      // Add clipping polygon
+      clippingPolygons.add(new Cesium.ClippingPolygon({
+        positions: positions
+      }));
+    });
+
+    if (polygons.length > 0) {
+      tileset.clippingPolygons = clippingPolygons;
+      const dataSourcePromise = Cesium.CzmlDataSource.load(czml);
+      this.ol3d.getDataSources().add(dataSourcePromise);
+    }
 
     if (cesium3DTileStyle !== undefined) {
       tileset.style = new Cesium.Cesium3DTileStyle (cesium3DTileStyle);
@@ -360,21 +405,16 @@ const exports = class extends ngeoOlcsManager {
     const scene = this.ol3d.getCesiumScene();
     // scene.terrainProvider = terrainProvider;
     scene.terrainProvider = this.terrainProvider;
-
     if ((heightOffset != 0) || (longOffset != 0) || (latOffset != 0)) {
-      tileset.readyPromise.then(function(tileset) {
-        const boundingSphere = tileset.boundingSphere;
-        const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+      const boundingSphere = tileset.boundingSphere;
+      const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
 
-        const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0);
-        const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude + longOffset,
-                                                     cartographic.latitude + latOffset,
-                                                     heightOffset);
-        const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
-        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
-      }).otherwise(function(error) {
-        console.log(error);
-      });
+      const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0);
+      const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude + longOffset,
+                                                   cartographic.latitude + latOffset,
+                                                   heightOffset);
+      const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+      tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
     }
 
     this.scheduleMinimumZoomDistanceUpdate()
