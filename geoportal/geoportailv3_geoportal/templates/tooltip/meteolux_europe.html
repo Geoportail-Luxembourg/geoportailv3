@@ -1,0 +1,6 @@
+% if features:
+## -*- coding: utf-8 -*-
+% for feature in features:
+    <h3>${feature['attributes']['station']} ({{${feature['attributes']['icao']}}})</h3>
+    <label>${feature['attributes']['weather']}</label>&nbsp;<span>${feature['attributes']['temperature']}°C</span>
+% endif
