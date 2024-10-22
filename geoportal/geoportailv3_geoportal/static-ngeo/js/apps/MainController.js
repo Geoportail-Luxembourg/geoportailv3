@@ -29,6 +29,7 @@ import useLuxLib, {
   storeToRefs,
   watch,
   AlertNotifications,
+  AuthForm,
   LayerPanel,
   MapContainer,
   BackgroundSelector,
@@ -124,6 +125,8 @@ customElements.define('slider-comparator', SliderComparatorElement)
 
 const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
 customElements.define('alert-notifications', AlertNotificationsElement)
+
+customElements.define('auth-form', createElementInstance(AuthForm, app))
 
 import i18next from 'i18next';
 
@@ -1097,7 +1100,7 @@ const MainController = function(
    * @private
    */
   this.appMymaps_ = appMymaps;
-  this.appUserManager_.getUserInfo();
+  // this.appUserManager_.getUserInfo(); // Deactivated as this is now handled by lux v4 in the AuthForm component
 
   /**
    * @type {boolean}
