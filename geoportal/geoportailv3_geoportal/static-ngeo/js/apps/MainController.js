@@ -33,7 +33,7 @@ import useLuxLib, {
   LayerPanel,
   MapContainer,
   BackgroundSelector,
-  StyleSelector,
+  StylePanel,
   LayerMetadata,
   RemoteLayers,
   HeaderBar,
@@ -111,8 +111,8 @@ customElements.define('map-container', MapContainerElement)
 const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
 customElements.define('background-selector', BackgroundSelectorElement)
 
-const StyleSelectorElement = createElementInstance(StyleSelector, app)
-customElements.define('style-selector', StyleSelectorElement)
+const StylePanelElement = createElementInstance(StylePanel, app)
+customElements.define('style-panel', StylePanelElement)
 
 const LayerMetadataElement = createElementInstance(LayerMetadata, app)
 customElements.define('layer-metadata', LayerMetadataElement)
@@ -1299,35 +1299,36 @@ const MainController = function(
         // $('app-themeswitcher #themes-content').collapse('hide');
 
         // close style editor when switching tools and sidebar stays open
-        luxAppStore.closeStyleEditorPanel()
         luxAppStore.setThemeGridOpen(false)
       } else {
         this['lidarOpen'] = false;
       }
     });
-    // listen to layersOpen changes in store (clicking close button on custom element)
     const { layersOpen, styleEditorOpen } = storeToRefs(luxAppStore)
+    // listen to layersOpen changes in store (clicking close button on custom element)
+    // also check styleEditorOpen.value since v4 open/closeStyleEditorPanel() modifies both values
+    // as closing the styleEditorPanel does not close the layers panel in v4
     watch(
       layersOpen,
       layersOpen => {
-        if(layersOpen === false) {
+        if(layersOpen === false && styleEditorOpen.value === false) {
           this.closeSidebar()
           $scope.$apply()
         }
-      },
-      { immediate: true }
+      }
     )
-    // listen to styleEditorOpen to open legacy vectorEditor
+    // listen to styleEditorOpen to open/close editor in main.html
     watch(
       styleEditorOpen,
       styleEditorOpen => {
         if(styleEditorOpen === true) {
           this.vectorEditorOpen = true;
           this.trackOpenVTEditor('openVTEditor');
-          $scope.$apply()
+        } else {
+          this.vectorEditorOpen = false;
         }
-      },
-      { immediate: true }
+        $scope.$apply()
+      }
     )
     // listen to theme changes in store
     const themeStore = useThemeStore()
@@ -1927,7 +1928,6 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
   // close style editor when closing sidebar
-  luxAppStore.closeStyleEditorPanel()
   luxAppStore.setLayersOpen(false) // For info, this also closes the themeGrid
   luxAppStore.setMyLayersTabOpen(false)
 };
