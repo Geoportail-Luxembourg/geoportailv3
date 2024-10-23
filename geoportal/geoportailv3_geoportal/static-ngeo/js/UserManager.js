@@ -27,6 +27,11 @@ import { useUserManagerStore, storeToRefs } from "luxembourg-geoportail/bundle/l
 const exports = function($http, $rootScope, loginUrl, logoutUrl,
     getuserinfoUrl, appNotify, gettextCatalog) {
 
+  // v4 authentication
+  const userManagerStore = useUserManagerStore()
+  const { currentUser } = storeToRefs(userManagerStore)
+  this.currentUser = currentUser
+
   /**
    * @type {ngeo.offline.Mode}
    * @private
@@ -281,40 +286,28 @@ exports.prototype.setUserInfo = function(
  * @return {string} The username.
  */
 exports.prototype.getUsername = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.login : null;
+  return this.currentUser.value ? this.currentUser.value.login : null;
 };
 
 /**
  * @return {string|undefined} The Email.
  */
 exports.prototype.getEmail = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.mail : null;
+  return this.currentUser.value ? this.currentUser.value.mail : null;
 };
 
 /**
  * @return {string|undefined} The user type.
  */
 exports.prototype.getUserType = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.typeUtilisateur : null;
+  return this.currentUser.value ? this.currentUser.value.typeUtilisateur : null;
 };
 
 /**
  * @return {string|undefined} The Role.
  */
 exports.prototype.getRole = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.role : null;
+  return this.currentUser.value ? this.currentUser.value.role : null;
 };
 
 
@@ -322,30 +315,21 @@ exports.prototype.getRole = function() {
  * @return {?number} The Role Id.
  */
 exports.prototype.getRoleId = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.roleId : null;
+  return this.currentUser.value ? this.currentUser.value.roleId : null;
 };
 
 /**
  * @return {?number} The Role Id.
  */
 exports.prototype.getMymapsRole = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.mymapsRole : null;
+  return this.currentUser.value ? this.currentUser.value.mymapsRole : null;
 };
 
 /**
  * @return {boolean} True if is a mymaps admin.
  */
 exports.prototype.getMymapsAdmin = function() {
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
-
-  return currentUser.value ? currentUser.value.isAdmin : null;
+  return this.currentUser.value ? this.currentUser.value.isAdmin : null;
 };
 
 
