@@ -182,19 +182,12 @@
             </div>
           </div>
         </div>
+
         <!-- Legend -->
-        <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">
-          <h2 translate>legends</h2>
-          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-            ✕
-          </button>
-          <div class="container-fluid tab-content">
-            <app-layerlegends
-              app-layerlegends-layers="::mainCtrl.selectedLayers"
-              app-layerlegends-map="::mainCtrl.map">
-            </app-layerlegends>
-          </div>
+        <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">        
+          <legends-panel ></legends-panel>
         </div>
+
         <!-- Routing -->
         <div id="routing" ng-class="mainCtrl.routingOpen ? 'show' : 'hide'">
           <h2 translate>Routing</h2>
