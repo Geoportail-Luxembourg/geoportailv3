@@ -31,6 +31,7 @@ import useLuxLib, {
   AlertNotifications,
   AuthForm,
   LayerPanel,
+  LegendsPanel,
   MapContainer,
   BackgroundSelector,
   StylePanel,
@@ -47,6 +48,7 @@ import useLuxLib, {
   useOfflineLayers,
   useStyleStore,
   useThemeStore,
+  layerMetadataService,
   statePersistorAppService,
   statePersistorBgLayerService,
   statePersistorLayersService,
@@ -63,7 +65,7 @@ import useLuxLib, {
 
 const i18nextConfig = {
   ns: 'client',
-  nonExplicitWhitelist: true,
+  nonExplicitSupportedLngs: true, // Migration i18next: removed deprecated nonExplicitWhitelist
   returnEmptyString: false,
   fallbackLng: 'en',
   debug: false,
@@ -104,6 +106,9 @@ const luxAppStore = useAppStore()
 // MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
 const LayerPanelElement = createElementInstance(LayerPanel, app)
 customElements.define('layer-panel', LayerPanelElement)
+
+const LegendsPanelElement = createElementInstance(LegendsPanel, app)
+customElements.define('legends-panel', LegendsPanelElement)
 
 const MapContainerElement = createElementInstance(MapContainer, app)
 customElements.define('map-container', MapContainerElement)
@@ -1291,6 +1296,9 @@ const MainController = function(
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen && !this.embedded) ? true : false;
+
+    const { layersOpen, styleEditorOpen, legendsOpen } = storeToRefs(luxAppStore)
+
     $scope.$watch(() => {
       return this['layersOpen'];
     }, newVal => {
@@ -1304,7 +1312,7 @@ const MainController = function(
         this['lidarOpen'] = false;
       }
     });
-    const { layersOpen, styleEditorOpen } = storeToRefs(luxAppStore)
+
     // listen to layersOpen changes in store (clicking close button on custom element)
     // also check styleEditorOpen.value since v4 open/closeStyleEditorPanel() modifies both values
     // as closing the styleEditorPanel does not close the layers panel in v4
@@ -1380,7 +1388,8 @@ const MainController = function(
         }
         this.updateStyleWidgetsForBgLayer(bgLayer, oldBgLayer);
       }
-    )
+    );
+
     $scope.$watch(() => {
       return this['mymapsOpen'] || this['infosOpen'] ||
         this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
@@ -1420,6 +1429,31 @@ const MainController = function(
         feature.set('__refreshProfile__', true);
       }
     });
+
+    $scope.$watch(() => {
+      return this['legendsOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['layersOpen'] = false;
+      }
+      legendsOpen.value = newVal;
+    });
+
+    // listen to legendsOpen to open/close Legends panel in main.html
+    watch(
+      legendsOpen,
+      legendsOpen => {
+        const somePanelOpened = !this['layersOpen'] && !this['mymapsOpen'] && !this['infosOpen'] &&
+        !this['feedbackOpen'] && !this['feedbackAnfOpen'] &&
+        !this['routingOpen'] && !this['feedbackAgeOpen'] && !this['feedbackCruesOpen'] &&
+        !this['vectorEditorOpen'];
+
+        if(!legendsOpen && somePanelOpened) {
+          this.closeSidebar();
+          $scope.$apply();
+        }
+      }
+    );
 
     this.appThemes_.getThemeObject(
       this.appTheme_.getCurrentTheme()).then(() => {
@@ -1930,6 +1964,9 @@ MainController.prototype.closeSidebar = function() {
   // close style editor when closing sidebar
   luxAppStore.setLayersOpen(false) // For info, this also closes the themeGrid
   luxAppStore.setMyLayersTabOpen(false)
+
+  const { legendsOpen } = storeToRefs(luxAppStore)
+  legendsOpen.value = false
 };
 
 
@@ -1978,7 +2015,11 @@ MainController.prototype.switchLanguage = function(lang, track) {
   //change lang for existing lit elements
   i18next.changeLanguage(lang);
   //change lang for integrated vue custom elements
-  Luxi18next.changeLanguage(lang)
+  Luxi18next.changeLanguage(lang);
+  // Clear metadata cache to force requery api,
+  // => to remove when replacing by v4 language component
+  // as this is handle in the language-selector.vue
+  layerMetadataService.clearCache();
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {
