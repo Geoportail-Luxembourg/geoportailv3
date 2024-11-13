@@ -137,12 +137,19 @@ class LuxThemes(Theme):
                         ti = data["timeInfo"]
                         start = datetime.fromtimestamp(ti['timeExtent'][0]/1000)
                         end = datetime.fromtimestamp(ti['timeExtent'][1]/1000)
-                        if ti['defaultTimeIntervalUnits'] in ESRI_TIME_CONSTANTS:
+                        if 'defaultTimeIntervalUnits' in ti and ti['defaultTimeIntervalUnits'] in ESRI_TIME_CONSTANTS:
                             layer_dict['timepositions'] = ['%s/%s/%s'
                                                            % (start.isoformat(),
                                                               end.isoformat(),
                                                               ESRI_TIME_CONSTANTS[ti['defaultTimeIntervalUnits']]
                                                               % ti['defaultTimeInterval'])]
+                        elif 'timeIntervalUnits' in ti and ti['timeIntervalUnits'] in ESRI_TIME_CONSTANTS:
+                            layer_dict['timepositions'] = ['%s/%s/%s'
+                                                           % (start.isoformat(),
+                                                              end.isoformat(),
+                                                              ESRI_TIME_CONSTANTS[ti['timeIntervalUnits']]
+                                                              % ti['timeInterval'])]
+
                     layers[layer.name + '__' + sublayer] = layer_dict
             # if no esri time layer defined => standard WMS server
             else:

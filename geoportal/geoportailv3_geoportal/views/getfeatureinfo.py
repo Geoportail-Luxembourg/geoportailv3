@@ -263,7 +263,7 @@ class Getfeatureinfo(object):
         fids = self.request.params.get('fids', None)
         query_limit = self.request.params.get('max_features', '20')
         offset = self.request.params.get('start_index', None)
-
+        time = self.request.params.get('time', None)
         fids_array = []
         if fids is not None:
             fids_array = fids.split(',')
@@ -275,7 +275,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit, offset)
+                self.get_info(fid, None, None, results, layers, None, None, zoom, query_limit, offset, time)
             return results
 
         layers = self.request.params.get('layers', None)
@@ -294,7 +294,7 @@ class Getfeatureinfo(object):
         if geometry is not None and len(geometry) > 0:
             fc = self.get_info(
                 fid, None,
-                None, results, layers, None, geometry, zoom, query_limit, offset)
+                None, results, layers, None, geometry, zoom, query_limit, offset, time)
             if len(fc) > 0 and 'features' in fc[0]:
                 s = shape(wkt_loads(geometry))
                 for feature in fc[0]['features']:
@@ -319,7 +319,7 @@ class Getfeatureinfo(object):
             return HTTPBadRequest("Wrong box2 value : " + small_box)
         return self.get_info(
             fid, coordinates_big_box,
-            coordinates_small_box, results, layers, big_box, None, zoom, query_limit, offset)
+            coordinates_small_box, results, layers, big_box, None, zoom, query_limit, offset, time)
 
     def is_zoom_ok(self, cur_zoom, zoom_definition):
         if cur_zoom is None or len(cur_zoom) == 0:
@@ -340,7 +340,7 @@ class Getfeatureinfo(object):
         return False
 
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
-                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None):
+                 results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None, time=None):
         rows_cnt = 0
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
@@ -367,7 +367,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             None,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=the_box.centroid.wkt, srs_geometry="2169")
+                            p_geometry=the_box.centroid.wkt, srs_geometry="2169", time=time)
                         if len(features) > 0:
                             f.append(self.to_feature(luxgetfeaturedefinition.layer, None,
                                                     geometry,
@@ -614,7 +614,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')))
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')), time=time)
                     else :
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
@@ -622,7 +622,7 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinition.id_column,
                             big_box, None, None, None,
                             luxgetfeaturedefinition.columns_order,
-                            use_auth=luxgetfeaturedefinition.use_auth)
+                            use_auth=luxgetfeaturedefinition.use_auth, time=time)
                 else:
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
@@ -630,7 +630,7 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.id_column,
                         None, fid, None, None,
                         luxgetfeaturedefinition.columns_order,
-                        use_auth=luxgetfeaturedefinition.use_auth)
+                        use_auth=luxgetfeaturedefinition.use_auth, time=time)
 
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
@@ -1464,7 +1464,7 @@ class Getfeatureinfo(object):
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None,
-                           where_clause=None, use_auth=False, p_geometry=None, srs_geometry=None):
+                           where_clause=None, use_auth=False, p_geometry=None, srs_geometry=None, time=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -1506,6 +1506,18 @@ class Getfeatureinfo(object):
                 'where': '',
                 'outFields': '*',
                 'objectIds': ''}
+        if time is not None and len(time) > 0:
+            # WMS time format is <start_date>/<end_date>
+            # this shall be parsed into <start_millisec>,<end_millisec> for arcgis REST
+            time_values = time.split("/")
+            str_time_integers = [
+                str(int(dateutil.parser.parse(time_val).timestamp()*1000))
+                for time_val in time_values
+            ]
+            # Bypass arcgis bug when time layers are queried with timestamp
+            if len(str_time_integers) == 1:
+                str_time_integers.append(str(int(str_time_integers[0]) + 3600000))
+            body['time'] = ",".join(str_time_integers)
         splitted_url = url.split('f=geojson')
         url = splitted_url[0]
         if id_column is None:
