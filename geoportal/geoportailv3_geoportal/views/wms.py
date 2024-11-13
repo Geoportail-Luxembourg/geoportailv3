@@ -96,6 +96,9 @@ class Wms:
                     str(int(dateutil.parser.parse(time_val).timestamp()*1000))
                     for time_val in time_values
                 ]
+                # Bypass arcgis bug when time layers are queried with timestamp
+                if len(str_time_integers) == 1:
+                    str_time_integers.append(str(int(str_time_integers[0]) + 3600000))
                 query_params["time"] = ",".join(str_time_integers)
             elif lparam == 'layers':
                 query_params["layers"] = 'show:' + internal_wms.layers
