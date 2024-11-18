@@ -31,6 +31,7 @@ import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import { fromCircle } from 'ol/geom/Polygon';
 
+import { useProfileMeasuresv3Store, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -323,8 +324,14 @@ const exports = function($scope, $q, $http, $compile, gettext,
         }.bind(this));
       }.bind(this));
 
+  const profileStore = useProfileMeasuresv3Store()
+
   listen(measureProfile, 'measureend',
       function(evt) {
+        // v4 Force reset feature
+        const { feature_v3 } = storeToRefs(profileStore);
+        feature_v3.value = undefined;
+
         this['persistedFeature'] = evt.detail.feature
         this['persistedFeature'].set('text',
           clearText(this['measureProfile'].getTooltipElement().innerHTML))
@@ -332,6 +339,9 @@ const exports = function($scope, $q, $http, $compile, gettext,
             (evt.detail.feature.getGeometry());
         this.getProfile_(geom).then(
             function(resp) {
+              // v4 Update profile data for v4 component
+              profileStore.setProfileData(this.map_, evt.detail.feature, resp)
+
               this['profileData'] = resp;
             }.bind(this));
       }, this);
@@ -396,6 +406,16 @@ exports.prototype.$onInit = function() {
   this.map_.addInteraction(this['measureLength']);
   this.map_.addInteraction(this['measureArea']);
   this.map_.addInteraction(this['measureAzimut']);
+      
+  // v4 Listen to fake close event from v4 profile component
+  const profileStore = useProfileMeasuresv3Store()
+  const { closeEvent_v3 } = storeToRefs(profileStore)
+
+  watch(closeEvent_v3, (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      this['measureProfile'].setActive(false);
+    }
+  })
 
 };
 

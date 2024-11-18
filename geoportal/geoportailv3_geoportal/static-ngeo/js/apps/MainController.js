@@ -30,6 +30,8 @@ import useLuxLib, {
   watch,
   AlertNotifications,
   AuthForm,
+  ProfileDraw,
+  ProfileMeasures,
   LayerPanel,
   LegendsPanel,
   MapContainer,
@@ -132,6 +134,8 @@ const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
 customElements.define('alert-notifications', AlertNotificationsElement)
 
 customElements.define('auth-form', createElementInstance(AuthForm, app))
+customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
+customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
 
 import i18next from 'i18next';
 

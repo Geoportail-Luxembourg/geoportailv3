@@ -39,6 +39,8 @@ import olInteractionSelect from 'ol/interaction/Select.js';
 import {noModifierKeys, singleClick} from 'ol/events/condition.js';
 import {getDistance as haversineDistance, getArea} from 'ol/sphere.js';
 
+import { useDrawStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {app.draw.FeaturePopup} appFeaturePopup Feature popup service.
@@ -543,6 +545,11 @@ exports.prototype.onChangeActive_ = function(event) {
   } else {
     this.showMapMatchingButton = false;
   }
+
+  // v4
+  const { editStateActive } = storeToRefs(useDrawStore())
+
+  editStateActive.value = active ? "editX" : undefined
 };
 
 
