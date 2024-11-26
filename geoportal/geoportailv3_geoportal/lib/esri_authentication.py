@@ -32,7 +32,7 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
         # not a token error
         raise ESRIServerException(f'Original server error: {resp}')
     else:
-        log.error(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
+        log.warning(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
                   f"server answered {resp['error']}")
         if not renew_token:
             raise ESRITokenException(f'Original server error: {resp}')
