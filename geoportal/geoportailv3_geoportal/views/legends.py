@@ -138,7 +138,6 @@ class Legends(object):
         if name is None:
             return Response("")
         try:
-            log.error(name)
             url = \
                 "https://wiki.geoportail.lu/doku.php?" \
                 "id=%s:legend:%s&do=export_html" % \
