@@ -19,6 +19,8 @@ import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import {getDistance as haversineDistance} from 'ol/sphere.js';
 
+import { useProfileDrawv3Store, useDrawStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
@@ -295,6 +297,22 @@ const exports = function($scope, $sce, appFeaturePopup,
     }
   }.bind(this));
 
+  // v4 set editStateActive to hide geomarker when hovering on feature
+  this.unwatch6_ = $scope.$watch(function() {
+    return this.feature ? this.feature.get('__editable__') : false;
+  }.bind(this), function(newVal, oldVal) {
+    if (this.feature) {
+      const drawStore = useDrawStore()
+      const { editStateActive } = storeToRefs(drawStore)
+
+      if(this.feature && this.feature.getGeometry().getType() === 'LineString') {
+        editStateActive.value = newVal === 1 ? 'editLine' : undefined
+      } else {
+        editStateActive.value = undefined
+      }
+    }
+  }.bind(this));
+
   $scope.$on('$destroy', function() {
     unlistenByKey(this.event_);
     this.unwatch1_();
@@ -302,6 +320,7 @@ const exports = function($scope, $sce, appFeaturePopup,
     this.unwatch3_();
     this.unwatch4_();
     this.unwatch5_();
+    this.unwatch6_();
   }.bind(this));
 
 };
@@ -592,6 +611,12 @@ exports.prototype.updateElevation = function() {
  * @export
  */
 exports.prototype.updateProfile = function() {
+
+  // v4 Force reset feature
+  const profileStore = useProfileDrawv3Store()
+  const { feature_v3 } = storeToRefs(profileStore);
+  feature_v3.value = undefined;
+
   if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
       !this.ngeoOfflineMode_.isEnabled()) {
@@ -600,6 +625,10 @@ exports.prototype.updateProfile = function() {
     console.assert(geom !== null && geom !== undefined);
     this.appFeaturePopup_.getProfile(/** @type {!ol.geom.LineString} */ (geom)).then(function(profile) {
       this.featureProfile = profile;
+
+       // v4 Update profile data for v4 component
+       profileStore.setProfileData(this.map, this.feature, profile);
+
     }.bind(this));
   } else {
     this.featureProfile = undefined;

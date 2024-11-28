@@ -154,8 +154,8 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.Feature}
    * @private
    */
-  this.snappedPoint_ = new olFeature();
-  this.featureOverlay_.addFeature(this.snappedPoint_);
+  // this.snappedPoint_ = new olFeature();
+  // this.featureOverlay_.addFeature(this.snappedPoint_);
 
   /**
    * @param {Object} point The point.
@@ -204,8 +204,8 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   this['profileOptions'] = {
     linesConfiguration: linesConfiguration,
     distanceExtractor: dist,
-    hoverCallback: hoverCallback,
-    outCallback: outCallback,
+    // hoverCallback: hoverCallback,
+    // outCallback: outCallback,
     formatter: {
       xhover: this.formatDistance_,
       yhover: this.formatElevation_
@@ -215,52 +215,58 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
 
   this['point'] = null;
 
-  this.unwatchProfileData = $scope.$watch(function() {
-    return this['profileData'];
-  }.bind(this), function(newVal, oldVal) {
-    if (newVal !== undefined) {
-      var i;
-      var len = newVal.length;
-      var lineString = new olGeomLineString([], olGeomGeometryLayout.XYM);
-      for (i = 0; i < len; i++) {
-        var p = newVal[i];
-        p = new olGeomPoint([p['x'], p['y']]);
-        p.transform('EPSG:2169', this.map_.getView().getProjection());
-        lineString.appendCoordinate(
-            p.getCoordinates().concat(newVal[i]['dist']));
-      }
-      this.line_ = lineString;
-      this.elevationGain = this.formatElevationGain_(newVal[len - 1]['elevationGain'], 'm');
-      this.elevationLoss = this.formatElevationGain_(-1 * newVal[len - 1]['elevationLoss'], 'm');
-      this.cumulativeElevation = this.formatElevationGain_(newVal[len - 1]['cumulativeElevation'], 'm');
-    } else {
-      this.line_ = null;
-    }
-  }.bind(this));
+  // Deactivate following code because this is now handled by v4
 
-  this.scope_.$on('$destroy', function() {
-    unlistenByKey(this.event_);
-    this.unwatchProfileData();
-  }.bind(this));
+  // this.unwatchProfileData = $scope.$watch(function() {
+  //   return this['profileData'];
+  // }.bind(this), function(newVal, oldVal) {
+  //   if (newVal !== undefined) {
+  //     var i;
+  //     var len = newVal.length;
+  //     var lineString = new olGeomLineString([], olGeomGeometryLayout.XYM);
+  //     for (i = 0; i < len; i++) {
+  //       var p = newVal[i];
+  //       p = new olGeomPoint([p['x'], p['y']]);
+  //       p.transform('EPSG:2169', this.map_.getView().getProjection());
+  //       lineString.appendCoordinate(
+  //           p.getCoordinates().concat(newVal[i]['dist']));
+  //     }
+  //     this.line_ = lineString;
+  //     this.elevationGain = this.formatElevationGain_(newVal[len - 1]['elevationGain'], 'm');
+  //     this.elevationLoss = this.formatElevationGain_(-1 * newVal[len - 1]['elevationLoss'], 'm');
+  //     this.cumulativeElevation = this.formatElevationGain_(newVal[len - 1]['cumulativeElevation'], 'm');
+  //   } else {
+  //     this.line_ = null;
+  //   }
+  // }.bind(this));
+
+  // Deactivate following code because this is now handled by v4
+  // this.scope_.$on('$destroy', function() {
+  //   unlistenByKey(this.event_);
+
+  //   // this.unwatchProfileData();
+  // }.bind(this));
 };
 
 
-exports.prototype.$onInit = function() {
-  this.map_ = this['map'];
-  if (this.map_) {
-    this.event_ = listen(this.map_, 'pointermove',
-      /**
-       * @param {ol.MapBrowserPointerEvent} evt Map browser event.
-       */
-      function(evt) {
-        if (evt.dragging || this.line_ === null) {
-          return;
-        }
-        var coordinate = this.map_.getEventCoordinate(evt.originalEvent);
-        this.snapToGeometry_(coordinate, this.line_);
-      }, this);
-  }
-}
+// Deactivate following code because this is now handled by v4 
+
+// exports.prototype.$onInit = function() {
+//   this.map_ = this['map'];
+//   if (this.map_) {
+//     this.event_ = listen(this.map_, 'pointermove',
+//       /**
+//        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
+//        */
+//       function(evt) {
+//         if (evt.dragging || this.line_ === null) {
+//           return;
+//         }
+//         var coordinate = this.map_.getEventCoordinate(evt.originalEvent);
+//         this.snapToGeometry_(coordinate, this.line_);
+//       }, this);
+//   }
+// }
 
 /**
  * Creates a new measure tooltip
