@@ -547,9 +547,10 @@ exports.prototype.onChangeActive_ = function(event) {
   }
 
   // v4
-  const { editStateActive } = storeToRefs(useDrawStore())
+  const { drawStateActive, editStateActive } = storeToRefs(useDrawStore())
 
   editStateActive.value = active ? "editX" : undefined
+  drawStateActive.value = active ? "drawX" : undefined
 };
 
 

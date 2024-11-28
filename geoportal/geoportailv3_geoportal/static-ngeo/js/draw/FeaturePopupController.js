@@ -301,8 +301,16 @@ const exports = function($scope, $sce, appFeaturePopup,
   this.unwatch6_ = $scope.$watch(function() {
     return this.feature ? this.feature.get('__editable__') : false;
   }.bind(this), function(newVal, oldVal) {
-    const { editStateActive } = storeToRefs(useDrawStore())
-    editStateActive.value = newVal === 1 ? 'editLine' : undefined
+    if (this.feature) {
+      const drawStore = useDrawStore()
+      const { editStateActive } = storeToRefs(drawStore)
+
+      if(this.feature && this.feature.getGeometry().getType() === 'LineString') {
+        editStateActive.value = newVal === 1 ? 'editLine' : undefined
+      } else {
+        editStateActive.value = undefined
+      }
+    }
   }.bind(this));
 
   $scope.$on('$destroy', function() {
