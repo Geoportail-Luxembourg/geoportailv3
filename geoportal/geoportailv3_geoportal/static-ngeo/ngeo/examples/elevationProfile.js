@@ -122,13 +122,15 @@ exports.MainController = function($http, $scope) {
   });
 
 
-  map.on('pointermove', (evt) => {
-    if (evt.dragging) {
-      return;
-    }
-    const coordinate = map.getEventCoordinate(evt.originalEvent);
-    this.snapToGeometry(coordinate, source.getFeatures()[0].getGeometry());
-  });
+  // Deactivate following code because this is now handled by v4
+
+  // map.on('pointermove', (evt) => {
+  //   if (evt.dragging) {
+  //     return;
+  //   }
+  //   const coordinate = map.getEventCoordinate(evt.originalEvent);
+  //   this.snapToGeometry(coordinate, source.getFeatures()[0].getGeometry());
+  // });
 
 
   /**
