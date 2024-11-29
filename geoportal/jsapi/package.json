@@ -29,7 +29,7 @@
     "eslint": "^7.32.0",
     "jsdoc": "^3.6.7",
     "jsdoc-plugin-typescript": "^2.0.6",
-    "jsdom": "^11.10.0",
+    "jsdom": "11.10.0",
     "koa-proxies": "^0.12.2",
     "less": "^4.1.2",
     "node-fetch": "^2.6.6",
