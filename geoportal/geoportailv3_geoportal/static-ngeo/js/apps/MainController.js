@@ -32,6 +32,8 @@ import useLuxLib, {
   AuthForm,
   ProfileDraw,
   ProfileMeasures,
+  ProfileRouting,
+  ProfileInfos,
   LayerPanel,
   LegendsPanel,
   MapContainer,
@@ -50,6 +52,7 @@ import useLuxLib, {
   useOfflineLayers,
   useStyleStore,
   useThemeStore,
+  useProfileRoutingv3Store,
   layerMetadataService,
   statePersistorAppService,
   statePersistorBgLayerService,
@@ -136,6 +139,8 @@ customElements.define('alert-notifications', AlertNotificationsElement)
 customElements.define('auth-form', createElementInstance(AuthForm, app))
 customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
 customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
+customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
+customElements.define('profile-infos', createElementInstance(ProfileInfos, app))
 
 import i18next from 'i18next';
 
@@ -1441,6 +1446,16 @@ const MainController = function(
         this['layersOpen'] = false;
       }
       legendsOpen.value = newVal;
+    });
+
+    // V4 for profile in routing
+    $scope.$watch(() => {
+      return this['routingOpen'];
+    }, newVal => {
+      const profileRoutingStore = useProfileRoutingv3Store();
+      const { activePositioning_v3 } = storeToRefs(profileRoutingStore);
+
+      activePositioning_v3.value = newVal;
     });
 
     // listen to legendsOpen to open/close Legends panel in main.html
