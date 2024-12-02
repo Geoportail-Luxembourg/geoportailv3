@@ -67,8 +67,16 @@
               </div>
           </div>
           <div class="route-graphic-container route-info-container" ng-if="ctrl.profileData.length > 0">
-              <h3 class="route-info-title" translate>Dénivelé lors de votre trajet</h3>
-              <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.showProfile" app-profile-map="::ctrl.map">
+              <h3 class="route-info-title" style="margin-bottom: 10px;" translate>Dénivelé lors de votre trajet</h3>
+
+              <!-- v4 Elevation Profile component -->
+                <div style="display: inline;">
+                    <div style="width: 283px; height: auto;">
+                        <profile-routing />
+                    </div>
+                </div>
+
+              <!-- <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.showProfile" app-profile-map="::ctrl.map"> -->
           </div>
 
           <div class="route-details route-info-container">
