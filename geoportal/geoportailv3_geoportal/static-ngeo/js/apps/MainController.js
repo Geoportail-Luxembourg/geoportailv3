@@ -524,6 +524,7 @@ const MainController = function(
     proxyWmsUrl,
     httpsProxyUrl,
     getvtpermalinkUrl, uploadvtpermalinkUrl, deletevtpermalinkUrl, vectortilesUrl) {
+      
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -1374,15 +1375,39 @@ const MainController = function(
       { immediate: true }
     )
     const { bgLayer, layers } = storeToRefs(useMapStore())
+    const { config } = storeToRefs(useThemeStore())
+    const mapService = useMap()
+    const openLayerService = useOpenLayers()
+
     // monitor changes in layers to update state of mymaps
+    // Must wait theme definition to use useOpenLayers().getLayerFromCache()
+
     watch(
-      layers,
-      (layers) => {
-        this['selectedLayers'] = layers.map((l) => useOpenLayers().getLayerFromCache(l)).reverse();
-        this.compareLayers_();
-        $scope.$digest();
+      [layers, config],
+      ([layers, config], [oldLayers, oldConfig]) => {
+        if (config) { // Wait for themes to be loaded, and layer cache initialized
+          this['selectedLayers'] = layers.map((l) => openLayerService.getLayerFromCache(l)).reverse();
+          this.compareLayers_();
+          $scope.$digest();
+
+          const addedLayerComparisons = mapService.getAddedLayers(
+            { layers },
+            { layers: oldLayers }
+          ) // pass obj to mimic v4 MapContext
+
+          addedLayerComparisons.forEach(cmp => {
+            const piwik = /** @type {Piwik} */ (this.window_['_paq']);
+            if (piwik != undefined) {
+              piwik.push(['setDocumentTitle',
+                'LayersAdded/' + cmp.layer.name
+              ]);
+              piwik.push(['trackPageView']);
+            }
+          })
+        }
       }
     )
+    
     // monitor change of BG layer to update state of mymaps
     // listen to changes of bgLayer to send piwik request formerly sent from BackgroundselectorController
     watch(
@@ -1871,27 +1896,6 @@ MainController.prototype.manageSelectedLayers_ =
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
         }.bind(this)
       );
-      scope.$watchCollection(function() {
-        return this['selectedLayers'];
-      }.bind(this), function(newSelectedLayers, oldSelectedLayers) {
-        this.map_.render();
-        this.compareLayers_();
-
-        if (newSelectedLayers.length > oldSelectedLayers.length) {
-          var nbLayersAdded =
-             newSelectedLayers.length - oldSelectedLayers.length;
-          for (var i = 0; i < nbLayersAdded; i++) {
-            var layer = this['selectedLayers'][i];
-            var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            if (piwik != undefined) {
-              piwik.push(['setDocumentTitle',
-                'LayersAdded/' + layer.get('label')
-              ]);
-              piwik.push(['trackPageView']);
-            }
-          }
-        }
-      }.bind(this));
     };
 
 /**
