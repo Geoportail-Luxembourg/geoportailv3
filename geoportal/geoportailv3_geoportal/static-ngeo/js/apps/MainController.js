@@ -1377,6 +1377,7 @@ const MainController = function(
     const { bgLayer, layers } = storeToRefs(useMapStore())
     const { config } = storeToRefs(useThemeStore())
     const mapService = useMap()
+    const openLayerService = useOpenLayers()
 
     // monitor changes in layers to update state of mymaps
     // Must wait theme definition to use useOpenLayers().getLayerFromCache()
@@ -1385,7 +1386,7 @@ const MainController = function(
       [layers, config],
       ([layers, config], [oldLayers, oldConfig]) => {
         if (config) { // Wait for themes to be loaded, and layer cache initialized
-          this['selectedLayers'] = layers.map((l) => useOpenLayers().getLayerFromCache(l)).reverse();
+          this['selectedLayers'] = layers.map((l) => openLayerService.getLayerFromCache(l)).reverse();
           this.compareLayers_();
           $scope.$digest();
 
