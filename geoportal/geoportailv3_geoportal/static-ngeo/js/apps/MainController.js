@@ -1895,33 +1895,6 @@ MainController.prototype.manageSelectedLayers_ =
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
         }.bind(this)
       );
-
-      // ---------------------------
-      // Deactivate, handle this with v4 watchers
-      // ---------------------------
-
-      // scope.$watchCollection(function() {
-      //   return this['selectedLayers'];
-      // }.bind(this), function(newSelectedLayers, oldSelectedLayers) {
-      //   this.map_.render();
-      //   this.compareLayers_();
-
-      //   if (newSelectedLayers.length > oldSelectedLayers.length) {
-      //     var nbLayersAdded =
-      //        newSelectedLayers.length - oldSelectedLayers.length;
-      //     for (var i = 0; i < nbLayersAdded; i++) {
-      //       var layer = this['selectedLayers'][i];
-      //       var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-      //       if (piwik != undefined) {
-      //         piwik.push(['setDocumentTitle',
-      //           'LayersAdded/' + layer.get('label')
-      //         ]);
-      //         piwik.push(['trackPageView']);
-      //       }
-      //     }
-      //   }
-      // }.bind(this));
-
     };
 
 /**
