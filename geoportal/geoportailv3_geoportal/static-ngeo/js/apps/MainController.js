@@ -53,6 +53,7 @@ import useLuxLib, {
   useStyleStore,
   useThemeStore,
   useProfileRoutingv3Store,
+  useProfileMeasuresv3Store,
   layerMetadataService,
   statePersistorAppService,
   statePersistorBgLayerService,
@@ -1448,6 +1449,21 @@ const MainController = function(
       }
     });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
+
+
+    const profileStore = useProfileMeasuresv3Store()
+    
+    // For v4 When closing measure, reset feate profile data for profile measure v4 comp
+    $scope.$watch(() => {
+      return this['measureOpen'];
+    }, isOpen => {
+      if (!isOpen) {
+        // v4 Force reset feature (this will reset profile graph for profile measures)
+        const { feature_v3 } = storeToRefs(profileStore);
+        feature_v3.value = undefined;
+      }
+    });
+
 
     $scope.$watch(() => {
       return this.sidebarOpen();
