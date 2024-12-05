@@ -266,6 +266,13 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['removeFeatures'] = function() {
     this['persistedFeature'] = undefined;
     this['layer'].getSource().clear();
+
+    // v4 Force reset feature
+    const { feature_v3 } = storeToRefs(profileStore);
+    feature_v3.value = undefined;
+
+    // v4 Update profile data for v4 component
+    profileStore.setProfileData(this.map_, evt.detail.feature, resp)
   }
 
   /**
