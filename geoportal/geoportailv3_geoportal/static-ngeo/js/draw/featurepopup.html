@@ -24,10 +24,10 @@
       </div>
     </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
-    <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
+    <div class="feature-popup-profile" ng-if="ctrl.showFeatureProfile.active"> <!-- use ng-if otherwise profile is duplicated in dom... -->
 
       <!-- v4 Elevation Profile component -->
-      <div style="width: 256px; height: auto;">
+      <div class="profile" style="height: auto; margin-bottom: 10px;">
         <profile-draw />
       </div>
 
