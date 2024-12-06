@@ -142,20 +142,16 @@
         </div>
 
         <!-- Infos -->
-        <div ng-if="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+        <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
           <div class="container-fluid tab-content">
-            <app-locationinfo app-locationinfo-map="::mainCtrl.map"
-                              app-locationinfo-open="mainCtrl.infosOpen"
-                              app-locationinfo-routing-open="mainCtrl.routingOpen"
-                              app-locationinfo-appselector="mainCtrl.infosAppSelector"
-                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent"
-                              ng-if="::!mainCtrl.embedded">
-            </app-locationinfo>
-            <app-query app-query-map="::mainCtrl.map"
+            <location-info-panel ng-class="mainCtrl.infosAppSelector === 'locationinfo' ? 'show' : 'hide'">
+            </location-info-panel>
+            <app-query
+             ng-if="!mainCtrl.isDisconnectedOrOffline()"app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
                        app-query-mymaps-open="mainCtrl.mymapsOpen"
                        app-query-layers-open="mainCtrl.layersOpen"
