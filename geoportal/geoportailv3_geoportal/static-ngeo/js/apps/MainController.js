@@ -38,6 +38,7 @@ import useLuxLib, {
   LegendsPanel,
   MapContainer,
   BackgroundSelector,
+  LocationInfoPanel,
   StylePanel,
   LayerMetadata,
   RemoteLayers,
@@ -50,6 +51,7 @@ import useLuxLib, {
   useAppStore,
   useMapStore,
   useOfflineLayers,
+  useInfoStore,
   useStyleStore,
   useThemeStore,
   useProfileRoutingv3Store,
@@ -124,6 +126,9 @@ customElements.define('background-selector', BackgroundSelectorElement)
 
 const StylePanelElement = createElementInstance(StylePanel, app)
 customElements.define('style-panel', StylePanelElement)
+
+const LocationInfoPanelElement = createElementInstance(LocationInfoPanel, app)
+customElements.define('location-info-panel', LocationInfoPanelElement)
 
 const LayerMetadataElement = createElementInstance(LayerMetadata, app)
 customElements.define('layer-metadata', LayerMetadataElement)
@@ -1375,6 +1380,39 @@ const MainController = function(
       },
       { immediate: true }
     )
+    const { locationInfo, routingFeatureTemp } = storeToRefs(useInfoStore())
+    watch(
+      locationInfo, location => {
+        if (location !== undefined) {
+          this.infosOpen = true
+          this.infosAppSelector = 'locationinfo'
+        }
+      },
+      { immediate: true }
+    )
+    watch (
+      // routingFeatureTemp is serving as a one-way buffer for adding a point from v4
+      // into the v3 routing service: when a new feature is detected as added in v4, it is
+      // added to the route, and the buffer is reset to undefined
+      routingFeatureTemp, feature => {
+        if (feature) {
+          this.appRouting_.addRoutePoint(feature)
+          routingFeatureTemp.value = undefined
+          this['routingOpen'] = true
+        }
+      }
+    )
+
+    const v4infoOpen = storeToRefs(luxAppStore).infoOpen
+    $scope.$watch(
+      () => this['infosOpen'],
+      open => {
+        if (!open) {
+          v4infoOpen.value = false
+        }
+      }
+    )
+
     const { bgLayer, layers } = storeToRefs(useMapStore())
     const { config } = storeToRefs(useThemeStore())
     const mapService = useMap()
