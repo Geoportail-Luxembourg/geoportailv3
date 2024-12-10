@@ -198,6 +198,12 @@ class LuxThemes(Theme):
                                     timepositions[0][:-1]
                                     + wms_obj.get("default_timestep", 'PT600S')
                                 )
+                            if len(timepositions) == 1:
+                                tp = timepositions[0].split("/")
+                                if len(tp) == 3:
+                                    tp[2] = wms_obj.get("default_timestep", tp[2])
+                                    timepositions[0] = "/".join(tp)
+                                    wms_obj["timepositions"] = timepositions
                         extent = parse_extent(
                             wms_obj["timepositions"],
                             wms_obj.get("defaulttimeposition", None)
