@@ -382,9 +382,9 @@ class FeatureHash extends olFormatTextFeature {
         if (encodedProperties.length !== 0) {
           encodedProperties.push('\'');
         }
-        var encoded = encodeURIComponent(
+        var encoded = /*encodeURIComponent(*/
             key.replace(/[()'*]/g, '_') + '*' +
-            value.toString().replace(/[()'*]/g, '_'));
+            value.toString().replace(/[()'*]/g, '_')/*)*/; // v4 encode is done in storage helper
         encodedProperties.push(encoded);
       }
     };
@@ -593,7 +593,7 @@ function encodeStylePoint_(imageStyle, encodedStyles) {
    if (encodedStyles.length > 0) {
      encodedStyles.push('\'');
    }
-   encodedStyles.push(encodeURIComponent('pointRadius*' + radius));
+   encodedStyles.push(/*encodeURIComponent(*/'pointRadius*' + radius)/*)*/; // v4 encode done in storage helper
    var fillStyle = imageStyle.getFill();
    if (fillStyle !== null) {
      encodeStyleFill_(fillStyle, encodedStyles);
@@ -644,8 +644,8 @@ function encodeStyleFill_(fillStyle, encodedStyles, opt_propertyName) {
    if (encodedStyles.length > 0) {
      encodedStyles.push('\'');
    }
-   encodedStyles.push(
-       encodeURIComponent(propertyName + '*' + fillColorHex));
+   encodedStyles.push(/*
+       encodeURIComponent(*/propertyName + '*' + fillColorHex/*)*/);
  }
 };
 
@@ -667,14 +667,14 @@ function encodeStyleStroke_(strokeStyle, encodedStyles) {
    if (encodedStyles.length > 0) {
      encodedStyles.push('\'');
    }
-   encodedStyles.push(encodeURIComponent('strokeColor*' + strokeColorHex));
+   encodedStyles.push(/*encodeURIComponent(*/'strokeColor*' + strokeColorHex/*)*/);
  }
  var strokeWidth = strokeStyle.getWidth();
  if (strokeWidth !== undefined) {
    if (encodedStyles.length > 0) {
      encodedStyles.push('\'');
    }
-   encodedStyles.push(encodeURIComponent('strokeWidth*' + strokeWidth));
+   encodedStyles.push(/*encodeURIComponent(*/'strokeWidth*' + strokeWidth/*)*/);
  }
 };
 
@@ -694,7 +694,7 @@ function encodeStyleText_(textStyle, encodedStyles) {
      if (encodedStyles.length > 0) {
        encodedStyles.push('\'');
      }
-     encodedStyles.push(encodeURIComponent('fontSize*' + font[1]));
+     encodedStyles.push(/*encodeURIComponent(*/'fontSize*' + font[1]/*)*/);
    }
  }
  var fillStyle = textStyle.getFill();
