@@ -117,7 +117,7 @@ class Getfeatureinfo(object):
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
                 if luxgetfeaturedefinition.use_auth:
-                    auth_token = get_arcgis_token(self.request, log)
+                    auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
                 else:
                     url1 = url + "%(id)s/attachments?f=pjson" %{'id': id}
@@ -146,7 +146,7 @@ class Getfeatureinfo(object):
                 if pdf_name is None or pdf_id is None:
                     return HTTPBadRequest()
                 if luxgetfeaturedefinition.use_auth:
-                    auth_token = get_arcgis_token(self.request, log)
+                    auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url2 = url + "%(id)s/attachments/%(pdf_id)s%(token)s" %{'id': id, 'pdf_id': pdf_id, 'token':('?token='+auth_token['token'])}
                 else:
                     url2 = url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
@@ -1524,7 +1524,7 @@ class Getfeatureinfo(object):
             id_column = 'objectid'
  
         if use_auth:
-            auth_token = get_arcgis_token(self.request, log)
+            auth_token = get_arcgis_token(self.request, log, service_url=url)
             if 'token' in auth_token:
                 body["token"] = auth_token['token']
 

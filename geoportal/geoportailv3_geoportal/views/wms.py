@@ -113,7 +113,7 @@ class Wms:
         query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
 
         if internal_wms.use_auth:
-            auth_token = get_arcgis_token(self.request, log)
+            auth_token = get_arcgis_token(self.request, log, service_url=internal_wms.rest_url)
             if 'token' in auth_token:
                 query_params["token"] = auth_token['token']
 

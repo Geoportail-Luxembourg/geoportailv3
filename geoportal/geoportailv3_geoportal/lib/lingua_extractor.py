@@ -1021,7 +1021,7 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
             full_url = result.rest_url + '/legend?f=pjson'
             try:
                 if result.use_auth:
-                    auth_token = get_arcgis_token(_Request(self.config), log)
+                    auth_token = get_arcgis_token(_Request(self.config), log, service_url=result.rest_url)
                     if 'token' in auth_token:
                         query_params["token"] = auth_token['token']
                 full_url = result.rest_url + '/legend?' + urllib.parse.urlencode(query_params)
