@@ -38,7 +38,7 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
             raise ESRITokenException(f'Original server error: {resp}')
         else:
             log.info("Try to get new token")
-            auth_token = get_arcgis_token(parent_request, log, force_renew=True)
+            auth_token = get_arcgis_token(parent_request, log, force_renew=True, service_url=url_request.full_url)
             if 'token' in auth_token:
                 (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url_request.full_url)
                 query_params = dict(urllib.parse.parse_qsl(query))
@@ -60,16 +60,16 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
                 raise ESRITokenException(f'Original server error: {resp}')
             return ResultTuple(data, result.info()['Content-Type'])
 
-def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None) -> Dict:
+def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None, service_url: Optional[str] = None) -> Dict:
     session = request.session
     config = request.registry.settings
     auth_token = {}
     if force_renew:
         log.info('force renew token')
-        auth_token = _renew_arcgis_token(session, config, log)
+        auth_token = _renew_arcgis_token(session, config, log, service_url=service_url)
     elif 'auth_token' not in session:
         log.info('could not find token in session - request new token')
-        auth_token = _renew_arcgis_token(session, config, log)
+        auth_token = _renew_arcgis_token(session, config, log, service_url=service_url)
     else:
         auth_token = session['auth_token']
         token_expire = datetime.fromtimestamp(float(auth_token['expires'])/1000)
@@ -77,7 +77,7 @@ def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[
         is_expired = token_expire < (datetime.now() + timedelta(seconds=30))
         if is_expired:
             log.info('token expired - request new token')
-            auth_token = _renew_arcgis_token(session, config, log)
+            auth_token = _renew_arcgis_token(session, config, log, service_url=service_url)
         else:
             log.info('token still valid')
             # the parameter token_check_url allows to check the token directly on the
@@ -105,7 +105,7 @@ def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[
     return auth_token
 
 
-def _renew_arcgis_token(session, config, log):
+def _renew_arcgis_token(session, config, log, service_url=None):
     token_data = {
         'f': 'json',
         'username': config["arcgis_token_username"],
@@ -113,7 +113,15 @@ def _renew_arcgis_token(session, config, log):
         'referer': config.get('arcgis_token_referer', 'x'),
         'expiration': config.get('arcgis_token_validity', 600)
     }
-    generate_token_url = urllib.parse.urljoin(f"{config['arcgis_token_url']}/", "generateToken")
+    #/portal/sharing/rest/generateToken
+    # The token url is no more read from config.
+    # As we could have more than one token url, we decided to use the request url to find out the token url
+    if service_url is None:
+        generate_token_url = urllib.parse.urljoin(f"{config['arcgis_token_url']}/", "generateToken")
+    else:
+        parsed_url = urllib.parse.urlparse(service_url)
+        # Reconstruction du protocole et du host
+        generate_token_url = f"{parsed_url.scheme}://{parsed_url.netloc}/portal/sharing/rest/generateToken"
     response = requests.post(generate_token_url, data=token_data, timeout=15)
     response.raise_for_status()
     auth_token = response.json()
