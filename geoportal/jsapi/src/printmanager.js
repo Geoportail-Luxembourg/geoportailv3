@@ -441,14 +441,14 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
     object.baseURL = object.baseURL.replace('_hd', '');
     object.matrixSet = object.matrixSet.replace('_HD', '');
   }
-  if ((object.matrices instanceof Array)) {
+  /*if ((object.matrices instanceof Array)) {
     for (var j = object.matrices.length - 1; j > 0; j--) {
       if (object.matrices[j].scaleDenominator > this.scale_) {
         object.matrices.splice(0, j + 1);
         break;
       }
     }
-  }
+  }*/
   arr.push(object);
 };
 
