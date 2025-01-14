@@ -711,7 +711,7 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layers = this.map_.getLayers().getArray();
   var layersList = [];
   var layerLabel = {};
-
+  var layersTimeList = [];
   for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
     if (metadata !== undefined && metadata !== null) {
@@ -719,6 +719,12 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
         var queryableId = layers[i].get('queryable_id');
         layersList.push(queryableId);
         layerLabel[queryableId] = layers[i].get('label');
+        //const time = layers[i].get('time');
+        //layersTimeList.push(time.minValue+"/"+time.maxValue);
+        const time = layers[i].get('current_time');
+        if (time !== undefined) {
+          layersTimeList.push(time); 
+        }
       }
     }
   }
@@ -747,7 +753,8 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
       'box1': big_box.join(),
       'box2': small_box.join(),
       'srs': 'EPSG:3857',
-      'zoom': this.map_.getView().getZoom()
+      'zoom': this.map_.getView().getZoom(),
+      'time': layersTimeList.join()
     };
     if (!this.map_.get('ol3dm').is3dEnabled()) {
       var size = this.map_.getSize();

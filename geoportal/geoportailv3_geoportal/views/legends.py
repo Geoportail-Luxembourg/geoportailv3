@@ -99,7 +99,7 @@ class Legends(object):
                         query_params['dpi'] = self.request.params["dpi"]
 
                     if internal_wms.use_auth:
-                        auth_token = get_arcgis_token(self.request, log)
+                        auth_token = get_arcgis_token(self.request, log, service_url=full_url)
                         if 'token' in auth_token:
                             query_params["token"] = auth_token['token']
 
@@ -138,7 +138,6 @@ class Legends(object):
         if name is None:
             return Response("")
         try:
-            log.error(name)
             url = \
                 "https://wiki.geoportail.lu/doku.php?" \
                 "id=%s:legend:%s&do=export_html" % \

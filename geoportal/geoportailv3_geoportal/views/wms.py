@@ -96,6 +96,9 @@ class Wms:
                     str(int(dateutil.parser.parse(time_val).timestamp()*1000))
                     for time_val in time_values
                 ]
+                # Bypass arcgis bug when time layers are queried with timestamp
+                if len(str_time_integers) == 1:
+                    str_time_integers.append(str(int(str_time_integers[0]) + 3600000))
                 query_params["time"] = ",".join(str_time_integers)
             elif lparam == 'layers':
                 query_params["layers"] = 'show:' + internal_wms.layers
@@ -110,7 +113,7 @@ class Wms:
         query_params["size"] = kw.get('width', '') + ',' + kw.get('height', '')
 
         if internal_wms.use_auth:
-            auth_token = get_arcgis_token(self.request, log)
+            auth_token = get_arcgis_token(self.request, log, service_url=internal_wms.rest_url)
             if 'token' in auth_token:
                 query_params["token"] = auth_token['token']
 
