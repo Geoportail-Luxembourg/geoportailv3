@@ -32,7 +32,7 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
         # not a token error
         raise ESRIServerException(f'Original server error: {resp}')
     else:
-        log.error(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
+        log.warning(f"Token refused in ESRI lib by: {urllib.parse.splitquery(url_request.full_url)[0]} - "
                   f"server answered {resp['error']}")
         if not renew_token:
             raise ESRITokenException(f'Original server error: {resp}')
@@ -56,8 +56,8 @@ def read_request_with_token(url_request, parent_request, log, timeout=15, renew_
             except Exception as e:
                 resp = {}
                 log.info(f"Response is no valid json, {type(e)}: {str(e)}")
-            if 'error' in resp:
-                raise ESRITokenException(f'Original server error: {resp}')
+            #if 'error' in resp:
+            #    raise ESRITokenException(f'Original server error: {resp}')
             return ResultTuple(data, result.info()['Content-Type'])
 
 def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[str] = None) -> Dict:
@@ -106,24 +106,28 @@ def get_arcgis_token(request, log, force_renew=False, token_check_url: Optional[
 
 
 def _renew_arcgis_token(session, config, log):
-    token_data = {
-        'f': 'json',
-        'username': config["arcgis_token_username"],
-        'password': config["arcgis_token_password"],
-        'referer': config.get('arcgis_token_referer', 'x'),
-        'expiration': config.get('arcgis_token_validity', 600)
-    }
-    generate_token_url = urllib.parse.urljoin(f"{config['arcgis_token_url']}/", "generateToken")
-    response = requests.post(generate_token_url, data=token_data, timeout=15)
-    response.raise_for_status()
-    auth_token = response.json()
-    if 'error' in auth_token:
-        log.error(f"Failed getting token from: {generate_token_url} - "
-                  f"server answered {auth_token['error']}")
-        auth_token = {}
-        session.pop('auth_token', None)
-    else:
-        log.info("Success: token valid until "
-                 f"{datetime.fromtimestamp(float(auth_token.get('expires', 0)) / 1000)}")
-        session['auth_token'] = auth_token
+    auth_token = None
+    try:
+        token_data = {
+            'f': 'json',
+            'username': config["arcgis_token_username"],
+            'password': config["arcgis_token_password"],
+            'referer': config.get('arcgis_token_referer', 'x'),
+            'expiration': config.get('arcgis_token_validity', 600)
+        }
+        generate_token_url = urllib.parse.urljoin(f"{config['arcgis_token_url']}/", "generateToken")
+        response = requests.post(generate_token_url, data=token_data, timeout=15)
+        response.raise_for_status()
+        auth_token = response.json()
+        if 'error' in auth_token:
+            log.error(f"Failed getting token from: {generate_token_url} - "
+                      f"server answered {auth_token['error']}")
+            auth_token = {}
+            session.pop('auth_token', None)
+        else:
+            log.info("Success: token valid until "
+                     f"{datetime.fromtimestamp(float(auth_token.get('expires', 0)) / 1000)}")
+            session['auth_token'] = auth_token
+    except:
+        log.error(f"Failed token check at: ")
     return auth_token

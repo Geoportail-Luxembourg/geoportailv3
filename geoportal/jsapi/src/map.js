@@ -466,6 +466,11 @@ class Map extends OpenLayersMap {
 
     /**
      * @private
+     */
+     this.resizeObserver_ = undefined;
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.showSelectedFeature_ = true;
@@ -712,6 +717,31 @@ class Map extends OpenLayersMap {
       Promise.all([this.i18nPromise, this.layersPromise]).then(function () {
         options.callback.call(this);
       }.bind(this));
+    }
+    /**
+     * @private
+     * @type {function()}
+     */
+    this.cbResize_ = function(entries) {
+      for (let entry of entries) {
+        if (entry.contentRect.width > 0 &&
+            entry.contentRect.height > 0) {
+                this.updateSize();
+                if (this.resizeObserver_ !== undefined) {
+                    this.resizeObserver_.unobserve(this.getTargetElement());
+                    this.resizeObserver_ = undefined;
+                }
+            }
+      }
+    }
+    try {
+        if (this.getTargetElement().clientHeight == 0 ||
+            this.getTargetElement().clientWidth == 0) {
+            this.resizeObserver_ = new ResizeObserver(this.cbResize_.bind(this));
+            this.resizeObserver_.observe(this.getTargetElement())
+        }
+    } catch(e) {
+        console.log(e);
     }
   }
 

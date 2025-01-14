@@ -277,12 +277,16 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, times, f
             layer.set('current_time', times[layerIndex])
             // use min and max default values to restore previous state
             let time = layer.get('time');
-            const default_times = times[layerIndex].split("/");
-            time.minDefValue = default_times[0];
-            if (default_times.length > 1 ) {
-              time.maxDefValue = default_times[1];
+            if (time !== undefined) {
+              const default_times = times[layerIndex].split("/");
+              time.minDefValue = default_times[0];
+              if (default_times.length > 1 ) {
+                time.maxDefValue = default_times[1];
+              }
+              layer.set('time', time);
+            } else {
+              console.log("Layer has no time information defined")
             }
-            layer.set('time', time);
           }
         }
         // Skip layers that have already been added

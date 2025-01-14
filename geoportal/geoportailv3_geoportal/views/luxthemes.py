@@ -106,7 +106,7 @@ class LuxThemes(Theme):
             if layer.time_mode != 'disabled' and layer.rest_url is not None and len(layer.rest_url) > 0:
                 query_params = {'f': 'pjson'}
                 if layer.use_auth:
-                    auth_token = get_arcgis_token(self.request, log)
+                    auth_token = get_arcgis_token(self.request, log, service_url=layer.rest_url)
                     if 'token' in auth_token:
                         query_params["token"] = auth_token['token']
                 full_url = layer.rest_url + '?' + urllib.parse.urlencode(query_params)
@@ -137,12 +137,19 @@ class LuxThemes(Theme):
                         ti = data["timeInfo"]
                         start = datetime.fromtimestamp(ti['timeExtent'][0]/1000)
                         end = datetime.fromtimestamp(ti['timeExtent'][1]/1000)
-                        if ti['defaultTimeIntervalUnits'] in ESRI_TIME_CONSTANTS:
+                        if 'defaultTimeIntervalUnits' in ti and ti['defaultTimeIntervalUnits'] in ESRI_TIME_CONSTANTS:
                             layer_dict['timepositions'] = ['%s/%s/%s'
                                                            % (start.isoformat(),
                                                               end.isoformat(),
                                                               ESRI_TIME_CONSTANTS[ti['defaultTimeIntervalUnits']]
                                                               % ti['defaultTimeInterval'])]
+                        elif 'timeIntervalUnits' in ti and ti['timeIntervalUnits'] in ESRI_TIME_CONSTANTS:
+                            layer_dict['timepositions'] = ['%s/%s/%s'
+                                                           % (start.isoformat(),
+                                                              end.isoformat(),
+                                                              ESRI_TIME_CONSTANTS[ti['timeIntervalUnits']]
+                                                              % ti['timeInterval'])]
+
                     layers[layer.name + '__' + sublayer] = layer_dict
             # if no esri time layer defined => standard WMS server
             else:
@@ -191,6 +198,12 @@ class LuxThemes(Theme):
                                     timepositions[0][:-1]
                                     + wms_obj.get("default_timestep", 'PT600S')
                                 )
+                            if len(timepositions) == 1:
+                                tp = timepositions[0].split("/")
+                                if len(tp) == 3:
+                                    tp[2] = wms_obj.get("default_timestep", tp[2])
+                                    timepositions[0] = "/".join(tp)
+                                    wms_obj["timepositions"] = timepositions
                         extent = parse_extent(
                             wms_obj["timepositions"],
                             wms_obj.get("defaulttimeposition", None)

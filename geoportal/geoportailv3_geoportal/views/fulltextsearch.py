@@ -457,7 +457,7 @@ class FullTextSearchView(object):
                     'outFields': '*'
                 }
                 if layer.use_auth:
-                    auth_token = get_arcgis_token(self.request, log)
+                    auth_token = get_arcgis_token(self.request, log, service_url=result.rest_url)
                     if 'token' in auth_token:
                         body["token"] = auth_token['token']
                 if extent:
