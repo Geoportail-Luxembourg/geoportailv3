@@ -6,7 +6,7 @@ vars:
   cpotree_executable: extract_profile
   # Available point clouds. NOTE: pointclouds CRS must be the same as the APP, reprojection is not implemented!
   pointclouds:
-    luxembourg: /app/data/processed/metadata.json
+    luxembourg: s3://3d-data/3d-tiles/ACT2024_LiDAR_Potree/pointclouds/
   # point cloud to use in profile
   default_point_cloud: luxembourg
   # default profile width
@@ -26,6 +26,11 @@ vars:
       name: Unclassified
       value: Unclassified
       visible: 1
+    1:
+      color: 120, 120, 120
+      name: Unclassified
+      value: Unclassified
+      visible: 1  
     2:
       color: 160, 82, 40
       name: Ground
