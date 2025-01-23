@@ -15,6 +15,7 @@ export const getConfig = () => ({
   },
   "serverConfig":
     {
+      "classification_colors": {
         "1": {
           "color": "120, 120, 120",
           "name": {
