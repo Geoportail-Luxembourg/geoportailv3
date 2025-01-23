@@ -212,9 +212,9 @@ exports.prototype.encodeFeaturesInUrl_ = function(features) {
   });
 
   if (featuresToEncode.length > 0) {
-    // this.ngeoLocation_.updateParams({
-    //   'features': this.fhFormat_.writeFeatures(featuresToEncode)
-    // });
+    this.ngeoLocation_.updateParams({
+       'features': this.fhFormat_.writeFeatures(featuresToEncode)
+    });
 
     // v4
     storageHelper.setValue(
@@ -223,7 +223,7 @@ exports.prototype.encodeFeaturesInUrl_ = function(features) {
       (feats) => this.fhFormat_.writeFeatures(feats)
     )
   } else {
-    // this.ngeoLocation_.deleteParam('features');
+    this.ngeoLocation_.deleteParam('features');
 
     // v4
     storageHelper.removeItem('features')
