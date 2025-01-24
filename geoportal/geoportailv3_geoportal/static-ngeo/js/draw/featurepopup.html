@@ -24,9 +24,15 @@
       </div>
     </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
-    <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
-      <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile"
-        app-profile-show-tooltip="!ctrl.isEditable()" app-profile-is-loading-msg="true">
+    <div class="feature-popup-profile" ng-if="ctrl.showFeatureProfile.active"> <!-- use ng-if otherwise profile is duplicated in dom... -->
+
+      <!-- v4 Elevation Profile component -->
+      <div class="profile" style="height: auto; margin-bottom: 10px;">
+        <profile-draw />
+      </div>
+
+      <!-- <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile"
+        app-profile-show-tooltip="!ctrl.isEditable()" app-profile-is-loading-msg="true"> -->
     </div>
   </div>
 

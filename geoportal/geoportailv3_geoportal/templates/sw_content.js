@@ -10,6 +10,7 @@ let offlineEnabled = {};
  * @param {string} url
  */
 function normalizeUrl(url) {
+  if (url.includes('cdnjs')) {return url};
   if (url.startsWith('http')) {
     const idx = url.substr(9).indexOf('/');
     url = url.substr(9 + idx);
@@ -26,6 +27,7 @@ function normalizeUrl(url) {
   if (url.endsWith(horrorSuffix)) {
     url = url.substr(0, url.length - horrorSuffix.length);
   }
+  url = url.replace('dev/build/_/_/_/_/app/geoportailv3_geoportal/', '');
 
   if (!url) {
     url = '/';
@@ -170,6 +172,10 @@ if (typeof self === 'object') {
     const url = event.request.url;
     const switchOffline = url.includes('/switch-lux-offline');
     const switchOnline = url.includes('/switch-lux-online');
+    if (url.includes('/ping')) {
+      event.respondWith(fetch(event.request));
+      return;
+    }
     if (switchOffline || switchOnline) {
       const value = offlineEnabled[event.clientId] = switchOffline;
       console.log('Offline of mode of client', event.clientId, 'is now', value);

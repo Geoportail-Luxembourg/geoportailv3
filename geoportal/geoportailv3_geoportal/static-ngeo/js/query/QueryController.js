@@ -428,6 +428,10 @@ exports.prototype.$onInit = function() {
   }, this);
 
   listen(this.map_, 'pointerup', function(evt) {
+    // skip click handler on ol controls since they are handled directly in V4
+    if (evt.originalEvent.target.closest('.ol-control')) {
+      return
+    }
     this.timeout_.cancel(this.holdPromise);
     var tempTime = new Date().getTime();
     if ((tempTime - this.pointerUpTime_) <= 499) {

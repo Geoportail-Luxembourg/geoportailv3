@@ -5,6 +5,7 @@ import googAsserts from 'goog/asserts.js';
 import * as olArray from 'ol/array.js';
 import olMap from 'ol/Map.js';
 import * as olEvents from 'ol/events.js';
+import { unByKey } from 'ol/Observable';
 import 'bootstrap/js/dropdown.js';
 
 /**
@@ -105,7 +106,7 @@ exports.directive('ngeoScaleselector', directive);
  * @ngdoc controller
  * @ngname NgeoScaleselectorController
  */
-const ScaleselectorController = function($scope, $element, $attrs) {
+const ScaleselectorController = function($scope, $element, $attrs, $window) {
 
   const scalesExpr = $attrs['ngeoScaleselector'];
 
@@ -124,6 +125,8 @@ const ScaleselectorController = function($scope, $element, $attrs) {
    */
   this.zoomLevels;
 
+  this.window_ = $window;
+
   $scope.$watch(() => Object.keys(this.scales).length, (newLength) => {
     this.zoomLevels = Object.keys(this.scales).map(Number);
     this.zoomLevels.sort(olArray.numberSafeCompareFunction);
@@ -135,8 +138,7 @@ const ScaleselectorController = function($scope, $element, $attrs) {
    * @type {ol.Map}
    * @private
    */
-  this.map_ = /** @type {ol.Map} */ ($scope.$eval(mapExpr));
-  googAsserts.assertInstanceof(this.map_, olMap);
+  this.map_;
 
   const optionsExpr = $attrs['ngeoScaleselectorOptions'];
   const options = $scope.$eval(optionsExpr);
@@ -165,22 +167,31 @@ const ScaleselectorController = function($scope, $element, $attrs) {
    */
   this.currentScale = undefined;
 
-  const view = this.map_.getView();
-  if (view !== null) {
-    const currentZoom = this.map_.getView().getZoom();
-    if (currentZoom !== undefined) {
-      this.currentScale = this.getScale(currentZoom);
+    // this.map_ = this['map'];
+    this.map_ = this.window_.map;
+
+    googAsserts.assertInstanceof(this.map_, olMap);
+  
+    const view = this.map_.getView();
+    if (view !== null) {
+      const currentZoom = this.map_.getView().getZoom();
+      if (currentZoom !== undefined) {
+        this.currentScale = this.getScale(currentZoom);
+      }
     }
-  }
+  
+    // olEvents.listen(this.map_, 'change:resolution', this.handleViewChange_, this);
+  
+    this.map_.getView().on('change:resolution', (event) => {
+      this.handleViewChange_();
+    })
 
-  olEvents.listen(this.map_, 'change:view', this.handleViewChange_, this);
 
-  this.registerResolutionChangeListener_();
+    this.registerResolutionChangeListener_();
 
   $scope['scaleselectorCtrl'] = this;
 
 };
-
 
 /**
  * @param {?} options Options after expression evaluation.
@@ -223,7 +234,9 @@ ScaleselectorController.prototype.changeZoom = function(zoom) {
  */
 ScaleselectorController.prototype.handleResolutionChange_ = function(e) {
   const view = this.map_.getView();
-  const currentScale = this.scales[/** @type {number} */ (view.getZoom())];
+
+  // const currentScale = this.scales[/** @type {number} */ (view.getZoom())];
+  const currentScale = this.scales[Math.round(view.getZoom())];
 
   // handleResolutionChange_ is a change:resolution listener. The listener
   // may be executed outside the Angular context, for example when the user
@@ -259,12 +272,20 @@ ScaleselectorController.prototype.handleViewChange_ = function(e) {
  */
 ScaleselectorController.prototype.registerResolutionChangeListener_ = function() {
   if (this.resolutionChangeKey_ !== null) {
-    olEvents.unlistenByKey(this.resolutionChangeKey_);
+    // olEvents.unlistenByKey(this.resolutionChangeKey_);
+
+    unByKey(this.resolutionChangeKey_);
   }
+
   const view = this.map_.getView();
-  this.resolutionChangeKey_ = olEvents.listen(view,
-    'change:resolution', this.handleResolutionChange_,
-    this);
+  // this.resolutionChangeKey_ = olEvents.listen(view,
+  //   'change:resolution', this.handleResolutionChange_,
+  //   this);
+
+  this.resolutionChangeKey_ = view.on('change:resolution', (event) => {
+      console.log('change:resolution inside');
+      this.handleResolutionChange_();
+    });
 };
 
 

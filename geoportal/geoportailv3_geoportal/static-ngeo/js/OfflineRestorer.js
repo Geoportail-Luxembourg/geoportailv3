@@ -3,6 +3,9 @@
  */
 import appModule from './module.js';
 import Restorer from 'ngeo/offline/Restorer.js';
+import {
+  useMapStore,
+} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**
@@ -49,24 +52,21 @@ const OfflineRestorer = class extends Restorer {
    */
   restore(map) {
     this.restoring = true;
-    const bgLayer = this.ngeoBackgroundLayerMgr_.get(map);
-    return super.restore(map).then((extent) => {
-      // Keep a reference to the original mapbox layer
-      let mapBoxLayer = null;
-      if (bgLayer.getMapBoxMap) {
-        mapBoxLayer = bgLayer;
-      }
 
-      this.appMymapsOffline_.restore();
-      if (mapBoxLayer) {
-        console.log('Restoring MapBox');
-        this.appMapBoxOffline_.restore(mapBoxLayer);
-        this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
-      }
-      map.addLayer(this.appDrawnFeatures_.drawLayer);
-      this.restoring = false;
-      return extent;
-    });
+    return this.appMymapsOffline_
+      .restore()
+      .then(() => {
+        return super.restore(map)
+          .then(async (extent) => {
+            await fetch('/dev/main.html/switch-lux-offline')
+
+            const mapStore = useMapStore()
+            this.appMapBoxOffline_.restoreFromId(mapStore.bgLayer.id);
+
+            this.restoring = false;
+            return extent;
+          });
+      });
   }
 
   /**
@@ -76,10 +76,10 @@ const OfflineRestorer = class extends Restorer {
    * @override
    */
   doRestore(map, offlineContent) {
-    const view = map.getView();
-    const {zooms} = offlineContent;
-    view.setMinZoom(zooms[0]);
-    view.setMaxZoom(zooms[zooms.length - 1 ]);
+    // const view = map.getView();
+    // const {zooms} = offlineContent;
+    // view.setMinZoom(zooms[0]);
+    // view.setMaxZoom(zooms[zooms.length - 1 ]);
     return super.doRestore(map, offlineContent);
   }
 

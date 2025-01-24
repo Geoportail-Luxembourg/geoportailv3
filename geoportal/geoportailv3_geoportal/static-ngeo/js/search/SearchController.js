@@ -33,6 +33,9 @@ import Fuse from 'fuse.js';
 import { matchCoordinate } from '../CoordinateMatch'
 import olcsCore from 'olcs/core.js';
 
+import { useLayers, useThemes, useThemeStore, useMapStore, useBackgroundLayer, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
+
+
 /**
  * @ngInject
  * @constructor
@@ -238,6 +241,8 @@ const exports = function($scope, $window, $compile,
    */
   this.appThemes_ = appThemes;
 
+  this.themeStore_ = useThemeStore()
+
   /**
    * @type {Array}
    * @private
@@ -352,13 +357,13 @@ const exports = function($scope, $window, $compile,
     display: function(feature) {
       if (feature) {
         feature['dataset'] = 'backgroundLayers'
-        return this.gettextCatalog.getString(feature.get('label'))
+        return this.gettextCatalog.getString(feature.name)
       }
     }.bind(this),
     templates: /** @type {TypeaheadTemplates} */({
       header: () => `<div class="header">${bgLabel}</div>`,
       suggestion: s => s
-        ? `<p>${this.gettextCatalog.getString(s.get('label'))}
+        ? `<p>${this.gettextCatalog.getString(s.name)}
           (${this.gettextCatalog.getString('Background')})
           </p>`
         : undefined
@@ -444,7 +449,7 @@ const exports = function($scope, $window, $compile,
             '<button ng-click="click($event)">i</button>' +
             '</p>';
         scope['switchTheme'] = function(themeId) {
-          this.appTheme_.setCurrentTheme(themeId);
+          useThemes().setTheme(themeId)
         }.bind(this);
         scope['click'] = function(event) {
           var node = this.layers_.find(function(element) {
@@ -785,26 +790,22 @@ exports.prototype.createAndInitFeatureBloodhoundEngine_ =
  * @private
  */
 exports.prototype.createLocalBackgroundLayerData_ =
-    function(appThemes, fuse, gettextCatalog) {
-      appThemes.getBgLayers(this.map).then(
-      function(bgLayers) {
-        var suggestions = bgLayers.map(
-            /**
-             * @param {ol.layer.Layer} bgLayer The current bg layer.
-             * @return {app.search.BackgroundLayerSuggestion} The suggestion.
-             */
-            (function(bgLayer) {
-              return /** @type {app.search.BackgroundLayerSuggestion} */({
-                'bgLayer': bgLayer,
-                'translatedName': gettextCatalog.getString(
-                    /** @type {string} */ (bgLayer.get('label')))
-              });
-            })
-            );
-        fuse.set(suggestions);
-      }.bind(this)
-  );
-    };
+  function(appThemes, fuse, gettextCatalog) {
+    const { bgLayers } = storeToRefs(this.themeStore_)
+    watch (
+      bgLayers,
+      (bgLayers) => {
+        var suggestions = bgLayers.map((bgLayer) => {
+          return {
+            'bgLayer': bgLayer,
+            'translatedName': gettextCatalog.getString(
+              /** @type {string} */ (bgLayer.name))
+          }
+        })
+        fuse.set(suggestions)
+      }
+    )
+  };
 
 
 /**
@@ -827,61 +828,73 @@ exports.prototype.createLocalAllLayerData_ =
  * @private
  */
 exports.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this.map_, input);
+  useBackgroundLayer().setBgLayer(input.id)
 };
 
 
 /**
- * @param {(Object|string|number)} input The input.
- * @param {string | undefined} key The key.
+ * @param {string} layerId
  * @private
  */
-exports.prototype.addLayerToMap_ = function(input, key) {
-  var layer = undefined;
-  if (typeof input === 'string' || typeof input === 'number') {
-    var node = this.layers_.find(function(element) {
-      if (key == undefined) {
-         for (var k in /** @type {Object} */ (element)) {
-          if (/** @type {Object} */ (element)[k] == input) {
-            return true;
-          }
-        }
-      } else if (key in /** @type {Object} */ (element)) {
-        if (/** @type {Object} */ (element)[key] == input) {
-          return true
-        }
-      }
-      return false;
-    });
-    if (node !== undefined) {
-      layer = this.getLayerFunc_(node);
-    }
-  } else if (typeof input === 'object') {
-    layer = this.getLayerFunc_(input);
-  }
-  var map = this.map_;
-  if (layer !== undefined) {
-    if (map.getLayers().getArray().indexOf(layer) <= 0) {
-      map.addLayer(layer);
-    }
-    var layerMetadata = layer.get('metadata');
-    if (layerMetadata.hasOwnProperty('linked_layers')) {
-      var layers = layerMetadata['linked_layers'];
-      layers.forEach(function(layerId) {
-        this.appThemes_.getFlatCatalog().then(
-          function(flatCatalog) {
-            var node2 = flatCatalog.find(function(catItem) {
-              return catItem.id === Number(layerId);
-            });
-            if (node2 !== undefined) {
-              var linked_layer = this.getLayerFunc_(node2);
-              map.addLayer(linked_layer);
-            }
-          }.bind(this));
-      }, this);
-    }
-  }
-};
+exports.prototype.addLayerToStore_ = function(layerId) {
+  useLayers().toggleLayer(layerId, true, false)
+}
+
+// -------------
+// v4 migration: this function is deprecated,
+// use addLayerToStore_(layerToAdd.id) instead
+// -------------
+// /**
+//  * @param {(Object|string|number)} input The input.
+//  * @param {string | undefined} key The key.
+//  * @private
+//  */
+// exports.prototype.addLayerToMap_ = function(input, key) {
+//   var layer = undefined;
+//   if (typeof input === 'string' || typeof input === 'number') {
+//     var node = this.layers_.find(function(element) {
+//       if (key == undefined) {
+//          for (var k in /** @type {Object} */ (element)) {
+//           if (/** @type {Object} */ (element)[k] == input) {
+//             return true;
+//           }
+//         }
+//       } else if (key in /** @type {Object} */ (element)) {
+//         if (/** @type {Object} */ (element)[key] == input) {
+//           return true
+//         }
+//       }
+//       return false;
+//     });
+//     if (node !== undefined) {
+//       layer = this.getLayerFunc_(node);
+//     }
+//   } else if (typeof input === 'object') {
+//     layer = this.getLayerFunc_(input);
+//   }
+//   var map = this.map_;
+//   if (layer !== undefined) {
+//     if (map.getLayers().getArray().indexOf(layer) <= 0) {
+//       map.addLayer(layer);
+//     }
+//     var layerMetadata = layer.get('metadata');
+//     if (layerMetadata.hasOwnProperty('linked_layers')) {
+//       var layers = layerMetadata['linked_layers'];
+//       layers.forEach(function(layerId) {
+//         this.appThemes_.getFlatCatalog().then(
+//           function(flatCatalog) {
+//             var node2 = flatCatalog.find(function(catItem) {
+//               return catItem.id === Number(layerId);
+//             });
+//             if (node2 !== undefined) {
+//               var linked_layer = this.getLayerFunc_(node2);
+//               map.addLayer(linked_layer);
+//             }
+//           }.bind(this));
+//       }, this);
+//     }
+//   }
+// };
 
 
 /**
@@ -937,7 +950,14 @@ exports.selected_ =
               var layers = /** @type {Array<string>} */
               (this.layerLookup_[cur_suggestion_layer] || []);
               layers.forEach(function(layer) {
-                this.addLayerToMap_(/** @type {string} */ (layer));
+                // this.addLayerToMap_(/** @type {string} */ (layer));
+                // ------------
+                // v4 migration, use addLayerToStore_ instead
+                // ------------
+                const layerToAdd = useThemes().findByName(layer, this.themeStore_.theme);
+                if (!useMapStore().hasLayer(layerToAdd.id)) {
+                  this.addLayerToStore_(layerToAdd.id);
+                }
               }.bind(this));
             } else {
               feature.setGeometry(
@@ -946,17 +966,22 @@ exports.selected_ =
               features.push(feature);
             }
           }
-          for (var i = 0; i < features.length; ++i) {
-            this.featureOverlay.addFeature(features[i]);
-          }
+          setTimeout(() => {
+            for (var i = 0; i < features.length; ++i) {
+              this.featureOverlay.addFeature(features[i]);
+            }
+          }, 0)
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
       } else if (dataset === 'layers') { //Layer
         if (suggestion.layer_id !== undefined) {
-          this.addLayerToMap_(/** @type {number} */ (suggestion.layer_id), 'id');
+          this.addLayerToStore_(suggestion.layer_id)
         } else {
-          this.addLayerToMap_(/** @type {string} */ (suggestion.name), 'name');
+          const layerToAdd = useThemes().findByName(suggestion.name, this.themeStore_.theme)
+          if (layer) {
+            this.addLayerToStore_(layerToAdd.id)
+          }
         }
       } else if (dataset === 'backgroundLayers') { //BackgroundLayer
         this.setBackgroundLayer_(

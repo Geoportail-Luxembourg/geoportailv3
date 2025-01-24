@@ -14,6 +14,8 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import {createEmpty, extend} from 'ol/extent.js';
 import olCollection from 'ol/Collection.js';
 
+import { storageHelper } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 /**
  * @constructor
  * @param {ngeo.statemanager.Location} ngeoLocation Location service.
@@ -208,13 +210,24 @@ exports.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = features.filter(function(feature) {
     return !feature.get('__map_id__');
   });
+
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
-      'features': this.fhFormat_.writeFeatures(featuresToEncode)
+       'features': this.fhFormat_.writeFeatures(featuresToEncode)
     });
+
+    // v4
+    storageHelper.setValue(
+      'features',
+      featuresToEncode,
+      (feats) => this.fhFormat_.writeFeatures(feats)
+    )
   } else {
     this.ngeoLocation_.deleteParam('features');
-  }
+
+    // v4
+    storageHelper.removeItem('features')
+  }  
 };
 
 
