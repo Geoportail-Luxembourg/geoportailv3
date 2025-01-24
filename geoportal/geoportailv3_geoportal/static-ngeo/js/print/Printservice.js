@@ -9,6 +9,7 @@ import * as olMath from 'ol/math.js';
 import olStyleRegularShape from 'ol/style/RegularShape.js';
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
+import {MapLibreLayer} from "luxembourg-geoportail/bundle/lux.dist.js";
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -213,7 +214,7 @@ const exports = class extends ngeoPrintService {
     layers.forEach((layer) => {
       if (layer.getVisible()) {
         console.assert(viewResolution !== undefined);
-        if (layer instanceof MapBoxLayer) {
+        if (layer instanceof MapBoxLayer || layer instanceof MapLibreLayer) {
           const xyz = layer.get('xyz_custom') || layer.getXYZ();
           if (xyz) {
             this.encodeXYZLayer_(object.layers, xyz);

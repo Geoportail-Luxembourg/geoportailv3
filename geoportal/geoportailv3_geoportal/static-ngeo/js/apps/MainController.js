@@ -18,6 +18,131 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
+import useLuxLib, {
+  createApp,
+  h,
+  backend,
+  App,
+  defineCustomElement,
+  getCurrentInstance,
+  i18next as Luxi18next,
+  storeToRefs,
+  watch,
+  AlertNotifications,
+  AuthForm,
+  ProfileDraw,
+  ProfileMeasures,
+  ProfileRouting,
+  ProfileInfos,
+  LayerPanel,
+  LegendsPanel,
+  MapContainer,
+  BackgroundSelector,
+  StylePanel,
+  LayerMetadata,
+  RemoteLayers,
+  HeaderBar,
+  proxyUrlHelper,
+  styleUrlHelper,
+  useMap,
+  useMvtStyles,
+  useOpenLayers,
+  useAppStore,
+  useMapStore,
+  useOfflineLayers,
+  useStyleStore,
+  useThemeStore,
+  useProfileRoutingv3Store,
+  useProfileMeasuresv3Store,
+  layerMetadataService,
+  statePersistorAppService,
+  statePersistorBgLayerService,
+  statePersistorLayersService,
+  statePersistorThemeService,
+  statePersistorMyMapService,
+  statePersistorStyleService,
+  themeSelectorService,
+  SliderComparator,
+  backend as Luxi18backend,
+  I18NextVue,
+  createPinia,
+  VueDOMPurifyHTML
+} from "luxembourg-geoportail/bundle/lux.dist.js";
+
+const i18nextConfig = {
+  ns: 'client',
+  nonExplicitSupportedLngs: true, // Migration i18next: removed deprecated nonExplicitWhitelist
+  returnEmptyString: false,
+  fallbackLng: 'en',
+  debug: false,
+  backend: {
+    loadPath: async (lng, ns) => {
+      if (ns === 'app') {
+        return '/static-ngeo/locales/{{app}}.{{lng}}.json'
+      }
+
+      const response = await fetch("/dynamic.json");
+      const dynamicUrls = await response.json();
+
+      return dynamicUrls.constants.langUrls[lng]
+    },
+    parse: function(data, lng, ns) {
+      return JSON.parse(data)[lng]
+    }
+  },
+  nsSeparator: '|', // ! force separator to '|' instead of ':' because some i18n keys have ':' (otherwise, i18next doesn't find the key)
+};
+
+const luxLib = useLuxLib({ i18nextConfig });
+const { app, createElementInstance } =  luxLib;
+
+// Important! keep order
+statePersistorMyMapService.bootstrap()
+statePersistorLayersService.bootstrap()
+statePersistorThemeService.bootstrap()
+statePersistorAppService.bootstrap()
+// styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
+// statePersistorStyleService.bootstrap()
+statePersistorBgLayerService.bootstrap()
+
+const luxAppStore = useAppStore()
+
+// LayerPanel includes Catalog, ThemeSelector, LayerManager
+// Note: Themes are now handled by new theme-selector
+// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
+const LayerPanelElement = createElementInstance(LayerPanel, app)
+customElements.define('layer-panel', LayerPanelElement)
+
+const LegendsPanelElement = createElementInstance(LegendsPanel, app)
+customElements.define('legends-panel', LegendsPanelElement)
+
+const MapContainerElement = createElementInstance(MapContainer, app)
+customElements.define('map-container', MapContainerElement)
+
+const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
+customElements.define('background-selector', BackgroundSelectorElement)
+
+const StylePanelElement = createElementInstance(StylePanel, app)
+customElements.define('style-panel', StylePanelElement)
+
+const LayerMetadataElement = createElementInstance(LayerMetadata, app)
+customElements.define('layer-metadata', LayerMetadataElement)
+
+const RemoteLayersElement = createElementInstance(RemoteLayers, app)
+customElements.define('remote-layers', RemoteLayersElement)
+
+const SliderComparatorElement = createElementInstance(SliderComparator, app)
+customElements.define('slider-comparator', SliderComparatorElement)
+
+const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
+customElements.define('alert-notifications', AlertNotificationsElement)
+
+customElements.define('auth-form', createElementInstance(AuthForm, app))
+customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
+customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
+customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
+customElements.define('profile-infos', createElementInstance(ProfileInfos, app))
+
 import i18next from 'i18next';
 
 import * as Sentry from '@sentry/browser';
@@ -146,8 +271,6 @@ import '../../less/geoportailv3.less';
  import appShareShareController from '../share/ShareController.js';
  import appShareShorturlDirective from '../share/shorturlDirective.js';
  import appShareShorturlController from '../share/ShorturlController.js';
- import appSliderSliderDirective from '../slider/SliderDirective.js';
- import appSliderSliderController from '../slider/SliderController.js';
  import appStreetviewStreetviewDirective from '../streetview/streetviewDirective.js';
  import appStreetviewStreetviewController from '../streetview/StreetviewController.js';
  import appThemeswitcherThemeswitcherDirective from '../themeswitcher/themeswitcherDirective.js';
@@ -398,7 +521,11 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
     appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer,
+    proxyWmsUrl,
+    httpsProxyUrl,
+    getvtpermalinkUrl, uploadvtpermalinkUrl, deletevtpermalinkUrl, vectortilesUrl) {
+      
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -409,9 +536,24 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
+  // Lux lib, intialize proxyUrlHelper to create OL layers
+  // enabling passing conf from v3 to lux lib v4
+  proxyUrlHelper.init_v3(
+    proxyWmsUrl,
+    httpsProxyUrl
+  )
+
   this.mediumStylingData = getDefaultMediumStyling();
 
   function applyStyleFromItem(mbMap, item, label) {
+    try {
+      doApplyStyleFromItem(mbMap, item, label);
+    } catch {
+      console.log(`style item ${item} not available in layer ${mbMap}`)
+    }
+  }
+
+  function doApplyStyleFromItem(mbMap, item, label) {
     appMvtStylingService.isCustomStyle = appMvtStylingService.isCustomStyleSetter(label, true);
     (item.fills || []).forEach(path => {
       if (item.color) {
@@ -450,7 +592,7 @@ const MainController = function(
   }
 
   this.debouncedSaveStyle_ = ngeoDebounce(() => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const isPublished = false;
     const dataObject = {
       medium: this.mediumStylingData,
@@ -510,11 +652,16 @@ const MainController = function(
     // Then we select this item
     selectedItem['selected'] = true;
 
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.styleStore_.setSimpleStyle(selectedItem)
+    // return
+
+    ////////////////////////////////////////////////////////////////////////
+
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const label = bgLayer.get('label');
     this.mediumStylingData = getDefaultMediumStyling(label); // start again from a fresh style
     const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
-    const mbMap =  bgLayer.getMapBoxMap();
+    const mbMap =  bgLayer.getMapLibreMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
       const item = mediumStyles[i];
       item.color = selectedItem['colors'][i];
@@ -531,11 +678,21 @@ const MainController = function(
   };
 
   this.onMediumStylingChanged = item => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const mbMap =  bgLayer.getMapBoxMap();
-    applyStyleFromItem(mbMap, item, bgLayer.get('label'));
-    this.debouncedSaveStyle_();
-    this.checkSelectedSimpleData();
+    styleService_.applyDefaultStyle(
+      this.mapStore_.bgLayer,
+      this.styleStore_.bgVectorBaseStyles,
+      this.styleStore_.bgStyle
+    )
+    this.styleStore_.setStyle(item)
+    return
+
+    ////////////////////////////////////////////////////////////////////////
+
+    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    // const mbMap =  bgLayer.getMapBoxMap();
+    // applyStyleFromItem(mbMap, item, bgLayer.get('label'));
+    // this.debouncedSaveStyle_();
+    // this.checkSelectedSimpleData();
   };
 
   if (navigator.serviceWorker) {
@@ -667,6 +824,16 @@ const MainController = function(
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+  this.mapStore_ = useMapStore()
+  this.styleStore_ = useStyleStore()
+  styleUrlHelper.setRegisterUrl_v3({
+    get: getvtpermalinkUrl,
+    upload: uploadvtpermalinkUrl,
+    delete: deletevtpermalinkUrl,
+    vectortiles: vectortilesUrl
+  })
+
+  useMvtStyles().initBackgroundsConfigs()
 
   /**
    * @type {app.draw.DrawnFeatures}
@@ -949,7 +1116,7 @@ const MainController = function(
    * @private
    */
   this.appMymaps_ = appMymaps;
-  this.appUserManager_.getUserInfo();
+  // this.appUserManager_.getUserInfo(); // Deactivated as this is now handled by lux v4 in the AuthForm component
 
   /**
    * @type {boolean}
@@ -966,7 +1133,7 @@ const MainController = function(
   this.map_.superHackIsItOKToSaveOffline = () => {
     const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
     if (isIOS) {
-      const layer = this.backgroundLayerMgr_.get(this.map);
+      const layer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
       return layer && !layer.getMapBoxMap;
     }
     return true;
@@ -1018,9 +1185,9 @@ const MainController = function(
     }
   }.bind(this));
 
-  listen(this.backgroundLayerMgr_, 'change', evt => {
-    const previous = evt.detail.previous;
-    const current = evt.detail.current;
+  this.updateStyleWidgetsForBgLayer = (newBgLayer, oldBgLayer) => {
+    const previous = useOpenLayers().getLayerFromCache(oldBgLayer);
+    const current = useOpenLayers().getLayerFromCache(newBgLayer) || this.blankLayer_.blankLayer_;
 
     // avoid if the layer is the same or first initialization
     if (current !== previous) {
@@ -1052,6 +1219,7 @@ const MainController = function(
               config = JSON.parse(style)['serial'];
             }
             this.ngeoLocation_.updateParams({
+              'bgLayer': label,
               'serial': config,
               'serialLayer': label
             });
@@ -1065,14 +1233,15 @@ const MainController = function(
         });
       }
     }
-  });
+  };
 
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-  this.loadThemes_().then(() => {
+  this.loadThemes_().then((themes) => {
+    statePersistorStyleService.bootstrap()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
             if (appOverviewMapShow) {
@@ -1096,9 +1265,10 @@ const MainController = function(
         this.ol3dm_.setTree(struct3D.tree);
         this.ol3dm_.load().then(
           () => {
-            appLayerPermalinkManager.initBgLayers_().then(
-              () => this.ol3dm_.init3dTilesFromLocation()
-            );
+            // appLayerPermalinkManager.initBgLayers_().then(
+            //   () => 
+                this.ol3dm_.init3dTilesFromLocation()
+            // );
           }
         );
       }
@@ -1137,16 +1307,124 @@ const MainController = function(
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen && !this.embedded) ? true : false;
+
+    const { layersOpen, styleEditorOpen, legendsOpen } = storeToRefs(luxAppStore)
+
     $scope.$watch(() => {
       return this['layersOpen'];
     }, newVal => {
       if (newVal === false) {
-        $('app-catalog .themes-switcher').collapse('show');
-        $('app-themeswitcher #themes-content').collapse('hide');
+        // $('app-catalog .themes-switcher').collapse('show');
+        // $('app-themeswitcher #themes-content').collapse('hide');
+
+        // close style editor when switching tools and sidebar stays open
+        luxAppStore.setThemeGridOpen(false)
       } else {
         this['lidarOpen'] = false;
       }
     });
+
+    // listen to layersOpen changes in store (clicking close button on custom element)
+    // also check styleEditorOpen.value since v4 open/closeStyleEditorPanel() modifies both values
+    // as closing the styleEditorPanel does not close the layers panel in v4
+    watch(
+      layersOpen,
+      layersOpen => {
+        if(layersOpen === false && styleEditorOpen.value === false) {
+          this.closeSidebar()
+          $scope.$apply()
+        }
+      }
+    )
+    // listen to styleEditorOpen to open/close editor in main.html
+    watch(
+      styleEditorOpen,
+      styleEditorOpen => {
+        if(styleEditorOpen === true) {
+          this.vectorEditorOpen = true;
+          this.trackOpenVTEditor('openVTEditor');
+        } else {
+          this.vectorEditorOpen = false;
+        }
+        $scope.$apply()
+      }
+    )
+    // listen to theme changes in store
+    const themeStore = useThemeStore()
+    const { theme } = storeToRefs(themeStore)
+    watch(
+      theme,
+      theme => {
+        if (theme) {
+          // set color for custom elements (which is currently not called, since in header of vue app)
+          themeSelectorService.setCurrentThemeColors(theme.name);
+
+          // set current theme for legacy components
+          this.appTheme_.setCurrentTheme(theme.name);
+
+          // set 'data-theme' attribute for legacy component colors
+          document.getElementsByTagName('body')[0].setAttribute('data-theme', theme.name);
+
+          // set max zooms (was previously done in CataloggController)
+          this.appTheme_.setThemeZooms(theme);
+          
+          try {
+            $scope.$digest(); // Force apply on theme switcher to update theme name
+          } catch (e) {}
+        }
+      },
+      { immediate: true }
+    )
+    const { bgLayer, layers } = storeToRefs(useMapStore())
+    const { config } = storeToRefs(useThemeStore())
+    const mapService = useMap()
+    const openLayerService = useOpenLayers()
+
+    // monitor changes in layers to update state of mymaps
+    // Must wait theme definition to use useOpenLayers().getLayerFromCache()
+
+    watch(
+      [layers, config],
+      ([layers, config], [oldLayers, oldConfig]) => {
+        if (config) { // Wait for themes to be loaded, and layer cache initialized
+          this['selectedLayers'] = layers.map((l) => openLayerService.getLayerFromCache(l)).reverse();
+          this.compareLayers_();
+          $scope.$digest();
+
+          const addedLayerComparisons = mapService.getAddedLayers(
+            { layers },
+            { layers: oldLayers }
+          ) // pass obj to mimic v4 MapContext
+
+          addedLayerComparisons.forEach(cmp => {
+            const piwik = /** @type {Piwik} */ (this.window_['_paq']);
+            if (piwik != undefined) {
+              piwik.push(['setDocumentTitle',
+                'LayersAdded/' + cmp.layer.name
+              ]);
+              piwik.push(['trackPageView']);
+            }
+          })
+        }
+      }
+    )
+    
+    // monitor change of BG layer to update state of mymaps
+    // listen to changes of bgLayer to send piwik request formerly sent from BackgroundselectorController
+    watch(
+      bgLayer,
+      (bgLayer, oldBgLayer) => {
+        this.compareLayers_();
+        $scope.$digest();
+        const piwik = /** @type {Piwik} */ (this.window_['_paq']);
+        if (piwik && bgLayer) {
+          piwik.push(['setDocumentTitle', 'BackgroundAdded/' + bgLayer.name]);
+          piwik.push(['trackPageView']);
+        }
+        this.updateStyleWidgetsForBgLayer(bgLayer, oldBgLayer);
+      }
+    );
+
     $scope.$watch(() => {
       return this['mymapsOpen'] || this['infosOpen'] ||
         this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
@@ -1172,9 +1450,26 @@ const MainController = function(
     });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
 
+
+    const profileStore = useProfileMeasuresv3Store()
+    
+    // For v4 When closing measure, reset feate profile data for profile measure v4 comp
+    $scope.$watch(() => {
+      return this['measureOpen'];
+    }, isOpen => {
+      if (!isOpen) {
+        // v4 Force reset feature (this will reset profile graph for profile measures)
+        const { feature_v3 } = storeToRefs(profileStore);
+        feature_v3.value = undefined;
+      }
+    });
+
+
     $scope.$watch(() => {
       return this.sidebarOpen();
     }, newVal => {
+      // setLayersOpen in store from legacy components
+      luxAppStore.setLayersOpen(newVal)
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -1184,6 +1479,41 @@ const MainController = function(
         feature.set('__refreshProfile__', true);
       }
     });
+
+    $scope.$watch(() => {
+      return this['legendsOpen'];
+    }, newVal => {
+      if (newVal) {
+        this['layersOpen'] = false;
+      }
+      legendsOpen.value = newVal;
+    });
+
+    // V4 for profile in routing
+    $scope.$watch(() => {
+      return this['routingOpen'];
+    }, newVal => {
+      const profileRoutingStore = useProfileRoutingv3Store();
+      const { activePositioning_v3 } = storeToRefs(profileRoutingStore);
+
+      activePositioning_v3.value = newVal;
+    });
+
+    // listen to legendsOpen to open/close Legends panel in main.html
+    watch(
+      legendsOpen,
+      legendsOpen => {
+        const somePanelOpened = !this['layersOpen'] && !this['mymapsOpen'] && !this['infosOpen'] &&
+        !this['feedbackOpen'] && !this['feedbackAnfOpen'] &&
+        !this['routingOpen'] && !this['feedbackAgeOpen'] && !this['feedbackCruesOpen'] &&
+        !this['vectorEditorOpen'];
+
+        if(!legendsOpen && somePanelOpened) {
+          this.closeSidebar();
+          $scope.$apply();
+        }
+      }
+    );
 
     this.appThemes_.getThemeObject(
       this.appTheme_.getCurrentTheme()).then(() => {
@@ -1238,7 +1568,7 @@ const MainController = function(
    */
   $scope.$on('authenticated', () => {
     // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     if (bgLayer && bgLayer.getMapBoxMap) {
       this.appMvtStylingService.getBgStyle().then(configs => {
         const config = configs.find(config => config.label === bgLayer.get('label'));
@@ -1273,7 +1603,7 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
       const isPublished = true;
 
@@ -1302,15 +1632,20 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    this.appMvtStylingService.removeStyles(bgLayer);
-    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
-    this.resetLayerFor3d_();
-    this.resetSelectedSimpleData();
-    this.checkSelectedSimpleData();
-    this.ngeoLocation_.deleteParam('serial');
-    this.ngeoLocation_.deleteParam('serialLayer');
+    this.styleStore_.setStyle(null)
+    return
+
+    /////////////////////////////////////////////////////////////////////////
+
+    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    // this.appMvtStylingService.removeStyles(bgLayer);
+    // bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
+    // this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
+    // this.resetLayerFor3d_();
+    // this.resetSelectedSimpleData();
+    // this.checkSelectedSimpleData();
+    // this.ngeoLocation_.deleteParam('serial');
+    // this.ngeoLocation_.deleteParam('serialLayer');
   };
 
   /**
@@ -1324,7 +1659,7 @@ const MainController = function(
   };
 
   this.downloadCustomStyleFile = () => {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
     const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());
     const fileName = 'styles.json';
     if (!content) {
@@ -1362,7 +1697,7 @@ const MainController = function(
  * @export
  */
 MainController.prototype.getUrlVtStyle = function() {
-  const bgLayer = this.backgroundLayerMgr_.get(this.map);
+  const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
   if (bgLayer !== null && bgLayer !== undefined) {
     return this.appMvtStylingService.getUrlVtStyle(bgLayer);
   }
@@ -1408,11 +1743,13 @@ MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
       notify: this.notify_,
       gettextCatalog: this.gettextCatalog_,
       scope: this.scope_,
-      window: this.window_
+      window: this.window_,
+      target: document.querySelector("map-container") // since lib lux integration, force target to Custom Element <map-container>
     }));
     this.map_.addControl(locationControl);
     if (isActive) {
-      this.map_.once('change:view', (e) => {
+      // this.map_.once('change:view', (e) => {
+      this.map_.once('postrender', (e) => { // since lib lux integration, force recenter on postrender
         locationControl.handleCenterToLocation();
       });
     }
@@ -1436,29 +1773,30 @@ MainController.prototype.createMap_ = function() {
 
   let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
 
-  var map = this['map'] = new appMap({
-    logo: false,
-    controls: [
-      new olControlZoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
-      // the zoom to extent control will be added later since it depends on ol3dm
-      new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
-      new olControlAttribution({collapsible: false,
-        collapsed: false, className: 'geoportailv3-attribution'}),
-      new Rotate({})
-    ],
-    interactions: interactions.extend([rotate]),
-    keyboardEventTarget: document,
-    loadTilesWhileInteracting: true,
-    loadTilesWhileAnimating: true,
-    view: new olView({
-      maxZoom: 19,
-      minZoom: 8,
-      enableRotation: true,
-      extent: this.maxExtent_,
-      constrainResolution: true,
-      rotation,
-    })
-  });
+  var map = this['map'] = useMap().getOlMap();
+  // var map = this['map'] = new appMap({
+  //   logo: false,
+  //   controls: [
+  //     new olControlZoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
+  //     // the zoom to extent control will be added later since it depends on ol3dm
+  //     new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
+  //     new olControlAttribution({collapsible: false,
+  //       collapsed: false, className: 'geoportailv3-attribution'}),
+  //     new Rotate({})
+  //   ],
+  //   interactions: interactions.extend([rotate]),
+  //   keyboardEventTarget: document,
+  //   loadTilesWhileInteracting: true,
+  //   loadTilesWhileAnimating: true,
+  //   view: new olView({
+  //     maxZoom: 19,
+  //     minZoom: 8,
+  //     enableRotation: true,
+  //     extent: this.maxExtent_,
+  //     constrainResolution: true,
+  //     rotation,
+  //   })
+  // });
 
   // FIXME: this is a hack to make the map avaialble to the web components.
   // To be changed to use `ng-prop` when available (angular > 1.7).
@@ -1485,7 +1823,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitu
   console.assert(this.map_ !== null && this.map_ !== undefined);
   return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
-                                 this.backgroundLayerMgr_, this.notify_, this.gettextCatalog_, this.appThemes_);
+                                 this.notify_, this.gettextCatalog_, this.appThemes_);
 };
 
 
@@ -1534,7 +1872,8 @@ MainController.prototype.manageUserRoleChange_ = function(scope) {
  * @return {?angular.$q.Promise} Promise.
  */
 MainController.prototype.loadThemes_ = function() {
-  return this.appThemes_.loadThemes(this.appUserManager_.roleId);
+  return this.appThemes_.loadThemes(this.appUserManager_.roleId)
+    .then((themes) => useThemeStore().setThemes(themes));
 };
 
 
@@ -1548,39 +1887,31 @@ MainController.prototype.manageSelectedLayers_ =
         this.map_.getLayers().getArray(),
         this['selectedLayers'], true, scope,
         function(layer) {
+          if (!layer) {
+            // to prevent strange behaviour where ngeoMiscSyncArrays tries to add undefined layers to the map
+            return false;
+          }
           if (layer instanceof olLayerVector && layer.get('altitudeMode') === 'clampToGround') {
             return false;
           }
           if (layer instanceof LayerGroup && layer.get('groupName') === 'background') {
             return false;
           }
+          if (layer.get('queryable_id') === this.mapStore_.bgLayer?.id) return false
           if (layer instanceof MaskLayer) {
             return false;
           }
+          if (this.mapStore_.bgLayer && (this.mapStore_.bgLayer.id === layer.get('id'))) {
+            return false;
+          }
+          // Ignore layer for measurements
+          if (layer.get('role') === "MeasureController") {
+            return false;
+          }
+
           return this.map_.getLayers().getArray().indexOf(layer) !== 0;
         }.bind(this)
       );
-      scope.$watchCollection(function() {
-        return this['selectedLayers'];
-      }.bind(this), function(newSelectedLayers, oldSelectedLayers) {
-        this.map_.render();
-        this.compareLayers_();
-
-        if (newSelectedLayers.length > oldSelectedLayers.length) {
-          var nbLayersAdded =
-             newSelectedLayers.length - oldSelectedLayers.length;
-          for (var i = 0; i < nbLayersAdded; i++) {
-            var layer = this['selectedLayers'][i];
-            var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-            if (piwik != undefined) {
-              piwik.push(['setDocumentTitle',
-                'LayersAdded/' + layer.get('label')
-              ]);
-              piwik.push(['trackPageView']);
-            }
-          }
-        }
-      }.bind(this));
     };
 
 /**
@@ -1669,6 +2000,12 @@ MainController.prototype.closeSidebar = function() {
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
       this['feedbackCruesOpen'] = this['vectorEditorOpen'] = this['lidarOpen'] = false;
+  // close style editor when closing sidebar
+  luxAppStore.setLayersOpen(false) // For info, this also closes the themeGrid
+  luxAppStore.setMyLayersTabOpen(false)
+
+  const { legendsOpen } = storeToRefs(luxAppStore)
+  legendsOpen.value = false
 };
 
 
@@ -1714,7 +2051,14 @@ MainController.prototype.switchLanguage = function(lang, track) {
   this.locale_.NUMBER_FORMATS.GROUP_SEP = ' ';
   this['lang'] = lang;
 
+  //change lang for existing lit elements
   i18next.changeLanguage(lang);
+  //change lang for integrated vue custom elements
+  Luxi18next.changeLanguage(lang);
+  // Clear metadata cache to force requery api,
+  // => to remove when replacing by v4 language component
+  // as this is handle in the language-selector.vue
+  layerMetadataService.clearCache();
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   if (piwik != undefined) {
@@ -1824,9 +2168,8 @@ MainController.prototype.initCesium3D_ = function(cesiumURL, $rootScope, $scope)
 MainController.prototype.compareLayers_ = function() {
   if (this.appMymaps_.isEditable()) {
     this['layersChanged'] = false;
-    var backgroundLayer = this.backgroundLayerMgr_.get(this.map_);
-    if (backgroundLayer &&
-        this.appMymaps_.mapBgLayer !== backgroundLayer.get('label')) {
+    var backgroundLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
+    if (this.appMymaps_.mapBgLayer !== (backgroundLayer?.get('label') || 'blank')) {
       this['layersChanged'] = true;
     } else {
       if (this['selectedLayers'].length !== this.appMymaps_.mapLayers.length) {
@@ -1844,7 +2187,9 @@ MainController.prototype.compareLayers_ = function() {
           this['layersChanged'] = true;
         } else {
           if (selectedOpacities.join(',') !==
-              this.appMymaps_.mapLayersOpacities.join(',')) {
+              this.appMymaps_.mapLayersVisibilities.map(
+                (visible, i) => (visible === 'true')?this.appMymaps_.mapLayersOpacities[i]:0
+              ).join(',')) {
             this['layersChanged'] = true;
           }
         }
@@ -1869,9 +2214,12 @@ MainController.prototype.showTab = function(selector) {
  * @export
  */
 MainController.prototype.toggleThemeSelector = function() {
+  const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(luxAppStore)
+
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
   var themeTab = $('#catalog');
+
   if (this['layersOpen']) {
     if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
       this['layersOpen'] = false;
@@ -1885,6 +2233,19 @@ MainController.prototype.toggleThemeSelector = function() {
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+  }
+
+  if (!layersOpen.value) {
+    luxAppStore.setLayersOpen(true)
+    myLayersTabOpen.value && luxAppStore.setMyLayersTabOpen(false)
+    luxAppStore.setThemeGridOpen(true)
+  } else if (layersOpen.value) {
+    if (themeGridOpen.value) {
+      luxAppStore.setLayersOpen(false)
+    } else {
+      myLayersTabOpen.value && luxAppStore.setMyLayersTabOpen(false)
+      luxAppStore.setThemeGridOpen(true)
+    }
   }
 };
 

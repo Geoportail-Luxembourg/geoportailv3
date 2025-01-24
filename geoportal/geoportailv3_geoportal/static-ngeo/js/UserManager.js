@@ -11,6 +11,8 @@ import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
 
+import { useUserManagerStore, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 /**
  * @constructor
  * @param {angular.$http} $http Angular http service.
@@ -24,6 +26,11 @@ import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
  */
 const exports = function($http, $rootScope, loginUrl, logoutUrl,
     getuserinfoUrl, appNotify, gettextCatalog) {
+
+  // v4 authentication
+  const userManagerStore = useUserManagerStore()
+  const { currentUser } = storeToRefs(userManagerStore)
+  this.currentUser = currentUser
 
   /**
    * @type {ngeo.offline.Mode}
@@ -236,12 +243,7 @@ exports.prototype.isAuthenticated = function() {
     return true;
   }
 
-  if (this.getUsername()) {
-    return this.username.length > 0;
-  }
-
-  this.clearUserInfo();
-  return false;
+  return useUserManagerStore().isAuthenticated();
 };
 
 
@@ -284,28 +286,28 @@ exports.prototype.setUserInfo = function(
  * @return {string} The username.
  */
 exports.prototype.getUsername = function() {
-  return this.username;
+  return this.currentUser.value ? this.currentUser.value.login : null;
 };
 
 /**
  * @return {string|undefined} The Email.
  */
 exports.prototype.getEmail = function() {
-  return this.email;
+  return this.currentUser.value ? this.currentUser.value.mail : null;
 };
 
 /**
  * @return {string|undefined} The user type.
  */
 exports.prototype.getUserType = function() {
-  return this.typeUtilisateur;
+  return this.currentUser.value ? this.currentUser.value.typeUtilisateur : null;
 };
 
 /**
  * @return {string|undefined} The Role.
  */
 exports.prototype.getRole = function() {
-  return this.role;
+  return this.currentUser.value ? this.currentUser.value.role : null;
 };
 
 
@@ -313,21 +315,21 @@ exports.prototype.getRole = function() {
  * @return {?number} The Role Id.
  */
 exports.prototype.getRoleId = function() {
-  return this.roleId;
+  return this.currentUser.value ? this.currentUser.value.roleId : null;
 };
 
 /**
  * @return {?number} The Role Id.
  */
 exports.prototype.getMymapsRole = function() {
-  return this.mymapsRole;
+  return this.currentUser.value ? this.currentUser.value.mymapsRole : null;
 };
 
 /**
  * @return {boolean} True if is a mymaps admin.
  */
 exports.prototype.getMymapsAdmin = function() {
-  return this.isMymapsAdmin;
+  return this.currentUser.value ? this.currentUser.value.isAdmin : null;
 };
 
 

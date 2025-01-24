@@ -178,7 +178,10 @@ vars:
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         lidarProfileUrl: '{LIDAR_PROFILE_URL}'
         proxyWmsUrl: '{PROXYWMSURL}'
+        uploadvtstyleUrlOverride: '{UPLOAD_VT_STYLE_URL}'
+        deletevtstyleUrlOverride: '{DELETE_VT_STYLE_URL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+        vectortilesUrl: '{VECTORTILESURL}'
         wmtsUrl: '{WMTSURL}'
         ipv6Substitution:
           regularServerRoot: geoportail.lu
@@ -245,6 +248,9 @@ vars:
         uploadvtstyleUrl: {name: upload_vt_style}
         deletevtstyleUrl: {name: delete_vt_style}
         getvtstyleUrl: {name: get_vt_style}
+        uploadvtpermalinkUrl: {name: upload_permalink_style}
+        deletevtpermalinkUrl: {name: delete_permalink_style}
+        getvtpermalinkUrl: {name: get_permalink_style}
         downloadPdfUrl: {name: download_pdf}
       static:
         appImagesPath: {name: 'geoportailv3_geoportal:static-ngeo/images/'}
@@ -529,12 +535,15 @@ runtime_environment:
   - {name: PDS_SMTP_SERVER}
   - {name: PDS_BCC_ADDRESS}
   - {name: PROXYWMSURL, default: 'https://wmsproxy.geoportail.lu/ogcproxywms'}
+  - {name: UPLOAD_VT_STYLE_URL, default: ''}
+  - {name: DELETE_VT_STYLE_URL, default: ''}
   - {name: REVERSE_GEOCODE_API_KEY, default: ''}
   - {name: REVERSE_GEOCODE_URL, default: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'}
   - {name: ROUTING_GRAPHHOPPER_API_KEY, default: null}
   - {name: ROUTING_MAPQUEST_API_KEY, default: null}
   - {name: SHORTENER_ALLOWED_HOST}
   - {name: SHORTENER_BASE_URL}
+  - {name: VECTORTILESURL, default: 'https://vectortiles.geoportail.lu'}
   - {name: WMTSURL, default: ''}
 
 update_paths:

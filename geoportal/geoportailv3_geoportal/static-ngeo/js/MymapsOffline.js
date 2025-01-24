@@ -93,7 +93,7 @@ exports.prototype.save = function() {
  */
 exports.prototype.restore = function() {
   const conf = this.ngeoOfflineConfiguration_;
-  conf.getItem('mymaps_maps').then((maps) => {
+  return conf.getItem('mymaps_maps').then((maps) => {
     if (!maps) {
       return;
     }

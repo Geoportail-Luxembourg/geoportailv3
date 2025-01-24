@@ -31,7 +31,9 @@ import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
 import Overlay from 'ol/Overlay.js';
 import {click, pointerMove} from 'ol/events/condition.js';
-import { matchCoordinate } from '../CoordinateMatch'
+import { matchCoordinate } from '../CoordinateMatch';
+
+import { useProfileRoutingv3Store, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -701,11 +703,24 @@ exports.prototype.showRoute_ = function() {
   var curView = this.map.getView();
   // Only one path is returned
 
+  // v4 Force reset feature
+  const profileStore = useProfileRoutingv3Store();
+  const { feature_v3, activePositioning_v3 } = storeToRefs(profileStore);
+  feature_v3.value = undefined;
+
   this.source_.setAttributions(/** @type {string} */ (feature.get('attribution')));
   this.getProfile_(/** @type {ol.geom.LineString} */ (feature.getGeometry())).then(function(profile) {
+    
+    activePositioning_v3.value = true;
+
     this.profileData = profile;
     this.elevationGain_ = this.profileData[this.profileData.length - 1]['elevationGain'];
     this.elevationLoss_ = this.profileData[this.profileData.length - 1]['elevationLoss'];
+
+
+    // v4 Update profile data for v4 component
+    profileStore.setProfileData(this.map, feature, profile)
+
   }.bind(this));
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
   curView.fit(/** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry()), {
@@ -763,7 +778,7 @@ exports.prototype.highlightPosition = function(lon, lat, text) {
     geometry: new olGeomPoint(geometry)
   });
   this.highlightOverlay_.clear();
-  this.highlightOverlay_.addFeature(feature);
+  // this.highlightOverlay_.addFeature(feature);
   this.createTooltip_(geometry, text);
 };
 

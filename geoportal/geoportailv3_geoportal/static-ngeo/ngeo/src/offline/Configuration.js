@@ -18,6 +18,9 @@ import ngeoCustomEvent from 'ngeo/CustomEvent.js';
 import utils from 'ngeo/offline/utils.js';
 import {defaultImageLoadFunction} from 'ol/source/Image.js';
 
+
+import { useOffline, useOfflineLayers } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 import * as realLocalforage from 'localforage';
 
 /**
@@ -36,6 +39,8 @@ const exports = class extends olObservable {
 
     this.localforage_ = this.createLocalforage();
     this.configureLocalforage();
+
+    useOffline().initLocalforage_v3(this.localforage_);
 
     /**
      * @private
@@ -267,7 +272,7 @@ const exports = class extends olObservable {
      * @param {Array<ol.layer.Group>} ancestors .
      * @return {boolean} whether to traverse this layer children.
      */
-    const visitLayer = (layer, ancestors) => {
+    const visitLayer = (layer, ancestors, saveBackground = false) => {
       if (layer instanceof olLayerLayer) {
         const extentByZoom = this.getExtentByZoom(map, layer, ancestors, userExtent);
         const projection = olProj.get(map.getView().getProjection());
@@ -279,9 +284,20 @@ const exports = class extends olObservable {
           layerSerialization = this.serDes_.serializeTileLayer(layer, source);
         } else if (layer instanceof olLayerVector) {
           layerType = 'vector';
+        } else if (layer.getMapBoxMap) {
+          layerType = 'bg_vector';
         }
 
         const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map) === layer;
+
+
+        if (!saveBackground && backgroundLayer) {
+          // Fix for v4, if this is not a bg and it is not explicitly
+          // said that must savebg, do not save
+          // because map.getLayers() cannot retrieve the bg layer when bg is vector (but can when bg raster)
+          return;
+        }
+
         layersItems.push({
           backgroundLayer,
           map,
@@ -295,9 +311,18 @@ const exports = class extends olObservable {
       }
       return true;
     };
+
+    // Save all layer
     map.getLayers().forEach((root) => {
       utils.traverseLayer(root, [], visitLayer);
     });
+
+    // Fix for v4, retrieve bg vector from store
+    // because map.getLayers() cannot retrieve the bg layer when bg is vector (but can when bg raster)
+
+    const backgroundLayer = this.ngeoBackgroundLayerMgr_.get(map);
+    visitLayer(backgroundLayer, [], true);
+
     return layersItems;
   }
 
@@ -331,12 +356,14 @@ const exports = class extends olObservable {
    */
   recreateOfflineLayer(offlineLayer) {
     if (offlineLayer.layerType === 'tile') {
-      const serialization = offlineLayer.layerSerialization;
-      const tileLoadFunction = this.createTileLoadFunction_(offlineLayer);
-      const layer = this.serDes_.deserializeTileLayer(serialization, tileLoadFunction);
-      return layer;
+      // DEACTIVATE v3 offline layer creation
+      // ------
+      // const serialization = offlineLayer.layerSerialization;
+      // const tileLoadFunction = this.createTileLoadFunction_(offlineLayer);
+      // const layer = this.serDes_.deserializeTileLayer(serialization, tileLoadFunction);      
+      // return layer;
     }
-    return null;
+    // return null;
   }
 
   /**

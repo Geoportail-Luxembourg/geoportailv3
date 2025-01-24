@@ -143,38 +143,48 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
           map.removeLayer(layer2);
         } else {
           // 3D layer case
-          this.lux3dMgr_.remove3dLayer(layer2.layer_.layer);
+          this.lux3dMgr_.remove3dLayer(layer2.layer_);
         }
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_.getLayer());
-        msg = gettextCatalog.getString(
-            'Background has been deactivated because ' +
-            'the layer {{layer}} cannot be displayed on top of it.',
-          {
-            'layer': gettextCatalog.getString(
-                  /** @type {string} */(layer1.get('label')))
-          }
-            );
-        this.notify_(msg, appNotifyNotificationType.WARNING);
+
+        // ------------------
+        // Migration to v4: Now exclusion msg handled by Vuejs component
+        // ------------------
+        
+        // msg = gettextCatalog.getString(
+        //     'Background has been deactivated because ' +
+        //     'the layer {{layer}} cannot be displayed on top of it.',
+        //   {
+        //     'layer': gettextCatalog.getString(
+        //           /** @type {string} */(layer1.get('label')))
+        //   }
+        //     );
+        // this.notify_(msg, appNotifyNotificationType.WARNING);
       }
     }
   }
-  if (layersToRemove.length) {
-    msg = gettextCatalog.getPlural(
-        layersToRemove.length,
-        'The layer <b>{{layersToRemove}}</b> ' +
-        'has been removed because it cannot be displayed while the layer ' +
-        '<b>{{layer}}</b> is displayed',
-        'The layers <b>{{layersToRemove}}</b> ' +
-        'have been removed because they cannot be displayed while the layer ' +
-        '<b>{{layer}}</b> is displayed',
-      {
-        'layersToRemove': layersToRemove.join(', '),
-        'layer': gettextCatalog.getString(
-              /** @type {string} */(layer1.get('label')))
-      });
-    this.notify_(msg, appNotifyNotificationType.WARNING);
-  }
+
+  // ------------------
+  // Migration to v4: Now exclusion msg handled by Vuejs component
+  // ------------------
+
+  // if (layersToRemove.length) {
+  //   msg = gettextCatalog.getPlural(
+  //       layersToRemove.length,
+  //       'The layer <b>{{layersToRemove}}</b> ' +
+  //       'has been removed because it cannot be displayed while the layer ' +
+  //       '<b>{{layer}}</b> is displayed',
+  //       'The layers <b>{{layersToRemove}}</b> ' +
+  //       'have been removed because they cannot be displayed while the layer ' +
+  //       '<b>{{layer}}</b> is displayed',
+  //     {
+  //       'layersToRemove': layersToRemove.join(', '),
+  //       'layer': gettextCatalog.getString(
+  //             /** @type {string} */(layer1.get('label')))
+  //     });
+  //   this.notify_(msg, appNotifyNotificationType.WARNING);
+  // }
 };
 
 

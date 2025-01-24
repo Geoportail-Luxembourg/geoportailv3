@@ -474,7 +474,7 @@ exports.prototype.print = function(format) {
   var legend = [];
 
   var bgLayer = this.backgroundLayerMgr_.get(this.map_);
-  var bgMetadata = bgLayer.get('metadata');
+  var bgMetadata = bgLayer?.get('metadata');
   if (bgMetadata !== undefined) {
     var bgName = bgMetadata['legend_name'];
     if (bgName !== undefined) {

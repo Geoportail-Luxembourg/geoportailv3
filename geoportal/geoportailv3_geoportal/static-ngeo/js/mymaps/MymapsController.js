@@ -23,6 +23,9 @@ import olGeomLineString from 'ol/geom/LineString.js';
 import * as olExtent from 'ol/extent.js';
 import JSZip from 'jszip';
 
+import { useAppStore } from "luxembourg-geoportail/bundle/lux.dist.js";
+
+
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
@@ -457,7 +460,7 @@ exports.prototype.toggleClippingLineMode = function() {
  * @export
  */
 exports.prototype.resetLayers = function() {
-  this.selectedLayers_.length = 0;
+  this['layersChanged'] = false;
   this.appMymaps_.updateLayers();
 };
 
@@ -480,19 +483,20 @@ exports.prototype.trustAsHtml = function(content) {
  */
 exports.prototype.saveLayers = function() {
   var bgLayer = /** @type {string} */
-      (this.backgroundLayerMgr_.get(this.map_).get('label'));
+      (this.backgroundLayerMgr_.get(this.map_)?.get('label')) || 'blank';
   var bgOpacity = '1';
   var layersLabels = [];
   var layersOpacities = [];
   var layersVisibilities = [];
   var layersIndices = [];
-  this.selectedLayers_.forEach(function(item, index) {
-    layersLabels.push(item.get('label'));
-    layersOpacities.push('' + item.getOpacity());
-    if (item.getOpacity() === 0) {
+  this.appMymaps_.getLayersFromStore().reverse().forEach(function(item, index) {
+    layersLabels.push(item.name);
+    if (item.opacity === 0) {
       layersVisibilities.push('false');
+      layersOpacities.push('' + item.previousOpacity);
     } else {
       layersVisibilities.push('true');
+      layersOpacities.push('' + item.opacity);
     }
     layersIndices.push('' + index);
   });
@@ -819,6 +823,9 @@ exports.prototype.closeMap = function() {
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
   this.appFeaturePopup_.hide();
+
+  // v4 Set map id MyMaps in lib
+  useAppStore().setMapId(undefined);
 };
 
 

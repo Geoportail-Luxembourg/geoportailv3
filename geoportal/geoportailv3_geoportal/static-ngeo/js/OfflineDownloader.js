@@ -56,7 +56,7 @@ const OfflineDownloader = class extends Downloader {
     // Keep a reference to the original mapbox layer
     let mapBoxLayer = null;
     const bgLayer = this.backgroundLayerMgr_.get(map);
-    if (bgLayer.getMapBoxMap) {
+    if (bgLayer && bgLayer.getMapBoxMap) {
         mapBoxLayer = bgLayer;
     }
     const superMethod = super.save.bind(this);

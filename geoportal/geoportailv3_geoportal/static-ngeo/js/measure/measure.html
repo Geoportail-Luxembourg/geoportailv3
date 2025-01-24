@@ -15,7 +15,15 @@
   <li ng-class="{active: ctrl.measureProfile.active}">
       <a href translate ngeo-btn
        ng-model="ctrl.measureProfile.active" ng-show="!ctrl.measureProfile.active">Profile</a>
-      <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.measureProfile" app-profile-map="::ctrl.map"></app-profile>
+      
+      <!-- v4 Elevation Profile component -->
+      <div ng-show="ctrl.measureProfile.active" style="display: inline;">
+        <div style="width: 450px; height: auto;">
+          <profile-measures />
+        </div>
+      </div>
+
+      <!-- <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.measureProfile" app-profile-map="::ctrl.map"></app-profile> -->
   </li>
     <li ngeo-btn ng-model="ctrl.profileLidarOpen" ng-show="!ctrl.measureProfile.active">
         <a href translate>Profil Lidar</a>

@@ -41,6 +41,14 @@ module.exports = function(UglifyJsPluginCache) {
     },
     optimization: {
       minimizer: [
+        new UglifyJsPlugin({
+          cache: UglifyJsPluginCache,
+          parallel: true,
+          sourceMap: true,
+          uglifyOptions: {
+            compress: false
+          },
+        })
       ]
     },
     resolve: {

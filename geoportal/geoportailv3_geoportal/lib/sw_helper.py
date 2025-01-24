@@ -25,7 +25,16 @@ def get_urls(request):
         request.static_path('geoportailv3_geoportal:static-ngeo/images/arrow.png'),
         main_js_url,
         main_css_url,
-        gov_light_url
+        gov_light_url,
+        '/static-ngeo/web-components/style.css',
+        '/static-ngeo/webfonts/geoportail-icons.woff',
+        '/static-ngeo/images/gov-light.png',
+        '/static-ngeo/images/favicon.ico',
+
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-regular-400.woff2',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.woff2',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.ttf',
     ]
 
     if 'dev' in request.params:

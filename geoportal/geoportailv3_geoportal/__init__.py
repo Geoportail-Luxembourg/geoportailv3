@@ -476,6 +476,9 @@ def main(global_config, **settings):
     config.add_route('upload_vt_style', '/uploadvtstyle')
     config.add_route('delete_vt_style', '/deletevtstyle')
     config.add_route('get_vt_style', '/getvtstyle')
+    config.add_route('upload_permalink_style', '/uploadpermalinkstyle')
+    config.add_route('delete_permalink_style', '/deletepermalinkstyle')
+    config.add_route('get_permalink_style', '/getpermalinkstyle')
     config.add_route('profile.csv', '/profile.csv')
     config.add_route('rapport_forage_virtuel', '/getRapportForageVirtuel')
 
