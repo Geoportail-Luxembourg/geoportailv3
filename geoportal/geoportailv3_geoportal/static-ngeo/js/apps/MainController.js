@@ -52,6 +52,7 @@ import useLuxLib, {
   useOfflineLayers,
   useStyleStore,
   useThemeStore,
+  useUserManagerStore,
   useProfileRoutingv3Store,
   useProfileMeasuresv3Store,
   layerMetadataService,
@@ -1563,6 +1564,25 @@ const MainController = function(
     }
   });
 
+  const userManagerStore = useUserManagerStore()
+  const { currentUser } = storeToRefs(userManagerStore)
+  watch(
+    currentUser,
+    currentUser => {
+         this.showCruesLink = false;
+         if (this.showCruesLinkOrig && currentUser.roleId !== null && currentUser.roleId !== undefined) {
+           var roles = this.showCruesRoles.split(',');
+           var found = roles.find(function(element) {
+             return element === ('' + currentUser.roleId);
+           }, this);
+           this.showCruesLink = (found !== undefined);
+         }
+         this.loadThemes_();
+         if (this.appMymaps_.isMymapsSelected()) {
+           this.appMymaps_.loadMapInformation();
+         }
+    }
+  )
   /**
    * Listen on login to finish to reload the mvt style
    */
