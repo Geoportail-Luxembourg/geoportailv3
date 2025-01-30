@@ -954,7 +954,7 @@ exports.selected_ =
                 // ------------
                 // v4 migration, use addLayerToStore_ instead
                 // ------------
-                const layerToAdd = useThemes().findByName(layer, this.themeStore_.theme);
+                const layerToAdd = useThemes().findByName(layer);
                 if (!useMapStore().hasLayer(layerToAdd.id)) {
                   this.addLayerToStore_(layerToAdd.id);
                 }
