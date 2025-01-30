@@ -1239,9 +1239,9 @@ const MainController = function(
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
-
-  this.manageUserRoleChange_($scope);
-  this.loadThemes_().then((themes) => {
+  const userManagerStore = useUserManagerStore()
+  const { currentUser } = storeToRefs(userManagerStore)
+  this.loadThemes_(currentUser.roleId).then((themes) => {
     statePersistorStyleService.bootstrap()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
@@ -1564,8 +1564,6 @@ const MainController = function(
     }
   });
 
-  const userManagerStore = useUserManagerStore()
-  const { currentUser } = storeToRefs(userManagerStore)
   watch(
     currentUser,
     currentUser => {
@@ -1577,7 +1575,7 @@ const MainController = function(
            }, this);
            this.showCruesLink = (found !== undefined);
          }
-         this.loadThemes_();
+         this.loadThemes_(currentUser?.roleId);
          if (this.appMymaps_.isMymapsSelected()) {
            this.appMymaps_.loadMapInformation();
          }
@@ -1856,43 +1854,16 @@ MainController.prototype.is3dEnabled = function() {
 };
 
 
-/**
- * Register a watcher on "roleId" to reload the themes when the role id
- * changes.
- * @param {angular.Scope} scope Scope.
- * @private
- */
-MainController.prototype.manageUserRoleChange_ = function(scope) {
-  scope.$watch(function() {
-    return this.appUserManager_.roleId;
-  }.bind(this), function(newVal, oldVal) {
-    if (newVal === null && oldVal === null) {
-      // This happens at init time. We don't want to reload the themes
-      // at this point, as the constructor already loaded them.
-      return;
-    }
-    this.showCruesLink = false;
-    if (this.showCruesLinkOrig && newVal !== null) {
-      var roles = this.showCruesRoles.split(',');
-      var found = roles.find(function(element) {
-        return element === ('' + newVal);
-      }, this);
-      this.showCruesLink = (found !== undefined);
-    }
-    this.loadThemes_();
-    if (this.appMymaps_.isMymapsSelected()) {
-      this.appMymaps_.loadMapInformation();
-    }
-  }.bind(this));
-};
+
 
 
 /**
  * @private
+ * @param {?number} roleId The role id to send in the request.
  * @return {?angular.$q.Promise} Promise.
  */
-MainController.prototype.loadThemes_ = function() {
-  return this.appThemes_.loadThemes(this.appUserManager_.roleId)
+MainController.prototype.loadThemes_ = function(roleId) {
+  return this.appThemes_.loadThemes(roleId)
     .then((themes) => useThemeStore().setThemes(themes));
 };
 
