@@ -837,7 +837,7 @@ exports.prototype.setBackgroundLayer_ = function(input) {
  * @private
  */
 exports.prototype.addLayerToStore_ = function(layerId) {
-  useLayers().toggleLayer(layerId, true, false)
+  useLayers().toggleLayer(layerId, true, false, false)
 }
 
 // -------------
