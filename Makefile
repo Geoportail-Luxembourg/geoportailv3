@@ -62,11 +62,13 @@ APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/js -type f -name
 APP_HTML_FILES += $(shell find $(PACKAGE)_geoportal/static-ngeo/ngeo/src/misc -type f -name '*.html' 2> /dev/null)
 APP_HTML_FILES += $(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
+APP_VUEJS_FILES += $(shell find /usr/lib/node_modules/luxembourg-geoportail/src -type f -name '*.vue' 2> /dev/null)
 
 I18N_SOURCE_FILES += \
     pot-create.ini \
-  $(APP_HTML_FILES) \
-	$(APP_JS_FILES)
+	$(APP_VUEJS_FILES)
+  #$(APP_HTML_FILES) \
+  #	$(APP_JS_FILES)
 
 
 .PHONY: update-pots
