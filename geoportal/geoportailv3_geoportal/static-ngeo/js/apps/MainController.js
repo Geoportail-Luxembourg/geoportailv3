@@ -2170,8 +2170,10 @@ MainController.prototype.compareLayers_ = function() {
         var selectedLabels = [];
         var selectedOpacities = [];
         this['selectedLayers'].forEach(function(item) {
-          selectedLabels.push(item.get('label'));
-          selectedOpacities.push('' + item.getOpacity());
+          if (item !== null) {
+            selectedLabels.push(item.get('label'));
+            selectedOpacities.push('' + item.getOpacity());
+          }
         });
         selectedLabels.reverse();
         selectedOpacities.reverse();
