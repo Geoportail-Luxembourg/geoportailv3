@@ -104,7 +104,8 @@ statePersistorThemeService.bootstrap()
 statePersistorAppService.bootstrap()
 // styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
 // statePersistorStyleService.bootstrap()
-statePersistorBgLayerService.bootstrap()
+// bgLayer must not be bootstrapped here but in the mymaps initialisation
+// statePersistorBgLayerService.bootstrap()
 
 const luxAppStore = useAppStore()
 
@@ -2109,7 +2110,6 @@ MainController.prototype.initLanguage_ = function() {
  */
 MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
-
   this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
   if (mapId !== undefined) {
@@ -2132,6 +2132,7 @@ MainController.prototype.initMymaps_ = function() {
           }.bind(this));
   } else {
     this.appMymaps_.clear();
+    statePersistorBgLayerService.bootstrap()
   }
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
