@@ -287,7 +287,6 @@ import '../../less/geoportailv3.less';
  import appGetShorturl from '../GetShorturlService.js';
  import appGetWmsLayer from '../GetWmsLayerFactory.js';
  import appGetWmtsLayer from '../GetWmtsLayerFactory.js';
- import appLayerOpacityManager from '../LayerOpacityManager.js';
  import appLayerPermalinkManager from '../LayerPermalinkManager.js';
 
  // const appLocationControlOptions = goog.require('app.LocationControlOptions');
@@ -464,7 +463,6 @@ function getSimpleStylings() {
  * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
- * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager Permalink
  * service.
  * @param {app.Mymaps} appMymaps Mymaps service.
@@ -514,9 +512,8 @@ function getSimpleStylings() {
  */
 const MainController = function(
     $scope, $http, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
-    gettextCatalog, appExclusionManager, appLayerOpacityManager,
-    appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
-    appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
+    gettextCatalog, appExclusionManager, appLayerPermalinkManager, appMymaps, appStateManager,
+    appThemes, appTheme, appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
   appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
@@ -1176,7 +1173,6 @@ const MainController = function(
   this.manageSelectedLayers_($scope);
 
   appExclusionManager.init(this.map_, this.ol3dm_);
-  appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
   $scope.$watch(function() {
