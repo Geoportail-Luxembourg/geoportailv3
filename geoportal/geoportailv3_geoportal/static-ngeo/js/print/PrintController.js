@@ -610,7 +610,7 @@ exports.prototype.print = function(format) {
         'appTitle': appTitle,
         'scale': this['scale'],
         'name': this['title'],
-        'url': shorturl,
+        'url': shorturl.short_url,
         'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl,
         'lang': this.gettextCatalog.currentLanguage,
         'legend': this['legend'] ? legend : null,
