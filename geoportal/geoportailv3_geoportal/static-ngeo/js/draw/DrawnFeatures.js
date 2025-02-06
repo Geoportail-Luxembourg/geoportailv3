@@ -476,8 +476,10 @@ exports.prototype.activateModifyIfNeeded = function(feature) {
     isTranlationActive = false;
     if (isMymaps) {
       isModifyCircleActive = this.appMymaps_.isEditable();
+      isTranlationActive = this.appMymaps_.isEditable();
     } else {
       isModifyCircleActive = true;
+      isTranlationActive = true;
     }
   } else {
     var isPoint = feature.getGeometry().getType() ===
