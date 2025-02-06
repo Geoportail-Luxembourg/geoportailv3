@@ -592,8 +592,8 @@ exports.prototype.loadInfoPane_ =
         }.bind(this)
       );
       this.getShorturl_(this.clickCoordinate).then(function(shorturl) {
-        this['url'] = shorturl;
-        this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
+        this['url'] = shorturl.short_url;
+        this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl.short_url;
       }.bind(this));
       this['address'] = '';
       this['distance'] = '';
