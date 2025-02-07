@@ -26,6 +26,10 @@ function service($http, ngeoLocation, shorturlServiceUrl) {
        * @return {!angular.$q.Promise} Promise providing the short URL.
        */
       function getShorturl(optCoordinate) {
+        if (optCoordinate !== undefined) {
+          urlStorage.setItem('X', Math.round(optCoordinate[0]))
+          urlStorage.setItem('Y', Math.round(optCoordinate[1]))
+        }
         const shortUrl = (urlStorage.getShortUrl(optCoordinate))
         return shortUrl;
       });
