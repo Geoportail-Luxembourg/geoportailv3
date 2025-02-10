@@ -56,7 +56,9 @@ const exports = function($scope, appGetShorturl, appMymaps) {
     if (newVal === true) {
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', function(event) {
+      $scope.$watch(function() { 
+        return (urlStorage.getStrippedUrl());
+      }.bind(this), function() {
         this.setUrl_();
       }.bind(this));
     } else if (newVal === false && this.removeListener) {
