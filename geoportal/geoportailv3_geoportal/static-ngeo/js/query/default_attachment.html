@@ -14,7 +14,11 @@
         <a class="no-print" target='_blank' download href='{{ctrl.getDownloadPdfUrl()}}?fid={{feature.fid}}' translate>Obtenir le fichier</a></span>
       <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Fichier indisponible</span><br>
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">
-        <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+        <div style="display: inline;">
+          <div style="width: 251px; height: auto;">
+            <profile-infos />
+          </div>
+        </div>
       </div>
       <div class="no-print" ng-show="feature.attributes.showProfile.active">
         <a class="btn btn-default"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
