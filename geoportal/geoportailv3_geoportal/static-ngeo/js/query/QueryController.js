@@ -7,6 +7,7 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
 import {extend as extentExtend} from 'ol/extent.js';
+import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
@@ -17,6 +18,7 @@ import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
+import { useProfileInfosv3Store, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -63,6 +65,7 @@ const exports = function($sce, $timeout, $scope, $http,
 
 
   this.timeout_ = $timeout;
+
   /**
    * @type {Array<string>}
    * @private
@@ -850,6 +853,7 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
       item['layerLabel'] = layerLabel[item.layer];
     }, this);
   }
+
   this.responses_.forEach(function(item) {
     if (item['has_profile']) {
       item.features.forEach(function(feature) {
@@ -857,11 +861,27 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
         if (validGeom.geom.getLineStrings().length > 0) {
           feature['attributes']['showProfile'] =
               /** @type {app.query.ShowProfile} */ ({active: true});
-          this.getProfile_(validGeom.geom, validGeom.id)
+
+          // v4 Force reset feature
+          const profileStore = useProfileInfosv3Store();
+          const { feature_v3, activePositioning_v3 } = storeToRefs(profileStore);
+          feature_v3.value = undefined;
+
+          this.getProfile_(validGeom.geom, validGeom.id).then(function(profile) {
+            feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
+
+            activePositioning_v3.value = true;
+            // v4 Update profile data for v4 component
+            profileStore.setProfileData(this['map'], new olFeature(validGeom.geom), profile)
+
+          }.bind(this));
+
+
+        /* this.getProfile_(validGeom.geom, validGeom.id)
         .then(function(profile) {
-          feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
+          feature['attributes']['showProfile'] = ({active: true});
           feature['attributes']['profile'] = profile;
-        }.bind(this));
+        }.bind(this));*/
         }
       }, this);
     }

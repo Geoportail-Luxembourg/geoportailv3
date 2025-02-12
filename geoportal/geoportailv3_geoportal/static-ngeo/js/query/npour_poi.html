@@ -28,7 +28,11 @@
   <span ng-if="ctrl.hasProperty('Bild', feature.attributes, 3)"> <img ng-src="{{feature.attributes.Bild}}" width="250"><br><br></span>
   <div ng-if="ctrl.hasProperty('longueur sentier', feature.attributes, 0)"><span translate>Longueur du sentier :</span> <span>{{feature.attributes['longueur sentier']}}</span><br></div>
   <div class="query-profile" ng-show="feature.attributes.showProfile.active">
-    <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+    <div style="display: inline;">
+      <div style="width: 251px; height: auto;">
+        <profile-infos />
+      </div>
+    </div>
   </div>
   <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
 </div>
