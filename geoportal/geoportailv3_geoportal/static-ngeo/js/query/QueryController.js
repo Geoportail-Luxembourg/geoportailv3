@@ -862,26 +862,17 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
           feature['attributes']['showProfile'] =
               /** @type {app.query.ShowProfile} */ ({active: true});
 
-          // v4 Force reset feature
           const profileStore = useProfileInfosv3Store();
-          const { feature_v3, activePositioning_v3 } = storeToRefs(profileStore);
-          feature_v3.value = undefined;
+          const { activePositioning_v3 } = storeToRefs(profileStore);
 
           this.getProfile_(validGeom.geom, validGeom.id).then(function(profile) {
+
             feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
 
             activePositioning_v3.value = true;
             // v4 Update profile data for v4 component
-            profileStore.setProfileData(this['map'], new olFeature(validGeom.geom), profile)
-
+            profileStore.setProfileData(this['map'], new olFeature(validGeom.geom), profile, validGeom['id'])
           }.bind(this));
-
-
-        /* this.getProfile_(validGeom.geom, validGeom.id)
-        .then(function(profile) {
-          feature['attributes']['showProfile'] = ({active: true});
-          feature['attributes']['profile'] = profile;
-        }.bind(this));*/
         }
       }, this);
     }
