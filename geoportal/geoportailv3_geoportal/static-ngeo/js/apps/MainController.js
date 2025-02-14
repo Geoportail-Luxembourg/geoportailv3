@@ -95,7 +95,7 @@ const i18nextConfig = {
 };
 
 const luxLib = useLuxLib({ i18nextConfig });
-const { app, createElementInstance } =  luxLib;
+const { app, createElementInstance, createElementInstanceProp } =  luxLib;
 
 // Important! keep order
 statePersistorMyMapService.bootstrap()
@@ -143,7 +143,7 @@ customElements.define('auth-form', createElementInstance(AuthForm, app))
 customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
 customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
 customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
-customElements.define('profile-infos', createElementInstance(ProfileInfos, app))
+customElements.define('profile-infos', createElementInstanceProp(ProfileInfos, app))
 
 import i18next from 'i18next';
 
@@ -195,6 +195,7 @@ import '../../less/geoportailv3.less';
  import appDrawFeaturePopupDirective from '../draw/featurePopupDirective.js';
  import appDrawRouteControl from '../draw/RouteControl.js';
  import appGetLayerForCatalogNodeFactory from '../GetLayerForCatalogNodeFactory.js';
+ import bindFeatureId from '../query/bindFeatureIdDirective.js';
 
  //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
  import appDrawSelectedFeatures from '../draw/SelectedFeaturesService.js';
