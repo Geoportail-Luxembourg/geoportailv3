@@ -31,6 +31,7 @@ const exports = function($scope, appGetShorturl, appMymaps) {
   this.appMymaps_ = appMymaps;
 
 
+  this.$scope = $scope;
 
   /**
    * @type {string}
@@ -50,13 +51,13 @@ const exports = function($scope, appGetShorturl, appMymaps) {
    */
   this.getShorturl_ = appGetShorturl;
 
-  $scope.$watch(function() {
+  this.$scope.$watch(function() {
     return this['active'];
   }.bind(this), function(newVal) {
     if (newVal === true) {
       this.setUrl_();
       this.removeListener =
-      $scope.$watch(function() { 
+      this.$scope.$watch(function() { 
         return (urlStorage.getStrippedUrl());
       }.bind(this), function() {
         this.setUrl_();
@@ -66,7 +67,7 @@ const exports = function($scope, appGetShorturl, appMymaps) {
     }
   }.bind(this));
 
-  $scope.$watch(function() {
+  this.$scope.$watch(function() {
     return this['active'] && this['onlyMymaps'];
   }.bind(this), function(newVal) {
     this.setUrl_();
@@ -85,13 +86,10 @@ exports.prototype.setUrl_ =
         this.url += '?map_id=' + this.appMymaps_.getMapId();
       }
       this.longurl = this.url;
-      this.getShorturl_().then(
-      /**
-       * @param {string} shorturl The short URL.
-       */
-      (function(shorturl) {
+      this.getShorturl_().then((shorturl) => {
         this.url = shorturl.short_url;
-      }).bind(this));
+        this.$scope.$applyAsync();
+      });
     };
 
 
