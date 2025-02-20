@@ -2097,8 +2097,8 @@ MainController.prototype.initMymaps_ = function() {
           }.bind(this));
   } else {
     this.appMymaps_.clear();
-    statePersistorBgLayerService.bootstrap()
   }
+  statePersistorBgLayerService.bootstrap()
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
     if (!this.appOfflineRestorer_.restoring) {
