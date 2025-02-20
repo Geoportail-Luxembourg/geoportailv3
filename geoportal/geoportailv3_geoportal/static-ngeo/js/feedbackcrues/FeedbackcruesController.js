@@ -4,6 +4,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -12,7 +13,6 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
  * @param {app.Notify} appNotify Notify service.
  * @param {app.UserManager} appUserManager The User Manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {ngeo.statemanager.Location} ngeoLocation The location service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The Background
  * service.
  * @param {string} postFeedbackCruesUrl the feedbackcrues post url.
@@ -21,7 +21,7 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
  * @export
  */
 const exports = function($scope, $http, appNotify, appUserManager,
-    gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackCruesUrl,
+    gettextCatalog, ngeoBackgroundLayerMgr, postFeedbackCruesUrl,
     appDrawnFeatures) {
 
 
@@ -38,13 +38,6 @@ const exports = function($scope, $http, appNotify, appUserManager,
    * @private
    */
   this.$http_ = $http;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
-
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
    * @private
@@ -116,11 +109,13 @@ exports.prototype.$onInit = function() {
       }
       this.bgLayer = this.backgroundLayerMgr_.get(this.map_);
       this.setUrl_();
-      this.removeListener =
-      this.scope_.$on('ngeoLocationChange', function(event) {
-        this.setUrl_();
-        this.bgLayer = this.backgroundLayerMgr_.get(this.map_);
-      }.bind(this));
+
+      this.removeListener = this.$scope.$watch(function() { 
+          return (urlStorage.getStrippedUrl());
+        }.bind(this), function() {
+          this.setUrl_();
+          this.bgLayer = this.backgroundLayerMgr_.get(this.map_);
+        }.bind(this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
       this.url = '';
@@ -133,7 +128,7 @@ exports.prototype.$onInit = function() {
 * @private
 */
 exports.prototype.setUrl_ = function() {
-  this.url = this.ngeoLocation_.getUriString();
+  this.url = urlStorage.getStrippedUrl();
 };
 
 /**

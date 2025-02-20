@@ -18,7 +18,7 @@ import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
-import { useProfileInfosv3Store, storeToRefs } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useProfileInfosv3Store, storeToRefs, urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -27,7 +27,6 @@ import { useProfileInfosv3Store, storeToRefs } from "luxembourg-geoportail/bundl
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl The infoservice url.
@@ -55,7 +54,7 @@ import { useProfileInfosv3Store, storeToRefs } from "luxembourg-geoportail/bundl
  * @ngInject
  */
 const exports = function($sce, $timeout, $scope, $http,
-    appGetProfile, ngeoLocation,
+    appGetProfile,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, downloadPdfUrl, gettextCatalog,
     appThemes, appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl,
@@ -167,12 +166,6 @@ const exports = function($sce, $timeout, $scope, $http,
    * @private
    */
   this.mymapsImageUrl_ = mymapsImageUrl;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @private
@@ -522,11 +515,12 @@ exports.prototype.$onInit = function() {
       this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
     }
   }, this);
-  var fid = this.ngeoLocation_.getParam('fid');
+
+  var fid = urlStorage.getItem('fid');
   if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
   }
-  this.ngeoLocation_.deleteParam('fid');
+  urlStorage.removeItem('fid');
 };
 
 

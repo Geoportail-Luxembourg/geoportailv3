@@ -12,14 +12,11 @@ import appModule from './module.js';
 
 
 /**
- * @param {angular.$http} $http The Angular $http service.
- * @param {ngeo.statemanager.Location} ngeoLocation The ngeo Location service.
- * @param {string} shorturlServiceUrl The URL to the "shorturl" service.
  * @return {app.GetShorturl} The getShorturl function.
  * @private
  * @ngInject
  */
-function service($http, ngeoLocation, shorturlServiceUrl) {
+function service() {
   return (
       /**
        * @param {ol.Coordinate=} optCoordinate coordinates.

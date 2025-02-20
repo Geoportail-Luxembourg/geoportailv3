@@ -9,8 +9,7 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
 import OLCesium from 'olcs/OLCesium.js';
 import LuxRasterSynchronizer from './LuxRasterSynchronizer';
 import VectorSynchronizer from 'olcs/VectorSynchronizer';
-import { useOpenLayers, useMapStore, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
-
+import { urlStorage, useOpenLayers, useMapStore, storeToRefs, watch } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 class Wrap3dLayer {
   // Wrapper class for 3D layers so that they behave partly like OL layers.
@@ -35,13 +34,12 @@ const exports = class extends ngeoOlcsManager {
   /**
    * @param {string} cesiumUrl Cesium URL.
    * @param {ol.Map} map The map.
-   * @param {ngeo.statemanager.Location} ngeoLocation The location service.
    * @param {angular.Scope} $rootScope The root scope.
    * @param {Array<string>} tiles3dLayers 3D tiles layers.
    * @param {string} tiles3dUrl 3D tiles server url.
    * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
    */
-  constructor(cesiumUrl, ipv6Substitution, map, ngeoLocation, $rootScope,
+  constructor(cesiumUrl, ipv6Substitution, map, $rootScope,
               tiles3dLayers, tiles3dUrl, appBlankLayer,
               appNotify, gettextCatalog, appThemes) {
     super(cesiumUrl, $rootScope, {map});
@@ -59,11 +57,6 @@ const exports = class extends ngeoOlcsManager {
 
     this.notify_ = appNotify;
     this.gettextCatalog = gettextCatalog;
-    /**
-     * @private
-     * @type {ngeo.statemanager.Location}
-     */
-    this.ngeoLocation_ = ngeoLocation;
 
     this.ipv6Substitution_ =  ipv6Substitution;
     this.terrainUrl = undefined;
@@ -77,8 +70,8 @@ const exports = class extends ngeoOlcsManager {
      * default in Cesium 2.0
      * default in Ngeo 25.0
      */
-    if (ngeoLocation.hasParam('fog_sse_factor')) {
-      this.fogSSEFactor = parseFloat(ngeoLocation.getParam('fog_sse_factor'));
+    if (urlStorage.getItem('fog_sse_factor')!==null) {
+      this.fogSSEFactor = parseFloat(urlStorage.getItem('fog_sse_factor'));
     }
 
     /*
@@ -91,8 +84,8 @@ const exports = class extends ngeoOlcsManager {
      * default in Cesium 2.0e-4
      * default in Ngeo 1.0e-4
      */
-    if (ngeoLocation.hasParam('fog_density')) {
-      this.fogDensity = parseFloat(ngeoLocation.getParam('fog_density'));
+    if (urlStorage.getItem('fog_density')!==null) {
+      this.fogDensity = parseFloat(urlStorage.getItem('fog_density'));
     }
 
 
@@ -167,7 +160,7 @@ const exports = class extends ngeoOlcsManager {
     const ol3d = new OLCesium({map, time, createSynchronizers});
     const scene = ol3d.getCesiumScene();
 
-    if (this.ngeoLocation_.hasParam('tile_coordinates')) {
+    if (urlStorage.getItem('tile_coordinates')!=null) {
       scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
     }
     if (this.terrainUrl !== undefined) {
@@ -193,9 +186,9 @@ const exports = class extends ngeoOlcsManager {
   }
 
   defineTerrain(ol3d) {
-    if (!this.ngeoLocation_.hasParam('no_terrain')) {
+    if (urlStorage.getItem('no_terrain')===null) {
       // for performance, limit terrain levels to be loaded
-      const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
+      const unparsedTerrainLevels = urlStorage.getItem('terrain_levels');
       const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
       const rectangle = this.getCameraExtentRectangle();
       const url = this.terrainUrl
@@ -230,9 +223,9 @@ const exports = class extends ngeoOlcsManager {
 
     this.setMode('3D');
 
-    const layers3d = this.ngeoLocation_.getParam('3d_layers');
+    const layers3d = urlStorage.getItem('3d_layers');
 
-    if (layers3d) {
+    if (layers3d!=null) {
       // the memorization of preload 3D layers is needed because tree/theme loading and 3D activation from
       // URL parameters are asynchronous and it is not deterministic which one is ready first
       this.activeTiles3dLayersPreload_ = layers3d.split(',');
@@ -310,7 +303,7 @@ const exports = class extends ngeoOlcsManager {
     }
     this.activeTiles3dLayers_.push(layerName);
     this.mapStore_.add3dLayers(layer)
-    this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
+    urlStorage.setItem('3d_layers', this.activeTiles3dLayers_.join(','));
     let base_url = layer.url;
     // TODO set ipv6 url for IOS
     const url = base_url + '/' + layerName + '/tileset.json';
@@ -411,7 +404,7 @@ const exports = class extends ngeoOlcsManager {
     if (idx >= 0) {
       let removedTilesets = this.tilesets3d.splice(idx, 1);
       this.activeTiles3dLayers_.splice(idx, 1);
-      this.ngeoLocation_.updateParams({'3d_layers': this.activeTiles3dLayers_.join(',')});
+      urlStorage.setItem('3d_layers', this.activeTiles3dLayers_.join(','));
       this.ol3d.getCesiumScene().primitives.remove(removedTilesets[0]);
     }
     if (checkNoMeshes && (this.getMode() === 'MESH') && (this.getActiveMeshLayers().length === 0)) {
@@ -629,7 +622,7 @@ const exports = class extends ngeoOlcsManager {
       this.mapStore_.setIs3dMesh(false)
       this.restore_2D_layers_and_background();
       this.remove3DLayers(false);
-      this.ngeoLocation_.deleteParam('3d_layers');
+      urlStorage.removeItem('3d_layers');
     }
   }
 
