@@ -4,6 +4,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -12,7 +13,6 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
  * @param {app.Notify} appNotify Notify service.
  * @param {app.UserManager} appUserManager The User Manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {ngeo.statemanager.Location} ngeoLocation The location service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The Background
  * service.
  * @param {string} postFeedbackAnfUrl the feedbackanf post url.
@@ -22,7 +22,7 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
  * @export
  */
 const exports = function($scope, $http, appNotify, appUserManager,
-    gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackAnfUrl,
+    gettextCatalog, ngeoBackgroundLayerMgr, postFeedbackAnfUrl,
     appDrawnFeatures, appLotChasse) {
   /**
    * @type {app.LotChasse}
@@ -41,12 +41,6 @@ const exports = function($scope, $http, appNotify, appUserManager,
    * @private
    */
   this.$http_ = $http;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -130,11 +124,12 @@ const exports = function($scope, $http, appNotify, appUserManager,
       this.concernedLayer =
         this.gettextCatalog.getString('Please pick a layer');
       this.setUrl_();
-      this.removeListener =
-      $scope.$on('ngeoLocationChange', event => {
-        this.setUrl_();
-        this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
-      });
+      this.removeListener = this.$scope.$watch(function() { 
+          return (urlStorage.getStrippedUrl());
+        }.bind(this), function() {
+          this.setUrl_();
+          this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
+        }.bind(this));
     } else if (!newVal && this.removeListener) {
       this.removeListener();
       this.email = this.description = this.url = '';
@@ -152,7 +147,7 @@ const exports = function($scope, $http, appNotify, appUserManager,
 * @private
 */
 exports.prototype.setUrl_ = function() {
-  this.url = this.ngeoLocation_.getUriString();
+  this.url = urlStorage.getStrippedUrl();
 };
 
 /**

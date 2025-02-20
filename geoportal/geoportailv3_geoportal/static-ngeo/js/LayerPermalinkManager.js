@@ -11,7 +11,7 @@ import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {listen, unlistenByKey} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
-import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { useMapStore, urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /**
@@ -23,7 +23,6 @@ import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.js";
  * @param {app.Theme} appTheme The theme service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
  * manager.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.WmsHelper} appWmsHelper The wms helper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts helper service.
  * @param {app.Notify} appNotify Notify service.
@@ -32,7 +31,7 @@ import { useMapStore } from "luxembourg-geoportail/bundle/lux.dist.js";
  */
 const exports = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
-    ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, appTimeLayer, gettextCatalog) {
+    appWmsHelper, appWmtsHelper, appNotify, appTimeLayer, gettextCatalog) {
   /**
    * @type {angularGettext.Catalog}
    */
@@ -61,12 +60,6 @@ const exports = function(appStateManager,
    * @private
    */
   this.appWmtsHelper_ = appWmtsHelper;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {Array.<number|string>}
@@ -580,74 +573,9 @@ exports.prototype.init = function(scope, map, selectedLayers) {
    * @type {boolean}
    * @private
    */
-  this.initialized_ = false;
-
-  // Wait for themes to load before adding layers from state
-  // listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
-  //   this.initBgLayers_().then(() =>{
-  //     this.initFlatCatalog_(selectedLayers);
-  //   })
-  // });
-
-  // ------------------------------------------ //
-  // --------  UPDATE With new Lux lib -------- //
-  // ------------------------------------------ //
-  // - deactivate listeners on layers and bg layer in state (commented code above)
-  // - set initialized to true
-  // ------------------------------------------ //
   this.initialized_ = true;
 };
 
-// This function is not called anymore at all
-// exports.prototype.initBgLayers_ = function() {
-//   return this.appThemes_.getBgLayers(this.map_).then((bgLayers) => {
-//     var stateBgLayerLabel, stateBgLayerOpacity;
-//     var mapId = this.ngeoLocation_.getParam('map_id');
-//     if (!this.initialized_) {
-//       stateBgLayerLabel = this.stateManager_.getInitialValue('bgLayer');
-//       stateBgLayerOpacity = this.stateManager_.getInitialValue('bgOpacity');
-//       if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
-//           ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) && parseInt(stateBgLayerOpacity, 0) === 0)) {
-//         if (this.initialVersion_ === 2 && stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
-//           stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
-//           if (stateBgLayerLabel === undefined) {
-//             stateBgLayerLabel = "basemap_2015_global";
-//           }
-//         } else if (this.initialVersion_ === 2 && parseInt(stateBgLayerOpacity, 0) === 0) {
-//           stateBgLayerLabel = 'orthogr_2013_global';
-//         }
-//       } else {
-//         if (mapId === undefined) {
-//           stateBgLayerLabel = 'basemap_2015_global';
-//         } else {
-//           if (this.appTheme_.getCurrentTheme() === 'tourisme') {
-//             stateBgLayerLabel = 'topo_bw_jpeg';
-//           } else {
-//             stateBgLayerLabel = 'topogr_global';
-//           }
-//         }
-//         stateBgLayerOpacity = 0;
-//       }
-//     } else {
-//       stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
-//       stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
-//     }
-//     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
-
-//     // ------------------------------------------ //
-//     // --------  UPDATE With new Lux lib -------- //
-//     // ------------------------------------------ //
-//     // - deactivate setting bg here as this is now handled by Permalink v4
-//     // ------------------------------------------ //
-
-//     // if (mapId === undefined || hasBgLayerInUrl) {
-//     //   var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-//     //   if (layer !== undefined) {
-//     //     this.backgroundLayerMgr_.set(this.map_, layer);
-//     //   }
-//     // }
-//   });
-// }
 
 /**
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
@@ -706,11 +634,11 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
       this.initialized_ = true;
     } else {
       layerIds = this.splitLayers_(
-          this.ngeoLocation_.getParam('layers'), '-');
+          urlStorage.getItem('layers'), '-');
       opacities = this.splitNumbers_(
-          this.ngeoLocation_.getParam('opacities'), '-');
+        urlStorage.getItem('opacities'), '-');
       times = this.splitTimes_(
-          this.ngeoLocation_.getParam('time'), '--');
+            urlStorage.getItem('time'), '--');
     }
     this.removeWatchers_();
     if (layerIds === undefined) {

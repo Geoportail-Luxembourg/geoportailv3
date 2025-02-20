@@ -13,18 +13,16 @@ import olSourceVector from 'ol/source/Vector.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import {createEmpty, extend} from 'ol/extent.js';
 import olCollection from 'ol/Collection.js';
-
-import { storageHelper } from "luxembourg-geoportail/bundle/lux.dist.js";
+import { storageHelper, urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
- * @param {ngeo.statemanager.Location} ngeoLocation Location service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager
  * @ngInject
  */
-const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
+const exports = function(appMymaps, ngeoFeatureOverlayMgr) {
 
   /**
    * @type {ngeo.map.FeatureOverlayMgr}
@@ -90,12 +88,6 @@ const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
     zIndex: 1000,
     'altitudeMode': 'clampToGround'
   });
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @const
@@ -212,10 +204,7 @@ exports.prototype.encodeFeaturesInUrl_ = function(features) {
   });
 
   if (featuresToEncode.length > 0) {
-    this.ngeoLocation_.updateParams({
-       'features': this.fhFormat_.writeFeatures(featuresToEncode)
-    });
-
+    urlStorage.setItem('features', this.fhFormat_.writeFeatures(featuresToEncode));
     // v4
     storageHelper.setValue(
       'features',
@@ -223,7 +212,7 @@ exports.prototype.encodeFeaturesInUrl_ = function(features) {
       (feats) => this.fhFormat_.writeFeatures(feats)
     )
   } else {
-    this.ngeoLocation_.deleteParam('features');
+    urlStorage.removeItem('features');
 
     // v4
     storageHelper.removeItem('features')
@@ -282,8 +271,8 @@ exports.prototype.moveAnonymousFeaturesToMymaps = function() {
  * a feature.
  */
 exports.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
-  var encodedFeatures = this.ngeoLocation_.getParam('features');
-  if (encodedFeatures !== undefined) {
+  var encodedFeatures = urlStorage.getItem('features');
+  if (encodedFeatures !== null) {
     var remoteFeatures = null;
     try {
       remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
