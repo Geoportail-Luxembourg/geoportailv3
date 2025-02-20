@@ -6,6 +6,7 @@ import olLayerVector from 'ol/layer/Vector.js';
 import ngeoOfflineModule from 'ngeo/offline/module.js';
 import NgeoConfiguration from 'ngeo/offline/Configuration.js';
 import localforage from 'localforage';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 window['localforage'] = localforage;
 
 /**
@@ -17,11 +18,10 @@ const exports = class extends NgeoConfiguration {
    * @param {!angular.Scope} $rootScope The rootScope provider.
    * @param {angular.$injector} $injector Main injector.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
-   * @param {ngeo.statemanager.Location} ngeoLocation The location service
    */
-  constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoLocation) {
-    const gutter = ngeoLocation.hasParam('offline_gutter') ? ngeoLocation.getParamAsInt('offline_gutter') : 96;
-    console.assert(gutter !== undefined);
+  constructor($rootScope, $injector, ngeoBackgroundLayerMgr) {
+    const gutter = urlStorage.getItem('offline_gutter')!==null ? parseInt(urlStorage.getItem('offline_gutter')) : 96;
+    console.assert(gutter !== null);
     ngeoOfflineModule.value('ngeoOfflineGutter', gutter);
     super($rootScope, ngeoBackgroundLayerMgr, /** @type {number} */ (gutter));
 

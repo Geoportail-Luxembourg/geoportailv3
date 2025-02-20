@@ -4,16 +4,16 @@
 import appModule from '../module.js';
 import {listen, listenOnce} from 'ol/events.js';
 import {unByKey} from 'ol/Observable.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @param {angular.JQLite} $element Element.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {Document} $document The document.
  * @param {angular.Scope} $scope Scope.
  * @constructor
  * @ngInject
  */
-const exports = function($element, ngeoLocation, $document, $scope) {
+const exports = function($element, $document, $scope) {
 
   /**
    * @type {angular.Scope}
@@ -26,12 +26,6 @@ const exports = function($element, ngeoLocation, $document, $scope) {
    * @private
    */
   this.$document_ = $document;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {angular.JQLite}
@@ -107,8 +101,8 @@ exports.prototype.$onInit = function() {
  */
 exports.prototype.activate = function(active) {
   if (active) {
-    if (this.ngeoLocation_.getParam('sliderRatio') === undefined) {
-      this.ngeoLocation_.updateParams({'sliderRatio': 0.5});
+    if (urlStorage.getItem('sliderRatio') === null) {
+      urlStorage.setItem('sliderRatio', '0.5');
     }
     this.moveLine_();
 
@@ -133,13 +127,15 @@ exports.prototype.activate = function(active) {
     if (layer !== undefined) {
       this.precomposeEvent_ = listen(layer, 'prerender', function(event) {
         if (this['layers'][0] === layer) {
-          var ratio = this.ngeoLocation_.getParam('sliderRatio');
-          var ctx = event.context;
-          var width = ctx.canvas.width * (1 - ratio);
-          ctx.save();
-          ctx.beginPath();
-          ctx.rect(0, 0, ctx.canvas.width - width, ctx.canvas.height);
-          ctx.clip();
+          var ratio = urlStorage.getItem('sliderRatio');
+          if (ratio !== null) {
+            var ctx = event.context;
+            var width = ctx.canvas.width * (1 - parseFloat(ratio));
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, ctx.canvas.width - width, ctx.canvas.height);
+            ctx.clip();
+          }
         } else {
           this['active'] = false;
         }
@@ -176,7 +172,7 @@ exports.prototype.activate = function(active) {
  * @private
  */
 exports.prototype.moveLine_ = function() {
-  var curRatio = this.ngeoLocation_.getParam('sliderRatio');
+  var curRatio = parseFloat(urlStorage.getItem('sliderRatio'));
 
   var offset = (curRatio * this.map_.getSize()[0]) -
                (this.element_.width() / 2) +
@@ -207,8 +203,8 @@ exports.prototype.drag_ = function(event) {
                  angular.element(this.map_.getViewport()).offset().left;
     this.element_.css({'left': offset});
 
-    this.ngeoLocation_.updateParams({'sliderRatio': curRatio});
-    this.map_.render();
+    urlStorage.setItem('sliderRatio', curRatio);
+    this.map_.render()
   }
 };
 
