@@ -44,6 +44,7 @@ import useLuxLib, {
   HeaderBar,
   proxyUrlHelper,
   styleUrlHelper,
+  urlStorage,
   useMap,
   useMvtStyles,
   useOpenLayers,
@@ -475,7 +476,6 @@ function getSimpleStylings() {
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
@@ -515,9 +515,8 @@ const MainController = function(
     $scope, $http, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
     gettextCatalog, appExclusionManager, appLayerPermalinkManager, appMymaps, appStateManager,
     appThemes, appTheme, appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
-  appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
+    appExport, appGetDevice, appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer,
+    appNotify, $window, appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
     appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
@@ -602,12 +601,9 @@ const MainController = function(
     appMvtStylingService.saveStyle(dataObject, isPublished)
     .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
-      this.ngeoLocation_.updateParams({
-        'serial': config,
-        'serialLayer': bgLayer.get('label')
-      });
+      urlStorage.setItem('serial', config);
+      urlStorage.setItem('serialLayer', bgLayer.get('label'));
       this.appMvtStylingService.apply_mvt_config(config, bgLayer.get('label'));
-      this.ngeoLocation_.refresh();
       this.resetLayerFor3d_();
     });
   }, 2000, false);
@@ -813,11 +809,6 @@ const MainController = function(
    */
   this.appExport_ = appExport;
 
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -1097,7 +1088,7 @@ const MainController = function(
   /**
    * @export
    */
-  this.debugOffline = ngeoLocation.hasParam('debugOffline');
+  this.debugOffline = (urlStorage.getItem('debugOffline') !== null);
 
   /**
    * True if no initial state is defined.
@@ -1217,13 +1208,11 @@ const MainController = function(
             } else {
               config = JSON.parse(style)['serial'];
             }
-            this.ngeoLocation_.updateParams({
-              'bgLayer': label,
-              'serial': config,
-              'serialLayer': label
-            });
+            urlStorage.setItem('bgLayer', label);
+            urlStorage.setItem('serial', config);
+            urlStorage.setItem('serialLayer', label);
+
             this.appMvtStylingService.apply_mvt_config(config, label);
-            this.ngeoLocation_.refresh();
             this.resetLayerFor3d_();
           }
         },(rejected) => {
@@ -1285,15 +1274,15 @@ const MainController = function(
       });
     });
 
-    this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
-    this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
-    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackcrues'));
+    this['feedbackAgeOpen'] = ('true' === urlStorage.getItem('feedbackage'));
+    this['feedbackAnfOpen'] = ('true' === urlStorage.getItem('feedbackanf'));
+    this['feedbackCruesOpen'] = ('true' === urlStorage.getItem('feedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
     this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
     !this['routingOpen'] &&
-    this.ngeoLocation_.getParam('map_id') === undefined &&
+    urlStorage.getItem('map_id') === null &&
     !infoOpen &&
     !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
@@ -1301,7 +1290,7 @@ const MainController = function(
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') &&
     !this.embedded;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
-        this.ngeoLocation_.getParam('map_id') !== undefined &&
+        urlStorage.getItem('map_id') !== null &&
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
@@ -1447,7 +1436,7 @@ const MainController = function(
           this['legendsOpen'] = this['routingOpen'] = false;
       }
     });
-    this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
+    this.activeLayersComparator = (urlStorage.getItem('lc') === 'true');
 
 
     const profileStore = useProfileMeasuresv3Store()
@@ -1631,11 +1620,8 @@ const MainController = function(
       this.appMvtStylingService.saveStyle(dataObject, isPublished).then(id => {
         // If result is a serialized UUID
         if (isValidSerial(id)) {
-          this.ngeoLocation_.updateParams({
-            'serial': id,
-            'serialLayer': bgLayer.get('label')
-          });
-          this.ngeoLocation_.refresh();
+          urlStorage.setItem('serial', id);
+          urlStorage.setItem('serialLayer', bgLayer.get('label'));
         }
       });
 
@@ -1650,18 +1636,6 @@ const MainController = function(
   this.clearCustomStyle = () => {
     this.styleStore_.setStyle(null)
     return
-
-    /////////////////////////////////////////////////////////////////////////
-
-    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    // this.appMvtStylingService.removeStyles(bgLayer);
-    // bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    // this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
-    // this.resetLayerFor3d_();
-    // this.resetSelectedSimpleData();
-    // this.checkSelectedSimpleData();
-    // this.ngeoLocation_.deleteParam('serial');
-    // this.ngeoLocation_.deleteParam('serialLayer');
   };
 
   /**
@@ -1748,10 +1722,10 @@ MainController.prototype.enable3dCallback_ = function(active) {
  */
 MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
     var isActive = false;
-    var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
+    var activateGeoLocation = urlStorage.getItem('tracking');
     if (activateGeoLocation && 'true' === activateGeoLocation) {
       isActive = true;
-      this.ngeoLocation_.deleteParam('tracking');
+      urlStorage.removeItem('tracking');
     }
     var locationControl = new appLocationControl(/** @type {app.LocationControlOptions} */({
       label: '\ue800',
@@ -1787,7 +1761,7 @@ MainController.prototype.createMap_ = function() {
     condition: platformModifierKeyOnly
   });
 
-  let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
+  let rotation = Number(urlStorage.getItem('rotation')) || 0;
 
   var map = this['map'] = useMap().getOlMap();
   // var map = this['map'] = new appMap({
@@ -1820,9 +1794,7 @@ MainController.prototype.createMap_ = function() {
 
   map.on('moveend', e => {
     const rotation = map.getView().getRotation();
-    this.ngeoLocation_.updateParams({
-      rotation,
-    });
+    urlStorage.setItem('rotation', rotation);
   });
 
   return map;
@@ -1837,7 +1809,7 @@ MainController.prototype.createMap_ = function() {
  */
 MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitution, $rootScope) {
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
+  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
                                  this.notify_, this.gettextCatalog_, this.appThemes_);
 };
@@ -2106,10 +2078,10 @@ MainController.prototype.initLanguage_ = function() {
  * @private
  */
 MainController.prototype.initMymaps_ = function() {
-  var mapId = this.ngeoLocation_.getParam('map_id');
+  var mapId = urlStorage.getItem('map_id');
   this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
-  if (mapId !== undefined) {
+  if (mapId !== null) {
     this.appMymaps_.setCurrentMapId(mapId,
         this.drawnFeatures_.getCollection()).then(
           function(features) {
@@ -2122,10 +2094,6 @@ MainController.prototype.initMymaps_ = function() {
                 size: /** @type {ol.Size} */ (this.map_.getSize())
               });
             }
-            // var layer = this.drawnFeatures_.getLayer();
-            // if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
-            //   this.map_.addLayer(layer);
-            // }
           }.bind(this));
   } else {
     this.appMymaps_.clear();

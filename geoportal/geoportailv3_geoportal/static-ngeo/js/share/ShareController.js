@@ -14,6 +14,7 @@
 
 import appModule from '../module.js';
 import ngeoUtils from 'ngeo/utils.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @ngInject
@@ -63,7 +64,11 @@ const exports = function($scope, $window, gettext, gettextCatalog) {
   $scope.$watch(() => this['active'], (newVal) => {
     if (newVal === true) {
       this.setUrl_();
-      this.removeListener = $scope.$on('ngeoLocationChange', () => this.setUrl_());
+      this.removeListener = this.$scope.$watch(function() { 
+          return (urlStorage.getStrippedUrl());
+        }.bind(this), function() {
+          this.setUrl_();
+        }.bind(this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
     }

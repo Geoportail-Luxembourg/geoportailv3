@@ -18,7 +18,6 @@ import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope The scope.
- * @param {ngeo.statemanager.Location} ngeoLocation The location service.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export

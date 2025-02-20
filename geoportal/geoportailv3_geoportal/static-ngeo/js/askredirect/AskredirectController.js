@@ -6,22 +6,15 @@ import appModule from '../module.js';
 /**
  * @constructor
  * @param {angular.$window} $window Window.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
-const exports = function($window, ngeoLocation) {
+const exports = function($window) {
   /**
    * @type {angular.$window}
    * @private
    */
   this.$window_ = $window;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 };
 
 

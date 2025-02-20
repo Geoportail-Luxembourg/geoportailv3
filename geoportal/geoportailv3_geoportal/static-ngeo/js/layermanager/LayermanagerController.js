@@ -20,16 +20,15 @@ import PrintMaskLayer from 'ngeo/print/Mask.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import OfflineMaskLayer from 'ngeo/offline/Mask.js';
 
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
+
 class Controller {
   /**
-   * @param {ngeo.statemanager.Location} ngeoLocation Location service.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
    * @param {angular.$rootScope} $rootScope Angular rootScope service.
    * @ngInject
    */
-  constructor(ngeoLocation, ngeoBackgroundLayerMgr, appTimeLayer, $rootScope) {
-
-    this.ngeoLocation_ = ngeoLocation;
+  constructor(ngeoBackgroundLayerMgr, appTimeLayer, $rootScope) {
 
     this.timeLayer_ = appTimeLayer
 
@@ -130,9 +129,7 @@ class Controller {
 
   toggleLayersComparator() {
     this['activeLC'] = !this['activeLC'];
-    this.ngeoLocation_.updateParams({
-      'lc': this['activeLC']
-    });
+    urlStorage.setItem('lc', this['activeLC']);
   }
 
   openMvtEditorPanel() {
