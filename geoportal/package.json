@@ -14,7 +14,7 @@
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
   "devDependencies": {
-    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/GITLAB-32-catalog_tab_visibility_CI_6ae795c/luxembourg-geoportail-lib-0.0.0-dev.tgz",
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/GITLAB-32-bypass_slider_issue_CI_1cef809/luxembourg-geoportail-lib-0.0.0-dev.tgz",
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
     "@babel/plugin-proposal-decorators": "7.16.0",
