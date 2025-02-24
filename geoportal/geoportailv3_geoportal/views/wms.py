@@ -154,6 +154,7 @@ class Wms:
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
         request = self.request.params.get('REQUEST', self.request.params.get('request', ''))
+        layer_type = self.request.params.get('LAYER_TYPE', self.request.params.get('layer_type', ''))
         if request.lower() == 'getcapabilities':
             headers = {"Content-Type": "text/xml"}
             capabilities = """<?xml version="1.0"?>
@@ -178,7 +179,7 @@ class Wms:
 
                     internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
                         LuxLayerInternalWMS.layer == query_layer).first()
-                    if internal_wms is None:
+                    if internal_wms is None or layer_type.lower() == 'wmts':
                         layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
                                                 LayerWMTS.layer == query_layer).first()
                         if layer_wmts is None:
@@ -247,7 +248,7 @@ class Wms:
         is_wmts = False
         internal_wms: Optional[LuxLayerInternalWMS] = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.layer == layer).first()
-        if internal_wms is None:
+        if internal_wms is None or layer_type.lower() == 'wmts':
             layer_wmts: Optional[LayerWMTS] = DBSession.query(LayerWMTS).filter(
                                     LayerWMTS.layer == layer).first()
             if layer_wmts is None:
