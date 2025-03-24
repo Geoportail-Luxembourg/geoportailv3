@@ -1,0 +1,520 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A right click (tap and hold on mobile)..."
+msgstr ""
+"Duerch Rietsklick (tippen an gedréckt haalen op mobil) ginn d'Informatiounen"
+" iwwert déi aktuell Positioun ugewisen"
+
+msgid "A short click (tap on mobile)..."
+msgstr ""
+"Duerch Klick (tippen op mobil) op eng Funktioun gëtt dës ausgewielt an méi "
+"Informatiounen ugewisen"
+
+msgid "Activer Google Streetview"
+msgstr "Aktivéiert Google Street View"
+
+msgid "Adresse la plus proche"
+msgstr "Noosten Adress"
+
+msgid "Afficher une catégorie par couche"
+msgstr "Eng Kategorie uweisen"
+
+msgid "Ajouter étape à mon itinéraire"
+msgstr "Tëschestopp bäisetzen"
+
+msgid "Area:"
+msgstr "Fläch:"
+
+msgid ""
+"Aucune couche n'étant définie pour cette carte, une couche de fond a "
+"automatiquement été ajoutée."
+msgstr ""
+"Aucune couche n'étant définie pour cette carte, une couche de fond a "
+"automatiquement été ajoutée."
+
+msgid "Aucune information disponible pour cette couche"
+msgstr "Keng Informatiounen vun dëser Couche disponibel"
+
+msgid "Aucune légende n'est disponible pour les couches sélectionnées."
+msgstr "Et ass keng Legend fir déi ausgewielte Layer definéiert"
+
+msgid "Azimut"
+msgstr "Azimut"
+
+msgid "Cancel"
+msgstr "Annuléieren"
+
+msgid "Change language"
+msgstr "Change language"
+
+msgid "Change language: {{lang}}"
+msgstr "Change language: {{lang}}"
+
+msgid "Change opacity for {{layerName}}"
+msgstr "Change opacity for {{layerName}}"
+
+msgid "Changer"
+msgstr "Wiesselen"
+
+msgid "Changer sens de la ligne"
+msgstr "Richtung vun der Linn änneren"
+
+msgid "Click to draw the point"
+msgstr "Klickt fir de Punkt ze setzen"
+
+msgid "Click to place the label"
+msgstr "Klickt fir den Text ze setzen"
+
+msgid "Click to start drawing circle"
+msgstr "Klickt, fir unzefänken, ee Krees ze zeechnen"
+
+msgid "Click to start drawing line<br>Double-click to finish"
+msgstr ""
+"Klickt fir unzefenken, eng Linn ze zeechnen<br>Maat een Duebel-Klickt fir "
+"ofzeschléissen<br>Dréckt ⌫ fir dee leschte Punkt ze annuléiren<br>Wielt "
+"d'Option \"Stroossen nogoen\" fir är Linn op den bestehende Stroossereseau "
+"unzepassen"
+
+msgid ""
+"Click to start drawing polygon<br>Double-click or click last point to finish"
+msgstr ""
+"Klickt fir unzefenken, ee Polygon ze zeechnen<br>Maat een Duebelklick, "
+"dréckt ESC oder klickt op de leschten Punkt fir ofzeschléissen<br>Dréckt  ⌫ "
+"fir deen als läscht gesaten Punkt ze löschen"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Create a new user account"
+msgstr "E neien Benotzerkont opmaachen"
+
+msgid "Désactiver Google Streetview"
+msgstr "Desaktivéiert Google Street View"
+
+msgid "Description"
+msgstr "Beschreiwung"
+
+msgid "Dessins"
+msgstr "Zeechnungen"
+
+msgid "Display full description"
+msgstr "Display full description"
+
+msgid "Display informations for \"{{layerName}}\""
+msgstr "Display informations for \"{{layerName}}\""
+
+msgid "Distance approximative"
+msgstr "geschätzten Distanz"
+
+msgid "Download style"
+msgstr "Stil eroflueden"
+
+msgid "Draw a line on the map to display an elevation profile."
+msgstr "Zeechent eng Linn op der Kaart fir den Héichtenprofil unzeweisen"
+
+msgid "Editer l'objet"
+msgstr "Objekt éditeieren"
+
+msgid "Elevation"
+msgstr "Héicht"
+
+msgid "Error while trying to upload new symbol."
+msgstr "Error while trying to upload new symbol."
+
+msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
+msgstr "Wëllt dir wierklech dëst Element aus der Kaart löschen?"
+
+msgid "Export csv"
+msgstr "CSV exportéieren "
+
+msgid "Exporter GPX"
+msgstr "GPX exportéiren"
+
+msgid "Exporter KMl"
+msgstr "KML exportéiren"
+
+msgid "Hide full description"
+msgstr "Hide full description"
+
+msgid "I lost my password"
+msgstr "Ech hu mäi Passwuert verluer"
+
+msgid "Il n'y a pas de panorama google disponible à cet endroit"
+msgstr "Et gëtt keen Google Panorama op dëser Plaz"
+
+msgid "Images obliques"
+msgstr "Schréibiller"
+
+msgid "Invalid username or password."
+msgstr "Passwuert oder Benotzernum ongëlteg"
+
+msgid "Lancer éditeur externe ou importer json"
+msgstr "Externen Editeur starten oder json eroplueden"
+
+msgid "Legend"
+msgstr "mat Legend"
+
+msgid "Legends"
+msgstr "Legenden"
+
+msgid "Length"
+msgstr "Längt"
+
+msgid "Length:"
+msgstr "Längt: "
+
+msgid "Lien direct vers cet objet"
+msgstr "Direktlink zu dësem Objet"
+
+msgid "Lien direct vers le calculateur d'efficacité économique"
+msgstr "Direktlink op den Wirtschaflichkeitsrechner"
+
+msgid "Lien vers Cyclomédia"
+msgstr "Lien vers Cyclomédia"
+
+msgid "Lien vers la démo lidar"
+msgstr "Link op de LIDAR"
+
+msgid "link"
+msgstr "link"
+
+msgid "Link to the metadata"
+msgstr "Link op d'Metadaten"
+
+msgid "Logout"
+msgstr "Ausloggen"
+
+msgid "M/d/yyyy"
+msgstr "M/d/yyyy"
+
+msgid "M/d/yyyy HH:mm:ss"
+msgstr "M/d/yyyy HH:mm:ss"
+
+msgid "M/yyyy"
+msgstr "M/yyyy"
+
+msgid "mètres"
+msgstr "Meter"
+
+msgid "Modification des informations"
+msgstr "Informatiounen änneren"
+
+msgid "My account"
+msgstr "Mäi Kont"
+
+msgid "Open Maputnik editor"
+msgstr "Maputnik Editeur opmaachen"
+
+msgid "Please wait, the profile is loading."
+msgstr "Waart weg, de Profil gëtt gelueden"
+
+msgid "Profil Lidar"
+msgstr "Lidar Profil"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Rapport forage virtuel"
+msgstr "Rapport forage virtuel"
+
+msgid "Rayon:"
+msgstr "Radius:"
+
+msgid "Remove layer \"{{layerName}}\""
+msgstr "Remove layer \"{{layerName}}\""
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Sélectionner une couleur par couche"
+msgstr "Wielt eng Faarf fir all Thematik"
+
+msgid "Show or hide {{thematicName}}"
+msgstr "Show or hide {{thematicName}}"
+
+msgid "Sort \"{{layerName}}\" in the list"
+msgstr "Sort \"{{layerName}}\" in the list"
+
+msgid "Style"
+msgstr "Styl"
+
+msgid "Style your drawing"
+msgstr "Ärer Zeechnung e Styl ginn"
+
+msgid "Surface"
+msgstr "Fläch"
+
+msgid "Symbol"
+msgstr "Symbol"
+
+msgid "Symbole"
+msgstr "Symbol"
+
+msgid "Terminer édition"
+msgstr "Editiounsmodus verlossen"
+
+msgid "The legend is not available for this layer"
+msgstr "Keng spezifesch Legend fir dëse Layer"
+
+msgid "The metadata is right now not available"
+msgstr "Et gi keng Metadaten fir dëse Layer"
+
+msgid "Theme"
+msgstr "Thema"
+
+msgid "Toggle layer comparator for {{ layerName }}"
+msgstr "Toggle layer comparator for {{ layerName }}"
+
+msgid "Toggle layer opacity for {{layerName}}"
+msgstr "Toggle layer opacity for {{layerName}}"
+
+msgid "Une erreur est survenue durant la déconnexion."
+msgstr "E Fehler ass während der Verbindung opgetrueden"
+
+msgid "Url vers la resource"
+msgstr "URL vun der Ressource"
+
+msgid "Validate"
+msgstr "Validéieren"
+
+msgid "Valider"
+msgstr "Validéiren"
+
+msgid "Veuillez choisir un symbole dans une des catégories"
+msgstr "Sicht Iech ee Symbol an enger vun de Kategorie raus"
+
+msgid "Veuillez entrer les caractéristiques de votre nouveau cercle"
+msgstr "Gitt w.e.g. d'Eegenschaften vun ärem neie Krees an"
+
+msgid "Vous êtes maintenant correctement connecté."
+msgstr "Dir sidd elo ageloggt"
+
+msgid "yyyy"
+msgstr "yyyy"
+
+msgid "+ Add external Wms"
+msgstr "+ Externe WM(T)S bäisetzen"
+
+msgid "+ Add layers"
+msgstr "+ Layeren bäisetzen"
+
+msgid "Access constraints :"
+msgstr "Zougangslimitatiounen :"
+
+msgid ""
+"Background has been deactivated because the layer {{layer}} cannot be "
+"displayed on top of it."
+msgstr ""
+"D' Hannergrondkaart gouf ausgeschalt well se net mam Layer {{layer}} kann "
+"ugewise ginn"
+
+msgid "Catalog"
+msgstr "Katalog"
+
+msgid "Chargement des informations"
+msgstr "Luede vun Informatiounen"
+
+msgid "Choose or write a WMS url"
+msgstr "WM(T)S URS auswielen oder erfaassen"
+
+msgid "Circle"
+msgstr "Krees"
+
+msgid "Close"
+msgstr "Zoumaachen"
+
+msgid "Create, save and share your own maps."
+msgstr "Är eege Kaarten erstellen, späicheren an deelen."
+
+msgid "Créer une nouvelle carte"
+msgstr "Eng nei Kaart erstellen"
+
+msgid "Description du service :"
+msgstr "Beschreiwung vum Déngscht :"
+
+msgid "Get the layers"
+msgstr "Layeren ufroen"
+
+msgid "Impossible de contacter ce WMS"
+msgstr "De WM(T)S Server kann net kontaktéiert ginn"
+
+msgid "infos"
+msgstr "Info"
+
+msgid "Label"
+msgstr "Beschréftung"
+
+msgid "layers"
+msgstr "Layeren"
+
+msgid "LineString"
+msgstr "Linn"
+
+msgid "Location Coordinates"
+msgstr "Positiounskoordinaten"
+
+msgid "My Maps"
+msgstr "My Maps"
+
+msgid "my_layers"
+msgstr "Méng Layeren"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "No layer selected"
+msgstr "Keen Layer ausgewielt"
+
+msgid "Ouvrir une carte"
+msgstr "eng Kaart opmaachen"
+
+msgid "Point"
+msgstr "Punkt"
+
+msgid "Polygon"
+msgstr "Polygon"
+
+msgid "Réinitialiser style"
+msgstr "Réinitialiser style"
+
+msgid "Sélectionner un set de couleurs"
+msgstr "Wielt ee Stil"
+
+msgid "Short Url"
+msgstr "Url"
+
+msgid "Suivre la route"
+msgstr "Stroossen nogoen"
+
+msgid ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+
+msgid "Vector tiles editor"
+msgstr "Stil Editeur"
+
+msgid "(Deactivates zoom and pan on the profile!)"
+msgstr "(Deaktivéiert d'Zoom- a Pan-Funktiounen am Profil)"
+
+msgid "Altitude: "
+msgstr "Héicht"
+
+msgid "An error occured during download"
+msgstr "Beim Download ass ee Fehler opgetrueden"
+
+msgid "App reload needed: Offline data updated successfully"
+msgstr ""
+"D'App muss nei geluede ginn: d'Offline Daten goufen erfollegräich upgedate"
+
+msgid "Check for offline data updates"
+msgstr "No neien Offline-Date kucken"
+
+msgid "Classes"
+msgstr "Klassen"
+
+msgid "Classification: "
+msgstr "Klassifikatioun"
+
+msgid "Copy"
+msgstr "Kopéiren"
+
+msgid "custom"
+msgstr "Personaliséiert Gréisst"
+
+msgid "Delete offline data"
+msgstr "Offline-Daten löschen"
+
+msgid "Distance: "
+msgstr "Distanz"
+
+msgid "Draw a lidar profile"
+msgstr "LIDAR Profil zeechnen"
+
+msgid ""
+"Draw a line on the map to dislay the corresponding LIDAR profile. Double "
+"clic to confirm."
+msgstr ""
+"Zeechent eng Linn op der Kaart, fir den entspriechenden LIDAR Profil "
+"unzeweisen. Konfirméiert matt engem Duebelklick"
+
+msgid "Embed map"
+msgstr "Kaart integréiren"
+
+msgid "Export CSV"
+msgstr "CSV exportéiren"
+
+msgid "Export PNG"
+msgstr "PNG exportéiren"
+
+msgid "Full offline (only available on mobile)"
+msgstr "Vollen Offline Modus (funktionnéiert nëmmen an der App)"
+
+msgid "Intensity: "
+msgstr "Intensitéit"
+
+msgid "It might be offline"
+msgstr "Et kinnt offline sinn"
+
+msgid "large"
+msgstr "Breet"
+
+msgid "Lidar profile service error"
+msgstr "Fehler am LIDAR-Profil Déngscht"
+
+msgid "loaded"
+msgstr "Gelueden"
+
+msgid "Loading LOD: "
+msgstr "LOD lueden"
+
+msgid "LOD: "
+msgstr "LOD"
+
+msgid "Measure distances on the profile below."
+msgstr "Distanzen op dem Profil moossen"
+
+msgid "medium"
+msgstr "Mëttel"
+
+msgid "New offline data available"
+msgstr "Et stinn nei Offline-Daten zur Verfügung"
+
+msgid "Or did you attempt to draw a profile outside data extent?"
+msgstr "Hudd dir versicht, ee Profil ausserhalb vum Land ze zeechnen?"
+
+msgid ""
+"Or did you attempt to draw such a small profile that no point was returned?"
+msgstr "Oder ass de Profil ze kuerz?"
+
+msgid "Profile width: "
+msgstr "Profilbreet"
+
+msgid "Restart app"
+msgstr "D'App nei starten"
+
+msgid "Retry"
+msgstr "Nach eng Kéier probéiren"
+
+msgid "small"
+msgstr "Kleng"
+
+msgid "Take measure"
+msgstr "Moossen"
+
+msgid "Update offline data"
+msgstr "Offline-Daten updaten"
