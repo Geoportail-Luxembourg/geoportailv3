@@ -1,0 +1,523 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A right click (tap and hold on mobile)..."
+msgstr ""
+"Un clic droit (appuyez et maintenez sur mobile) affiche des informations sur"
+" l'emplacement actuel."
+
+msgid "A short click (tap on mobile)..."
+msgstr ""
+"Un clic court (tap sur mobile) sur une caractéristique de la carte permet de"
+" sélectionner la caractéristique et de montrer plus d'informations"
+
+msgid "Activer Google Streetview"
+msgstr "Activer Google Street View"
+
+msgid "Adresse la plus proche"
+msgstr "Adresse la plus proche"
+
+msgid "Afficher une catégorie par couche"
+msgstr "Afficher une catégorie"
+
+msgid "Ajouter étape à mon itinéraire"
+msgstr "Ajouter étape à mon itinéraire"
+
+msgid "Area:"
+msgstr "Surface:"
+
+msgid ""
+"Aucune couche n'étant définie pour cette carte, une couche de fond a "
+"automatiquement été ajoutée."
+msgstr ""
+"Aucune couche n'étant définie pour cette carte, une couche de fond a "
+"automatiquement été ajoutée."
+
+msgid "Aucune information disponible pour cette couche"
+msgstr "Aucune information disponible pour cette couche"
+
+msgid "Aucune légende n'est disponible pour les couches sélectionnées."
+msgstr "Aucune légende n'est disponible pour les couches sélectionnées."
+
+msgid "Azimut"
+msgstr "Azimut"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Change language"
+msgstr "Changer de langue"
+
+msgid "Change language: {{lang}}"
+msgstr "Changer de langue : {{lang}}"
+
+msgid "Change opacity for {{layerName}}"
+msgstr "Modifier l'opacité pour la couche {{layerName}}"
+
+msgid "Changer"
+msgstr "Changer"
+
+msgid "Changer sens de la ligne"
+msgstr "Changer le sens de la ligne"
+
+msgid "Click to draw the point"
+msgstr "Cliquez pour placer le point"
+
+msgid "Click to place the label"
+msgstr "Cliquez pour placer l'étiquette"
+
+msgid "Click to start drawing circle"
+msgstr "Cliquez pour commencer à dessiner un cercle"
+
+msgid "Click to start drawing line<br>Double-click to finish"
+msgstr ""
+"Cliquez pour commencer à dessiner la ligne<br>Faites un double-clic ou ESC "
+"pour terminer. <br>Tapez ⌫ pour enlever le dernier point dessiné<br>Activez "
+"la coche \"suivre les routes\" pour faire coller votre ligne au réseau "
+"routier existant"
+
+msgid ""
+"Click to start drawing polygon<br>Double-click or click last point to finish"
+msgstr ""
+"Cliquez pour commencer à dessiner le polygone<br>Faites un double-clic, "
+"typez ESC ou cliquez sur le dernier point pour terminer<br>Tapez ⌫ pour "
+"enlever le dernier point dessiné"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Create a new user account"
+msgstr "Créer un nouvel utilisateur "
+
+msgid "Désactiver Google Streetview"
+msgstr "Désactiver Google Street View"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Dessins"
+msgstr "Dessins"
+
+msgid "Display full description"
+msgstr "Afficher la description complète"
+
+msgid "Display informations for \"{{layerName}}\""
+msgstr "Afficher les informations pour \"{{layerName}}\""
+
+msgid "Distance approximative"
+msgstr "Distance approximative"
+
+msgid "Download style"
+msgstr "Télécharger style"
+
+msgid "Draw a line on the map to display an elevation profile."
+msgstr "Tracez une ligne sur la carte pour afficher le profil d'élévation"
+
+msgid "Editer l'objet"
+msgstr "Editer l'objet"
+
+msgid "Elevation"
+msgstr "Élévation"
+
+msgid "Error while trying to upload new symbol."
+msgstr "Error while trying to upload new symbol."
+
+msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
+msgstr "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
+
+msgid "Export csv"
+msgstr "Exporter un CSV"
+
+msgid "Exporter GPX"
+msgstr "Exporter un GPX"
+
+msgid "Exporter KMl"
+msgstr "Exporter un KML"
+
+msgid "Hide full description"
+msgstr "Cacher la description complète"
+
+msgid "I lost my password"
+msgstr "J'ai perdu mon mot de passe"
+
+msgid "Il n'y a pas de panorama google disponible à cet endroit"
+msgstr "Il n'y a pas de panorama Google disponible à cet endroit"
+
+msgid "Images obliques"
+msgstr "Images obliques"
+
+msgid "Invalid username or password."
+msgstr "Nom d’utilisateur ou mot de passe non valides"
+
+msgid "Lancer éditeur externe ou importer json"
+msgstr "Lancer éditeur externe ou importer json"
+
+msgid "Legend"
+msgstr "avec légende"
+
+msgid "Legends"
+msgstr "Légendes"
+
+msgid "Length"
+msgstr "Longueur"
+
+msgid "Length:"
+msgstr "Longueur:"
+
+msgid "Lien direct vers cet objet"
+msgstr "Lien direct vers cet objet"
+
+msgid "Lien direct vers le calculateur d'efficacité économique"
+msgstr "Lien direct vers le calculateur d'efficacité économique"
+
+msgid "Lien vers Cyclomédia"
+msgstr "Lien vers Cyclomédia"
+
+msgid "Lien vers la démo lidar"
+msgstr "Lien vers le LIDAR"
+
+msgid "link"
+msgstr "link"
+
+msgid "Link to the metadata"
+msgstr "Lien vers les metadonnées"
+
+msgid "Logout"
+msgstr "Se déconnecter"
+
+msgid "M/d/yyyy"
+msgstr "M/d/yyyy"
+
+msgid "M/d/yyyy HH:mm:ss"
+msgstr "M/d/yyyy HH:mm:ss"
+
+msgid "M/yyyy"
+msgstr "M/yyyy"
+
+msgid "mètres"
+msgstr "mètres"
+
+msgid "Modification des informations"
+msgstr "Modification des informations"
+
+msgid "My account"
+msgstr "Mon compte"
+
+msgid "Open Maputnik editor"
+msgstr "Ouvrir l'éditeur Maputnik"
+
+msgid "Please wait, the profile is loading."
+msgstr "Veuillez attendre, le profil est chargé"
+
+msgid "Profil Lidar"
+msgstr "Profil Lidar"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Rapport forage virtuel"
+msgstr "Rapport forage virtuel"
+
+msgid "Rayon:"
+msgstr "Rayon:"
+
+msgid "Remove layer \"{{layerName}}\""
+msgstr "Supprimer la couche \"{{layerName}}\""
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Sélectionner une couleur par couche"
+msgstr "Sélectionner une couleur par thématique"
+
+msgid "Show or hide {{thematicName}}"
+msgstr "Afficher ou cacher {{thematicName}}"
+
+msgid "Sort \"{{layerName}}\" in the list"
+msgstr "Déplacer \"{{layerName}}\" dans la liste"
+
+msgid "Style"
+msgstr "Style"
+
+msgid "Style your drawing"
+msgstr "Définissez le style de votre dessin"
+
+msgid "Surface"
+msgstr "Surface"
+
+msgid "Symbol"
+msgstr "Symbole"
+
+msgid "Symbole"
+msgstr "Symbole"
+
+msgid "Terminer édition"
+msgstr "Quitter le mode édition"
+
+msgid "The legend is not available for this layer"
+msgstr "Pas de légende disponible pour cette couche"
+
+msgid "The metadata is right now not available"
+msgstr "Les métadonnées ne sont pas accessibles pour le moment"
+
+msgid "Theme"
+msgstr "Thème"
+
+msgid "Toggle layer comparator for {{ layerName }}"
+msgstr "Afficher ou cacher le comparateur de couche"
+
+msgid "Toggle layer opacity for {{layerName}}"
+msgstr "Modifier l'opacité pour {{layerName}}"
+
+msgid "Une erreur est survenue durant la déconnexion."
+msgstr "Une erreur est survenue durant la déconnexion."
+
+msgid "Url vers la resource"
+msgstr "URL vers la ressource"
+
+msgid "Validate"
+msgstr "Valider"
+
+msgid "Valider"
+msgstr "Valider"
+
+msgid "Veuillez choisir un symbole dans une des catégories"
+msgstr "Veuillez choisir un symbole dans une des catégories"
+
+msgid "Veuillez entrer les caractéristiques de votre nouveau cercle"
+msgstr "Veuillez entrer les caractéristiques de votre nouveau cercle"
+
+msgid "Vous êtes maintenant correctement connecté."
+msgstr "Vous êtes maintenant correctement connecté."
+
+msgid "yyyy"
+msgstr "yyyy"
+
+msgid "+ Add external Wms"
+msgstr "+ Ajouter WM(T)S externe"
+
+msgid "+ Add layers"
+msgstr "+ Ajouter une couche"
+
+msgid "Access constraints :"
+msgstr "Contraintes d'utilisation"
+
+msgid ""
+"Background has been deactivated because the layer {{layer}} cannot be "
+"displayed on top of it."
+msgstr ""
+"La carte d'arrière-fond a été désactivée car elle ne peut pas être affichée "
+"ensemble avec la couche {{layer}}"
+
+msgid "Catalog"
+msgstr "Catalogue"
+
+msgid "Chargement des informations"
+msgstr "Chargement des informations"
+
+msgid "Choose or write a WMS url"
+msgstr "Choisissez ou saisissez une URL WM(T)S"
+
+msgid "Circle"
+msgstr "Cercle"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Create, save and share your own maps."
+msgstr "Créez, sauvegardez et partagez vos propres cartes"
+
+msgid "Créer une nouvelle carte"
+msgstr "Créer une nouvelle carte"
+
+msgid "Description du service :"
+msgstr "Description du service :"
+
+msgid "Get the layers"
+msgstr "Obtenir les couches"
+
+msgid "Impossible de contacter ce WMS"
+msgstr "Impossible de contacter ce WM(T)S"
+
+msgid "infos"
+msgstr "Infos"
+
+msgid "Label"
+msgstr "Étiquette"
+
+msgid "layers"
+msgstr "Couches"
+
+msgid "LineString"
+msgstr "Ligne"
+
+msgid "Location Coordinates"
+msgstr "Coordonnées de position"
+
+msgid "My Maps"
+msgstr "My Maps"
+
+msgid "my_layers"
+msgstr "Mes couches"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "No layer selected"
+msgstr "Pas de couche sélectionnée"
+
+msgid "Ouvrir une carte"
+msgstr "Ouvrir une carte"
+
+msgid "Point"
+msgstr "Point"
+
+msgid "Polygon"
+msgstr "Polygone"
+
+msgid "Réinitialiser style"
+msgstr "Réinitialiser style"
+
+msgid "Sélectionner un set de couleurs"
+msgstr "Sélectionner un style"
+
+msgid "Short Url"
+msgstr "Url"
+
+msgid "Suivre la route"
+msgstr "Suivre les routes"
+
+msgid ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+
+msgid "Vector tiles editor"
+msgstr "Editeur de style"
+
+msgid "(Deactivates zoom and pan on the profile!)"
+msgstr "(Désactive le zoom et le pan sur le profil!)"
+
+msgid "Altitude: "
+msgstr "Altitude: "
+
+msgid "An error occured during download"
+msgstr "Une erreur s'est produite lors du téléchargement"
+
+msgid "App reload needed: Offline data updated successfully"
+msgstr ""
+"Rechargement de l'application nécessaire : données hors connexion mises à "
+"jour avec succès"
+
+msgid "Check for offline data updates"
+msgstr "Vérifier les mises à jour des données hors ligne"
+
+msgid "Classes"
+msgstr "Classes"
+
+msgid "Classification: "
+msgstr "Classification: "
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "custom"
+msgstr "Taille personnalisée"
+
+msgid "Delete offline data"
+msgstr "Supprimer données hors connexion"
+
+msgid "Distance: "
+msgstr "Distance: "
+
+msgid "Draw a lidar profile"
+msgstr "Dessiner un profil lidar"
+
+msgid ""
+"Draw a line on the map to dislay the corresponding LIDAR profile. Double "
+"clic to confirm."
+msgstr ""
+"Dessiner une ligne sur la carte pour afficher le profil LIDAR correspondant."
+" Utilisez un double-clic pour terminer le profil."
+
+msgid "Embed map"
+msgstr "Intégrer la carte"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Export PNG"
+msgstr "Export PNG"
+
+msgid "Full offline (only available on mobile)"
+msgstr "Hors ligne complète (disponible uniquement sur le mobile)"
+
+msgid "Intensity: "
+msgstr "Intensité"
+
+msgid "It might be offline"
+msgstr "Peut-être hors ligne"
+
+msgid "large"
+msgstr "Grande"
+
+msgid "Lidar profile service error"
+msgstr "Erreur profil LIDAR"
+
+msgid "loaded"
+msgstr "Chargé"
+
+msgid "Loading LOD: "
+msgstr "Charger LOD: "
+
+msgid "LOD: "
+msgstr "LOD: "
+
+msgid "Measure distances on the profile below."
+msgstr "Mesurer des distances sur le profil ci-dessous"
+
+msgid "medium"
+msgstr "Moyenne"
+
+msgid "New offline data available"
+msgstr "Mise à jour des données hors connexion disponible"
+
+msgid "Or did you attempt to draw a profile outside data extent?"
+msgstr ""
+"Avez-vous tenté de dessiner un profil en dehors de l'étendue des données?"
+
+msgid ""
+"Or did you attempt to draw such a small profile that no point was returned?"
+msgstr ""
+"Avez-vous tenté de dessiner un profil si petit qu'il n'est pas affiché?"
+
+msgid "Profile width: "
+msgstr "Largeur du profil: "
+
+msgid "Restart app"
+msgstr "Redémarrer l'application"
+
+msgid "Retry"
+msgstr "Recommencez"
+
+msgid "small"
+msgstr "Petite"
+
+msgid "Take measure"
+msgstr "Mesurer"
+
+msgid "Update offline data"
+msgstr "Mettre à jour données hors connexion"
