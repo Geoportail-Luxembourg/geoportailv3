@@ -3,19 +3,18 @@
  */
 import googAsserts from 'goog/asserts.js';
 import ngeoMiscDebounce from 'ngeo/misc/debounce.js';
-import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoOlcsConstants from 'ngeo/olcs/constants.js';
 import ngeoStatemanagerService from 'ngeo/statemanager/Service.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 const Service = class {
 
   /**
    * @ngInject
    * @param {!ngeox.miscDebounce} ngeoDebounce ngeo debounce service.
-   * @param {!ngeo.statemanager.Location} ngeoLocation ngeo location service.
    * @param {ngeo.statemanager.Service} ngeoStateManager The ngeo StateManager service.
    */
-  constructor(ngeoDebounce, ngeoLocation, ngeoStateManager) {
+  constructor(ngeoDebounce, ngeoStateManager) {
     /**
      * @private
      * @type {olcs.contrib.Manager|undefined}
@@ -27,12 +26,6 @@ const Service = class {
      * @type {!ngeox.miscDebounce}
      */
     this.ngeoDebounce_ = ngeoDebounce;
-
-    /**
-     * @private
-     * @type {!ngeo.statemanager.Location}
-     */
-    this.ngeoLocation_ = ngeoLocation;
 
     /**
      * @private
@@ -116,17 +109,19 @@ const Service = class {
    * @private
    */
   remove3dState_() {
-    this.ngeoLocation_.getParamKeysWithPrefix(ngeoOlcsConstants.Permalink3dParam.PREFIX).forEach((key) => {
-      this.ngeoStateManager_.deleteParam(key);
+    const paramKeys = Object.keys(urlStorage.getSnappedParamsAsObj());
+    paramKeys.forEach((param) => {
+      if (param.startsWith(ngeoOlcsConstants.Permalink3dParam.PREFIX)) {
+        console.log('removing param', param);
+        this.ngeoStateManager_.deleteParam(param);
+      }
     });
   }
-
 };
 
 const name = 'ngeoOlcsService';
 Service.module = angular.module(name, [
   ngeoMiscDebounce.name,
-  ngeoStatemanagerLocation.module.name,
   ngeoStatemanagerService.module.name,
 ]).service(name, Service);
 
