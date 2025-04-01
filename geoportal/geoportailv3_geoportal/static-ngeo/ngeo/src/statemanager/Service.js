@@ -2,30 +2,23 @@
  * @module ngeo.statemanager.Service
  */
 import googAsserts from 'goog/asserts.js';
-import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * Provides a service for managing the application state.
  * The application state is written to both the URL and the local storage.
  * @constructor
  * @struct
- * @param {!ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {!Array.<!RegExp>} ngeoUsedKeyRegexp regexp used to identify the used keys.
  * @ngInject
  */
-const exports = function(ngeoLocation, ngeoUsedKeyRegexp) {
+const exports = function(ngeoUsedKeyRegexp) {
 
   /**
    * Object representing the application's initial state.
    * @type {!Object.<string, string>}
    */
   this.initialState = {};
-
-  /**
-   * @type {!ngeo.statemanager.Location}
-   */
-  this.ngeoLocation = ngeoLocation;
-
 
   /**
    * @type {!Array.<!RegExp>}
@@ -43,8 +36,8 @@ const exports = function(ngeoLocation, ngeoUsedKeyRegexp) {
   // Populate initialState with the application's initial state. The initial
   // state is read from the location URL, or from the local storage if there
   // is no state in the location URL.
-
-  const paramKeys = ngeoLocation.getParamKeys().filter(key => key != 'debug' && key != 'no_redirect');
+  
+  const paramKeys = Object.keys(urlStorage.getSnappedParamsAsObj()).filter(key => key != 'debug' && key != 'no_redirect');
 
   if (paramKeys.length === 0) {
     if (this.useLocalStorage_) {
@@ -68,7 +61,7 @@ const exports = function(ngeoLocation, ngeoUsedKeyRegexp) {
     paramKeys.forEach((key) => {
       this.usedKeyRegexp.some((keyRegexp) => {
         if (key.match(keyRegexp)) {
-          const value = this.ngeoLocation.getParam(key);
+          const value = urlStorage.getItem(key);
           if (value !== undefined) {
             this.initialState[key] = value;
             return true;
@@ -157,7 +150,11 @@ exports.prototype.getInitialBooleanValue = function(key) {
  * @param {!Object.<string, string>} object Object.
  */
 exports.prototype.updateState = function(object) {
-  this.ngeoLocation.updateParams(object);
+  for (const key in object) {
+    const value = object[key];
+    urlStorage.setItem(key, value);
+  }
+
   if (this.useLocalStorage_) {
     for (const key in object) {
       googAsserts.assert(key);
@@ -174,7 +171,7 @@ exports.prototype.updateState = function(object) {
  * @param {string} key Key.
  */
 exports.prototype.deleteParam = function(key) {
-  this.ngeoLocation.deleteParam(key);
+  urlStorage.removeItem(key);
   if (this.useLocalStorage_) {
     delete window.localStorage[key];
   }
@@ -184,9 +181,7 @@ exports.prototype.deleteParam = function(key) {
 /**
  * @type {!angular.Module}
  */
-exports.module = angular.module('ngeoStateManager', [
-  ngeoStatemanagerLocation.module.name
-]);
+exports.module = angular.module('ngeoStateManager', []);
 exports.module.service('ngeoStateManager', exports);
 exports.module.value('ngeoUsedKeyRegexp', [new RegExp('.*')]);
 
