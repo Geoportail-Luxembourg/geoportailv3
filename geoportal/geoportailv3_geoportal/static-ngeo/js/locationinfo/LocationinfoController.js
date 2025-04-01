@@ -319,7 +319,6 @@ const exports = function(
 };
 
 
-
 exports.prototype.$onInit = function() {
   this.map_ = this['map'];
 
@@ -572,7 +571,9 @@ exports.prototype.loadInfoPane_ =
       (new olFeature(new olGeomPoint(this.clickCoordinate)));
       this.featureLayer_.getSource().clear();
       this.featureLayer_.getSource().addFeature(feature);
-
+      if (this.map_.getLayers().getArray().indexOf(this.featureLayer_) === -1) {
+        this.map_.addLayer(this.featureLayer_);
+      }
       this.getElevation_(this.clickCoordinate).then(
         function(elevation) {
           this['elevation'] = elevation['formattedElevation'];
