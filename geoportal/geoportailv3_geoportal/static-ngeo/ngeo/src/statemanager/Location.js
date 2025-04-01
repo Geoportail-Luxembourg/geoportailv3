@@ -3,6 +3,7 @@
  */
 import googAsserts from 'goog/asserts.js';
 import ngeoUtils from 'ngeo/utils.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * Provides a service for interacting with the URL in the
