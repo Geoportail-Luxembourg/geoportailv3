@@ -343,7 +343,7 @@ class Getfeatureinfo(object):
         cur_time = times
         if times is not None and len(times) > 0 and layers is not None and len(layers) > 0 and cur_layer is not None and len(cur_layer) > 0:
             try:
-                cur_time.split(",")[layers.split(",").index(cur_layer)]
+                cur_time = times.split(",")[layers.split(",").index(cur_layer)]
             except Exception as e:
                 log.exception(e)
                 cur_time = times
