@@ -339,6 +339,17 @@ class Getfeatureinfo(object):
                     return True
         return False
 
+    def get_time_of_layer(self, cur_layer, layers, times):
+        cur_time = times
+        if times is not None and len(times) > 0 and layers is not None and len(layers) > 0 and cur_layer is not None and len(cur_layer) > 0:
+            try:
+                cur_time.split(",")[layers.split(",").index(cur_layer)]
+            except Exception as e:
+                log.exception(e)
+                cur_time = times
+                log.error("The layer %s is not in the time list %s %s" % (cur_layer, times, layers))
+        return cur_time
+
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
                  results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None, time=None):
         rows_cnt = 0
@@ -360,6 +371,7 @@ class Getfeatureinfo(object):
                     geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
                     f = []
                     if luxgetfeaturedefinition.rest_url is not None and len(luxgetfeaturedefinition.rest_url) > 0:
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
@@ -367,7 +379,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             None,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=the_box.centroid.wkt, srs_geometry="2169", time=time)
+                            p_geometry=the_box.centroid.wkt, srs_geometry="2169", time=cur_time)
                         if len(features) > 0:
                             f.append(self.to_feature(luxgetfeaturedefinition.layer, None,
                                                     geometry,
@@ -607,6 +619,7 @@ class Getfeatureinfo(object):
                     len(luxgetfeaturedefinition.rest_url) > 0):
                 if fid is None:
                     if p_geometry is not None:
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
@@ -614,23 +627,25 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')), time=time)
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')), time=cur_time)
                     else :
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
                             luxgetfeaturedefinition.id_column,
                             big_box, None, None, None,
                             luxgetfeaturedefinition.columns_order,
-                            use_auth=luxgetfeaturedefinition.use_auth, time=time)
+                            use_auth=luxgetfeaturedefinition.use_auth, time=cur_time)
                 else:
+                    cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
                         None, fid, None, None,
                         luxgetfeaturedefinition.columns_order,
-                        use_auth=luxgetfeaturedefinition.use_auth, time=time)
+                        use_auth=luxgetfeaturedefinition.use_auth, time=cur_time)
 
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
