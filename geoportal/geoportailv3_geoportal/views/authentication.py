@@ -5,9 +5,11 @@ from pyramid.security import unauthenticated_userid, remember
 from geoportailv3_geoportal.portail import Connections
 from c2cgeoportal_commons.models import DBSession
 import ldap3 as ldap
+from ldap3.core.exceptions import LDAPResponseTimeoutError
 import logging
 from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized, HTTPBadRequest
 from sqlalchemy import func
+import time
 
 log = logging.getLogger(__name__)
 
@@ -97,47 +99,58 @@ def get_user(request, username):
 
     # 0 means 'Tous publics'
     roletheme = 0
-    with cm.connection() as conn:
-        ldap_settings = request.registry.settings['ldap']
-        base_dn = ldap_settings['base_dn']
-        filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
-        message_id = conn.search(
-            base_dn, filter_tmpl, ldap.SUBTREE,
-            ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
-        result = conn.get_response(message_id)[0]
+    MAX_RETRIES = 3
+    RETRY_DELAY = 5  # seconds
+    for attempt in range(MAX_RETRIES):
+        try:
+            with cm.connection() as conn:
+                ldap_settings = request.registry.settings['ldap']
+                base_dn = ldap_settings['base_dn']
+                filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+                message_id = conn.search(
+                    base_dn, filter_tmpl, ldap.SUBTREE,
+                    ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
+                result = conn.get_response(message_id)[0]
 
-        if len(result) == 1:
-            obj = result[0]['raw_attributes']
-            if 'roleTheme' in obj:
-                # This is the plain c2cgeoportal role used for authentication.
-                # Notably in the admin interface.
-                # The role with name role_admin has id 645.
-                roletheme = obj['roleTheme'][0].decode()
-            if 'mail' in obj:
-                user.mail = obj['mail'][0].decode()
-            if 'sn' in obj:
-                user.sn = obj['sn'][0].decode()
+                if len(result) == 1:
+                    obj = result[0]['raw_attributes']
+                    if 'roleTheme' in obj:
+                        # This is the plain c2cgeoportal role used for authentication.
+                        # Notably in the admin interface.
+                        # The role with name role_admin has id 645.
+                        roletheme = obj['roleTheme'][0].decode()
+                    if 'mail' in obj:
+                        user.mail = obj['mail'][0].decode()
+                    if 'sn' in obj:
+                        user.sn = obj['sn'][0].decode()
+                    else:
+                        user.sn = user.mail
+                    if 'isMymapsAdmin' in obj:
+                        user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
+                    if 'roleMymaps' in obj:
+                        # This role is used for myMaps.
+                        user.mymaps_role = int(obj['roleMymaps'][0])
+                    if 'roleOGC' in obj:
+                        # This role is used by the print proxy and internal WMS proxy.
+                        user.ogc_role = int(obj['roleOGC'][0])
+                    if 'typeUtilisateur' in obj:
+                        user.typeUtilisateur = obj['typeUtilisateur'][0].lower().decode()
+
+                    login_pere = get_compte_pere(username)
+                    # If an ascendant user exist, use his user type
+                    if login_pere != username:
+                        user_pere = get_user(request, login_pere)
+                        if 'typeUtilisateur' in obj:
+                            user.typeUtilisateur = user_pere.typeUtilisateur
+                conn.unbind()
+                break  # Exit the loop if successful
+        except LDAPResponseTimeoutError as e:
+            log.warning(f"Attempt {attempt + 1} failed: {e}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
             else:
-                user.sn = user.mail
-            if 'isMymapsAdmin' in obj:
-                user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
-            if 'roleMymaps' in obj:
-                # This role is used for myMaps.
-                user.mymaps_role = int(obj['roleMymaps'][0])
-            if 'roleOGC' in obj:
-                # This role is used by the print proxy and internal WMS proxy.
-                user.ogc_role = int(obj['roleOGC'][0])
-            if 'typeUtilisateur' in obj:
-                user.typeUtilisateur = obj['typeUtilisateur'][0].lower().decode()
-
-            login_pere = get_compte_pere(username)
-            # If an ascendant user exist, use his user type
-            if login_pere != username:
-                user_pere = get_user(request, login_pere)
-                if 'typeUtilisateur' in obj:
-                    user.typeUtilisateur = user_pere.typeUtilisateur
-
-        conn.unbind()
+                log.error("Max retries reached. LDAP server is not responding.")
+                return None
     try:
         # Loading the plain c2cgeoportal role used for authentication.
         user.roles = DBSession.query(Role).filter_by(id=roletheme).all()
