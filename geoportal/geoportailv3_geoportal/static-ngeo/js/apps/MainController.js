@@ -40,6 +40,7 @@ import useLuxLib, {
   BackgroundSelector,
   StylePanel,
   LayerMetadata,
+  ToolbarPrint,
   RemoteLayers,
   HeaderBar,
   proxyUrlHelper,
@@ -130,6 +131,9 @@ customElements.define('style-panel', StylePanelElement)
 
 const LayerMetadataElement = createElementInstance(LayerMetadata, app)
 customElements.define('layer-metadata', LayerMetadataElement)
+
+const toolbarPrintElement = createElementInstance(ToolbarPrint, app)
+customElements.define('toolbar-print', toolbarPrintElement)
 
 const RemoteLayersElement = createElementInstance(RemoteLayers, app)
 customElements.define('remote-layers', RemoteLayersElement)
@@ -247,9 +251,6 @@ import '../../less/geoportailv3.less';
  import appMymapsMymapsDirective from '../mymaps/mymapsDirective.js';
  import appMymapsMymapsController from '../mymaps/MymapsController.js';
  import appNotify from '../NotifyFactory.js';
- import appPrintPrintDirective from '../print/printDirective.js';
- import appPrintPrintController from '../print/PrintController.js';
- import appPrintPrintservice from '../print/Printservice.js';
  import appProfileProfileDirective from '../profile/profileDirective.js';
  import appProfileProfileController from '../profile/ProfileController.js';
  import appQueryPagreportDirective from '../query/pagreportDirective.js';
@@ -1297,7 +1298,6 @@ const MainController = function(
         !infoOpen && !this.embedded) ? true : false;
 
     const { layersOpen, styleEditorOpen, legendsOpen } = storeToRefs(luxAppStore)
-
     $scope.$watch(() => {
       return this['layersOpen'];
     }, newVal => {
@@ -1486,7 +1486,6 @@ const MainController = function(
 
       activePositioning_v3.value = newVal;
     });
-
     // listen to legendsOpen to open/close Legends panel in main.html
     watch(
       legendsOpen,
@@ -2171,7 +2170,7 @@ MainController.prototype.showTab = function(selector) {
 
 /**
  * @export
- */
+ */  
 MainController.prototype.toggleThemeSelector = function() {
   const { layersOpen, myLayersTabOpen, themeGridOpen } = storeToRefs(luxAppStore)
 
