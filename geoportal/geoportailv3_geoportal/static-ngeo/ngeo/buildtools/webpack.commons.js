@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+//const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const LessPluginCleanCSS = require('less-plugin-clean-css');
 const LessPluginAutoprefix = require('less-plugin-autoprefix');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -54,9 +55,10 @@ const typeaheadRule = {
 
 const cssRule = {
   test: /\.css$/,
-  use: ExtractTextPlugin.extract({
-    use: 'css-loader'
-  }),
+  use: [
+    MiniCssExtractPlugin.loader,
+    'css-loader'
+  ],
   exclude: '/node_modules/luxembourg-geoportail',
 };
 
@@ -104,9 +106,11 @@ const tsRule = {
 
 const lessRule = {
   test: /\.less$/,
-  use: ExtractTextPlugin.extract({
-    use: cssLessLoaderConfigs
-  }),
+  use: [
+    MiniCssExtractPlugin.loader,
+    'css-loader',
+    'less-loader',
+  ],
   exclude: '/node_modules/luxembourg-geoportail',
 };
 
@@ -236,6 +240,17 @@ const config = function(hardSourceConfig) {
   //   },
   // }
 
+ /* const vuemjsRule ={
+    test: /\.mjs$/, // Match .js and .mjs files
+    include: /node_modules/, //exclude: /node_modules\/(?!luxembourg-geoportail)/, // Exclude all node_modules except luxembourg-geoportail
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'], // Use Babel preset-env for modern JS
+      },
+    },
+  };*/
+
   return {
     context: path.resolve(__dirname, '../'),
     devtool: 'source-map',
@@ -246,6 +261,16 @@ const config = function(hardSourceConfig) {
       rules: [
         {
           test: /\.mjs$/,
+          include: /node_modules\/luxembourg-geoportail/, // Only process luxembourg-geoportail
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'], // Use Babel preset-env for modern JS
+            },
+          },
+        },
+        {
+          test: /\.mjs$/,
           include: /node_modules/,
           type: 'javascript/auto'
         },
@@ -253,6 +278,7 @@ const config = function(hardSourceConfig) {
         // vuejsRuleLux,
         // vuejsRule,
         // vuejsRuleDep,
+        // vuemjsRule,
         olRule,
         olcsRule,
         jstsRule,
@@ -271,9 +297,8 @@ const config = function(hardSourceConfig) {
     },
     plugins: [
       providePlugin,
-      new ExtractTextPlugin({
-          ignoreOrder: true,
-          filename: devMode ? '[name].css' : '[name].[hash:6].css'
+      new MiniCssExtractPlugin({
+        filename: devMode ? '[name].css' : '[name].[hash:6].css',
       }),
       new webpack.IgnorePlugin(/^\.\/locale$/, 
       /node_modules\/moment\/src\/lib\/locale$/, 
