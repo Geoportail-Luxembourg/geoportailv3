@@ -36,6 +36,7 @@ import useLuxLib, {
   ProfileInfos,
   LayerPanel,
   LegendsPanel,
+  InfoPanel,
   MapContainer,
   BackgroundSelector,
   StylePanel,
@@ -121,6 +122,9 @@ customElements.define('legends-panel', LegendsPanelElement)
 
 const MapContainerElement = createElementInstance(MapContainer, app)
 customElements.define('map-container', MapContainerElement)
+
+const InfoPanelElement = createElementInstance(InfoPanel, app)
+customElements.define('info-panel', InfoPanelElement)
 
 const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
 customElements.define('background-selector', BackgroundSelectorElement)
@@ -229,14 +233,12 @@ import '../../less/geoportailv3.less';
  import appInfobarScaleselectorController from '../infobar/ScaleselectorController.js';
  import appLayerinfoLayerinfoDirective from '../layerinfo/layerinfoDirective.js';
  import appLayerinfoLayerinfoController from '../layerinfo/LayerinfoController.js';
- import appLocationinfoLocationInfoOverlay from '../locationinfo/LocationInfoOverlay.js';
+
  import appLayerinfoShowLayerinfo from '../layerinfo/ShowLayerinfoFactory.js';
  import appLayermanagerLayermanagerDirective from '../layermanager/layermanagerDirective.js';
  import appLayermanagerLayermanagerController from '../layermanager/LayermanagerController.js';
  import appLayerlegendsLayerlegendsDirective from '../layerlegends/layerlegendsDirective.js';
  import appLayerlegendsLayerlegendsController from '../layerlegends/LayerlegendsController.js';
- import appLocationinfoLocationinfoDirective from '../locationinfo/locationinfoDirective.js';
- import appLocationinfoLocationinfoController from '../locationinfo/LocationinfoController.js';
  import appLotChasse from '../LotChasse.js';
  import appMapMapDirective from '../map/mapDirective.js';
  import appMapMapController from '../map/MapController.js';
@@ -1278,12 +1280,13 @@ const MainController = function(
     this['feedbackAnfOpen'] = ('true' === urlStorage.getItem('feedbackanf'));
     this['feedbackCruesOpen'] = ('true' === urlStorage.getItem('feedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
-    var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
+    const { layersOpen, styleEditorOpen, legendsOpen, infoOpen } = storeToRefs(luxAppStore)
+    infoOpen.value = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
     this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
     !this['routingOpen'] &&
     urlStorage.getItem('map_id') === null &&
-    !infoOpen &&
+    !infoOpen.value &&
     !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
     !this['feedbackAgeOpen'] &&
@@ -1294,9 +1297,8 @@ const MainController = function(
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
-        !infoOpen && !this.embedded) ? true : false;
+        !infoOpen.value && !this.embedded) ? true : false;
 
-    const { layersOpen, styleEditorOpen, legendsOpen } = storeToRefs(luxAppStore)
 
     $scope.$watch(() => {
       return this['layersOpen'];
@@ -1477,6 +1479,12 @@ const MainController = function(
       legendsOpen.value = newVal;
     });
 
+    $scope.$watch(() => {
+      return this['infosOpen'];
+    }, newVal => {
+      infoOpen.value = newVal;
+    });
+
     // V4 for profile in routing
     $scope.$watch(() => {
       return this['routingOpen'];
@@ -1487,6 +1495,9 @@ const MainController = function(
       activePositioning_v3.value = newVal;
     });
 
+    watch(infoOpen, infoOpen => {
+        this['infosOpen'] = infoOpen;
+    })
     // listen to legendsOpen to open/close Legends panel in main.html
     watch(
       legendsOpen,
