@@ -140,47 +140,9 @@
                         app-mymaps-map="::mainCtrl.map"></app-mymaps>
           </div>
         </div>
-
         <!-- Infos -->
-        <div ng-if="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
-          <h2 translate>infos</h2>
-          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-            ✕
-          </button>
-          <div class="container-fluid tab-content">
-            <app-locationinfo app-locationinfo-map="::mainCtrl.map"
-                              app-locationinfo-open="mainCtrl.infosOpen"
-                              app-locationinfo-routing-open="mainCtrl.routingOpen"
-                              app-locationinfo-appselector="mainCtrl.infosAppSelector"
-                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent"
-                              ng-if="::!mainCtrl.embedded">
-            </app-locationinfo>
-            <app-query app-query-map="::mainCtrl.map"
-                       app-query-open="mainCtrl.infosOpen"
-                       app-query-mymaps-open="mainCtrl.mymapsOpen"
-                       app-query-layers-open="mainCtrl.layersOpen"
-                       app-query-routing-open="mainCtrl.routingOpen"
-                       app-query-appselector="mainCtrl.infosAppSelector"
-                       app-query-legends-open="mainCtrl.legendsOpen"
-                       app-query-lidar-open="mainCtrl.lidarOpen"
-                       app-query-language="mainCtrl.lang"
-                       app-query-feedback-anf-open="mainCtrl.feedbackAnfOpen"
-                       app-query-feedback-crues-open="mainCtrl.feedbackCruesOpen"
-                       app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
-
-            <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
-              <div class="col-xs-12">
-                <ul>
-                  <li translate>
-                  A <em>right click</em> (tap and hold on mobile) will display information about the current location.
-                  </li>
-                  <li translate>
-                  A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+        <div ng-show="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+            <info-panel></info-panel>
         </div>
 
         <!-- Legend -->

@@ -1219,8 +1219,8 @@ class Getfeatureinfo(object):
                                 geometry, dict(row), attributes_to_remove)
             attributes = f['attributes']
 
-            base_url = os.environ["API-ARCHIMET-URL"]
-            api_key = os.environ["API-ARCHIMET-KEY"]
+            base_url = os.environ["API-ARCHIMET-URL"] if "API-ARCHIMET-URL" in os.environ else ""
+            api_key = os.environ["API-ARCHIMET-KEY"] if "API-ARCHIMET-KEY" in os.environ else ""
             url = f"{base_url}/parcelles/pf/{fid}"
             hdr = {'api-key': api_key}
             try:
