@@ -97,6 +97,7 @@ class Getfeatureinfo(object):
     @view_config(route_name='download_pdf')
     def download_pdf_arcgis(self):
         fid = self.request.params.get('fid', None)
+        contentType = "application/pdf"
         if fid is None:
             return HTTPBadRequest("Request paramaters are missing")
         layers, id = fid.split('_', 1)
@@ -160,7 +161,7 @@ class Getfeatureinfo(object):
                     log.error(url2)
                     return HTTPBadRequest()
 
-                headers = {"Content-Type": "application/pdf",
+                headers = {"Content-Type": contentType,
                            "Content-Disposition": "attachment; filename=\"%(pdf_name)s\"" %{'pdf_name': pdf_name}}
 
                 return Response(data, headers=headers)
