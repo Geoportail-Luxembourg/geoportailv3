@@ -104,6 +104,8 @@ class Wms:
                 query_params["layers"] = 'show:' + internal_wms.layers
             elif lparam == 'format':
                 query_params["format"] = value.split('/')[-1]
+                if query_params["format"].lower() == 'png':
+                    query_params["format"] = value.split('/')[-1] + "32"
             else:
                 pass
 
