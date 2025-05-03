@@ -32,7 +32,7 @@ isodate==0.6.0  # geoportal
 Jinja2==2.10  # c2c.template
 JSTools==1.0  # CGXP build
 lingua==4.13  # i18n
-Mako==1.0.7  # geoportal
+Mako==1.2.2  # geoportal
 mccabe==0.6.1  # lint
 mypy==0.670  # lint
 OWSLib==0.17.1  # geoportal
