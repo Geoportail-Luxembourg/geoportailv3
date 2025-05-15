@@ -115,7 +115,8 @@ const exports = function($scope, $window, $compile,
     'editus_poi_296': ['editus_poi_296'],
     'editus_poi_297': ['editus_poi_297'],
     'editus_poi_298': ['editus_poi_298'],
-    'editus_poi_299': ['editus_poi_299']
+    'editus_poi_299': ['editus_poi_299'],
+    'nom_de_rue': ['roads','roads_labels']
   };
 
   /**
