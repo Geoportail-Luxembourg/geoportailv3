@@ -79,11 +79,11 @@ export default class StateManager {
         } else {
           layers.unshift(layer.get('id'));
           opacities.unshift(layer.get('visible') ? layer.getOpacity() : 0);
-          layersListenerKeys[layer.get('id')] = listen(
+          layersListenerKeys.push(listen(
             layer,
             'change:visible',
             onLayersUpdate,
-            this);
+            this));
         }
         if (layer.get('metadata') !== undefined &&
           layer.get('metadata')['attribution'] !== undefined) {
