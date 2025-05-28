@@ -180,11 +180,26 @@ class JsapiEntry(Theme):
         response.content_type = 'application/javascript'
         return response
 
-    @view_config(route_name='apiv4fullasync',
-                 renderer='/etc/static-ngeo/build/apiv4-full-async.js')
+    @view_config(route_name='apiv4fullasync')
     def apiv4fullasync(self):
-        self.request.response.content_type = 'application/javascript'
-        return {}
+        try:
+            # Read the JavaScript file content
+            with open('/etc/static-ngeo/build/apiv4-full-async.js', 'r') as js_file:
+                js_content = js_file.read()
+
+            # Set the response content and content type
+            response = Response(js_content)
+            response.content_type = 'application/javascript'
+            return response
+        except FileNotFoundError:
+            # Handle the case where the file is not found
+            log.error("JavaScript file not found: /etc/static-ngeo/build/apiv4-full-async.js")
+            return Response("/* JavaScript file not found */", content_type='application/javascript', status=404)
+        except Exception as e:
+            # Handle other exceptions
+            log.exception("Error while serving JavaScript file")
+            return Response("/* Internal server error */", content_type='application/javascript', status=500)
+    
 
     @view_config(route_name='jsapiexample',
                  renderer='geoportailv3_geoportal:templates/api/apiv4example.html')
