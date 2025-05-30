@@ -39,7 +39,7 @@ def upgrade():
         "dd bigint; "
         "lv bigint; "
         "begin "
-        "select (current_timestamp at time zone 'UTC')::date - '1900-01-01'::date into dd; "
+        "select (current_timestamp at time zone 'Europe/Paris')::date - '1900-01-01'::date into dd; "
         "execute 'select last_value from '||p_seq||'_day' into lv; "
         "if dd - lv > 0 then "
         "execute 'alter sequence '||p_seq||' restart'; "
