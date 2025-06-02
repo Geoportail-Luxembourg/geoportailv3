@@ -462,7 +462,7 @@ class Map extends OpenLayersMap {
       'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu',
       'visitwasserbillig.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'minetttrail.lu', 'minettcycle.lu',
       'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
-      'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online'];
+      'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online', 'data.public.lu', 'test.data.public.lu'];
 
     /**
      * @private
