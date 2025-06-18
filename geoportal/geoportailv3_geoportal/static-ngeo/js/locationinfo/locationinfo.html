@@ -42,25 +42,14 @@
             </button>
           </td>
         </tr>
-        <tr class="no-print" ng-if="ctrl.isStreetviewActive()">
-          <td colspan="2">
-           <button class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
-             <span class="create-itinerary-text" translate>Désactiver Google Streetview</span>
-           </button>
-          </td>
-        </tr>
       </table>
     </div>
   </div>
   <div class="row">
-    <app-streetview
-        app-streetview-map="::ctrl.map"
-        app-streetview-location="ctrl.clickCoordinate">
-    </app-streetview>
-    <div class="streetview text-center" ng-show="!(ctrl.open && ctrl.isStreetviewActive())">
-      <button ng-if="!ctrl.isStreetviewActive()" class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
-        <span class="create-itinerary-text" translate>Activer Google Streetview</span>
-      </button>
+    <hr>
+    <div class="no-print">
+      <span translate>Suite à la modification des conditions d'utilisation de Google Street View, nous avons désactivé son intégration dans la carte et proposons désormais un lien direct vers le service de Google.</span>
+      <a class="btn btn-default no-print" href="{{ctrl.getStreetviewUrl()}}" target="_geoportal_ext_streetview" translate>Ouvrir streetView</a>
     </div>
   </div>
 </div>
