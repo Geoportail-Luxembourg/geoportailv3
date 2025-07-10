@@ -1549,7 +1549,7 @@ class Getfeatureinfo(object):
                 body["token"] = auth_token['token']
 
         if featureid is not None:
-            if id_column == 'objectid':
+            if id_column.lower() == 'objectids':
                 body['objectIds'] = featureid
             else:
                 if 'featuresByArcGISQuery' in url:
@@ -1559,7 +1559,16 @@ class Getfeatureinfo(object):
                         url = url.replace("?","")
                     url = url + "/2169" + "/" + id_column + "/" + featureid + "/"
                 else:
-                    body['where'] = id_column + ' = \'' + featureid + '\''
+                    is_int = False
+                    try:
+                        int(featureid)
+                        is_int = True
+                    except (ValueError, TypeError):
+                        is_int = False
+                    if is_int:
+                        body['where'] = id_column + ' = ' + featureid
+                    else:
+                        body['where'] = id_column + ' = \'' + featureid + '\''
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
