@@ -44,6 +44,7 @@ import useLuxLib, {
   HeaderBar,
   proxyUrlHelper,
   styleUrlHelper,
+  urlStorage,
   useMap,
   useMvtStyles,
   useOpenLayers,
@@ -52,6 +53,7 @@ import useLuxLib, {
   useOfflineLayers,
   useStyleStore,
   useThemeStore,
+  useUserManagerStore,
   useProfileRoutingv3Store,
   useProfileMeasuresv3Store,
   layerMetadataService,
@@ -94,7 +96,7 @@ const i18nextConfig = {
 };
 
 const luxLib = useLuxLib({ i18nextConfig });
-const { app, createElementInstance } =  luxLib;
+const { app, createElementInstance, createElementInstanceProp } =  luxLib;
 
 // Important! keep order
 statePersistorMyMapService.bootstrap()
@@ -103,7 +105,8 @@ statePersistorThemeService.bootstrap()
 statePersistorAppService.bootstrap()
 // styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
 // statePersistorStyleService.bootstrap()
-statePersistorBgLayerService.bootstrap()
+// bgLayer must not be bootstrapped here but in the mymaps initialisation
+// statePersistorBgLayerService.bootstrap()
 
 const luxAppStore = useAppStore()
 
@@ -141,7 +144,7 @@ customElements.define('auth-form', createElementInstance(AuthForm, app))
 customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
 customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
 customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
-customElements.define('profile-infos', createElementInstance(ProfileInfos, app))
+customElements.define('profile-infos', createElementInstanceProp(ProfileInfos, app))
 
 import i18next from 'i18next';
 
@@ -193,6 +196,7 @@ import '../../less/geoportailv3.less';
  import appDrawFeaturePopupDirective from '../draw/featurePopupDirective.js';
  import appDrawRouteControl from '../draw/RouteControl.js';
  import appGetLayerForCatalogNodeFactory from '../GetLayerForCatalogNodeFactory.js';
+ import bindFeatureId from '../query/bindFeatureIdDirective.js';
 
  //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
  import appDrawSelectedFeatures from '../draw/SelectedFeaturesService.js';
@@ -285,7 +289,6 @@ import '../../less/geoportailv3.less';
  import appGetShorturl from '../GetShorturlService.js';
  import appGetWmsLayer from '../GetWmsLayerFactory.js';
  import appGetWmtsLayer from '../GetWmtsLayerFactory.js';
- import appLayerOpacityManager from '../LayerOpacityManager.js';
  import appLayerPermalinkManager from '../LayerPermalinkManager.js';
 
  // const appLocationControlOptions = goog.require('app.LocationControlOptions');
@@ -462,7 +465,6 @@ function getSimpleStylings() {
  * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
- * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager Permalink
  * service.
  * @param {app.Mymaps} appMymaps Mymaps service.
@@ -474,7 +476,6 @@ function getSimpleStylings() {
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
@@ -512,12 +513,10 @@ function getSimpleStylings() {
  */
 const MainController = function(
     $scope, $http, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
-    gettextCatalog, appExclusionManager, appLayerOpacityManager,
-    appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
-    appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
-  appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
+    gettextCatalog, appExclusionManager, appLayerPermalinkManager, appMymaps, appStateManager,
+    appThemes, appTheme, appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
+    appExport, appGetDevice, appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer,
+    appNotify, $window, appSelectedFeatures, $locale, appRouting, $document, cesiumURL, ipv6Substitution,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, lidarProfileUrl, ngeoNetworkStatus,
     appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
@@ -602,12 +601,9 @@ const MainController = function(
     appMvtStylingService.saveStyle(dataObject, isPublished)
     .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
-      this.ngeoLocation_.updateParams({
-        'serial': config,
-        'serialLayer': bgLayer.get('label')
-      });
+      urlStorage.setItem('serial', config);
+      urlStorage.setItem('serialLayer', bgLayer.get('label'));
       this.appMvtStylingService.apply_mvt_config(config, bgLayer.get('label'));
-      this.ngeoLocation_.refresh();
       this.resetLayerFor3d_();
     });
   }, 2000, false);
@@ -813,11 +809,6 @@ const MainController = function(
    */
   this.appExport_ = appExport;
 
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -1097,7 +1088,7 @@ const MainController = function(
   /**
    * @export
    */
-  this.debugOffline = ngeoLocation.hasParam('debugOffline');
+  this.debugOffline = (urlStorage.getItem('debugOffline') !== null);
 
   /**
    * True if no initial state is defined.
@@ -1174,7 +1165,6 @@ const MainController = function(
   this.manageSelectedLayers_($scope);
 
   appExclusionManager.init(this.map_, this.ol3dm_);
-  appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
   $scope.$watch(function() {
@@ -1218,13 +1208,11 @@ const MainController = function(
             } else {
               config = JSON.parse(style)['serial'];
             }
-            this.ngeoLocation_.updateParams({
-              'bgLayer': label,
-              'serial': config,
-              'serialLayer': label
-            });
+            urlStorage.setItem('bgLayer', label);
+            urlStorage.setItem('serial', config);
+            urlStorage.setItem('serialLayer', label);
+
             this.appMvtStylingService.apply_mvt_config(config, label);
-            this.ngeoLocation_.refresh();
             this.resetLayerFor3d_();
           }
         },(rejected) => {
@@ -1238,9 +1226,9 @@ const MainController = function(
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
-
-  this.manageUserRoleChange_($scope);
-  this.loadThemes_().then((themes) => {
+  const userManagerStore = useUserManagerStore()
+  const { currentUser } = storeToRefs(userManagerStore)
+  this.loadThemes_(currentUser.roleId).then((themes) => {
     statePersistorStyleService.bootstrap()
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
@@ -1286,15 +1274,15 @@ const MainController = function(
       });
     });
 
-    this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
-    this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
-    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackcrues'));
+    this['feedbackAgeOpen'] = ('true' === urlStorage.getItem('feedbackage'));
+    this['feedbackAnfOpen'] = ('true' === urlStorage.getItem('feedbackanf'));
+    this['feedbackCruesOpen'] = ('true' === urlStorage.getItem('feedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
     this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
     !this['routingOpen'] &&
-    this.ngeoLocation_.getParam('map_id') === undefined &&
+    urlStorage.getItem('map_id') === null &&
     !infoOpen &&
     !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
@@ -1302,7 +1290,7 @@ const MainController = function(
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') &&
     !this.embedded;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
-        this.ngeoLocation_.getParam('map_id') !== undefined &&
+        urlStorage.getItem('map_id') !== null &&
         !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
@@ -1448,7 +1436,7 @@ const MainController = function(
           this['legendsOpen'] = this['routingOpen'] = false;
       }
     });
-    this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
+    this.activeLayersComparator = (urlStorage.getItem('lc') === 'true');
 
 
     const profileStore = useProfileMeasuresv3Store()
@@ -1563,6 +1551,23 @@ const MainController = function(
     }
   });
 
+  watch(
+    currentUser,
+    currentUser => {
+         this.showCruesLink = false;
+         if (this.showCruesLinkOrig && currentUser.roleId !== null && currentUser.roleId !== undefined) {
+           var roles = this.showCruesRoles.split(',');
+           var found = roles.find(function(element) {
+             return element === ('' + currentUser.roleId);
+           }, this);
+           this.showCruesLink = (found !== undefined);
+         }
+         this.loadThemes_(currentUser?.roleId);
+         if (this.appMymaps_.isMymapsSelected()) {
+           this.appMymaps_.loadMapInformation();
+         }
+    }
+  )
   /**
    * Listen on login to finish to reload the mvt style
    */
@@ -1615,11 +1620,8 @@ const MainController = function(
       this.appMvtStylingService.saveStyle(dataObject, isPublished).then(id => {
         // If result is a serialized UUID
         if (isValidSerial(id)) {
-          this.ngeoLocation_.updateParams({
-            'serial': id,
-            'serialLayer': bgLayer.get('label')
-          });
-          this.ngeoLocation_.refresh();
+          urlStorage.setItem('serial', id);
+          urlStorage.setItem('serialLayer', bgLayer.get('label'));
         }
       });
 
@@ -1634,18 +1636,6 @@ const MainController = function(
   this.clearCustomStyle = () => {
     this.styleStore_.setStyle(null)
     return
-
-    /////////////////////////////////////////////////////////////////////////
-
-    // const bgLayer = useOpenLayers().getLayerFromCache(this.mapStore_.bgLayer);
-    // this.appMvtStylingService.removeStyles(bgLayer);
-    // bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-    // this.mediumStylingData = getDefaultMediumStyling(bgLayer.get('label'));
-    // this.resetLayerFor3d_();
-    // this.resetSelectedSimpleData();
-    // this.checkSelectedSimpleData();
-    // this.ngeoLocation_.deleteParam('serial');
-    // this.ngeoLocation_.deleteParam('serialLayer');
   };
 
   /**
@@ -1732,10 +1722,10 @@ MainController.prototype.enable3dCallback_ = function(active) {
  */
 MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
     var isActive = false;
-    var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
+    var activateGeoLocation = urlStorage.getItem('tracking');
     if (activateGeoLocation && 'true' === activateGeoLocation) {
       isActive = true;
-      this.ngeoLocation_.deleteParam('tracking');
+      urlStorage.removeItem('tracking');
     }
     var locationControl = new appLocationControl(/** @type {app.LocationControlOptions} */({
       label: '\ue800',
@@ -1771,7 +1761,7 @@ MainController.prototype.createMap_ = function() {
     condition: platformModifierKeyOnly
   });
 
-  let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
+  let rotation = Number(urlStorage.getItem('rotation')) || 0;
 
   var map = this['map'] = useMap().getOlMap();
   // var map = this['map'] = new appMap({
@@ -1804,9 +1794,7 @@ MainController.prototype.createMap_ = function() {
 
   map.on('moveend', e => {
     const rotation = map.getView().getRotation();
-    this.ngeoLocation_.updateParams({
-      rotation,
-    });
+    urlStorage.setItem('rotation', rotation);
   });
 
   return map;
@@ -1821,7 +1809,7 @@ MainController.prototype.createMap_ = function() {
  */
 MainController.prototype.createCesiumManager_ = function(cesiumURL, ipv6Substitution, $rootScope) {
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_, this.ngeoLocation_,
+  return new appOlcsLux3DManager(cesiumURL, ipv6Substitution, this.map_,
                                  $rootScope, this.tiles3dLayers_, this.tiles3dUrl_, this.blankLayer_,
                                  this.notify_, this.gettextCatalog_, this.appThemes_);
 };
@@ -1836,43 +1824,16 @@ MainController.prototype.is3dEnabled = function() {
 };
 
 
-/**
- * Register a watcher on "roleId" to reload the themes when the role id
- * changes.
- * @param {angular.Scope} scope Scope.
- * @private
- */
-MainController.prototype.manageUserRoleChange_ = function(scope) {
-  scope.$watch(function() {
-    return this.appUserManager_.roleId;
-  }.bind(this), function(newVal, oldVal) {
-    if (newVal === null && oldVal === null) {
-      // This happens at init time. We don't want to reload the themes
-      // at this point, as the constructor already loaded them.
-      return;
-    }
-    this.showCruesLink = false;
-    if (this.showCruesLinkOrig && newVal !== null) {
-      var roles = this.showCruesRoles.split(',');
-      var found = roles.find(function(element) {
-        return element === ('' + newVal);
-      }, this);
-      this.showCruesLink = (found !== undefined);
-    }
-    this.loadThemes_();
-    if (this.appMymaps_.isMymapsSelected()) {
-      this.appMymaps_.loadMapInformation();
-    }
-  }.bind(this));
-};
+
 
 
 /**
  * @private
+ * @param {?number} roleId The role id to send in the request.
  * @return {?angular.$q.Promise} Promise.
  */
-MainController.prototype.loadThemes_ = function() {
-  return this.appThemes_.loadThemes(this.appUserManager_.roleId)
+MainController.prototype.loadThemes_ = function(roleId) {
+  return this.appThemes_.loadThemes(roleId)
     .then((themes) => useThemeStore().setThemes(themes));
 };
 
@@ -2117,11 +2078,10 @@ MainController.prototype.initLanguage_ = function() {
  * @private
  */
 MainController.prototype.initMymaps_ = function() {
-  var mapId = this.ngeoLocation_.getParam('map_id');
-
+  var mapId = urlStorage.getItem('map_id');
   this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
-  if (mapId !== undefined) {
+  if (mapId !== null) {
     this.appMymaps_.setCurrentMapId(mapId,
         this.drawnFeatures_.getCollection()).then(
           function(features) {
@@ -2134,14 +2094,11 @@ MainController.prototype.initMymaps_ = function() {
                 size: /** @type {ol.Size} */ (this.map_.getSize())
               });
             }
-            // var layer = this.drawnFeatures_.getLayer();
-            // if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
-            //   this.map_.addLayer(layer);
-            // }
           }.bind(this));
   } else {
     this.appMymaps_.clear();
   }
+  statePersistorBgLayerService.bootstrap()
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
     if (!this.appOfflineRestorer_.restoring) {
@@ -2178,8 +2135,10 @@ MainController.prototype.compareLayers_ = function() {
         var selectedLabels = [];
         var selectedOpacities = [];
         this['selectedLayers'].forEach(function(item) {
-          selectedLabels.push(item.get('label'));
-          selectedOpacities.push('' + item.getOpacity());
+          if (item !== null) {
+            selectedLabels.push(item.get('label'));
+            selectedOpacities.push('' + item.getOpacity());
+          }
         });
         selectedLabels.reverse();
         selectedOpacities.reverse();

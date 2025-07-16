@@ -815,13 +815,13 @@ exports.prototype.updateLayers = function() {
     }
   }
   // wait for themes to be loaded
-  if (bgLayers.value) {
+  if (bgLayers.value.length > 0) {  
     setBgLayer(bgLayers.value, this.mapBgLayer)
   } else {
     watch(
       bgLayers,
       (bgLayers) => {
-        setBgLayer(bgLayers.value, this.mapBgLayer)
+        setBgLayer(bgLayers, this.mapBgLayer)
       }
     )
   }

@@ -12,29 +12,25 @@
  */
 
 import appModule from '../module.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope The scope.
- * @param {ngeo.statemanager.Location} ngeoLocation The location service.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  */
-const exports = function($scope, ngeoLocation,
-    appGetShorturl, appMymaps) {
+const exports = function($scope, appGetShorturl, appMymaps) {
   /**
    * @type {app.Mymaps}
    * @private
    */
   this.appMymaps_ = appMymaps;
 
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
+
+  this.$scope = $scope;
 
   /**
    * @type {string}
@@ -54,13 +50,15 @@ const exports = function($scope, ngeoLocation,
    */
   this.getShorturl_ = appGetShorturl;
 
-  $scope.$watch(function() {
+  this.$scope.$watch(function() {
     return this['active'];
   }.bind(this), function(newVal) {
     if (newVal === true) {
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', function(event) {
+      this.$scope.$watch(function() { 
+        return (urlStorage.getStrippedUrl());
+      }.bind(this), function() {
         this.setUrl_();
       }.bind(this));
     } else if (newVal === false && this.removeListener) {
@@ -68,7 +66,7 @@ const exports = function($scope, ngeoLocation,
     }
   }.bind(this));
 
-  $scope.$watch(function() {
+  this.$scope.$watch(function() {
     return this['active'] && this['onlyMymaps'];
   }.bind(this), function(newVal) {
     this.setUrl_();
@@ -81,34 +79,16 @@ const exports = function($scope, ngeoLocation,
  */
 exports.prototype.setUrl_ =
     function() {
-      this.url = this.ngeoLocation_.getUriString();
-      //Replace the specific app parameter
-      var isApp =
-        location.search.includes('localforage=android') ||
-        location.search.includes('localforage=ios') ||
-        location.search.includes('applogin=yes');
-
-      if (isApp) {
-        this.url = this.url.replace('localforage=android', '');
-        this.url = this.url.replace('localforage=ios', '');
-        this.url = this.url.replace('applogin=yes', '');
-        this.url = this.url.replace('ipv6=true', '');
-        this.url = this.url.replace('embeddedserver=127.0.0.1%3A8765', '');
-        this.url = this.url.replace('embeddedserverprotocol=https', '');
-        this.url = this.url.replace('embeddedserverprotocol=http', '');
-      }
+      this.url = urlStorage.getStrippedUrl();
       if (this['onlyMymaps']) {
         this.url = this.url.replace(location.search, '')
         this.url += '?map_id=' + this.appMymaps_.getMapId();
       }
       this.longurl = this.url;
-      this.getShorturl_().then(
-      /**
-       * @param {string} shorturl The short URL.
-       */
-      (function(shorturl) {
-        this.url = shorturl;
-      }).bind(this));
+      this.getShorturl_().then((shorturl) => {
+        this.url = shorturl.short_url;
+        this.$scope.$applyAsync();
+      });
     };
 
 

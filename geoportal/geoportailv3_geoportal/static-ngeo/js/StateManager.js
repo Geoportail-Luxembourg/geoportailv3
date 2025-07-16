@@ -9,16 +9,15 @@
 
 import appModule from './module.js';
 import {clamp} from 'ol/math.js';
-import appNotifyNotificationType from './NotifyNotificationType.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-const exports = function(ngeoLocation, appNotify, gettextCatalog) {
+const exports = function(appNotify, gettextCatalog) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -56,12 +55,6 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   }
 
   /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
-
-  /**
    * @type {number}
    * @private
    */
@@ -72,7 +65,15 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   // state is read from the location URL, or from the local storage if there
   // is no state in the location URL.
 
-  var paramKeys = ngeoLocation.getParamKeys();
+  exports.prototype.getParamKeys = function() {
+    const keys = [];
+    for (const key in this.queryData_) {
+      keys.push(key);
+    }
+    return keys;
+  };
+  
+  var paramKeys = Object.keys(urlStorage.getSnappedParamsAsObj());
 
   /**
    * @type {string}
@@ -112,7 +113,7 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
       for (const key in window.localStorage) {
         const value = window.localStorage[key];
         if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
-          this.initialState_[key] = ngeoLocation.getParam(key);
+          this.initialState_[key] = urlStorage.getItem(key);
         } else {
           console.assert(key !== null, 'The key should not be null');
           this.initialState_[key] = value;
@@ -121,34 +122,15 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
     }
     this.version_ = 3;
   } else {
-    var keys = ngeoLocation.getParamKeys();
+    var keys = Object.keys(urlStorage.getSnappedParamsAsObj());
     for (i = 0; i < keys.length; ++i) {
       key = keys[i];
-      this.initialState_[key] = ngeoLocation.getParam(key);
+      this.initialState_[key] = urlStorage.getItem(key);
     }
     this.version_ = this.initialState_.hasOwnProperty('version') ?
         clamp(+this.initialState_['version'], 2, 3) : 2;
   }
-  // var mapId = this.ngeoLocation_.getParam('map_id');
-  // if (mapId === undefined &&
-  //     !((this.initialState_.hasOwnProperty('bgLayer') &&
-  //     this.initialState_['bgLayer'].length > 0 &&
-  //     this.initialState_['bgLayer'] != 'blank') ||
-  //     (this.initialState_.hasOwnProperty('layers') &&
-  //     this.initialState_['layers'].length > 0) ||
-  //     (this.initialState_.hasOwnProperty('fid') &&
-  //     this.initialState_['fid'].length > 0))) {
-  //   this.initialState_['bgLayer'] = 'basemap_2015_global';
-  //   this.ngeoLocation_.updateParams({'bgLayer': 'basemap_2015_global'});
-  //   var msg = this.gettextCatalog_.getString(
-  //       'Aucune couche n\'étant définie pour cette carte,' +
-  //       ' une couche de fond a automatiquement été ajoutée.');
-  //   this.notify_(msg, appNotifyNotificationType.INFO);
-  // }
-
   console.assert(this.version_ != -1);
-
-  // this.ngeoLocation_.updateParams({'version': 3});
 };
 
 
@@ -198,10 +180,13 @@ exports.prototype.getValueFromLocalStorage = function(key) {
  * @param {!Object.<string, string>} object Object.
  */
 exports.prototype.updateState = function(object) {
-  this.ngeoLocation_.updateParams(object);
+  for (let key in object) {
+    if (object[key] !== null) {
+      urlStorage.setItem(key, object[key]);
+    }
+  }
   if (this.useLocalStorage) {
-    var key;
-    for (key in object) {
+    for (let key in object) {
       window.localStorage[key] = object[key];
     }
   }
@@ -227,7 +212,7 @@ exports.prototype.updateStorage = function(object) {
  * @param {string} key The key to remove.
  */
 exports.prototype.deleteParam = function(key) {
-  this.ngeoLocation_.deleteParam(key);
+  urlStorage.removeItem(key);
   if (this.useLocalStorage) {
     delete window.localStorage[key];
   }

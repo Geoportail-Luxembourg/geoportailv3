@@ -7,7 +7,12 @@
   <span ng-if="feature.attributes.description"><span translate>Description</span> : {{feature.attributes.description}}<br></span>
   <span ng-if="feature.attributes.length"><span translate>Longeueur</span> : {{feature.attributes.length}} Km<br></span>
   <div class="query-profile" ng-show="feature.attributes.showProfile.active">
-    <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+    <!--app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile"-->
+    <div style="display: inline;">
+      <div style="width: 251px; height: auto;">
+        <profile-infos featureid="feature.fid"></profile-infos>
+      </div>
+    </div>
   </div>
   <a class="btn btn-default no-print"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default no-print" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a><br>
   <img ng-src="{{ctrl.getQrCodeForMymapsUrl(feature.attributes.map_id)}}"><br>

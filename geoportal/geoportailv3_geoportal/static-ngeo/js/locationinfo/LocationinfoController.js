@@ -18,6 +18,7 @@ import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {intersects} from 'ol/extent.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -33,7 +34,6 @@ import {intersects} from 'ol/extent.js';
  * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @param {app.GetDevice} appGetDevice The device service.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * @param {ol.Extent} bboxLidar Bbox of lidar.
@@ -49,7 +49,7 @@ const exports = function(
         $scope, $timeout, $http,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appSelectedFeatures,
-        appGeocoding, appGetDevice, ngeoLocation, appThemes,
+        appGeocoding, appGetDevice, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
         appRouting, $sce, appActivetool, appUserManager) {
 
@@ -106,12 +106,6 @@ const exports = function(
    * @private
    */
   this.appThemes_ = appThemes;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @private
@@ -368,7 +362,8 @@ exports.prototype.$onInit = function() {
       }
     }
   }
-  if (this.ngeoLocation_.getParam('address') !== undefined) {
+
+  if (urlStorage.getItem('address') != null) {
     this.appThemes_.getFlatCatalog().then(function(flatCatalog) {
       var node = flatCatalog.find(
         function(catalogLayer) {
@@ -381,8 +376,8 @@ exports.prototype.$onInit = function() {
         }
       }
     }.bind(this));
-    var address = this.ngeoLocation_.getParam('address');
-    console.assert(address !== undefined);
+    var address = urlStorage.getItem('address')
+    console.assert(address !== null);
     this.geocode_.geocode(/** @type{string} */ (address)).then(function(data) {
       var results = data['results'];
       if (results !== undefined && results.length > 0) {
@@ -592,8 +587,8 @@ exports.prototype.loadInfoPane_ =
         }.bind(this)
       );
       this.getShorturl_(this.clickCoordinate).then(function(shorturl) {
-        this['url'] = shorturl;
-        this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
+        this['url'] = shorturl.short_url;
+        this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl.short_url;
       }.bind(this));
       this['address'] = '';
       this['distance'] = '';

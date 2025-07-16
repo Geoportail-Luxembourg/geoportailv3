@@ -7,6 +7,7 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
 import {extend as extentExtend} from 'ol/extent.js';
+import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
@@ -17,6 +18,7 @@ import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
+import { useProfileInfosv3Store, storeToRefs, urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
@@ -25,7 +27,6 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl The infoservice url.
@@ -53,7 +54,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @ngInject
  */
 const exports = function($sce, $timeout, $scope, $http,
-    appGetProfile, ngeoLocation,
+    appGetProfile,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, downloadPdfUrl, gettextCatalog,
     appThemes, appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl,
@@ -63,6 +64,7 @@ const exports = function($sce, $timeout, $scope, $http,
 
 
   this.timeout_ = $timeout;
+
   /**
    * @type {Array<string>}
    * @private
@@ -164,12 +166,6 @@ const exports = function($sce, $timeout, $scope, $http,
    * @private
    */
   this.mymapsImageUrl_ = mymapsImageUrl;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @private
@@ -519,11 +515,12 @@ exports.prototype.$onInit = function() {
       this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
     }
   }, this);
-  var fid = this.ngeoLocation_.getParam('fid');
+
+  var fid = urlStorage.getItem('fid');
   if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
   }
-  this.ngeoLocation_.deleteParam('fid');
+  urlStorage.removeItem('fid');
 };
 
 
@@ -850,6 +847,7 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
       item['layerLabel'] = layerLabel[item.layer];
     }, this);
   }
+
   this.responses_.forEach(function(item) {
     if (item['has_profile']) {
       item.features.forEach(function(feature) {
@@ -857,11 +855,18 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
         if (validGeom.geom.getLineStrings().length > 0) {
           feature['attributes']['showProfile'] =
               /** @type {app.query.ShowProfile} */ ({active: true});
-          this.getProfile_(validGeom.geom, validGeom.id)
-        .then(function(profile) {
-          feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
-          feature['attributes']['profile'] = profile;
-        }.bind(this));
+
+          const profileStore = useProfileInfosv3Store();
+          const { activePositioning_v3 } = storeToRefs(profileStore);
+
+          this.getProfile_(validGeom.geom, validGeom.id).then(function(profile) {
+
+            feature['attributes']['showProfile'] = /** @type {app.query.ShowProfile} */ ({active: true});
+
+            activePositioning_v3.value = true;
+            // v4 Update profile data for v4 component
+            profileStore.setProfileData(this['map'], new olFeature(validGeom.geom), profile, validGeom['id'])
+          }.bind(this));
         }
       }, this);
     }

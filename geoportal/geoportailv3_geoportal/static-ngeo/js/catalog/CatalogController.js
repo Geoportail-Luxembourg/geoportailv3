@@ -17,6 +17,7 @@
  * during the lifetime of the application.
  */
 
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
@@ -33,12 +34,11 @@ import olView from 'ol/View.js';
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {app.StateManager} appStateManager The state service.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
 const exports = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager, ngeoLocation) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
 
   this.scope_ = $scope;
 
@@ -78,12 +78,6 @@ const exports = function($scope, appThemes, appTheme,
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   this.lux3dTree = undefined;
 
@@ -198,8 +192,9 @@ exports.prototype.setThemeZooms = function(tree) {
     var currentView = this.map_.getView();
 
     let rotation = 0;
-    if (this.ngeoLocation_.getParam('rotation') !== undefined) {
-      rotation = Number(this.ngeoLocation_.getParam('rotation'));
+
+    if (urlStorage.getItem('rotation') !== null) {
+      rotation = Number(urlStorage.getItem('rotation'));
     }
 
     this.map_.setView(new olView({

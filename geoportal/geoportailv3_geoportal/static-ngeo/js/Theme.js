@@ -4,7 +4,7 @@
 /**
  * @fileoverview This service keeps and share the state of the theme.
  */
-
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 import appModule from './module.js';
 import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
@@ -16,13 +16,11 @@ import {
 /**
  * @constructor
  * @param {angular.$window} $window Global Scope.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes The themes services.
  * @ngInject
  */
 const exports = function(
   $window,
-  ngeoLocation,
   appThemes,
   appStateManager,
   appScalesService,
@@ -85,12 +83,6 @@ const exports = function(
    * @private
    */
   this.currentTheme_ = exports.DEFAULT_THEME_;
-
-  /**
-   * @type {ngeo.statemanager.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 };
 
 
@@ -120,7 +112,6 @@ exports.prototype.setCurrentTheme = function(themeId) {
     piwik.push(['setDocumentTitle', themeId]);
     piwik.push(['trackPageView']);
   }
-  this.setLocationPath_(this.currentTheme_);
 };
 
 
@@ -149,26 +140,6 @@ exports.prototype.encodeThemeName = function(theme) {
  */
 exports.prototype.getDefaultTheme = function() {
   return exports.DEFAULT_THEME_;
-};
-
-
-/**
- * @param {string} themeId The theme id to set in the path of the URL.
- * @private
- */
-exports.prototype.setLocationPath_ = function(themeId) {
-  var pathElements = this.ngeoLocation_.getPath().split('/');
-  console.assert(pathElements.length > 1);
-  if (pathElements[pathElements.length - 1] === '') {
-    // case where the path is just "/"
-    pathElements.splice(pathElements.length - 1);
-  }
-  if (this.themeInUrl(pathElements)) {
-    pathElements[pathElements.length - 1] = themeId;
-  } else {
-    pathElements.push('theme', themeId);
-  }
-  this.ngeoLocation_.setPath(pathElements.join('/'));
 };
 
 
@@ -202,8 +173,9 @@ exports.prototype.setThemeZooms = function(tree) {
     var currentView = map.getView();
 
     let rotation = 0;
-    if (this.ngeoLocation_.getParam('rotation') !== undefined) {
-      rotation = Number(this.ngeoLocation_.getParam('rotation'));
+    
+    if (urlStorage.getItem('rotation') !== undefined) {
+      rotation = Number(urlStorage.getItem('rotation'));
     }
 
     currentView.setMaxZoom(maxZoom)
