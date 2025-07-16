@@ -80,7 +80,7 @@ class Geocode(object):
                 "%(url)s?key=%(api_key)s&format=json&lat=%(lat)s&lon=%(lon)s" \
                 % {"lat": lat, "lon": lon, 'api_key': self.config['reverse_geocode']['api_key'],
                    "url": self.config['reverse_geocode']['url']}
-            res = geojson_loads(urllib.request.urlopen(request_url).read())
+            res = geojson_loads(urllib.request.urlopen(request_url, timeout=1).read())
             if 'address' in res:
                 address = res['address']
             locality = address['town'] if 'town' in address else ""

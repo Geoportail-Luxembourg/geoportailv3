@@ -11,11 +11,11 @@ import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme current theme service.
  * @param {app.Notify} appNotify Notify service.
@@ -23,7 +23,7 @@ import {listen} from 'ol/events.js';
  * @export
  * @ngInject
  */
-const exports = function(gettextCatalog, ngeoLocation,
+const exports = function(gettextCatalog,
     appThemes, appTheme, appNotify, gettext) {
 
   /**
@@ -67,7 +67,7 @@ const exports = function(gettextCatalog, ngeoLocation,
 
   // Get the theme from the URL if specified, otherwise we use the default
   // theme and add it to the URL.
-  var pathElements = ngeoLocation.getPath().split('/');
+  var pathElements = urlStorage.getStrippedUrl().split('/');
   if (this.appTheme_.themeInUrl(pathElements)) {
     this.switchTheme(decodeURIComponent(pathElements[pathElements.length - 1]));
   } else {

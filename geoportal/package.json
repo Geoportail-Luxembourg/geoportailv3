@@ -14,7 +14,7 @@
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
   "devDependencies": {
-    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/GSLUX-770-fix-draw-permalink_CI_5d4a990/luxembourg-geoportail-lib-0.0.0-dev.tgz",
+    "luxembourg-geoportail": "https://github.com/Geoportail-Luxembourg/luxembourg-geoportail/releases/download/GITLAB-34-no_cors_mode_CI_60a5e85/luxembourg-geoportail-lib-0.0.0-dev.tgz",
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
     "@babel/plugin-proposal-decorators": "7.16.0",
@@ -27,6 +27,7 @@
     "ol-cesium": "2.12.1",
     "@sentry/browser": "^5.27",
     "@sentry/integrations": "^5.27",
+    "ajv":  "8.6.0",  
     "angular": "1.8.2",
     "angular-animate": "1.8.2",
     "angular-dynamic-locale": "0.1.37",

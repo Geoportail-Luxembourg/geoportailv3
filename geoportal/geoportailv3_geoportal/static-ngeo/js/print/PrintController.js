@@ -489,19 +489,21 @@ exports.prototype.print = function(format) {
 
   layersArray_.forEach((layer) => {
     var curMetadata = layer.get('metadata');
-    var metaMaxDpi = curMetadata['max_dpi'];
-    if (metaMaxDpi !== undefined) {
-      var maxDpi = parseInt(metaMaxDpi, 10);
-      if (dpi > maxDpi) {
-        dpi = maxDpi;
+    if (curMetadata !== undefined) {
+      var metaMaxDpi = curMetadata['max_dpi'];
+      if (metaMaxDpi !== undefined) {
+        var maxDpi = parseInt(metaMaxDpi, 10);
+        if (dpi > maxDpi) {
+          dpi = maxDpi;
+        }
       }
     }
-    var name = curMetadata['legend_name'];
+    var name = (curMetadata !== undefined) ? curMetadata['legend_name'] : undefined;
     if (name !== undefined) {
       legend.push({ 'name': name });
     } else {
       var id = layer.get('queryable_id');
-      var isExternalWms = curMetadata['isExternalWms'];
+      var isExternalWms = (curMetadata !== undefined) ? curMetadata['isExternalWms'] : false;
       if (isExternalWms) {
         var legendUrl = curMetadata['legendUrl'];
         var accessConstraints = curMetadata['legendAccessConstraints'];
@@ -608,8 +610,8 @@ exports.prototype.print = function(format) {
         'appTitle': appTitle,
         'scale': this['scale'],
         'name': this['title'],
-        'url': shorturl,
-        'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl,
+        'url': shorturl.short_url,
+        'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl.short_url,
         'lang': this.gettextCatalog.currentLanguage,
         'legend': this['legend'] ? legend : null,
         'scalebar': { 'geodetic': true },

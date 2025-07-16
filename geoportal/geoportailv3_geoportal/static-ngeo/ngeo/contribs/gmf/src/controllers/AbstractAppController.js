@@ -33,6 +33,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import gmfThemeManager from 'gmf/theme/Manager.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 /**
  * Application abstract controller.
@@ -54,8 +55,7 @@ const exports = function(config, $scope, $injector) {
    * Location service
    * @type {ngeo.statemanager.Location}
    */
-  this.ngeoLocation = $injector.get('ngeoLocation');
-  if (this.ngeoLocation.hasParam('debug')) {
+  if (urlStorage.getItem('debug')!==null) {
     // make the injector globally available
     window.injector = $injector;
   }

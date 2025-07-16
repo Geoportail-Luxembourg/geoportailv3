@@ -21,6 +21,7 @@ import olMap from 'ol/Map.js';
 import olView from 'ol/View.js';
 import olLayerTile from 'ol/layer/Tile.js';
 import olSourceOSM from 'ol/source/OSM.js';
+import { urlStorage } from "luxembourg-geoportail/bundle/lux.dist.js";
 
 
 /** @type {!angular.Module} **/
@@ -49,10 +50,9 @@ exports.module.constant('angularLocaleScript', '../build/angular-locale_{{locale
  * @param {gmf.layertree.TreeManager} gmfTreeManager gmf Tree Manager service.
  * @param {gmf.theme.Themes} gmfThemes The gmf themes service.
  * @param {gmf.theme.Manager} gmfThemeManager gmf Theme Manager service.
- * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @ngInject
  */
-exports.MainController = function(gmfTreeManager, gmfThemes, gmfThemeManager, ngeoLocation) {
+exports.MainController = function(gmfTreeManager, gmfThemes, gmfThemeManager) {
 
   gmfThemes.loadThemes();
 
@@ -75,7 +75,7 @@ exports.MainController = function(gmfTreeManager, gmfThemes, gmfThemeManager, ng
   });
 
   // How should disclaimer message be displayed: in modals or alerts
-  const modal = ngeoLocation.getParam('modal');
+  const modal = urlStorage.getItem('modal');
 
   /**
    * @type {boolean}

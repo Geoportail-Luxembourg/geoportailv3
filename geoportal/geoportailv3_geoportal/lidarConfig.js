@@ -16,7 +16,7 @@ export const getConfig = () => ({
   "serverConfig":
     {
       "classification_colors": {
-        "0": {
+        "1": {
           "color": "120, 120, 120",
           "name": {
             "fr": "points non classifiés",

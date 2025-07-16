@@ -47,10 +47,9 @@ class MvtStylingService {
      * @param {String} deletevtstyleUrl URL to delete a provisionned style
      * @param {String} getvtstyleUrl URL to get a provisionned style
      * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
-     * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
      * @ngInject
      */
-  constructor($http, appUserManager, uploadvtstyleUrl, uploadvtstyleUrlOverride, deletevtstyleUrl, deletevtstyleUrlOverride, getvtstyleUrl, vectortilesUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
+  constructor($http, appUserManager, uploadvtstyleUrl, uploadvtstyleUrlOverride, deletevtstyleUrl, deletevtstyleUrlOverride, getvtstyleUrl, vectortilesUrl, ngeoBackgroundLayerMgr) {
         this.http_ = $http;
         this.appUserManager_ = appUserManager;
         this.isCustomStyle = false;
@@ -64,7 +63,6 @@ class MvtStylingService {
         this.getvtstyleUrl_ = getvtstyleUrl;
         this.vectortilesUrl_ = vectortilesUrl;
         this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
-        this.ngeoLocation_ = ngeoLocation;
         this.mapStore_ = useMapStore();
     }
 

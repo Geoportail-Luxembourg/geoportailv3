@@ -1510,10 +1510,14 @@ class Getfeatureinfo(object):
             # WMS time format is <start_date>/<end_date>
             # this shall be parsed into <start_millisec>,<end_millisec> for arcgis REST
             time_values = time.split("/")
-            str_time_integers = [
-                str(int(dateutil.parser.parse(time_val).timestamp()*1000))
-                for time_val in time_values
-            ]
+            str_time_integers = []
+            try:
+                str_time_integers = [
+                    str(int(dateutil.parser.parse(time_val).timestamp()*1000))
+                    for time_val in time_values
+                ]
+            except dateutil.parser.ParserError:
+                log.error(f"Invalid date string: {time_values}")
             # Bypass arcgis bug when time layers are queried with timestamp
             if len(str_time_integers) == 1:
                 str_time_integers.append(str(int(str_time_integers[0]) + 3600000))
