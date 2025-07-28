@@ -232,7 +232,8 @@ class Profile(Raster):
         nb_points = int(self.request.params["nbPoints"]) / len(geoms)
         dist = 0
         for geom in geoms:
-            coords = self._create_points(geom.coordinates, nb_points)
+            #coords = self._create_points(geom.coordinates, nb_points)
+            coords = self.interpolate_line_points(geom.coordinates)
             prev_coord = None
             coord = None
             for i_coord in range(len(coords)):
@@ -295,4 +296,64 @@ class Profile(Raster):
             else:
                 result.append([coord[0], coord[1]])
             prev_coord = coord
+        return result
+
+
+    def interpolate_line_points(self, coords):
+        """
+        Given a list of coordinates [[x1, y1], [x2, y2], ...], returns an array of interpolated coordinates
+        along the line according to the following rules:
+        - If the line is < 100 meters: 10 points (including endpoints)
+        - If the line is between 100 m and 100 km: a point every 100 meters (including endpoints)
+        - If the line is > 100 km: a point every 200 meters (including endpoints)
+        """
+        def dist(a, b):
+            return math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+
+        # Calculate total length
+        total_length = 0
+        for i in range(1, len(coords)):
+            total_length += dist(coords[i-1], coords[i])
+
+        # Determine spacing
+        if total_length < 100:
+            n_points = 10
+            spacing = total_length / (n_points - 1) if n_points > 1 else 0
+        elif total_length <= 100_000:
+            spacing = 100
+            n_points = int(total_length // spacing) + 1
+        else:
+            spacing = 200
+            n_points = int(total_length // spacing) + 1
+
+        # Interpolate points
+        result = [coords[0]]
+        accumulated = 0
+        seg_idx = 0
+        seg_start = coords[0]
+        seg_end = coords[1]
+        seg_length = dist(seg_start, seg_end)
+        next_dist = spacing
+
+        for i in range(1, n_points):
+            while accumulated + seg_length < next_dist and seg_idx < len(coords) - 2:
+                accumulated += seg_length
+                seg_idx += 1
+                seg_start = coords[seg_idx]
+                seg_end = coords[seg_idx + 1]
+                seg_length = dist(seg_start, seg_end)
+            if seg_length == 0:
+                point = list(seg_start)
+            else:
+                ratio = (next_dist - accumulated) / seg_length
+                x = seg_start[0] + (seg_end[0] - seg_start[0]) * ratio
+                y = seg_start[1] + (seg_end[1] - seg_start[1]) * ratio
+                point = [x, y]
+            result.append(point)
+            next_dist += spacing
+
+        # Ensure the last point is exactly the end of the line
+        if result[-1] != coords[-1]:
+            result.append(coords[-1])
+
         return result
