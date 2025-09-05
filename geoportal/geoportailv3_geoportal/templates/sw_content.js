@@ -6,27 +6,24 @@ let offlineEnabled = {};
  * - the domain name
  * - port;
  * - search and hash;
- * - "/theme/main"
+ * - "/theme/*"
  * @param {string} url
  */
 function normalizeUrl(url) {
   if (url.includes('cdnjs')) {return url};
   if (url.startsWith('http')) {
-    const idx = url.substr(9).indexOf('/');
-    url = url.substr(9 + idx);
+    const idx = url.substring(9).indexOf('/');
+    url = url.substring(9 + idx);
   }
   let i = url.indexOf('?');
   if (i !== -1) {
-    url = url.substr(0, i);
+    url = url.substring(0, i);
   }
   j = url.indexOf('#');
-  if (i !== -1) {
-    url = url.substr(0, i);
+  if (j !== -1) {
+    url = url.substring(0, j);
   }
-  const horrorSuffix = '/theme/main';
-  if (url.endsWith(horrorSuffix)) {
-    url = url.substr(0, url.length - horrorSuffix.length);
-  }
+  url = url.replace(/\/theme\/[^/]+$/, '');
   url = url.replace('dev/build/_/_/_/_/app/geoportailv3_geoportal/', '');
 
   if (!url) {
