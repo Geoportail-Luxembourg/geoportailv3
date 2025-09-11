@@ -303,7 +303,7 @@ class Profile(Raster):
         """
         Given a list of coordinates [[x1, y1], [x2, y2], ...], returns an array of interpolated coordinates
         along the line according to the following rules:
-        - If the line is < 100 meters: 10 points (including endpoints)
+        - If the line is < 2000 meters: 60 points (including endpoints)
         - If the line is between 100 m and 100 km: a point every 100 meters (including endpoints)
         - If the line is > 100 km: a point every 200 meters (including endpoints)
         """
@@ -316,8 +316,8 @@ class Profile(Raster):
             total_length += dist(coords[i-1], coords[i])
 
         # Determine spacing
-        if total_length < 100:
-            n_points = 10
+        if total_length < 2000:
+            n_points = 60
             spacing = total_length / (n_points - 1) if n_points > 1 else 0
         elif total_length <= 100_000:
             spacing = 100
