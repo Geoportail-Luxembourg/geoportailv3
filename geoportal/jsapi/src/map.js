@@ -1469,9 +1469,11 @@ class Map extends OpenLayersMap {
       }
       var layerConf = this.findLayerConf_(layer);
       if (layerConf !== null) {
-        if (layer == 'basemap_2015_global') {
+        if (layer == 'basemap_2015_global' ||
+          layer == 'topogr_global' ||
+          layer == 'topo_bw_jpeg') {
           if (this.mvtLayer_ === undefined) {
-            this.mvtLayer_ = this.MVTLayerFactory_(options);
+            this.mvtLayer_ = this.MVTLayerFactory_(options, layer);
           }
           this.getLayers().push(this.mvtLayer_);
           return;
@@ -1485,14 +1487,20 @@ class Map extends OpenLayersMap {
     }.bind(this));
   }
 
-  MVTLayerFactory_(options) {
+  MVTLayerFactory_(options, layerName) {
     const target = this.getTargetElement();
     // FIXME: should be taken from the layer config
     // TODO: when config is handled by c2cgeoportal
     // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
     const host = new URL(window.location).host;
-    let layer = 'roadmap_jsapi';
-    if (this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
+    const keywords = {
+        'basemap_2015_global': 'roadmap_jsapi',
+        'topogr_global': 'topomap',
+        'topo_bw_jpeg': 'topomap_gray'
+    };
+    let layer = keywords[layerName] || layerName || 'roadmap_jsapi';
+    if (layer === 'roadmap_jsapi' && 
+        this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
       layer = 'roadmap';
     }
     let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/' + layer + '/style.json';

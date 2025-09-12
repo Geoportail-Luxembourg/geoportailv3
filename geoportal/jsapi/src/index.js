@@ -438,6 +438,24 @@ lux.intersects = function(one, two) {
   });
 };
 
+
+
+lux.normalizeBackgroundLayerName = function(label) {
+    const keywords = {
+        'basemap_2015_global': 'roadmap',
+        'topogr_global': 'topomap',
+        'topo_bw_jpeg': 'topomap_gray'
+    };
+    return keywords[label] || label;
+};
+
+lux.normalizeBackgroundLayerImageType = function(label, imageType) {
+    const keywords = {
+        'topo_bw_jpeg': 'png'
+    };
+    return keywords[label] || imageType;
+};
+
 /**
  * @param {Object} config The layer's config.
  * @param {number} opacity The layer's opacity.
@@ -446,7 +464,7 @@ lux.intersects = function(one, two) {
  */
 lux.WMTSLayerFactory = function(config, opacity, visible) {
   var format = config['imageType'];
-  var imageExt = format.split('/')[1];
+  var imageExt = lux.normalizeBackgroundLayerImageType(config['layer'], format.split('/')[1]);
 
   var isHiDpi = window.matchMedia(
               '(-webkit-min-device-pixel-ratio: 2), ' +
@@ -478,8 +496,8 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
       url: url,
       attributions: [''],
       tilePixelRatio: (retina ? 2 : 1),
-      layer: config['name'],
-      matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
+      layer: lux.normalizeBackgroundLayerName(config['layer']),
+      matrixSet: config['matrixSet'] + (retina ? '_HD' : ''),
       format: format,
       requestEncoding: 'REST',
       projection: projection,
