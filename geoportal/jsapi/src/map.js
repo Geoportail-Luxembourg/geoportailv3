@@ -1512,7 +1512,7 @@ class Map extends OpenLayersMap {
       mapBoxStyleXYZ = options.bgLayerStyleXYZ;
     }
     const mvtLayer_ = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
-    mvtLayer_.set('name', 'basemap_2015_global');
+    mvtLayer_.set('name', layerName);
     return (mvtLayer_);
   }
 
