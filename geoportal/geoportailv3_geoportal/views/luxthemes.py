@@ -105,14 +105,15 @@ class LuxThemes(Theme):
         for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
             if layer.time_mode != 'disabled' and layer.rest_url is not None and len(layer.rest_url) > 0:
                 query_params = {'f': 'pjson'}
-                if layer.use_auth:
+                use_auth = layer.use_auth
+                if use_auth:
                     auth_token = get_arcgis_token(self.request, log, service_url=layer.rest_url)
                     if 'token' in auth_token:
                         query_params["token"] = auth_token['token']
                 full_url = layer.rest_url + '?' + urllib.parse.urlencode(query_params)
                 try:
                     url_request = urllib.request.Request(full_url)
-                    result = read_request_with_token(url_request, self.request, log)
+                    result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     content = result.data
                 except Exception as e:
                     log.exception(e)
