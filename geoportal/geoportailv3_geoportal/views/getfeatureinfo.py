@@ -117,7 +117,8 @@ class Getfeatureinfo(object):
                 url = luxgetfeaturedefinition.rest_url
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
-                if luxgetfeaturedefinition.use_auth:
+                use_auth = luxgetfeaturedefinition.use_auth
+                if use_auth:
                     auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
                 else:
@@ -126,7 +127,7 @@ class Getfeatureinfo(object):
                 pdf_name = None
                 try:
                     url_request = urllib.request.Request(url1)
-                    result = read_request_with_token(url_request, self.request, log)
+                    result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                     attachmentInfos = json.loads(data)["attachmentInfos"]
                     for info in attachmentInfos:
@@ -146,7 +147,8 @@ class Getfeatureinfo(object):
                     return HTTPBadRequest()
                 if pdf_name is None or pdf_id is None:
                     return HTTPBadRequest()
-                if luxgetfeaturedefinition.use_auth:
+                use_auth = luxgetfeaturedefinition.use_auth
+                if use_auth:
                     auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url2 = url + "%(id)s/attachments/%(pdf_id)s%(token)s" %{'id': id, 'pdf_id': pdf_id, 'token':('?token='+auth_token['token'])}
                 else:
@@ -154,7 +156,7 @@ class Getfeatureinfo(object):
 
                 try:
                     url_request = urllib.request.Request(url2)
-                    result = read_request_with_token(url_request, self.request, log)
+                    result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                 except Exception as e:
                     log.exception(e)

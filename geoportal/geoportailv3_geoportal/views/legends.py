@@ -97,8 +97,8 @@ class Legends(object):
                     full_url = internal_wms.rest_url + '/legend?f=pjson'
                     if 'dpi' in self.request.params:
                         query_params['dpi'] = self.request.params["dpi"]
-
-                    if internal_wms.use_auth:
+                    use_auth = internal_wms.use_auth
+                    if use_auth:
                         auth_token = get_arcgis_token(self.request, log, service_url=full_url)
                         if 'token' in auth_token:
                             query_params["token"] = auth_token['token']
@@ -107,7 +107,7 @@ class Legends(object):
                     log.info(full_url)
                     try:
                         url_request = urllib.request.Request(full_url)
-                        result = read_request_with_token(url_request, self.request, log)
+                        result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                         content = result.data
                     except ESRITokenException as e:
                         raise e
