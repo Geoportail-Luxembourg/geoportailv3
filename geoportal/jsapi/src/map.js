@@ -1482,7 +1482,9 @@ class Map extends OpenLayersMap {
           lux.WMSLayerFactory : lux.WMTSLayerFactory;
         var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
         var visible = (visibilities[index] !== undefined) ? visibilities[index] : true;
-        this.getLayers().push(fn(layerConf, opacity, visible));
+        var curLayer = fn(layerConf, opacity, visible);
+        curLayer.set('__source__', 'geoportail')
+        this.getLayers().push(curLayer);
       }
     }.bind(this));
   }
