@@ -52,7 +52,7 @@ export default class LayerManager extends Control {
 
       var label = document.createElement('label');
       var name = /** @type {string} */ (layer.get('name'));
-
+      li.classList.add(layer.get("__source__") || 'custom');
       if (lux.lang in lux.languages &&
         lux.languages[lux.lang][name] !== undefined) {
         label.innerHTML = lux.languages[lux.lang][name];
