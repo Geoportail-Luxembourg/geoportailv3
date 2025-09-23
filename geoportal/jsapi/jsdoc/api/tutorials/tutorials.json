@@ -1,0 +1,11 @@
+{
+    "fulltextsearch": {
+        "title": "Full Text Search API"
+    },
+    "geocodeapi": {
+        "title": "Geocoding API"
+    },
+    "reversegeocodeapi": {
+        "title": "Reverse Geocoding API"
+    }
+}
