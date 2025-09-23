@@ -1,7 +1,8 @@
 {
     "opts": {
         "recurse": true,
-        "template": "jsdoc/api/template"
+        "template": "jsdoc/api/template",
+        "tutorials": "jsdoc/api/tutorials"
     },
     "tags": {
         "allowUnknownTags": true
