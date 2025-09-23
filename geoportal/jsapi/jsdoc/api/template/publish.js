@@ -25,7 +25,7 @@ function find(spec) {
 }
 
 function tutoriallink(tutorial) {
-    return helper.toTutorial(tutorial, null, { tag: 'em', classname: 'disabled', prefix: 'Tutorial: ' });
+    return helper.toTutorial(tutorial, null, { tag: 'em', classname: 'disabled', prefix: '' });
 }
 
 function getAncestorLinks(doclet) {
@@ -372,6 +372,13 @@ function buildNav(members) {
         directive.params = [];
     });
 
+    // Add REST API section in the navigation
+    nav += '<h2>REST API</h2><ul>';
+    nav += '<li><a href="tutorial-fulltextsearch.html">Full Text Search API</a></li>';
+    nav += '<li><a href="tutorial-geocodeapi.html">Geocoding API</a></li>';
+    nav += '<li><a href="tutorial-reversegeocodeapi.html">Reverse Geocoding API</a></li>';
+    nav += '</ul>';
+
     for (module in modules) {
         var _nav = '';
 
@@ -714,7 +721,6 @@ exports.publish = function(taffyData, opts, tutorials) {
         ).concat(files),
     indexUrl);
 
-    // set up the lists that we'll use to generate pages
     var classes = taffy(members.classes);
     var modules = taffy(members.modules);
     var namespaces = taffy(members.namespaces);
@@ -800,7 +806,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     // tutorials can have only one parent so there is no risk for loops
     function saveChildren(node) {
         node.children.forEach(function(child) {
-            generateTutorial('Tutorial: ' + child.title, child, helper.tutorialToUrl(child.name));
+            generateTutorial(child.title, child, helper.tutorialToUrl(child.name));
             saveChildren(child);
         });
     }
