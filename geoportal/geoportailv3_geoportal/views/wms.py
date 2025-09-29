@@ -232,6 +232,8 @@ class Wms:
                 tooltips.append(info['tooltip'])
             if info_format == 'text/xml':
                 return Response('<?xml version="1.0" encoding="utf-8"?><features>'+"".join(tooltips)+"</features>", headers=headers)
+            elif info_format == 'application/json':
+                return Response('{"features":' + ",".join(tooltips) + '}', headers=headers)
             elif info_format == 'text/plain':
                 return Response("\n".join(tooltips), headers=headers)
             else:
