@@ -222,7 +222,6 @@ class Wms:
             if "?" in url:
                 separator = "&"
             url = url + separator + params
-            log.error(url)
             f = urllib.request.urlopen(url, None, 15)
             data = f.read()
             info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/plain'))
