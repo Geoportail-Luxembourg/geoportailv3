@@ -733,7 +733,12 @@ class Getfeatureinfo(object):
                         else:
                             r['tooltip'] = ''
                 else:
-                    if info_format == 'text/xml':
+                    if info_format == 'application/json':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
+                        template = 'json_' + l_template if isfile(filename) else 'json.html'
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
+                    elif info_format == 'text/xml':
                         filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
                         template = 'xml_' + l_template if isfile(filename) else 'xml.html'
                         r['tooltip'] = render(
@@ -1222,8 +1227,8 @@ class Getfeatureinfo(object):
                                 geometry, dict(row), attributes_to_remove)
             attributes = f['attributes']
 
-            base_url = os.environ["API-ARCHIMET-URL"]
-            api_key = os.environ["API-ARCHIMET-KEY"]
+            base_url = os.environ["API-ARCHIMET-URL"] if "API-ARCHIMET-URL" in os.environ else ""
+            api_key = os.environ["API-ARCHIMET-KEY"] if "API-ARCHIMET-KEY" in os.environ else ""
             url = f"{base_url}/parcelles/pf/{fid}"
             hdr = {'api-key': api_key}
             try:
