@@ -204,4 +204,5 @@ class Authentication(object):
             return HTTPFound(location=came_from, headers=remember(self.request, username))
         self.request.response.headers = remember(self.request, username)
         self.request.user = get_user(self.request, username)
+
         return self.get_user_info()
