@@ -33,14 +33,29 @@ mailer = None
 
 def add_cors_headers_response_callback(event):
     def cors_headers(request, response):
-        response.headers.update({
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, ' +
-            'Content-Type, Accept, Authorization',
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Max-Age': '1728000',
-        })
+            response.headers.update({
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
+                'Access-Control-Allow-Headers': 'Origin, ' +
+                'Content-Type, Accept, Authorization',
+                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Max-Age': '1728000',
+            })
+    event.request.add_response_callback(cors_headers)
+
+def add_cors_origin_headers_response_callback(event):
+    def cors_headers(request, response):
+        if "cors" in request.POST or "cors" in request.GET:
+            origin = request.headers.get('Origin')
+            if origin:
+                response.headers.update({
+                    'Access-Control-Allow-Origin': origin,
+                    'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
+                    'Access-Control-Allow-Headers': 'Origin, ' +
+                    'Content-Type, Accept, Authorization',
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Access-Control-Max-Age': '1728000',
+                })
     event.request.add_response_callback(cors_headers)
 
 
@@ -82,7 +97,7 @@ def main(global_config, **settings):
     )
     if os.environ.get('ALLOW_CORS', '0') == '1':
         config.add_subscriber(add_cors_headers_response_callback, NewRequest)
-
+    config.add_subscriber(add_cors_origin_headers_response_callback, NewRequest)
     if os.environ.get('DEBUG_TOOLBAR', '0') == '1':
         config.get_settings()['debugtoolbar.hosts'] = ['0.0.0.0/0']
         config.include('pyramid_debugtoolbar')
