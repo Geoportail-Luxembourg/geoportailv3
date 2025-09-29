@@ -222,6 +222,7 @@ class Wms:
             if "?" in url:
                 separator = "&"
             url = url + separator + params
+            log.error(url)
             f = urllib.request.urlopen(url, None, 15)
             data = f.read()
             info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/plain'))
@@ -232,6 +233,8 @@ class Wms:
                 tooltips.append(info['tooltip'])
             if info_format == 'text/xml':
                 return Response('<?xml version="1.0" encoding="utf-8"?><features>'+"".join(tooltips)+"</features>", headers=headers)
+            elif info_format == 'application/json':
+                return Response('{"features":' + ",".join(tooltips) + '}', headers=headers)
             elif info_format == 'text/plain':
                 return Response("\n".join(tooltips), headers=headers)
             else:
