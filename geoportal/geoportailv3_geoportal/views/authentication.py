@@ -204,8 +204,5 @@ class Authentication(object):
             return HTTPFound(location=came_from, headers=remember(self.request, username))
         self.request.response.headers = remember(self.request, username)
         self.request.user = get_user(self.request, username)
-        origin = self.request.headers.get('Origin')
-        if origin:
-            self.request.response.headers['Access-Control-Allow-Origin'] = origin
-            self.request.response.headers['Access-Control-Allow-Credentials'] = 'true'
+
         return self.get_user_info()
