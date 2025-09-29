@@ -1,0 +1,21 @@
+<% import numbers, json %>
+## -*- coding: utf-8 -*-
+<%
+# Build the JSON structure
+result = []
+for feature in features:
+    feature_data = {}
+    for attr in feature['attributes']:
+        if isinstance(feature['attributes'][attr], numbers.Number) or (isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != ''):
+            # Use translated field name if available, otherwise use original attribute name
+            if _c(_t('f_' + attr)) != 'f_' + attr:
+                key = _c(_t('f_' + attr))
+            else:
+                key = attr
+            feature_data[key] = feature['attributes'][attr]
+    
+    if feature_data:  # Only add if there are valid attributes
+        result.append(feature_data)
+%>
+${json.dumps(result, ensure_ascii=False, indent=2) | n}
+
