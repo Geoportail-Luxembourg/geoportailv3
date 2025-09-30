@@ -72,10 +72,16 @@ def add_cors_origin_headers_response_callback(event):
 
             if origin:
                 try:
+                    import logging
+                    log = logging.getLogger(__name__)
+
                     origin_domain = urlparse(origin).netloc
                     # Remove port if present (e.g., geoportail.lu:8080 -> geoportail.lu)
                     origin_domain = origin_domain.split(":")[0]
                     if origin_domain in allowed_origins:
+                        log.error(
+                            f"CORS origin '{origin_domain}' in allowed origins."
+                        )                        
                         response.headers.update(
                             {
                                 "Access-Control-Allow-Origin": origin,
@@ -87,8 +93,6 @@ def add_cors_origin_headers_response_callback(event):
                             }
                         )
                     else:
-                        import logging
-                        log = logging.getLogger(__name__)
                         log.error(
                             f"CORS origin '{origin_domain}' not in allowed origins."
                         )
