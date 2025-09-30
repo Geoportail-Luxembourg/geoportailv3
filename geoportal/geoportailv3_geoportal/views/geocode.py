@@ -80,34 +80,39 @@ class Geocode(object):
                 "%(url)s?key=%(api_key)s&format=json&lat=%(lat)s&lon=%(lon)s" \
                 % {"lat": lat, "lon": lon, 'api_key': self.config['reverse_geocode']['api_key'],
                    "url": self.config['reverse_geocode']['url']}
-            res = geojson_loads(urllib.request.urlopen(request_url, timeout=1).read())
-            if 'address' in res:
-                address = res['address']
-            locality = address['town'] if 'town' in address else ""
-            if len(locality) == 0:
-                locality = address['city'] if 'city' in address else ""
-            if len(locality) == 0:
-                locality = address['municipality'] if 'municipality' in address else ""
-            if  len(locality) == 0:
-                locality = address['village'] if 'village' in address else ""
+            res = None
+            try:
+                res = geojson_loads(urllib.request.urlopen(request_url, timeout=1).read())
+            except Exception as e:
+                log.error("Error getting data from reverse geocode service %s: %s "% (request_url, str(e)))
+            if res is not None:
+                if 'address' in res:
+                    address = res['address']
+                locality = address['town'] if 'town' in address else ""
+                if len(locality) == 0:
+                    locality = address['city'] if 'city' in address else ""
+                if len(locality) == 0:
+                    locality = address['municipality'] if 'municipality' in address else ""
+                if  len(locality) == 0:
+                    locality = address['village'] if 'village' in address else ""
 
-            results.append({"id_caclr_locality": None,
-                            "id_caclr_street": None,
-                            "id_caclr_bat": None,
-                            "street": address['road'] if 'road' in address else "",
-                            "number": address['house_number'] if 'house_number' in address else "",
-                            "locality": locality,
-                            "municipality": address['municipality'] if 'municipality' in address else "",
-                            "postal_code": address['postcode'] if 'postcode' in address else "",
-                            "country": address['country'] if 'country' in address else "",
-                            "country_code": address['country_code'] if 'country_code' in address else "",
-                            "distance": 0,
-                            "contributor": res['licence'] if 'licence' in res else "",
-                            "geom": None,
-                            "geomlonlat": {
-                                "type": "Point",
-                                "coordinates": [res['lon'], res['lat']]}
-                            })
+                results.append({"id_caclr_locality": None,
+                                "id_caclr_street": None,
+                                "id_caclr_bat": None,
+                                "street": address['road'] if 'road' in address else "",
+                                "number": address['house_number'] if 'house_number' in address else "",
+                                "locality": locality,
+                                "municipality": address['municipality'] if 'municipality' in address else "",
+                                "postal_code": address['postcode'] if 'postcode' in address else "",
+                                "country": address['country'] if 'country' in address else "",
+                                "country_code": address['country_code'] if 'country_code' in address else "",
+                                "distance": 0,
+                                "contributor": res['licence'] if 'licence' in res else "",
+                                "geom": None,
+                                "geomlonlat": {
+                                    "type": "Point",
+                                    "coordinates": [res['lon'], res['lat']]}
+                                })
         else:
             distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
                 "x": easting,
