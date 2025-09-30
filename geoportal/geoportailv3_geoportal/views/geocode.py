@@ -84,7 +84,7 @@ class Geocode(object):
             try:
                 res = geojson_loads(urllib.request.urlopen(request_url, timeout=1).read())
             except Exception as e:
-                log.error("Error getting data from reverse geocode service %s: %s "% (request_url, str(e)))
+                log.debug("Error getting data from reverse geocode service %s: %s "% (request_url, str(e)))
             if res is not None:
                 if 'address' in res:
                     address = res['address']
