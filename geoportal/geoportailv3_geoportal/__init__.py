@@ -86,6 +86,13 @@ def add_cors_origin_headers_response_callback(event):
                                 "Access-Control-Max-Age": "1728000",
                             }
                         )
+                    else:
+                        import logging
+                        log = logging.getLogger(__name__)
+                        log.error(
+                            f"CORS origin '{origin_domain}' not in allowed origins."
+                        )
+
                 except Exception:
                     # If URL parsing fails, fall back to exact match
                     if origin in allowed_origins:
