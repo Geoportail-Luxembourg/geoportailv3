@@ -36,7 +36,8 @@ import sentry_sdk
 from sentry_sdk.integrations.pyramid import PyramidIntegration
 from c2cgeoportal_geoportal.lib import C2CPregenerator
 from urllib.parse import urlparse
-
+import logging
+log = logging.getLogger(__name__)
 
 mailer = None
 
@@ -69,12 +70,10 @@ def add_cors_origin_headers_response_callback(event):
                 allowed_origins = [
                     origin.strip() for origin in allowed_origins.split(",")
                 ]
-
+            log.error(f"CORS allowed origins: {allowed_origins}")
+            log.error(origin)
             if origin:
                 try:
-                    import logging
-                    log = logging.getLogger(__name__)
-
                     origin_domain = urlparse(origin).netloc
                     # Remove port if present (e.g., geoportail.lu:8080 -> geoportail.lu)
                     origin_domain = origin_domain.split(":")[0]
@@ -97,7 +96,8 @@ def add_cors_origin_headers_response_callback(event):
                             f"CORS origin '{origin_domain}' not in allowed origins."
                         )
 
-                except Exception:
+                except Exception as e:
+                    log.error(f"CORS origin parsing error: {e}")
                     # If URL parsing fails, fall back to exact match
                     if origin in allowed_origins:
                         response.headers.update(
