@@ -233,7 +233,17 @@ class Wms:
             if info_format == 'text/xml':
                 return Response('<?xml version="1.0" encoding="utf-8"?><features>'+"".join(tooltips)+"</features>", headers=headers)
             elif info_format == 'application/json':
-                return Response('{"type": "FeatureCollection", "features": ['+json.dumps(info['features'])+']}', headers=headers)
+                features = []
+                for info in json.loads(data):
+                    if 'features' in info:
+                        # Transform attributes to properties in each feature
+                        for feature in info['features']:
+                            if 'attributes' in feature:
+                                feature['properties'] = feature.pop('attributes')
+                        features.extend(info['features'])
+    
+                headers = {"Content-Type": "application/json; charset=utf-8"}
+                return Response(json.dumps({"type": "FeatureCollection", "features": features}), headers=headers)
             elif info_format == 'text/plain':
                 return Response("\n".join(tooltips), headers=headers)
             else:
