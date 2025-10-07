@@ -409,6 +409,8 @@ vars:
       - devrm.geoportail.lu
       - migration.geoportail.lu
       - geoportail-luxembourg.github.io
+      - 3d.geoportail.lu
+      - 3d.geoportal.lu
       - localhost:8080
     base_url: '{SHORTENER_BASE_URL}'
     email_body: unused
