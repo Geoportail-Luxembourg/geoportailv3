@@ -88,31 +88,33 @@ class Geocode(object):
             if res is not None:
                 if 'address' in res:
                     address = res['address']
-                locality = address['town'] if 'town' in address else ""
-                if len(locality) == 0:
-                    locality = address['city'] if 'city' in address else ""
-                if len(locality) == 0:
-                    locality = address['municipality'] if 'municipality' in address else ""
-                if  len(locality) == 0:
-                    locality = address['village'] if 'village' in address else ""
+                    locality = address['town'] if 'town' in address else ""
+                    if len(locality) == 0:
+                        locality = address['city'] if 'city' in address else ""
+                    if len(locality) == 0:
+                        locality = address['municipality'] if 'municipality' in address else ""
+                    if  len(locality) == 0:
+                        locality = address['village'] if 'village' in address else ""
 
-                results.append({"id_caclr_locality": None,
-                                "id_caclr_street": None,
-                                "id_caclr_bat": None,
-                                "street": address['road'] if 'road' in address else "",
-                                "number": address['house_number'] if 'house_number' in address else "",
-                                "locality": locality,
-                                "municipality": address['municipality'] if 'municipality' in address else "",
-                                "postal_code": address['postcode'] if 'postcode' in address else "",
-                                "country": address['country'] if 'country' in address else "",
-                                "country_code": address['country_code'] if 'country_code' in address else "",
-                                "distance": 0,
-                                "contributor": res['licence'] if 'licence' in res else "",
-                                "geom": None,
-                                "geomlonlat": {
-                                    "type": "Point",
-                                    "coordinates": [res['lon'], res['lat']]}
-                                })
+                    results.append({"id_caclr_locality": None,
+                                    "id_caclr_street": None,
+                                    "id_caclr_bat": None,
+                                    "street": address['road'] if 'road' in address else "",
+                                    "number": address['house_number'] if 'house_number' in address else "",
+                                    "locality": locality,
+                                    "municipality": address['municipality'] if 'municipality' in address else "",
+                                    "postal_code": address['postcode'] if 'postcode' in address else "",
+                                    "country": address['country'] if 'country' in address else "",
+                                    "country_code": address['country_code'] if 'country_code' in address else "",
+                                    "distance": 0,
+                                    "contributor": res['licence'] if 'licence' in res else "",
+                                    "geom": None,
+                                    "geomlonlat": {
+                                        "type": "Point",
+                                        "coordinates": [res['lon'], res['lat']]}
+                                    })
+                else:
+                    log.error("No address found in reverse geocode service %s: %s "% (request_url, str(res)))
         else:
             distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
                 "x": easting,
