@@ -327,6 +327,11 @@ vars:
     - {name: geocatalog_open_data_last_update_date, type: string}
     - {name: geocatalog_open_data_uuid, type: string}
     - {name: geocatalog_open_data_only_add_gpkg, type: boolean}
+    - {name: pygeoapi_publish_flag, type: boolean}
+    - {name: pygeoapi_last_update_date, type: string}
+    - {name: pygeoapi_update_frequency, type: string}
+    - {name: pygeoapi_layer_restriction, type: string}
+    - {name: pygeoapi_id_field, type: string}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
