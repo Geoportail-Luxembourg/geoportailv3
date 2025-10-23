@@ -146,8 +146,7 @@ const exports = function($scope, $window, $compile,
     'editus_poi_299',
     'hydro_km',
     'asta_esp',
-    'Parcelle',
-    'Commune'
+    'Parcelle'
   ];
 
   /**
