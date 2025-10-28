@@ -57,7 +57,8 @@ class Metadata(object):
                 "contact",
                 "changeDate",
                 "dateStamp",
-                "allKeywords"
+                "allKeywords",
+                "mainLanguage"
             ]
         }
 
@@ -79,12 +80,17 @@ class Metadata(object):
             return HTTPBadGateway()
 
         hits = es_response.get("hits", {}).get("hits", [])
-        if not hits:
-            metadata_body = {"metadata": {}}
-        else:
-            metadata_body = {
-                "metadata": self._transform_metadata(hits[0].get("_source", {}), lang_key)
-            }
+        metadata_obj = {}
+        summary = {}
+        if hits:
+            metadata_obj, summary = self._transform_metadata(
+                hits[0].get("_source", {}),
+                lang_key,
+            )
+
+        metadata_body = {"metadata": metadata_obj}
+        if summary:
+            metadata_body["summary"] = summary
 
         body = json.dumps(metadata_body)
 
@@ -106,6 +112,7 @@ class Metadata(object):
                     return value[key]
             return ""
 
+        keywords = self._extract_keywords(source.get("allKeywords"), fallback_keys)
         metadata = {
             "title": pick_localized(source.get("resourceTitleObject")) or "",
             "serviceDescription": "",
@@ -113,11 +120,12 @@ class Metadata(object):
             "legalConstraints": pick_localized(source.get("MD_LegalConstraintsOtherConstraintsObject")) or "",
             "link": self._extract_links(source.get("link"), pick_localized),
             "revisionDate": source.get("changeDate") or source.get("dateStamp") or "",
-            "keyword": self._extract_keywords(source.get("allKeywords"), fallback_keys),
+            "keyword": keywords,
             "responsibleParty": self._extract_contacts(source.get("contact"), pick_localized),
             "metadataIdentifier": source.get("metadataIdentifier") or source.get("uuid") or ""
         }
-        return metadata
+        summary = {"keywords": [{"@label": keyword} for keyword in keywords]} if keywords else {}
+        return metadata, summary
 
     def _extract_links(self, links, pick_localized):
         if not links:
