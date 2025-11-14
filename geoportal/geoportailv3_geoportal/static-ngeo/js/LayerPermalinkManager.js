@@ -686,65 +686,67 @@ exports.prototype.check3dRedirect_ = function() {
 
 /**
  * Build 3D viewer URL from current URL parameters
- * @private
- * @return {string} The 3D viewer URL
+ * @return {angular.$q.Promise<string>} Promise resolving to the 3D viewer URL
+ * @export
  */
 exports.prototype.build3dViewerUrl_ = function() {
-  const luxVcsUrl = 'https://3d.geoportail.lu';
-  const luxVcsModules = ['catalogConfig', 'LuxConfig'];
-  
-  // Get 3D-specific parameters from URL
-  const lon = parseFloat(this.stateManager_.getInitialValue('3d_lon')) || 6.13;
-  const lat = parseFloat(this.stateManager_.getInitialValue('3d_lat')) || 49.61;
-  const elevation = parseFloat(this.stateManager_.getInitialValue('3d_elevation')) || 50000;
-  const heading = parseFloat(this.stateManager_.getInitialValue('3d_heading')) || 0;
-  const pitch = parseFloat(this.stateManager_.getInitialValue('3d_pitch')) || -90;
-  
-  // Get layers (both 2D and 3D)
-  const layers3d = this.stateManager_.getInitialValue('3d_layers');
-  const layers2d = this.stateManager_.getInitialValue('layers');
-  const bgLayer = this.stateManager_.getInitialValue('bgLayer');
-  
-  // Build layers array
-  const layersArray = [];
-  
-  // Add background layer
-  if (bgLayer) {
-    layersArray.push(JSON.stringify([bgLayer, 1, 0]));
-  }
-  
-  // Add 3D layers
-  if (layers3d) {
-    layers3d.split('-').forEach(layerName => {
-      if (layerName) {
-        layersArray.push(JSON.stringify([layerName, 1, 0]));
-      }
-    });
-  }
-  
-  // Add 2D layers
-  if (layers2d) {
-    // Parse layer IDs and convert to layer names if needed
-    const layerIds = this.splitLayers_(layers2d, '-');
-    layerIds.forEach(layerId => {
-      if (typeof layerId === 'number') {
-        // Find layer name from catalog
-        const node = this.appThemes_.flatCatalog.find(item => item.id === layerId);
-        if (node && node.name) {
-          layersArray.push(JSON.stringify([node.name, 1, 0]));
+  return this.appThemes_.getFlatCatalog().then(flatCatalog => {
+    const luxVcsUrl = 'https://3d.geoportail.lu';
+    const luxVcsModules = ['catalogConfig', 'LuxConfig'];
+    
+    // Get 3D-specific parameters from URL
+    const lon = parseFloat(this.stateManager_.getInitialValue('3d_lon')) || 6.13;
+    const lat = parseFloat(this.stateManager_.getInitialValue('3d_lat')) || 49.61;
+    const elevation = parseFloat(this.stateManager_.getInitialValue('3d_elevation')) || 50000;
+    const heading = parseFloat(this.stateManager_.getInitialValue('3d_heading')) || 0;
+    const pitch = parseFloat(this.stateManager_.getInitialValue('3d_pitch')) || -90;
+    
+    // Get layers (both 2D and 3D)
+    const layers3d = this.stateManager_.getInitialValue('3d_layers');
+    const layers2d = this.stateManager_.getInitialValue('layers');
+    const bgLayer = this.stateManager_.getInitialValue('bgLayer');
+    
+    // Build layers array
+    const layersArray = [];
+    
+    // Add background layer
+    if (bgLayer) {
+      layersArray.push(JSON.stringify([bgLayer, 1, 0]));
+    }
+    
+    // Add 3D layers
+    if (layers3d) {
+      layers3d.split('-').forEach(layerName => {
+        if (layerName) {
+          layersArray.push(JSON.stringify([layerName, 1, 0]));
         }
-      } else if (typeof layerId === 'string') {
-        // External layer
-        layersArray.push(JSON.stringify([layerId, 1, 0]));
-      }
-    });
-  }
-  
-  // VCS state format:
-  // [[[lon,lat,elevation],[lon,lat,50],300,heading,pitch,0],"cesium",["modules"],[layers],[],0]
-  const state = `[[[${lon},${lat},${elevation}],[${lon},${lat},50],300,${heading},${pitch},0],"cesium",["${luxVcsModules.join('","')}"],[${layersArray.join(',')}],[],0]`;
-  
-  return `${luxVcsUrl}?state=${encodeURIComponent(state)}`;
+      });
+    }
+    
+    // Add 2D layers
+    if (layers2d) {
+      // Parse layer IDs and convert to layer names if needed
+      const layerIds = this.splitLayers_(layers2d, '-');
+      layerIds.forEach(layerId => {
+        if (typeof layerId === 'number') {
+          // Find layer name from catalog
+          const node = this.appThemes_.flatCatalog.find(item => item.id === layerId);
+          if (node && node.name) {
+            layersArray.push(JSON.stringify([node.name, 1, 0]));
+          }
+        } else if (typeof layerId === 'string') {
+          // External layer
+          layersArray.push(JSON.stringify([layerId, 1, 0]));
+        }
+      });
+    }
+    
+    // VCS state format:
+    // [[[lon,lat,elevation],[lon,lat,50],300,heading,pitch,0],"cesium",["modules"],[layers],[],0]
+    const state = `[[[${lon},${lat},${elevation}],[${lon},${lat},50],300,${heading},${pitch},0],"cesium",["${luxVcsModules.join('","')}"],[${layersArray.join(',')}],[],0]`;
+    
+    return `${luxVcsUrl}?state=${encodeURIComponent(state)}`;
+  });
 };
 appModule.service('appLayerPermalinkManager', exports);
 

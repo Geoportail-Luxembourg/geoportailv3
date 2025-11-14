@@ -1684,8 +1684,9 @@ const MainController = function(
     const is3dEnabled = this.stateManager_.getInitialValue('3d_enabled');
     
     if (is3dEnabled === 'true') {
-      const url = appLayerPermalinkManager.build3dViewerUrl_();
-      this.window_.location.href = url;
+      appLayerPermalinkManager.build3dViewerUrl_().then(url => {
+        this.window_.location.href = url;
+      });
       return true;
     }
     return false;
