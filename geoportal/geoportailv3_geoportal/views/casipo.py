@@ -12,6 +12,7 @@ import urllib.request
 from email.mime.text import MIMEText
 import time
 import datetime
+import pytz
 import sys
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
@@ -55,7 +56,8 @@ class Casipo(object):
             for res in results:
                 commune = res['commune_administrative']
 
-            self.filename = '/tmp/%s_%s_Extrait_CASIPO_%s.pdf' % (str(datetime.datetime.now().strftime("%Y%m%d")), commune, str(cnt))
+            local_tz = pytz.timezone('Europe/Paris')
+            self.filename = '/tmp/%s_%s_Extrait_CASIPO_%s.pdf' % (str(datetime.datetime.now(local_tz).strftime("%Y%m%d")), commune, str(cnt))
             with open(self.filename, 'wb') as fp:
                 shutil.copyfileobj(data, fp)
         except Exception as e:

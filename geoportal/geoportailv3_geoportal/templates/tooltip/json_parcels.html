@@ -1,0 +1,26 @@
+﻿<% import json %>
+## -*- coding: utf-8 -*-
+<%
+result = []
+for feature in features:
+    pf = feature['attributes']['PF']
+    parcel_data = {
+        _c("Commune"): pf['townName'],
+        _c("Section"): pf['sectionDesignation'],
+        _c("Numero cadastral"): f"{pf['mainNumber']}/{pf['additionalNumber']}",
+        _c("Contenance"): pf['capacity'],
+        _c("Lieudit"): pf['locality']
+    }
+    
+    # Add optional fields
+    for key, field, join_char in [
+        ('farmingTypes', _c("Nature"), ','),
+        ('occupations', _c("Occupation"), ','),
+        ('measurementNumber', _c("Dernier mesurage"), None)
+    ]:
+        if key in pf:
+            parcel_data[field] = join_char.join(pf[key]) if join_char else pf[key]
+    
+    result.append(parcel_data)
+%>
+${json.dumps(result, ensure_ascii=False) | n}

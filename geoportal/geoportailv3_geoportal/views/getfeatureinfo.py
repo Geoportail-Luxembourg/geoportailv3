@@ -97,6 +97,7 @@ class Getfeatureinfo(object):
     @view_config(route_name='download_pdf')
     def download_pdf_arcgis(self):
         fid = self.request.params.get('fid', None)
+        contentType = "application/pdf"
         if fid is None:
             return HTTPBadRequest("Request paramaters are missing")
         layers, id = fid.split('_', 1)
@@ -116,7 +117,8 @@ class Getfeatureinfo(object):
                 url = luxgetfeaturedefinition.rest_url
                 url = url.replace('/query?', '/')
                 url = url.replace('/query', '/')
-                if luxgetfeaturedefinition.use_auth:
+                use_auth = luxgetfeaturedefinition.use_auth
+                if use_auth:
                     auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url1 = url + "%(id)s/attachments?f=pjson%(token)s" %{'id': id, 'token':('&token='+auth_token['token'])}
                 else:
@@ -125,7 +127,7 @@ class Getfeatureinfo(object):
                 pdf_name = None
                 try:
                     url_request = urllib.request.Request(url1)
-                    result = read_request_with_token(url_request, self.request, log)
+                    result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                     attachmentInfos = json.loads(data)["attachmentInfos"]
                     for info in attachmentInfos:
@@ -145,7 +147,8 @@ class Getfeatureinfo(object):
                     return HTTPBadRequest()
                 if pdf_name is None or pdf_id is None:
                     return HTTPBadRequest()
-                if luxgetfeaturedefinition.use_auth:
+                use_auth = luxgetfeaturedefinition.use_auth
+                if use_auth:
                     auth_token = get_arcgis_token(self.request, log, service_url=url)
                     url2 = url + "%(id)s/attachments/%(pdf_id)s%(token)s" %{'id': id, 'pdf_id': pdf_id, 'token':('?token='+auth_token['token'])}
                 else:
@@ -153,14 +156,14 @@ class Getfeatureinfo(object):
 
                 try:
                     url_request = urllib.request.Request(url2)
-                    result = read_request_with_token(url_request, self.request, log)
+                    result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                 except Exception as e:
                     log.exception(e)
                     log.error(url2)
                     return HTTPBadRequest()
 
-                headers = {"Content-Type": "application/pdf",
+                headers = {"Content-Type": contentType,
                            "Content-Disposition": "attachment; filename=\"%(pdf_name)s\"" %{'pdf_name': pdf_name}}
 
                 return Response(data, headers=headers)
@@ -339,6 +342,17 @@ class Getfeatureinfo(object):
                     return True
         return False
 
+    def get_time_of_layer(self, cur_layer, layers, times):
+        cur_time = times
+        if times is not None and len(times) > 0 and layers is not None and len(layers) > 0 and cur_layer is not None and len(cur_layer) > 0:
+            try:
+                cur_time = times.split(",")[layers.split(",").index(cur_layer)]
+            except Exception as e:
+                log.exception(e)
+                cur_time = times
+                log.error("The layer %s is not in the time list %s %s" % (cur_layer, times, layers))
+        return cur_time
+
     def get_info(self, fid, coordinates_big_box, coordinates_small_box,
                  results, layers, big_box, p_geometry=None, p_zoom=None, p_query_limit='20', offset=None, time=None):
         rows_cnt = 0
@@ -360,6 +374,7 @@ class Getfeatureinfo(object):
                     geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
                     f = []
                     if luxgetfeaturedefinition.rest_url is not None and len(luxgetfeaturedefinition.rest_url) > 0:
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
@@ -367,7 +382,7 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             None,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=the_box.centroid.wkt, srs_geometry="2169", time=time)
+                            p_geometry=the_box.centroid.wkt, srs_geometry="2169", time=cur_time)
                         if len(features) > 0:
                             f.append(self.to_feature(luxgetfeaturedefinition.layer, None,
                                                     geometry,
@@ -607,6 +622,7 @@ class Getfeatureinfo(object):
                     len(luxgetfeaturedefinition.rest_url) > 0):
                 if fid is None:
                     if p_geometry is not None:
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
@@ -614,23 +630,25 @@ class Getfeatureinfo(object):
                             None, None, None, None,
                             luxgetfeaturedefinition.columns_order,
                             use_auth=luxgetfeaturedefinition.use_auth,
-                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')), time=time)
+                            p_geometry=p_geometry, srs_geometry=self.request.params.get('srs', self.request.params.get('geometry_srs', '2169')), time=cur_time)
                     else :
+                        cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                         features = self._get_external_data(
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.rest_url,
                             luxgetfeaturedefinition.id_column,
                             big_box, None, None, None,
                             luxgetfeaturedefinition.columns_order,
-                            use_auth=luxgetfeaturedefinition.use_auth, time=time)
+                            use_auth=luxgetfeaturedefinition.use_auth, time=cur_time)
                 else:
+                    cur_time = self.get_time_of_layer(luxgetfeaturedefinition.layer, layers, time)
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
                         None, fid, None, None,
                         luxgetfeaturedefinition.columns_order,
-                        use_auth=luxgetfeaturedefinition.use_auth, time=time)
+                        use_auth=luxgetfeaturedefinition.use_auth, time=cur_time)
 
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
@@ -715,7 +733,12 @@ class Getfeatureinfo(object):
                         else:
                             r['tooltip'] = ''
                 else:
-                    if info_format == 'text/xml':
+                    if info_format == 'application/json':
+                        filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
+                        template = 'json_' + l_template if isfile(filename) else 'json.html'
+                        r['tooltip'] = render(
+                            'geoportailv3_geoportal:' + path + template, context)
+                    elif info_format == 'text/xml':
                         filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
                         template = 'xml_' + l_template if isfile(filename) else 'xml.html'
                         r['tooltip'] = render(
@@ -1204,8 +1227,8 @@ class Getfeatureinfo(object):
                                 geometry, dict(row), attributes_to_remove)
             attributes = f['attributes']
 
-            base_url = os.environ["API-ARCHIMET-URL"]
-            api_key = os.environ["API-ARCHIMET-KEY"]
+            base_url = os.environ["API-ARCHIMET-URL"] if "API-ARCHIMET-URL" in os.environ else ""
+            api_key = os.environ["API-ARCHIMET-KEY"] if "API-ARCHIMET-KEY" in os.environ else ""
             url = f"{base_url}/parcelles/pf/{fid}"
             hdr = {'api-key': api_key}
             try:
@@ -1533,7 +1556,7 @@ class Getfeatureinfo(object):
                 body["token"] = auth_token['token']
 
         if featureid is not None:
-            if id_column == 'objectid':
+            if id_column.lower() == 'objectids':
                 body['objectIds'] = featureid
             else:
                 if 'featuresByArcGISQuery' in url:
@@ -1543,7 +1566,16 @@ class Getfeatureinfo(object):
                         url = url.replace("?","")
                     url = url + "/2169" + "/" + id_column + "/" + featureid + "/"
                 else:
-                    body['where'] = id_column + ' = \'' + featureid + '\''
+                    is_int = False
+                    try:
+                        int(featureid)
+                        is_int = True
+                    except (ValueError, TypeError):
+                        is_int = False
+                    if is_int:
+                        body['where'] = id_column + ' = ' + featureid
+                    else:
+                        body['where'] = id_column + ' = \'' + featureid + '\''
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'

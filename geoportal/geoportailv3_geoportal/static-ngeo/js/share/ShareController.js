@@ -60,11 +60,17 @@ const exports = function($scope, $window, gettext, gettextCatalog) {
    */
   this.emailString_ = gettext(' - link from geoportail.lu');
 
+  /**
+   * @type {angular.$scope}
+   * @private
+   */
+  this.$scope_ = $scope;
+
   // Update integration link on location change when component is active.
-  $scope.$watch(() => this['active'], (newVal) => {
+  this.$scope_.$watch(() => this['active'], (newVal) => {
     if (newVal === true) {
       this.setUrl_();
-      this.removeListener = this.$scope.$watch(function() { 
+      this.removeListener = this.$scope_.$watch(function() { 
           return (urlStorage.getStrippedUrl());
         }.bind(this), function() {
           this.setUrl_();

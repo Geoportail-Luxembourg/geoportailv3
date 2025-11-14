@@ -462,7 +462,8 @@ class Map extends OpenLayersMap {
       'visitconsdorf.lu', 'visitechternach.lu', 'visitlarochette.lu', 'medernach.info', 'mullerthal-millen.lu', 'rosport-tourism.lu',
       'visitwasserbillig.lu', 'visitatertwark.lu', 'visit-clervaux.lu', 'visit-diekirch.lu', 'visit-vianden.lu', 'minetttrail.lu', 'minettcycle.lu',
       'public.lu', 'etat.lu', 'inondations.lu', 'visit-fouhren.lu', 'visit-hoscheid.lu', 'visitjunglinster.lu', 'visitreisdorf.lu', 'visitrosportmompach.lu',
-      'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online'];
+      'mae.lu', 'gouvernement.lu', 'meteolux.lu', 'luxemburg.infomax.online', 'data.public.lu', 'test.data.public.lu', 'www.camping.lu',
+      'main.camprilux.infomax.online', 'camprilux.infomax.online', 'camprilux.infomax.dev'];
 
     /**
      * @private
@@ -1468,9 +1469,11 @@ class Map extends OpenLayersMap {
       }
       var layerConf = this.findLayerConf_(layer);
       if (layerConf !== null) {
-        if (layer == 'basemap_2015_global') {
+        if (layer == 'basemap_2015_global' ||
+          layer == 'topogr_global' ||
+          layer == 'topo_bw_jpeg') {
           if (this.mvtLayer_ === undefined) {
-            this.mvtLayer_ = this.MVTLayerFactory_(options);
+            this.mvtLayer_ = this.MVTLayerFactory_(options, layer);
           }
           this.getLayers().push(this.mvtLayer_);
           return;
@@ -1479,19 +1482,27 @@ class Map extends OpenLayersMap {
           lux.WMSLayerFactory : lux.WMTSLayerFactory;
         var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
         var visible = (visibilities[index] !== undefined) ? visibilities[index] : true;
-        this.getLayers().push(fn(layerConf, opacity, visible));
+        var curLayer = fn(layerConf, opacity, visible);
+        curLayer.set('__source__', 'geoportail')
+        this.getLayers().push(curLayer);
       }
     }.bind(this));
   }
 
-  MVTLayerFactory_(options) {
+  MVTLayerFactory_(options, layerName) {
     const target = this.getTargetElement();
     // FIXME: should be taken from the layer config
     // TODO: when config is handled by c2cgeoportal
     // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
     const host = new URL(window.location).host;
-    let layer = 'roadmap_jsapi';
-    if (this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
+    const keywords = {
+        'basemap_2015_global': 'roadmap_jsapi',
+        'topogr_global': 'topomap',
+        'topo_bw_jpeg': 'topomap_gray'
+    };
+    let layer = keywords[layerName] || layerName || 'roadmap_jsapi';
+    if (layer === 'roadmap_jsapi' && 
+        this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
       layer = 'roadmap';
     }
     let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/' + layer + '/style.json';
@@ -1503,7 +1514,7 @@ class Map extends OpenLayersMap {
       mapBoxStyleXYZ = options.bgLayerStyleXYZ;
     }
     const mvtLayer_ = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
-    mvtLayer_.set('name', 'basemap_2015_global');
+    mvtLayer_.set('name', layerName);
     return (mvtLayer_);
   }
 
