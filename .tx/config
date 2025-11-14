@@ -25,6 +25,12 @@ source_file = geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-too
 source_lang = frp
 type = PO
 
+[o:geoportail:p:geoportailv3-lu:r:geoportailv4-client]
+file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv4_geoportal-client.po
+source_file = geoportal/geoportailv3_geoportal/locale/geoportailv4_geoportal-client.pot
+source_lang = frp
+type = PO
+
 [o:geoportail:p:geoportailv3-lu:r:geoportailv3-webcomponents]
 source_file = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.frp.json
 file_filter = geoportal/geoportailv3_geoportal/static-ngeo/ngeo/locales/app.<lang>.json

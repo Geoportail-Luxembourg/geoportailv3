@@ -319,7 +319,6 @@ const exports = function(
 };
 
 
-
 exports.prototype.$onInit = function() {
   this.map_ = this['map'];
 
@@ -572,7 +571,9 @@ exports.prototype.loadInfoPane_ =
       (new olFeature(new olGeomPoint(this.clickCoordinate)));
       this.featureLayer_.getSource().clear();
       this.featureLayer_.getSource().addFeature(feature);
-
+      if (this.map_.getLayers().getArray().indexOf(this.featureLayer_) === -1) {
+        this.map_.addLayer(this.featureLayer_);
+      }
       this.getElevation_(this.clickCoordinate).then(
         function(elevation) {
           this['elevation'] = elevation['formattedElevation'];
@@ -646,6 +647,17 @@ exports.prototype.getCyclomediaUrl = function() {
   return undefined;
 };
 
+/**
+ * @return {string} The streetview url.
+ * @export
+ */
+exports.prototype.getStreetviewUrl = function() {
+  if (this.clickCoordinate4326_ !== undefined) {
+  return 'https://www.google.com/maps/@?' +
+  'api=1&map_action=pano&viewpoint='+this.clickCoordinate4326_[1]+','+this.clickCoordinate4326_[0]+'&heading=0&pitch=0&fov=90'
+  }
+  return undefined;
+};
 
 /**
  * @return {boolean} True if we want to show Images Obliques button.

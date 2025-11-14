@@ -115,7 +115,9 @@ const exports = function($scope, $window, $compile,
     'editus_poi_296': ['editus_poi_296'],
     'editus_poi_297': ['editus_poi_297'],
     'editus_poi_298': ['editus_poi_298'],
-    'editus_poi_299': ['editus_poi_299']
+    'editus_poi_299': ['editus_poi_299'],
+    'nom_de_rue': ['roads','roads_labels'],
+    'Commune': ['communes']
   };
 
   /**
@@ -925,10 +927,18 @@ exports.selected_ =
                 }));
             });
         } else {
-          map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
-            size: /** @type {ol.Size} */ (map.getSize()),
-            maxZoom: 18
-          }));
+          if (featureGeometry.getFlatCoordinates !== undefined) {
+            map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+              size: /** @type {ol.Size} */ (map.getSize()),
+              maxZoom: 18
+            }));
+          } else {
+            map.getView().fit(featureGeometry.getExtent(), /** @type {olx.view.FitOptions} */ ({
+              size: /** @type {ol.Size} */ (map.getSize()),
+              maxZoom: 18
+            }));
+          }
+
           this.featureOverlay.clear();
           var features = [];
           if (dataset === 'coordinates') {

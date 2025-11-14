@@ -327,6 +327,13 @@ vars:
     - {name: geocatalog_open_data_last_update_date, type: string}
     - {name: geocatalog_open_data_uuid, type: string}
     - {name: geocatalog_open_data_only_add_gpkg, type: boolean}
+    - {name: pygeoapi_publish_flag, type: boolean}
+    - {name: pygeoapi_last_update_date, type: string}
+    - {name: pygeoapi_update_frequency, type: string}
+    - {name: pygeoapi_layer_restriction, type: string}
+    - {name: pygeoapi_id_field, type: string}
+    - {name: pygeoapi_override_rest_url, type: string}
+    - {name: pygeoapi_override_layers, type: string}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
@@ -408,6 +415,9 @@ vars:
       - vt-staging.geoportail.lu
       - devrm.geoportail.lu
       - migration.geoportail.lu
+      - geoportail-luxembourg.github.io
+      - 3d.geoportail.lu
+      - 3d.geoportal.lu
       - localhost:8080
     base_url: '{SHORTENER_BASE_URL}'
     email_body: unused
