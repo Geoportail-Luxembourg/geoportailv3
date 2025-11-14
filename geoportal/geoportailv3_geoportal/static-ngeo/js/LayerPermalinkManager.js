@@ -16,22 +16,28 @@ import { useMapStore, urlStorage } from "luxembourg-geoportail/bundle/lux.dist.j
 
 /**
  * @constructor
+ * @param {Window} $window The window service.
  * @param {app.StateManager} appStateManager The state service.
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
- * service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.Theme} appTheme The theme service.
- * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
- * manager.
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer manager.
  * @param {app.WmsHelper} appWmsHelper The wms helper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts helper service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-const exports = function(appStateManager,
+const exports = function($window, appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
     appWmsHelper, appWmtsHelper, appNotify, appTimeLayer, gettextCatalog) {
+  
+  /**
+   * @type {Window}
+   * @private
+   */
+  this.window_ = $window;
+
   /**
    * @type {angularGettext.Catalog}
    */
@@ -582,6 +588,11 @@ exports.prototype.init = function(scope, map, selectedLayers) {
  */
 exports.prototype.initFlatCatalog_ = function(selectedLayers) {
   return this.appThemes_.getThemesPromise().then((root) => {
+    // Check for 3D redirect FIRST, before processing layers
+    if (this.check3dRedirect_()) {
+      return; // Stop processing if redirecting
+    }
+    
     const flatCatalog = this.appThemes_.flatCatalog;
     const ogcServers = root.ogcServers;
     /**
@@ -655,6 +666,86 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
     this.setupWatchers_(selectedLayers);
   });
 }
+
+/**
+ * Check if 3D mode is enabled in URL and redirect to 3D viewer
+ * @private
+ * @return {boolean} True if redirected to 3D viewer
+ */
+exports.prototype.check3dRedirect_ = function() {
+  const is3dEnabled = this.stateManager_.getInitialValue('3d_enabled');
+  
+  if (is3dEnabled === 'true') {
+    const url = this.build3dViewerUrl_();
+    this.window_.location.href = url;
+    return true;
+  }
+  
+  return false;
+};
+
+/**
+ * Build 3D viewer URL from current URL parameters
+ * @private
+ * @return {string} The 3D viewer URL
+ */
+exports.prototype.build3dViewerUrl_ = function() {
+  const luxVcsUrl = 'https://3d.geoportail.lu';
+  const luxVcsModules = ['catalogConfig', 'LuxConfig'];
+  
+  // Get 3D-specific parameters from URL
+  const lon = parseFloat(this.stateManager_.getInitialValue('3d_lon')) || 6.13;
+  const lat = parseFloat(this.stateManager_.getInitialValue('3d_lat')) || 49.61;
+  const elevation = parseFloat(this.stateManager_.getInitialValue('3d_elevation')) || 50000;
+  const heading = parseFloat(this.stateManager_.getInitialValue('3d_heading')) || 0;
+  const pitch = parseFloat(this.stateManager_.getInitialValue('3d_pitch')) || -90;
+  
+  // Get layers (both 2D and 3D)
+  const layers3d = this.stateManager_.getInitialValue('3d_layers');
+  const layers2d = this.stateManager_.getInitialValue('layers');
+  const bgLayer = this.stateManager_.getInitialValue('bgLayer');
+  
+  // Build layers array
+  const layersArray = [];
+  
+  // Add background layer
+  if (bgLayer) {
+    layersArray.push(JSON.stringify([bgLayer, 1, 0]));
+  }
+  
+  // Add 3D layers
+  if (layers3d) {
+    layers3d.split('-').forEach(layerName => {
+      if (layerName) {
+        layersArray.push(JSON.stringify([layerName, 1, 0]));
+      }
+    });
+  }
+  
+  // Add 2D layers
+  if (layers2d) {
+    // Parse layer IDs and convert to layer names if needed
+    const layerIds = this.splitLayers_(layers2d, '-');
+    layerIds.forEach(layerId => {
+      if (typeof layerId === 'number') {
+        // Find layer name from catalog
+        const node = this.appThemes_.flatCatalog.find(item => item.id === layerId);
+        if (node && node.name) {
+          layersArray.push(JSON.stringify([node.name, 1, 0]));
+        }
+      } else if (typeof layerId === 'string') {
+        // External layer
+        layersArray.push(JSON.stringify([layerId, 1, 0]));
+      }
+    });
+  }
+  
+  // VCS state format:
+  // [[[lon,lat,elevation],[lon,lat,50],300,heading,pitch,0],"cesium",["modules"],[layers],[],0]
+  const state = `[[[${lon},${lat},${elevation}],[${lon},${lat},50],300,${heading},${pitch},0],"cesium",["${luxVcsModules.join('","')}"],[${layersArray.join(',')}],[],0]`;
+  
+  return `${luxVcsUrl}?state=${encodeURIComponent(state)}`;
+};
 appModule.service('appLayerPermalinkManager', exports);
 
 
