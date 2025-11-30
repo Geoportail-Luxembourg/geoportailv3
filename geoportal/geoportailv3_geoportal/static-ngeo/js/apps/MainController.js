@@ -1679,6 +1679,23 @@ const MainController = function(
   $('#editor-expert').on('show.bs.collapse', function(){
     this.trackOpenVTEditor('openVTExpertEditor');
   }.bind(this));
+
+  this.check3dRedirect_ = function() {
+    const is3dEnabled = this.stateManager_.getInitialValue('3d_enabled');
+    
+    if (is3dEnabled === 'true') {
+      appLayerPermalinkManager.build3dViewerUrl_().then(url => {
+        this.window_.location.href = url;
+      });
+      return true;
+    }
+    return false;
+  };
+
+  // Call it early:
+  if (this.check3dRedirect_()) {
+    return; // Stop initialization
+  }
 };
 
 
