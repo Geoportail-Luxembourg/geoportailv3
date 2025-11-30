@@ -672,13 +672,78 @@ exports.prototype.isImagesObliquesAvailable = function() {
  * @return {string} The image oblique url.
  * @export
  */
-exports.prototype.getImagesObliquesUrl = function() {
+exports.prototype.getOldImagesObliquesUrl = function() {
   if (this.clickCoordinateLuref_ !== undefined) {
     return 'https://oblique.geoportail.lu/publication/viewer?x='+this.clickCoordinateLuref_[0]+'&y='+this.clickCoordinateLuref_[1]+'&crs=2169';
   }
   return undefined;
 };
 
+/**
+ * @return {string} The image oblique url.
+ * @export
+ */
+exports.prototype.getImagesObliquesUrl = function() {
+  if (this.clickCoordinate4326_ === undefined) {
+    return undefined;
+  }
+  
+  const lon = this.clickCoordinate4326_[0];
+  const lat = this.clickCoordinate4326_[1];
+  
+  // Fixed parameters for oblique viewer
+  const elevation = 692;  // Camera altitude
+  const targetHeight = 292;  // Target height
+  const distance = 400;  // Distance from target
+  const heading = 0;  // North orientation
+  const pitch = -90;  // Looking straight down
+  const roll = 0;  // No roll
+  
+  // Modules (UUIDs for oblique viewer plugins)
+  const modules = [
+    "LuxConfig",
+    "8bbdc4b3-691e-466e-9e91-2b0d57a9a53e",
+    "c627c247-8017-483a-a32e-1ff0ad5f0536",
+    "0fa7c853-d866-486c-8c2d-3470f401d44c",
+    "1f9cb759-c3dc-44ba-9253-7299701499a3",
+    "f7791a73-5132-4282-b3c4-1adb1abce06a",
+    "catalogConfig"
+  ];
+  
+  // Layers (empty for oblique viewer)
+  const layers = [];
+  
+  // Plugins configuration
+  const plugins = [
+    ["@geoportallux/lux-3dviewer-themesync", {"prop": "*"}],
+    ["@geoportallux/lux-3dviewer-plugin-back-to-2d-portal", {"prop": "*"}]
+  ];
+  
+  // Oblique imagery dataset
+  const obliqueDataset = "ACT2023_ImagesObliques_all";
+  
+  // Build VCS state
+  const state = [
+    [
+      [lon, lat, elevation],
+      [lon, lat, targetHeight],
+      distance,
+      heading,
+      pitch,
+      roll
+    ],
+    "Oblique Map",
+    modules,
+    layers,
+    [],
+    plugins,
+    obliqueDataset,
+    []
+  ];
+  
+  // Encode state and build URL
+  return 'https://3d.geoportail.lu/?state=' + encodeURIComponent(JSON.stringify(state));
+};
 
 /**
  * @param {string} dest The destination parameter .
