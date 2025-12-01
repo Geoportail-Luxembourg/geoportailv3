@@ -155,13 +155,6 @@ class PF():
         return None
 
     def _is_download_authorized(self, town_name, user, referer):
-        if referer is not None:
-            if "bodfeature" in referer and "search4naila" in referer:
-                return True
-            if "weboffice" in referer:
-                return True
-            if "weboffice_um" in referer:
-                return True
         town_info = self._get_town_by_name(town_name)
 
         if (town_info is None or user is None or user.username is None):
