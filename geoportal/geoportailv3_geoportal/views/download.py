@@ -132,14 +132,6 @@ class Download(object):
         return Response(f.read(), headers=headers)
 
     def _is_download_authorized(self, town_code, user, referer):
-        if referer is not None:
-            if "bodfeature" in referer and "search4naila" in referer:
-                return True
-            if "weboffice" in referer:
-                return True
-            if "weboffice_um" in referer:
-                return True
-
         if (town_code is None or user is None or user.username is None):
             return False
 
@@ -161,7 +153,7 @@ class Download(object):
 
     @view_config(route_name='download_measurement')
     def download_measurement(self):
-        if self.request.user is None and self.request.referer is None:
+        if self.request.user is None:
             return HTTPUnauthorized()
         document_id = self.request.params.get("document_id", None)
         townname = self.request.params.get("dirName", None)
