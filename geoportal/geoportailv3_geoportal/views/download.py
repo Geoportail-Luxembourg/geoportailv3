@@ -103,6 +103,8 @@ class Download(object):
         filename = self.request.params.get('name', None)
         if filename is None:
             return HTTPBadRequest()
+        if '..' in filename:
+            return HTTPBadRequest("Invalid filename")
 
         dirname = "/publication/CRAL_PDF"
 
@@ -198,6 +200,8 @@ class Download(object):
         if cur_record is None:
             return HTTPBadRequest("Invalid Town name")
         measurement_filepath = "%s/%s" % (cur_record.path, filename)
+        if '..' in filename:
+            return HTTPBadRequest("Invalid filename")
 
         f = open(measurement_filepath, 'rb')
 
