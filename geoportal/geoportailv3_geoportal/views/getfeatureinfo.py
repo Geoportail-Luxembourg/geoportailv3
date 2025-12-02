@@ -1212,10 +1212,98 @@ class Getfeatureinfo(object):
                     feature['attributes']['connector_description'] = connector['description']
                     modified_features.append(copy.deepcopy(feature))
         return modified_features
+    def _camel_to_snake(self, name):
+        """Convert camelCase to snake_case"""
+        import re
+        # Insert underscore before uppercase letters and convert to lowercase
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+    def _convert_dict_keys_to_snake_case(self, data):
+        """Recursively convert all dictionary keys from camelCase to snake_case"""
+        if isinstance(data, dict):
+            return {
+                self._camel_to_snake(key): self._convert_dict_keys_to_snake_case(value)
+                for key, value in data.items()
+            }
+        elif isinstance(data, list):
+            return [self._convert_dict_keys_to_snake_case(item) for item in data]
+        else:
+            return data
+    def _add_snake_case_aliases(self, data):
+        """Add snake_case aliases alongside camelCase keys"""
+        if isinstance(data, dict):
+            new_dict = {}
+            for key, value in data.items():
+                # Keep original key
+                new_dict[key] = self._add_snake_case_aliases(value)
+                # Add snake_case version if different
+                snake_key = self._camel_to_snake(key)
+                if snake_key != key:
+                    new_dict[snake_key] = new_dict[key]
+            return new_dict
+        elif isinstance(data, list):
+            return [self._add_snake_case_aliases(item) for item in data]
+        else:
+            return data
+    def _snake_to_camel(self, name, custom_mapping=None):
+        """Convert snake_case to camelCase with optional custom mapping"""
+        # Check custom mapping first
+        if custom_mapping and name in custom_mapping:
+            return custom_mapping[name]
+        
+        components = name.split('_')
+        # Keep first component as is, capitalize the rest
+        return components[0] + ''.join(x.title() for x in components[1:])
+
+    def _convert_dict_keys_to_camel_case(self, data, custom_mapping=None):
+        """Recursively convert all dictionary keys from snake_case to camelCase"""
+        if isinstance(data, dict):
+            return {
+                self._snake_to_camel(key, custom_mapping): self._convert_dict_keys_to_camel_case(value, custom_mapping)
+                for key, value in data.items()
+            }
+        elif isinstance(data, list):
+            return [self._convert_dict_keys_to_camel_case(item, custom_mapping) for item in data]
+        else:
+            return data
+
+    def _add_camel_case_aliases(self, data, custom_mapping=None):
+        """Add camelCase aliases alongside snake_case keys
+    
+    Args:
+        data: The data structure to process
+        custom_mapping: Dict mapping snake_case keys to custom camelCase names
+                       Example: {'section_name': 'sectionDesignation'}
+    """
+        if isinstance(data, dict):
+            new_dict = {}
+            for key, value in data.items():
+                # Keep original key
+                new_dict[key] = self._add_camel_case_aliases(value, custom_mapping)
+                
+                # Add camelCase version
+                camel_key = self._snake_to_camel(key, custom_mapping)
+                if camel_key != key:
+                    new_dict[camel_key] = new_dict[key]
+            return new_dict
+        elif isinstance(data, list):
+            return [self._add_camel_case_aliases(item, custom_mapping) for item in data]
+        else:
+            return data
 
     def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         DBSession.rollback()
+        features = []
+        
+        # Define custom camelCase mappings for PF data
+        pf_custom_mapping = {
+            'section_name': 'sectionDesignation',
+        }
+        
+
+        
         features = []
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
@@ -1234,7 +1322,11 @@ class Getfeatureinfo(object):
             try:
                 req = urllib.request.Request(url, headers=hdr)
                 response = urllib.request.urlopen(req)
-                attributes['PF'] = dict(json.loads(response.read()))
+                pf_data = json.loads(response.read())
+                #attributes['PF'] = dict(pf_data)
+                #attributes['PF'] = dict(self._add_snake_case_aliases(pf_data))
+                attributes['PF'] = self._add_camel_case_aliases(pf_data, pf_custom_mapping)
+                log.error(attributes['PF'])
             except Exception as e:
                 log.exception(e)
                 log.error(url)
