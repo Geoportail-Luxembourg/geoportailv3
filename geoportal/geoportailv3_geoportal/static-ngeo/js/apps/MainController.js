@@ -95,7 +95,7 @@ const i18nextConfig = {
   nsSeparator: '|', // ! force separator to '|' instead of ':' because some i18n keys have ':' (otherwise, i18next doesn't find the key)
 };
 
-const luxLib = useLuxLib({ i18nextConfig });
+const luxLib = await useLuxLib({ i18nextConfig });
 const { app, createElementInstance, createElementInstanceProp } =  luxLib;
 
 // Important! keep order
