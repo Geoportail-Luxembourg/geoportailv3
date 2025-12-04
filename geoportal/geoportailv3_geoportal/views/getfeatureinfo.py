@@ -1326,7 +1326,6 @@ class Getfeatureinfo(object):
                 #attributes['PF'] = dict(pf_data)
                 #attributes['PF'] = dict(self._add_snake_case_aliases(pf_data))
                 attributes['PF'] = self._add_camel_case_aliases(pf_data, pf_custom_mapping)
-                log.error(attributes['PF'])
             except Exception as e:
                 log.exception(e)
                 log.error(url)
