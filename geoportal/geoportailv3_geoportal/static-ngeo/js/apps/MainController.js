@@ -73,7 +73,7 @@ import useLuxLib, {
 
 const i18nextConfig = {
   ns: 'client',
-  nonExplicitSupportedLngs: true, // Migration i18next: removed deprecated nonExplicitWhitelist
+  nonExplicitSupportedLngs: true,
   returnEmptyString: false,
   fallbackLng: 'en',
   debug: false,
@@ -82,72 +82,85 @@ const i18nextConfig = {
       if (ns === 'app') {
         return '/static-ngeo/locales/{{app}}.{{lng}}.json'
       }
-
       const response = await fetch("/dynamic.json");
       const dynamicUrls = await response.json();
-
       return dynamicUrls.constants.langUrls[lng]
     },
     parse: function(data, lng, ns) {
       return JSON.parse(data)[lng]
     }
   },
-  nsSeparator: '|', // ! force separator to '|' instead of ':' because some i18n keys have ':' (otherwise, i18next doesn't find the key)
+  nsSeparator: '|',
 };
 
-const luxLib = await useLuxLib({ i18nextConfig });
-const { app, createElementInstance, createElementInstanceProp } =  luxLib;
+// ✅ Store globally accessible references
+let luxLib, app, createElementInstance, createElementInstanceProp, luxAppStore;
+let luxInitialized = false; // ← Add initialization flag
 
-// Important! keep order
-statePersistorMyMapService.bootstrap()
-statePersistorLayersService.bootstrap()
-statePersistorThemeService.bootstrap()
-statePersistorAppService.bootstrap()
-// styles must not be bootstrapped here as one would like to do naively, but themes must be loaded first
-// statePersistorStyleService.bootstrap()
-// bgLayer must not be bootstrapped here but in the mymaps initialisation
-// statePersistorBgLayerService.bootstrap()
+// ✅ Initialize immediately and wait for completion
+let luxInitializedResolve;
+const luxInitializedPromise = new Promise(resolve => {
+  luxInitializedResolve = resolve;
+});
 
-const luxAppStore = useAppStore()
+(async () => {
+  try {
+    luxLib = await useLuxLib({ i18nextConfig });
+    ({ app, createElementInstance, createElementInstanceProp } = luxLib);
 
-// LayerPanel includes Catalog, ThemeSelector, LayerManager
-// Note: Themes are now handled by new theme-selector
-// MainController watches useThemeStore().theme via vue watch to affect changes necessary for the legacy code
-const LayerPanelElement = createElementInstance(LayerPanel, app)
-customElements.define('layer-panel', LayerPanelElement)
+    // Important! keep order
+    statePersistorMyMapService.bootstrap()
+    statePersistorLayersService.bootstrap()
+    statePersistorThemeService.bootstrap()
+    statePersistorAppService.bootstrap()
 
-const LegendsPanelElement = createElementInstance(LegendsPanel, app)
-customElements.define('legends-panel', LegendsPanelElement)
+    luxAppStore = useAppStore()
 
-const MapContainerElement = createElementInstance(MapContainer, app)
-customElements.define('map-container', MapContainerElement)
+    // Register custom elements
+    const LayerPanelElement = createElementInstance(LayerPanel, app)
+    customElements.define('layer-panel', LayerPanelElement)
 
-const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
-customElements.define('background-selector', BackgroundSelectorElement)
+    const LegendsPanelElement = createElementInstance(LegendsPanel, app)
+    customElements.define('legends-panel', LegendsPanelElement)
 
-const StylePanelElement = createElementInstance(StylePanel, app)
-customElements.define('style-panel', StylePanelElement)
+    const MapContainerElement = createElementInstance(MapContainer, app)
+    customElements.define('map-container', MapContainerElement)
 
-const LayerMetadataElement = createElementInstance(LayerMetadata, app)
-customElements.define('layer-metadata', LayerMetadataElement)
+    const BackgroundSelectorElement = createElementInstance(BackgroundSelector, app)
+    customElements.define('background-selector', BackgroundSelectorElement)
 
-const RemoteLayersElement = createElementInstance(RemoteLayers, app)
-customElements.define('remote-layers', RemoteLayersElement)
+    const StylePanelElement = createElementInstance(StylePanel, app)
+    customElements.define('style-panel', StylePanelElement)
 
-const SliderComparatorElement = createElementInstance(SliderComparator, app)
-customElements.define('slider-comparator', SliderComparatorElement)
+    const LayerMetadataElement = createElementInstance(LayerMetadata, app)
+    customElements.define('layer-metadata', LayerMetadataElement)
 
-const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
-customElements.define('alert-notifications', AlertNotificationsElement)
+    const RemoteLayersElement = createElementInstance(RemoteLayers, app)
+    customElements.define('remote-layers', RemoteLayersElement)
 
-customElements.define('auth-form', createElementInstance(AuthForm, app))
-customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
-customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
-customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
-customElements.define('profile-infos', createElementInstanceProp(ProfileInfos, app))
+    const SliderComparatorElement = createElementInstance(SliderComparator, app)
+    customElements.define('slider-comparator', SliderComparatorElement)
+
+    const AlertNotificationsElement = createElementInstance(AlertNotifications, app)
+    customElements.define('alert-notifications', AlertNotificationsElement)
+
+    customElements.define('auth-form', createElementInstance(AuthForm, app))
+    customElements.define('profile-draw', createElementInstance(ProfileDraw, app))
+    customElements.define('profile-measures', createElementInstance(ProfileMeasures, app))
+    customElements.define('profile-routing', createElementInstance(ProfileRouting, app))
+    customElements.define('profile-infos', createElementInstanceProp(ProfileInfos, app))
+
+    // ✅ Mark as initialized
+    luxInitialized = true;
+    luxInitializedResolve(); // ← Signal completion
+    
+    console.log('Lux library initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Lux library:', error);
+  }
+})();
 
 import i18next from 'i18next';
-
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
@@ -521,10 +534,13 @@ const MainController = function(
     appOfflineBar, ngeoOfflineMode, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
     ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl, appBlankLayer,
-    proxyWmsUrl,
-    httpsProxyUrl,
-    getvtpermalinkUrl, uploadvtpermalinkUrl, deletevtpermalinkUrl, vectortilesUrl) {
-      
+    proxyWmsUrl, httpsProxyUrl, getvtpermalinkUrl, uploadvtpermalinkUrl, deletevtpermalinkUrl, vectortilesUrl) {
+  
+  // ✅ Check if Lux is initialized before accessing stores
+  if (!luxInitialized) {
+    console.warn('MainController initialized before Lux library is ready. Some features may not work.');
+  }
+
   /**
    * @type {app.backgroundlayer.BlankLayer}
    * @private
@@ -2236,6 +2252,13 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
-bootstrapApp(appModule);
+// Option 1: Wait for Lux initialization before bootstrapping Angular
+async function bootstrapWhenReady() {
+  await luxInitializedPromise; // ← Wait directly for promise
+  console.log('Starting Angular bootstrap...');
+  bootstrapApp(appModule);
+}
+
+bootstrapWhenReady();
 
 export default MainController;
