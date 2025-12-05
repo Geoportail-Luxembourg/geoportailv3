@@ -16,7 +16,7 @@ class Qr(object):
         self.regex = re.compile('''^http[s]{0,1}://.*
                                 [127.0.0.1|localhost
                                 |g-o.lu|geoportal.lu
-                                |geoportail.lu]{1}.*$''', re.VERBOSE)
+                                |geoportail.lu|cadastre.lu]{1}.*$''', re.VERBOSE)
 
     @view_config(route_name='qr')
     def getqrcode(self):
