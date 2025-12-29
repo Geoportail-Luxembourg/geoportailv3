@@ -109,8 +109,9 @@ class Legends(object):
                         url_request = urllib.request.Request(full_url)
                         result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                         content = result.data
-                    except ESRITokenException as e:
-                        raise e
+                    except ESRITokenException:
+                        result = read_request_with_token(url_request, self.request, log, renew_token=True)
+                        content = result.data
                     except Exception as e:
                         log.exception(e)
                         log.error(full_url)
