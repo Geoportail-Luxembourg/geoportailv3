@@ -362,7 +362,7 @@ class Geocode(object):
         features = self.db_ecadastre.query(
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label("geom"), Address.localite).\
-            filter(text(" lower(code_postal) = lower(:p_zip)").bindparams('p_zip', p_zip)).\
+            filter(text(" lower(code_postal) = lower(:p_zip)").bindparams(p_zip=p_zip)).\
             group_by(Address.localite)
 
         res = Address()
