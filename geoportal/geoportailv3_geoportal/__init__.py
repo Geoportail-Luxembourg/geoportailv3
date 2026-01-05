@@ -60,56 +60,55 @@ def add_cors_headers_response_callback(event):
 
 def add_cors_origin_headers_response_callback(event):
     def cors_headers(request, response):
-        if "cors" in request.POST or "cors" in request.GET:
-            origin = request.headers.get("Origin")
-            # Allowlist of trusted domains; ideally, load from settings
-            allowed_origins = os.environ.get(
-                "CORS_ALLOWED_ORIGINS", ""
-            )
-            if isinstance(allowed_origins, str):
-                allowed_origins = [
-                    origin.strip() for origin in allowed_origins.split(",")
-                ]
-            log.error(f"CORS allowed origins: {allowed_origins}")
-            log.error(origin)
-            if origin:
-                try:
-                    origin_domain = urlparse(origin).netloc
-                    # Remove port if present (e.g., geoportail.lu:8080 -> geoportail.lu)
-                    origin_domain = origin_domain.split(":")[0]
-                    if origin_domain in allowed_origins:
-                        log.error(
-                            f"CORS origin '{origin_domain}' in allowed origins."
-                        )                        
-                        response.headers.update(
-                            {
-                                "Access-Control-Allow-Origin": origin,
-                                "Access-Control-Allow-Methods": "POST,GET,DELETE,PUT,OPTIONS",
-                                "Access-Control-Allow-Headers": "Origin, "
-                                + "Content-Type, Accept, Authorization",
-                                "Access-Control-Allow-Credentials": "true",
-                                "Access-Control-Max-Age": "1728000",
-                            }
-                        )
-                    else:
-                        log.error(
-                            f"CORS origin '{origin_domain}' not in allowed origins."
-                        )
+        origin = request.headers.get("Origin")
+        # Allowlist of trusted domains; ideally, load from settings
+        allowed_origins = os.environ.get(
+            "CORS_ALLOWED_ORIGINS", ""
+        )
+        if isinstance(allowed_origins, str):
+            allowed_origins = [
+                origin.strip() for origin in allowed_origins.split(",")
+            ]
+        log.error(f"CORS allowed origins: {allowed_origins}")
+        log.error(origin)
+        if origin:
+            try:
+                origin_domain = urlparse(origin).netloc
+                # Remove port if present (e.g., geoportail.lu:8080 -> geoportail.lu)
+                origin_domain = origin_domain.split(":")[0]
+                if origin_domain not in allowed_origins:
+                    log.error(
+                        f"CORS origin '{origin_domain}' in allowed origins."
+                    )                        
+                    response.headers.update(
+                        {
+                            "Access-Control-Allow-Origin": origin,
+                            "Access-Control-Allow-Methods": "POST,GET,DELETE,PUT,OPTIONS",
+                            "Access-Control-Allow-Headers": "Origin, "
+                            + "Content-Type, Accept, Authorization",
+                            "Access-Control-Allow-Credentials": "true",
+                            "Access-Control-Max-Age": "1728000",
+                        }
+                    )
+                else:
+                    log.error(
+                        f"CORS origin '{origin_domain}' not in allowed origins."
+                    )
 
-                except Exception as e:
-                    log.error(f"CORS origin parsing error: {e}")
-                    # If URL parsing fails, fall back to exact match
-                    if origin in allowed_origins:
-                        response.headers.update(
-                            {
-                                "Access-Control-Allow-Origin": origin,
-                                "Access-Control-Allow-Methods": "POST,GET,DELETE,PUT,OPTIONS",
-                                "Access-Control-Allow-Headers": "Origin, "
-                                + "Content-Type, Accept, Authorization",
-                                "Access-Control-Allow-Credentials": "true",
-                                "Access-Control-Max-Age": "1728000",
-                            }
-                        )
+            except Exception as e:
+                log.error(f"CORS origin parsing error: {e}")
+                # If URL parsing fails, fall back to exact match
+                if origin in allowed_origins:
+                    response.headers.update(
+                        {
+                            "Access-Control-Allow-Origin": origin,
+                            "Access-Control-Allow-Methods": "POST,GET,DELETE,PUT,OPTIONS",
+                            "Access-Control-Allow-Headers": "Origin, "
+                            + "Content-Type, Accept, Authorization",
+                            "Access-Control-Allow-Credentials": "true",
+                            "Access-Control-Max-Age": "1728000",
+                        }
+                    )
 
     event.request.add_response_callback(cors_headers)
 
@@ -296,6 +295,7 @@ def main(global_config, **settings):
     # geocoder routes
     config.add_route("reverse_geocode", "/geocode/reverse")
     config.add_route("geocode", "/geocode/search")
+    config.add_route("get_address_by_parcel", "/geocode/get_address_by_parcel")
     config.add_route("feedback", "/feedback")
     config.add_route("feedbackanf", "/feedbackanf")
     config.add_route("feedbackcrues", "/feedbackcrues")
