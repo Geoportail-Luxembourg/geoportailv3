@@ -159,6 +159,63 @@ class Geocode(object):
 
         return {'count': len(results), 'results': results}
 
+    # View used to get an address from a cadastral number (parcel ID).
+    @view_config(route_name="get_address_by_parcel", renderer="json")
+    def get_address_by_parcel(self):
+        parcel_id = self.request.params.get('parcel_id', None)
+
+        if parcel_id is None or len(parcel_id) == 0:
+            return HTTPBadRequest("Missing parcel_id parameter")
+
+        results = []
+
+        try:
+            # Query addresses by cadastral number
+            for feature in self.db_ecadastre.query(
+                    Address.id_caclr_loca.label("id_caclr_loca"),
+                    Address.id_caclr_rue.label("id_caclr_rue"),
+                    Address.id_caclr_bat.label("id_caclr_bat"),
+                    Address.rue.label("rue"),
+                    Address.numero.label("numero"),
+                    Address.localite.label("localite"),
+                    Address.code_postal.label("code_postal"),
+                    Address.cle_parcelle.label("cle_parcelle"),
+                    Address.geom.label("geometry"),
+                    func.ST_AsGeoJSON(Address.geom).label("geom"),
+                    func.ST_AsGeoJSON((func.ST_Transform(Address.geom, 4326))).
+                    label("geomlonlat")).filter(Address.cle_parcelle == parcel_id):
+                
+                shapely_geom = to_shape(feature.geometry)
+                communes = self.db_ecadastre.query(CommunesLimAdm). \
+                        filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
+                            "x": shapely_geom.x,
+                            "y": shapely_geom.y
+                        }, srid=2169), CommunesLimAdm.geom)
+                    ).first()
+                
+                results.append({"id_caclr_locality": feature.id_caclr_loca,
+                                "id_caclr_street": feature.id_caclr_rue,
+                                "id_caclr_bat": feature.id_caclr_bat,
+                                "street": feature.rue,
+                                "number": feature.numero,
+                                "locality": feature.localite,
+                                "commune": communes.commune if communes else None,
+                                "postal_code": feature.code_postal,
+                                "country": "Luxembourg",
+                                "country_code": "lu",
+                                "distance": 0,
+                                "contributor": "ACT",
+                                "parcel_id": feature.cle_parcelle,
+                                "geom": geojson_loads(feature.geom),
+                                "geomlonlat": geojson_loads(feature.geomlonlat)
+                                })
+
+        except Exception as e:
+            log.exception(e)
+            return HTTPBadRequest("Error querying address by parcel_id: " + str(e))
+
+        return {'count': len(results), 'results': results}
+
     def get_formatted_address(self, p_num, p_street, p_locality, p_zip):
         num = p_num
         if num is None:
