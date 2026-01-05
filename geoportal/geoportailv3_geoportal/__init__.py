@@ -296,6 +296,7 @@ def main(global_config, **settings):
     # geocoder routes
     config.add_route("reverse_geocode", "/geocode/reverse")
     config.add_route("geocode", "/geocode/search")
+    config.add_route("get_address_by_parcel", "/geocode/get_address_by_parcel")
     config.add_route("feedback", "/feedback")
     config.add_route("feedbackanf", "/feedbackanf")
     config.add_route("feedbackcrues", "/feedbackcrues")
