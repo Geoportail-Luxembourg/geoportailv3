@@ -1330,7 +1330,7 @@ class Getfeatureinfo(object):
                 log.exception(e)
                 log.error(url)
 
-            if measurements:
+            if measurements and self.request.params.get('noMeasurement', 'false').lower() != 'true':
                 try:
                     attributes['measurements'] = []
                     url = f"{base_url}/document/from-parcel-ids/?parcel_ids={fid}&include_descendants=false"
