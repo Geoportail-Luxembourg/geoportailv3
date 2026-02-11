@@ -964,6 +964,25 @@ class Getfeatureinfo(object):
                 pass
         return features
 
+    def rename_attributes(self, features, mapping):
+        """
+        Rename attributes in features based on a mapping dictionary.
+        
+        Args:
+            features: List of feature dictionaries
+            mapping: Dictionary with old_name -> new_name pairs
+                     Example: {"link": "link_folder", "path": "file_path"}
+        
+        Returns:
+            List of features with renamed attributes
+        """
+        for feature in features:
+            if 'attributes' in feature:
+                for old_name, new_name in mapping.items():
+                    if old_name in feature['attributes']:
+                        feature['attributes'][new_name] = feature['attributes'].pop(old_name)
+        return features
+
     def add_proxy(self, features, field):
         for feature in features:
             feature['attributes']['__proxy__'] = field
