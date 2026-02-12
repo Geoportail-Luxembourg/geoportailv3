@@ -1655,10 +1655,10 @@ class Map extends OpenLayersMap {
         if (this.mvtLayer_ !== undefined) {
           this.mvtLayer_.setVisible(false);
         }
-        if (this.layersConfig[select.value] && this.layersConfig[select.value].name === 'basemap_2015_global') {
-          if (this.mvtLayer_ === undefined) {
-            this.mvtLayer_ = this.MVTLayerFactory_();
-          }
+
+        if (this.layersConfig[select.value] && (this.layersConfig[select.value].name === 'basemap_2015_global' || 
+            this.layersConfig[select.value].name === 'topogr_global' || this.layersConfig[select.value].name === 'topo_bw_jpeg')) {
+          this.mvtLayer_ = this.MVTLayerFactory_(undefined, this.layersConfig[select.value].name);
           this.getLayers().setAt(0, this.mvtLayer_);
           this.mvtLayer_.setVisible(true);
         } else if (select.value === 'blank') {
