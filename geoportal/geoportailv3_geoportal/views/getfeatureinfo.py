@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import re
-
 import urllib.request
 import datetime
 import pyproj
@@ -1356,6 +1355,7 @@ class Getfeatureinfo(object):
                     req = urllib.request.Request(url, headers=hdr)
                     response = urllib.request.urlopen(req)
                     info = json.loads(response.read())
+                    authorized_download = {}
                     dossiers = {}
                     for mesurage_num in info[fid].keys():
                         documents = info[fid][mesurage_num]['documents']
@@ -1380,10 +1380,15 @@ class Getfeatureinfo(object):
                                         dossiers[cur_measurement['dossier_id']] = cur_dossier
                                     else:
                                         cur_dossier = dossiers[cur_measurement['dossier_id']]
-                                    cur_measurement['is_downloadable'] = \
-                                        Download(self.request)._is_download_authorized(
-                                        cur_dossier['commune_cadastrale']['directive_id'],
-                                        self.request.user, self.request.referer)
+                                    if cur_dossier['commune_cadastrale']['directive_id'] not in authorized_download:
+                                        
+                                        cur_measurement['is_downloadable'] = \
+                                            authorized_download[cur_dossier['commune_cadastrale']['directive_id']] = \
+                                            Download(self.request)._is_download_authorized(
+                                            cur_dossier['commune_cadastrale']['directive_id'],
+                                            self.request.user, self.request.referer)
+                                    else:
+                                        cur_measurement['is_downloadable'] = authorized_download[cur_dossier['commune_cadastrale']['directive_id']]
                                 if cur_measurement['is_downloadable']:
                                     if self.request.user.settings_role.id == 1:
                                         # if ACT Show everything
