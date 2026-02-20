@@ -353,6 +353,7 @@ def main(global_config, **settings):
     config.add_route("download_pdf", "/downloadpdf")
     config.add_route("download_measurement", "/downloadmeasurement")
     config.add_route("preview_measurement", "/previewmeasurement")
+    config.add_route("thumbnail_measurement", "/thumbnailmeasurement")
     config.add_route("qr", "/qr")
     config.add_route("getfeatureinfo", "/getfeatureinfo")
     config.add_route("getbuswidget", "/getbuswidget")
