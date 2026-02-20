@@ -60,11 +60,11 @@ def add_cors_headers_response_callback(event):
 
 def add_cors_origin_headers_response_callback(event):
     def cors_headers(request, response):
-        if "cors" in request.POST or "cors" in request.GET:
+        if True or "cors" in request.POST or "cors" in request.GET:
             origin = request.headers.get("Origin")
             # Allowlist of trusted domains; ideally, load from settings
             allowed_origins = os.environ.get(
-                "CORS_ALLOWED_ORIGINS", ""
+                "CORS_ALLOWED_ORIGINS", "localhost,"
             )
             if isinstance(allowed_origins, str):
                 allowed_origins = [
@@ -353,6 +353,7 @@ def main(global_config, **settings):
     config.add_route("download_pdf", "/downloadpdf")
     config.add_route("download_measurement", "/downloadmeasurement")
     config.add_route("preview_measurement", "/previewmeasurement")
+    config.add_route("thumbnail_measurement", "/thumbnailmeasurement")
     config.add_route("qr", "/qr")
     config.add_route("getfeatureinfo", "/getfeatureinfo")
     config.add_route("getbuswidget", "/getbuswidget")
