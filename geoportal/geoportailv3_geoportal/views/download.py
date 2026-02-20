@@ -214,11 +214,11 @@ class Download(object):
 
         return Response(f.read(), headers=headers)
 
-    def preview_measurement(self):
+    def preview_measurement(self, variant="public"):
         base_url = os.environ["API-ARCHIMET-URL"]
         api_key = os.environ["API-ARCHIMET-KEY"]
         document_id = self.request.params.get("document_id", None)
-        url = f"{base_url}/document/preview/{document_id}/?variant=public"
+        url = f"{base_url}/document/preview/{document_id}/?variant={variant}"
         hdr = {'api-key': api_key}
         req = urllib.request.Request(url, headers=hdr)
         response = urllib.request.urlopen(req)
@@ -254,6 +254,31 @@ class Download(object):
 
         headers = {"Content-Type": "image/png"}
         return Response(response.read(), headers=headers)
+
+    @view_config(route_name='thumbnail_measurement')
+    def thumbnail_measurement(self):
+        base_url = os.environ["API-ARCHIMET-URL"]
+        api_key = os.environ["API-ARCHIMET-KEY"]
+        document_id = self.request.params.get("document_id", None)
+        if self.request.user is None and self.request.referer is None and document_id is None:
+            return self.preview_measurement()
+        hdr = {'api-key': api_key}
+        url = f"{base_url}/document/{document_id}/"
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        cur_doc = json.loads(response.read())
+        dossier_id = cur_doc['dossier_id']
+        url = f"{base_url}/dossiers/{dossier_id}/"
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        cur_dossier = json.loads(response.read())
+        if not self._is_download_authorized(
+            cur_dossier['commune_cadastrale']['directive_id'],
+            self.request.user, self.request.referer):
+            return self.preview_measurement()
+
+        return self.preview_measurement(variant="thumbnail")
+
 
     def _log_download_sketch_stats(self, filename, town):
         sketch_download = SketchDownload()
