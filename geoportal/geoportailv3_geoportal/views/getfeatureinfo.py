@@ -1369,6 +1369,7 @@ class Getfeatureinfo(object):
                                 cur_measurement['description'] = document['document_type']['name']
                                 cur_measurement['dossier_id'] = document['dossier_id']
                                 cur_measurement['document_id'] = document['id']
+                                cur_measurement['target_audience'] = 'public'
                                 if self.request.user is None:
                                     cur_measurement['is_downloadable'] = False
                                 else:
@@ -1391,6 +1392,14 @@ class Getfeatureinfo(object):
                                         cur_measurement['is_downloadable'] = authorized_download[cur_dossier['commune_cadastrale']['directive_id']]
                                 if cur_measurement['is_downloadable']:
                                     if self.request.user.settings_role.id == 1:
+                                        if document['document_type']['directive_code_archivage'] is not None and \
+                                           document['document_type']['directive_code_archivage'] in ('DAI'):
+                                            cur_measurement['target_audience'] = 'ACT'
+                                        elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
+                                                document['document_type']['directive_code_archivage'] in ('DTC' , 'DAE', None):
+                                            cur_measurement['target_audience'] = 'GO'
+                                        else:
+                                            cur_measurement['target_audience'] = 'GO'
                                         # if ACT Show everything
                                         attributes['measurements'].append(cur_measurement)
                                     elif document['document_type']['name'] in ('OTHER_PRIVATE') or \
@@ -1398,6 +1407,14 @@ class Getfeatureinfo(object):
                                         # do not show
                                         pass
                                     else:
+                                        if document['document_type']['directive_code_archivage'] is not None and \
+                                           document['document_type']['directive_code_archivage'] in ('DAI'):
+                                            cur_measurement['target_audience'] = 'ACT'
+                                        elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
+                                                document['document_type']['directive_code_archivage'] in ( 'DTC' , 'DAE', None):
+                                            cur_measurement['target_audience'] = 'GO'
+                                        else:
+                                            cur_measurement['target_audience'] = 'GO'
                                         attributes['measurements'].append(cur_measurement)
                                 elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
                                      document['document_type']['directive_code_archivage'] in ('DAI', 'DTC' , 'DAE', None):
@@ -1408,6 +1425,7 @@ class Getfeatureinfo(object):
                                     attributes['measurements'].append(cur_measurement)
                         else:
                             cur_measurement = {}
+                            cur_measurement['target_audience'] = 'public'
                             cur_measurement['measurementNumber'] = mesurage_num
                             cur_measurement['parcelId'] = fid
                             cur_measurement['document_id'] = None
