@@ -1370,6 +1370,7 @@ class Getfeatureinfo(object):
                                 cur_measurement['dossier_id'] = document['dossier_id']
                                 cur_measurement['document_id'] = document['id']
                                 cur_measurement['target_audience'] = 'public'
+                                cur_measurement['available_formats'] = document['available_formats'] if 'available_formats' in document and document['available_formats'] is not None else []
                                 if self.request.user is None:
                                     cur_measurement['is_downloadable'] = False
                                 else:
