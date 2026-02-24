@@ -164,7 +164,7 @@ class Download(object):
             base_url = os.environ["API-ARCHIMET-URL"]
             api_key = os.environ["API-ARCHIMET-KEY"]
             hdr = {'api-key': api_key}
-
+            format = self.request.params.get("format", "pdf")
             url = f"{base_url}/document/{document_id}/"
             req = urllib.request.Request(url, headers=hdr)
             response = urllib.request.urlopen(req)
@@ -179,13 +179,12 @@ class Download(object):
                 self.request.user, self.request.referer):
                 return HTTPUnauthorized()
 
-            url = f"{base_url}/document/file/{document_id}/?document_format=pdf"
+            url = f"{base_url}/document/file/{document_id}/?document_format={format}"
             req = urllib.request.Request(url, headers=hdr)
             response = urllib.request.urlopen(req)
-            headers = {"Content-Type": "application/pdf",
-                   "Content-Disposition": "attachment; filename=\"%s\""
-                   % (str(filename))}
-            return Response(response.read(), headers=response.headers)
+            headers = {"Content-Type": f"application/{format}",
+                   "Content-Disposition": f"attachment; filename=\"{filename}\""}
+            return Response(response.read(), headers=headers)
         
         if filename is None or townname is None:
             return HTTPBadRequest("parameters are missing")
