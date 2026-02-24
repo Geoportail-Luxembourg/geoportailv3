@@ -182,8 +182,9 @@ class Download(object):
             url = f"{base_url}/document/file/{document_id}/?document_format={format}"
             req = urllib.request.Request(url, headers=hdr)
             response = urllib.request.urlopen(req)
+            content_disposition = f"attachment; filename=\"{filename}\"" if filename is not None else "attachment"
             headers = {"Content-Type": f"application/{format}",
-                   "Content-Disposition": f"attachment; filename=\"{filename}\""}
+                   "Content-Disposition": content_disposition}
             return Response(response.read(), headers=headers)
         
         if filename is None or townname is None:
