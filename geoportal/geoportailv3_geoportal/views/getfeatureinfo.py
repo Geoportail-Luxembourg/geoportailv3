@@ -1398,8 +1398,6 @@ class Getfeatureinfo(object):
                                         elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
                                                 document['document_type']['directive_code_archivage'] in ('DTC' , 'DAE', None):
                                             cur_measurement['target_audience'] = 'GO'
-                                        else:
-                                            cur_measurement['target_audience'] = 'GO'
                                         # if ACT Show everything
                                         attributes['measurements'].append(cur_measurement)
                                     elif document['document_type']['name'] in ('OTHER_PRIVATE') or \
@@ -1412,8 +1410,6 @@ class Getfeatureinfo(object):
                                             cur_measurement['target_audience'] = 'ACT'
                                         elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
                                                 document['document_type']['directive_code_archivage'] in ( 'DTC' , 'DAE', None):
-                                            cur_measurement['target_audience'] = 'GO'
-                                        else:
                                             cur_measurement['target_audience'] = 'GO'
                                         attributes['measurements'].append(cur_measurement)
                                 elif document['document_type']['name'] in ('OTHER_PRIVATE', 'VERTICAL') or \
