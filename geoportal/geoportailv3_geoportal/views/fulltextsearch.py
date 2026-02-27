@@ -477,7 +477,7 @@ class FullTextSearchView(object):
                 except Exception as e:
                     log.exception(e)
                     log.error(url)
-                    return []
+                    continue
 
                 try:
                     mf = fiona.MemoryFile(content)
