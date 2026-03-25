@@ -31,7 +31,7 @@
     "jsdoc-plugin-typescript": "^2.0.6",
     "jsdom": "11.10.0",
     "koa-proxies": "^0.12.2",
-    "less": "^4.1.2",
+    "less": "4.1.2",
     "node-fetch": "^2.6.6",
     "node-fetch-with-proxy": "^0.1.6",
     "webpack": "^5.54.0",
