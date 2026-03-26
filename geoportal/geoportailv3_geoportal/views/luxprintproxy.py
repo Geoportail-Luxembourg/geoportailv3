@@ -394,11 +394,12 @@ class LuxPrintProxy(PrintProxy):
         css = weasyprint.CSS(
             string="img {max-height: 800px}"
         )
-
+        doku_wiki_url = ""
+        if 'DOKU_WIKI_URL' in os.environ:
+            doku_wiki_url = os.environ.get('DOKU_WIKI_URL')
         url = \
-            "http://wiki.geoportail.lu/doku.php?" \
-            "id=%s:legend:%s&do=export_html" % \
-            (lang, name)
+            "%s?id=%s:legend:%s&do=export_html" % \
+            (doku_wiki_url,lang, name)
         log.info("Get legend from URL:\n%s." % url)
 
         legend_buffer = BytesIO()
