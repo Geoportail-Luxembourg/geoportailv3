@@ -392,6 +392,78 @@ class Mymaps(object):
         os.remove(zippath)
         return response
 
+    def exportgeopackage(self):
+        doc = self.request.params.get("doc")
+        if doc is None:
+            return HTTPBadRequest("doc parameter is required")
+        feature_collection = geojson.\
+            loads(doc, object_hook=geojson.GeoJSON.to_instance)
+        name = self.request.params.get("name")
+        if name is None:
+            name = "export"
+        filename = name + ".gpkg"
+        from tempfile import NamedTemporaryFile
+        with NamedTemporaryFile(suffix=".gpkg", delete=False) as tmp:
+            gpkg_path = tmp.name
+        # GDAL GPKG driver cannot overwrite an existing file,
+        # so remove the empty file created by NamedTemporaryFile first.
+        os.remove(gpkg_path)
+        try:
+            driver = ogr.GetDriverByName('GPKG')
+            ds = driver.CreateDataSource(gpkg_path)
+            srs = osr.SpatialReference()
+            srs.ImportFromEPSG(2169)
+            layer_line = None
+            layer_polygon = None
+            layer_point = None
+            i = 0
+            for feature in feature_collection.features:
+                i = i + 1
+                geom = ogr.CreateGeometryFromJson(geojson.dumps(feature.geometry))
+                if feature.geometry.type == 'LineString':
+                    if layer_line is None:
+                        layer_line = self.create_layer(ds, ogr.wkbLineString, srs)
+                    featureDefn = layer_line.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_line.CreateFeature(featureogr)
+                if feature.geometry.type == 'Polygon':
+                    if layer_polygon is None:
+                        layer_polygon = self.create_layer(ds, ogr.wkbPolygon, srs)
+                    featureDefn = layer_polygon.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_polygon.CreateFeature(featureogr)
+                if feature.geometry.type == 'Point':
+                    if layer_point is None:
+                        layer_point = self.create_layer(ds, ogr.wkbPoint, srs)
+                    featureDefn = layer_point.GetLayerDefn()
+                    featureogr = ogr.Feature(featureDefn)
+                    featureogr.SetGeometry(geom)
+                    featureogr.SetField("id", i)
+                    featureogr.SetField("name", str(feature.properties.get('name')))
+                    featureogr.SetField("descr", str(feature.properties.get('description')))
+                    layer_point.CreateFeature(featureogr)
+                featureogr = None
+            ds = None
+            headers = {"Content-Type": "application/geopackage+sqlite3",
+                       "Content-Disposition": "attachment; filename=\""
+                       + str(filename) + "\""}
+            f = open(gpkg_path, "rb")
+            response = Response(f.read(), headers=headers)
+            f.close()
+            return response
+        finally:
+            if os.path.exists(gpkg_path):
+                os.remove(gpkg_path)
+
+
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):
         """
@@ -403,6 +475,8 @@ class Mymaps(object):
             return HTTPBadRequest("format parameter is required")
         if fmt == 'shape':
             return self.exportshape()
+        if fmt == 'gpkg':
+            return self.exportgeopackage()
 
         if fmt not in _CONTENT_TYPES:
             return HTTPBadRequest("format is not supported : '" + fmt + "'")
