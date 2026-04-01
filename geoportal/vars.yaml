@@ -334,6 +334,7 @@ vars:
     - {name: pygeoapi_id_field, type: string}
     - {name: pygeoapi_override_rest_url, type: string}
     - {name: pygeoapi_override_layers, type: string}
+    - {name: layer_aliases, type: string}
     layer_tree_max_nodes: 1000
     # Default values for the admin interface's maps.
     map:
