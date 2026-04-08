@@ -10,6 +10,7 @@ from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 from datetime import datetime
+import os
 import urllib
 import json
 import sys
@@ -227,7 +228,10 @@ class LuxThemes(Theme):
             layer_theme["imageType"] = layer.ogc_server.image_type
             if layer.style:  # pragma: no cover
                 layer_theme["style"] = layer.style
-
+            public_wms_url = os.environ.get("PUBLIC_WMS_URL")
+            if layer.public and public_wms_url:
+                layer_theme["url"] = public_wms_url
+                layer_theme["layers"] = layer_theme["id"]
             wms, wms_errors = self._wms_layers(layer.ogc_server)
             errors |= wms_errors
             if wms is None:
