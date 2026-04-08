@@ -140,9 +140,10 @@ class Metadata(object):
             url = pick_localized(link.get("urlObject"))
             if not url:
                 continue
-            name = pick_localized(link.get("nameObject")) or ""
+            name = (pick_localized(link.get("nameObject")) or "").replace("|", " ")
+            description = (pick_localized(link.get("descriptionObject")) or "").replace("|", " ")
             protocol = link.get("protocol") or ""
-            extracted.append("|".join([name, "", url, protocol]))
+            extracted.append("|".join([name, "", url, protocol, description]))
         return extracted
 
     def _extract_keywords(self, all_keywords, fallback_keys):
