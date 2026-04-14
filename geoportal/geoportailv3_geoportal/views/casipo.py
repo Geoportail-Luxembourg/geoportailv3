@@ -57,7 +57,7 @@ class Casipo(object):
                 commune = res['commune_administrative']
 
             local_tz = pytz.timezone('Europe/Paris')
-            self.filename = '/tmp/%s_%s_Extrait_CASIPO_%s.pdf' % (str(datetime.datetime.now(local_tz).strftime("%Y%m%d")), commune, str(cnt))
+            self.filename = '/tmp/%s_Extrait_CASIPO_%s_%s.pdf' % (str(datetime.datetime.now(local_tz).strftime("%Y%m%d")), str(cnt), commune)
             with open(self.filename, 'wb') as fp:
                 shutil.copyfileobj(data, fp)
         except Exception as e:
