@@ -75,6 +75,41 @@ I18N_CLIENT_SOURCE_FILES = \
 	$(APP_JS_FILES)
 
 
+.PHONY: local-update-pots
+local-update-pots: local-update-pots-client-merged local-update-pots-server local-update-pots-legends local-update-pots-tooltips 
+
+.PHONY: local-update-pots-client
+local-update-pots-client:
+	# Handle client-angular.pot (without themes/layers)
+	pot-create --config lingua-client.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client-angular.pot $(I18N_CLIENT_SOURCE_FILES)
+
+.PHONY: local-update-pots-client-merged
+local-update-pots-client-merged: local-update-pots-client local-update-pots-layers
+	# Merge client-angular.pot and layers.pot to keep the legacy client.pot output
+	msgcat /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client-angular.pot /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot --sort-output --output-file=/tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+
+.PHONY: local-update-pots-layers
+local-update-pots-layers:
+	# Handle layers/themes.pot (without Angular/Gettext)
+	pot-create --config lingua-layers.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot geoportal/pot-create.ini
+
+.PHONY: local-update-pots-server
+local-update-pots-server:
+	# Handle server.pot
+	pot-create --config lingua-server.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
+
+.PHONY: local-update-pots-legends
+local-update-pots-legends:
+	# Handle legends.pot
+	pot-create --config lingua-legends.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot geoportal/pot-create.ini
+
+.PHONY: local-update-pots-tooltips
+local-update-pots-tooltips:
+	# Handle tooltips.pot
+	pot-create --config lingua-tooltips.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot geoportal/pot-create.ini
+
+
+
 .PHONY: update-pots
 update-pots: update-pots-client-merged update-pots-server update-pots-legends update-pots-tooltips
 	echo "This target must be run inside Luxembourg internal network"
