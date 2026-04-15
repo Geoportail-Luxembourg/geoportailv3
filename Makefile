@@ -9,6 +9,7 @@ UTILITY_HELP = -e "- update-translations	Synchronize the translations with Trans
         "\n- recreate-search-poi	Recreate the ElasticSearch POI Index (docker)" \
         "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index (docker)" \
         "\n- update-search-layers	Update the ElasticSearch Layers Index (docker)" \
+	"\n- update-pots-layers\tGenerate themes/layers pot only (docker)" \
         "\n- update-pots	Update client, server, tooltips and legends pots (docker, to be run from internal network)"
 
 SERVER_LOCALISATION_SOURCES_FILES = \
@@ -97,6 +98,12 @@ update-pots-tooltips:
 	# Handle tooltips.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/pot-create.ini
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
+
+.PHONY: update-pots-layers
+update-pots-layers:
+	# Handle layers/themes.pot (without Angular/Gettext)
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-layers.cfg --output /tmp/layers.pot geoportal/pot-create.ini
+	docker cp $(DOCKER_CONTAINER):/tmp/layers.pot geoportal/geoportailv3_geoportal/locale/geoportailv4_layers-layers.pot
 
 .PHONY: update-web-component-translations
 update-web-component-translations:
