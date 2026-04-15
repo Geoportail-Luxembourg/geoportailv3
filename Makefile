@@ -86,12 +86,12 @@ local-update-pots-client:
 .PHONY: local-update-pots-client-merged
 local-update-pots-client-merged: local-update-pots-client local-update-pots-layers
 	# Merge client-angular.pot and layers.pot to keep the legacy client.pot output
-	msgcat /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client-angular.pot /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot --sort-output --output-file=/tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+	msgcat /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client-angular.pot /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv4_geoportal-layers.pot --sort-output --output-file=/tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 
 .PHONY: local-update-pots-layers
 local-update-pots-layers:
 	# Handle layers/themes.pot (without Angular/Gettext)
-	pot-create --config lingua-layers.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot geoportal/pot-create.ini
+	pot-create --config lingua-layers.cfg --output /tmp/geoportal/geoportailv3_geoportal/locale/geoportailv4_geoportal-layers.pot geoportal/pot-create.ini
 
 .PHONY: local-update-pots-server
 local-update-pots-server:
@@ -149,7 +149,7 @@ update-pots-tooltips:
 update-pots-layers:
 	# Handle layers/themes.pot (without Angular/Gettext)
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-layers.cfg --output /tmp/layers.pot geoportal/pot-create.ini
-	docker cp $(DOCKER_CONTAINER):/tmp/layers.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot
+	docker cp $(DOCKER_CONTAINER):/tmp/layers.pot geoportal/geoportailv3_geoportal/locale/geoportailv4_geoportal-layers.pot
 
 .PHONY: update-web-component-translations
 update-web-component-translations:
