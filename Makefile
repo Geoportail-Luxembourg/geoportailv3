@@ -10,6 +10,7 @@ UTILITY_HELP = -e "- update-translations	Synchronize the translations with Trans
         "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index (docker)" \
         "\n- update-search-layers	Update the ElasticSearch Layers Index (docker)" \
 	"\n- update-pots-layers\tGenerate themes/layers pot only (docker)" \
+	"\n- update-pots-client-merged\tMerge client + layers pots (docker)" \
         "\n- update-pots	Update client, server, tooltips and legends pots (docker, to be run from internal network)"
 
 SERVER_LOCALISATION_SOURCES_FILES = \
@@ -65,20 +66,30 @@ APP_HTML_FILES += $(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
 
 I18N_SOURCE_FILES += \
-    pot-create.ini \
-  $(APP_HTML_FILES) \
+		pot-create.ini \
+	$(APP_HTML_FILES) \
+	$(APP_JS_FILES)
+
+I18N_CLIENT_SOURCE_FILES = \
+	$(APP_HTML_FILES) \
 	$(APP_JS_FILES)
 
 
 .PHONY: update-pots
-update-pots: update-pots-client update-pots-server update-pots-legends update-pots-tooltips
+update-pots: update-pots-client-merged update-pots-server update-pots-legends update-pots-tooltips
 	echo "This target must be run inside Luxembourg internal network"
 
 .PHONY: update-pots-client
 update-pots-client:
-	# Handle client.pot
+	# Handle client-angular.pot (without themes/layers)
 	#docker cp ./config/print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
-	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client-angular.pot $(I18N_CLIENT_SOURCE_FILES)
+	docker cp $(DOCKER_CONTAINER):/tmp/client-angular.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client-angular.pot
+
+.PHONY: update-pots-client-merged
+update-pots-client-merged: update-pots-client update-pots-layers
+	# Merge client-angular.pot and layers.pot to keep the legacy client.pot output
+	docker exec $(DOCKER_CONTAINER) msgcat /tmp/client-angular.pot /tmp/layers.pot --sort-output --output-file=/tmp/client.pot
 	docker cp $(DOCKER_CONTAINER):/tmp/client.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 
 .PHONY: update-pots-server
@@ -103,7 +114,7 @@ update-pots-tooltips:
 update-pots-layers:
 	# Handle layers/themes.pot (without Angular/Gettext)
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-layers.cfg --output /tmp/layers.pot geoportal/pot-create.ini
-	docker cp $(DOCKER_CONTAINER):/tmp/layers.pot geoportal/geoportailv3_geoportal/locale/geoportailv4_layers-layers.pot
+	docker cp $(DOCKER_CONTAINER):/tmp/layers.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-layers.pot
 
 .PHONY: update-web-component-translations
 update-web-component-translations:
