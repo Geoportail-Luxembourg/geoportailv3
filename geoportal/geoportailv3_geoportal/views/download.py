@@ -62,7 +62,11 @@ class Download(object):
     def download_sketch_by_id(self):
         id = self.request.params.get('id', None)
         timeout = 15
-        ng_url = "https://arcgis-portal.public.lu/server/rest/services/Cadastre/TOPO_NG_POINTS_PUBLIC/MapServer/0/"
+        ng_url = os.environ.get("NG_URL")
+        if not ng_url:
+            return HTTPBadRequest("NG_URL is not configured")
+        if not ng_url.endswith('/'):
+            ng_url += '/'
         url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
         pdf_id = None
         pdf_name = None
