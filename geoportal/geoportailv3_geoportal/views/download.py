@@ -79,10 +79,10 @@ class Download(object):
                     pdf_id = info["id"]
                     pdf_name = info["name"]
         except:
-            print (url1)
+            log.error (url1)
             return HTTPBadRequest()
         if pdf_name is None or pdf_id is None:
-            print (url1)
+            log.error (url1)
             return HTTPBadRequest()
         url2 = ng_url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
 
@@ -90,7 +90,7 @@ class Download(object):
             f = urllib.request.urlopen(url2, None, timeout)
             data = f.read()
         except:
-            print (url2)
+            log.error (url2)
             return HTTPBadRequest()
 
         headers = {"Content-Type": "application/pdf",
