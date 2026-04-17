@@ -32,8 +32,8 @@ source_lang = frp
 type = PO
 
 [o:geoportail:p:geoportailv3-lu:r:geoportailv4-layers]
-file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv4_layers-layers.po
-source_file = geoportal/geoportailv3_geoportal/locale/geoportailv4_layers-layers.pot
+file_filter = geoportal/geoportailv3_geoportal/locale/<lang>/LC_MESSAGES/geoportailv4_geoportal-layers.po
+source_file = geoportal/geoportailv3_geoportal/locale/geoportailv4_geoportal-layers.pot
 source_lang = frp
 type = PO
 
