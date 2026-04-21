@@ -35,6 +35,21 @@ ESRI_TIME_CONSTANTS = {
 # override c2cgeoportal Theme class to customize handling of WMS and WMTS time positions and prepare
 # the theme tree for ngeo time functions
 class LuxThemes(Theme):
+    @staticmethod
+    def _get_ancestor_theme_names(item):
+        names = set()
+        for rel in item.parents_relation:
+            parent = rel.treegroup
+            if isinstance(parent, ThemeModel):
+                names.add(parent.name.lower())
+            else:
+                names |= LuxThemes._get_ancestor_theme_names(parent)
+        return names
+
+    def _is_public_wms_override_excluded(self, layer):
+        excluded = {g.strip().lower() for g in os.environ.get("PUBLIC_WMS_GROUPS_TO_EXCLUDE", "").split(",") if g.strip()}
+        return bool(excluded and self._get_ancestor_theme_names(layer) & excluded)
+
     async def _wms_getcap(self, ogc_server, preload=False):
         errors = set()
         if preload:
@@ -229,7 +244,7 @@ class LuxThemes(Theme):
             if layer.style:  # pragma: no cover
                 layer_theme["style"] = layer.style
             public_wms_url = os.environ.get("PUBLIC_WMS_URL")
-            if layer.public and public_wms_url:
+            if layer.public and public_wms_url and not self._is_public_wms_override_excluded(layer):
                 layer_theme["url"] = public_wms_url
                 layer_theme["layers"] = layer_theme["id"]
             wms, wms_errors = self._wms_layers(layer.ogc_server)
