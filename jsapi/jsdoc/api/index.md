@@ -16,7 +16,7 @@ A catalog of public mymaps is available on the [List of public Mymaps page](./ex
 The Geoportail.lu V4 API is built on top of the [OpenLayers API](https://openlayers.org/en/v6.9.0/apidoc/)
 The Geoportail.lu V4 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.
 
-Feel free to visit our [GitHub repository](https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/geoportal/jsapi) to have a look on our source code.
+Feel free to visit our [GitHub repository](https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/jsapi) to have a look on our source code.
 
 All the needed resources are loaded by including the following js script.
 ```html
