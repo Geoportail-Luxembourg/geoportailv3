@@ -976,10 +976,12 @@ class Getfeatureinfo(object):
             List of features with renamed attributes
         """
         for feature in features:
-            if 'attributes' in feature:
-                for old_name, new_name in mapping.items():
-                    if old_name in feature['attributes']:
-                        feature['attributes'][new_name] = feature['attributes'].pop(old_name)
+            if 'attributes' in feature and isinstance(feature['attributes'], dict):
+                renamed_attributes = {}
+                for key, value in feature['attributes'].items():
+                    target_key = mapping.get(key, key)
+                    renamed_attributes[target_key] = value
+                feature['attributes'] = renamed_attributes
         return features
 
     def add_proxy(self, features, field):
