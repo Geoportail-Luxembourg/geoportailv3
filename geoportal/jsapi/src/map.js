@@ -1471,7 +1471,7 @@ lux.findLayerByName_ = function(name, layers) {
     }
   }
   return;
-}
+};
 
 
 /**
