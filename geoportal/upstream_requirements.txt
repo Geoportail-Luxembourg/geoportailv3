@@ -35,7 +35,7 @@ lingua==4.13  # i18n
 Mako==1.0.7  # geoportal
 mccabe==0.6.1  # lint
 mypy==0.670  # lint
-OWSLib==0.17.1  # geoportal
+OWSLib==0.28.1  # geoportal
 papyrus==2.4  # commons, geoportal
 passwordgenerator # geoportal
 PasteScript==3.1.0  # geoportal pcreate
