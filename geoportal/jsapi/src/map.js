@@ -1436,7 +1436,7 @@ lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
  * @return {luxx.LayersOptions|undefined} The layer config.
  * @private
  */
-function findLayerByName_(name, layers) {
+lux.findLayerByName_ = function(name, layers) {
   for (var i in layers) {
     var layer = layers[i];
     if (layer.name == name) {
@@ -1472,6 +1472,7 @@ function findLayerByName_(name, layers) {
   }
   return;
 }
+
 
 /**
  * It adds a simple background selector control into a specific html element.
