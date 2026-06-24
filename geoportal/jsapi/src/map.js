@@ -1442,9 +1442,37 @@ lux.findLayerByName_ = function(name, layers) {
     if (layer.name == name) {
       return layer;
     }
+
+    var aliases = undefined;
+    if (layer.metadata && layer.metadata.layer_aliases !== undefined) {
+      aliases = layer.metadata.layer_aliases;
+    } else if (layer.layer_aliases !== undefined) {
+      aliases = layer.layer_aliases;
+    }
+
+    if (Array.isArray(aliases) && aliases.indexOf(name) !== -1) {
+      return layer;
+    }
+
+    if (typeof aliases === 'string') {
+      var parsedAliases = aliases
+        .replace(/^\s*\[/, '')
+        .replace(/\]\s*$/, '')
+        .split(',')
+        .map(function(alias) {
+          return alias.trim().replace(/^['"]|['"]$/g, '');
+        })
+        .filter(function(alias) {
+          return alias.length > 0;
+        });
+      if (parsedAliases.indexOf(name) !== -1) {
+        return layer;
+      }
+    }
   }
   return;
 };
+
 
 /**
  * It adds a simple background selector control into a specific html element.
