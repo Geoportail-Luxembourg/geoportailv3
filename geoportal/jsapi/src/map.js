@@ -1437,17 +1437,16 @@ lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
  * @private
  */
 lux.findLayerByName_ = function(name, layers) {
-  for (var i in layers) {
+for (var i in layers) {
     var layer = layers[i];
     if (layer.name == name) {
       return layer;
     }
 
     var aliases = undefined;
-    if (layer.metadata && layer.metadata.layer_aliases !== undefined) {
-      aliases = layer.metadata.layer_aliases;
-    } else if (layer.layer_aliases !== undefined) {
-      aliases = layer.layer_aliases;
+    var curMetadata = layer.get('metadata');
+    if (curMetadata && curMetadata['layer_aliases'] !== undefined) {
+      aliases = curMetadata['layer_aliases'];
     }
 
     if (Array.isArray(aliases) && aliases.indexOf(name) !== -1) {
