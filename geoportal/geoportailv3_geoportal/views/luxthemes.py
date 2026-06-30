@@ -9,6 +9,7 @@ from c2cgeoportal_commons import models
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
+from sqlalchemy.orm import selectinload
 from datetime import datetime
 import os
 import urllib
@@ -35,15 +36,35 @@ ESRI_TIME_CONSTANTS = {
 # override c2cgeoportal Theme class to customize handling of WMS and WMTS time positions and prepare
 # the theme tree for ngeo time functions
 class LuxThemes(Theme):
-    @staticmethod
-    def _get_ancestor_theme_names(item):
+    def _internal_layers_prefetch(self):
+        cache = getattr(self.request, "_lux_internal_layers_prefetch", None)
+        if cache is not None:
+            return cache
+
+        query = DBSession.query(LuxLayerInternalWMS).options(
+            selectinload('ogc_server'),
+            selectinload('metadatas')
+        )
+        by_id = {}
+        by_name = {}
+        for layer in query:
+            by_id[layer.id] = layer
+            by_name[layer.name] = layer
+        cache = {
+            "by_id": by_id,
+            "by_name": by_name,
+        }
+        setattr(self.request, "_lux_internal_layers_prefetch", cache)
+        return cache
+
+    def _get_ancestor_theme_names(self, item):
         names = set()
         for rel in item.parents_relation:
             parent = rel.treegroup
             if isinstance(parent, ThemeModel):
                 names.add(parent.name.lower())
             else:
-                names |= LuxThemes._get_ancestor_theme_names(parent)
+                names |= self._get_ancestor_theme_names(parent)
         return names
 
     def _is_public_wms_override_excluded(self, layer):
@@ -75,10 +96,23 @@ class LuxThemes(Theme):
         return {'name': theme, 'is_private': False}
 
     def _wms_layers(self, ogc_server):
-        if ogc_server.name == "Internal WMS":
-            return self._wms_layers_internal()
+        cache = getattr(self.request, "_lux_wms_layers_cache", None)
+        if cache is None:
+            cache = {}
+            setattr(self.request, "_lux_wms_layers_cache", cache)
 
-        return super()._wms_layers(ogc_server)
+        cache_key = ogc_server.name
+        if cache_key in cache:
+            return cache[cache_key]
+
+        if ogc_server.name == "Internal WMS":
+            result = self._wms_layers_internal()
+            cache[cache_key] = result
+            return result
+
+        result = super()._wms_layers(ogc_server)
+        cache[cache_key] = result
+        return result
 
     def _layer(self, layer, time_=None, dim=None, mixed=True):
         layer_theme, l_errors = super()._layer(layer, time_, dim, mixed)
@@ -118,7 +152,12 @@ class LuxThemes(Theme):
     def _wms_layers_internal(self):
         layers = {}
         errors = set()
-        for i, layer in enumerate(DBSession.query(LuxLayerInternalWMS)):
+        # Eager load all relations to avoid N+1 queries
+        query = DBSession.query(LuxLayerInternalWMS).options(
+            selectinload('metadatas'),
+            selectinload('ogc_server')
+        )
+        for layer in query:
             if layer.time_mode != 'disabled' and layer.rest_url is not None and len(layer.rest_url) > 0:
                 query_params = {'f': 'pjson'}
                 use_auth = layer.use_auth
@@ -194,7 +233,7 @@ class LuxThemes(Theme):
                 try:
                     override_time_config = json.loads(time_configs[0].value).get("time_override")
                     layers[layer.name + '__' + sublayer].update(override_time_config)
-                except:
+                except Exception:
                     pass
         return {"layers": layers}, errors
 
@@ -240,20 +279,27 @@ class LuxThemes(Theme):
 
     def _fill_wms(self, layer_theme, layer, errors, mixed):
         if isinstance(layer, LuxLayerInternalWMS):
-            layer_theme["imageType"] = layer.ogc_server.image_type
-            if layer.style:  # pragma: no cover
-                layer_theme["style"] = layer.style
+            prefetched = self._internal_layers_prefetch()
+            prefetched_layer = prefetched["by_id"].get(layer.id)
+            if prefetched_layer is None:
+                prefetched_layer = prefetched["by_name"].get(layer.name)
+                if prefetched_layer is None:
+                    prefetched_layer = layer
+
+            layer_theme["imageType"] = prefetched_layer.ogc_server.image_type
+            if prefetched_layer.style:  # pragma: no cover
+                layer_theme["style"] = prefetched_layer.style
             public_wms_url = os.environ.get("PUBLIC_WMS_URL")
-            if layer.public and public_wms_url and not self._is_public_wms_override_excluded(layer):
+            if prefetched_layer.public and public_wms_url and not self._is_public_wms_override_excluded(prefetched_layer):
                 layer_theme["url"] = public_wms_url
                 layer_theme["layers"] = layer_theme["id"]
-            wms, wms_errors = self._wms_layers(layer.ogc_server)
+            wms, wms_errors = self._wms_layers(prefetched_layer.ogc_server)
             errors |= wms_errors
             if wms is None:
                 return
             layer_theme["childLayers"] = []
-            for layer_name in layer.layers.split(",") if layer.layers is not None else []:
-                full_layer_name = layer.name + '__' + layer_name
+            for layer_name in prefetched_layer.layers.split(",") if prefetched_layer.layers is not None else []:
+                full_layer_name = prefetched_layer.name + '__' + layer_name
                 if full_layer_name in wms["layers"]:
                     wms_layer_obj = wms["layers"][full_layer_name]
                     if not wms_layer_obj["children"]:
@@ -264,7 +310,7 @@ class LuxThemes(Theme):
                 else:
                     errors.add(
                         "The sublayer '{}' of internal layer {} is not defined in WMS capabilities".format(
-                            layer_name, layer.name
+                            layer_name, prefetched_layer.name
                         )
                     )
         else:
