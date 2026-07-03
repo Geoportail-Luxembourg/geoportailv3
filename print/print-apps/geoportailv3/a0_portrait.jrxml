@@ -130,7 +130,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Serif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dateText}+java.time.ZonedDateTime.now(java.time.ZoneId.of("Europe/Luxembourg")).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm z"))]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement x="2190" y="80" width="40" height="40" uuid="ad0b3354-cc49-4b7f-a95d-15732e17692b"/>
