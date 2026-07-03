@@ -12,6 +12,9 @@ import weasyprint
 import urllib.request
 import httplib2
 import json
+from collections import Counter
+
+from PIL import Image, ImageChops
 
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
@@ -19,6 +22,63 @@ from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, rea
 import logging
 
 log = logging.getLogger(__name__)
+
+LEGEND_CROP_PADDING = 4
+
+
+def _legend_content_bbox(image):
+    """Return the bounding box of pixels differing from the border background."""
+    width, height = image.size
+
+    sample_points = [
+        (0, 0),
+        (width - 1, 0),
+        (0, height - 1),
+        (width - 1, height - 1),
+        (width // 2, 0),
+        (width // 2, height - 1),
+        (0, height // 2),
+        (width - 1, height // 2),
+    ]
+
+    background_color = Counter(
+        image.getpixel(point) for point in sample_points
+    ).most_common(1)[0][0]
+
+    background = Image.new("RGBA", image.size, background_color)
+    difference = ImageChops.difference(image, background)
+
+    red, green, blue, alpha = difference.split()
+    mask = ImageChops.lighter(red, green)
+    mask = ImageChops.lighter(mask, blue)
+    mask = ImageChops.lighter(mask, alpha)
+
+    return mask.getbbox()
+
+
+def crop_legend_png(png_data, padding=LEGEND_CROP_PADDING):
+    """Crop empty transparent or uniform space around a legend PNG."""
+    with Image.open(BytesIO(png_data)) as source:
+        image = source.convert("RGBA")
+
+    bbox = _legend_content_bbox(image)
+    if bbox is None:
+        return png_data
+
+    left, top, right, bottom = bbox
+    crop_box = (
+        max(0, left - padding),
+        max(0, top - padding),
+        min(image.width, right + padding),
+        min(image.height, bottom + padding),
+    )
+
+    if crop_box == (0, 0, image.width, image.height):
+        return png_data
+
+    cropped_buffer = BytesIO()
+    image.crop(crop_box).save(cropped_buffer, format="PNG")
+    return cropped_buffer.getvalue()
 
 
 class Legends(object):
@@ -46,14 +106,31 @@ class Legends(object):
                   (lang, urllib.parse.quote(name))
 
         legend_buffer = BytesIO()
-        weasyprint.HTML(url, media_type="screen").write_png(
+        
+        # Add User-Agent header to bypass nginx bot detection in dev
+        req = urllib.request.Request(
+            httplib2.iri2uri(url),
+            headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'}
+        )
+        html_content = urllib.request.urlopen(req, None, 15).read().decode('utf-8')
+        
+        weasyprint.HTML(string=html_content, media_type="screen").write_png(
             legend_buffer,
             stylesheets=css
         )
 
+        legend_png = legend_buffer.getvalue()
+
+        try:
+            legend_png = crop_legend_png(legend_png)
+        except (OSError, ValueError):
+            # Do not break GetLegendGraphic when an unexpected or invalid image is
+            # returned. The original WeasyPrint output remains a valid fallback.
+            log.exception("Unable to crop generated legend PNG")
+
         headers = {"Content-Type": "image/png"}
 
-        return Response(legend_buffer.getvalue(), headers=headers)
+        return Response(legend_png, headers=headers)
 
     @view_config(route_name='get_html')
     def get_html(self):
@@ -144,7 +221,13 @@ class Legends(object):
                 "id=%s:legend:%s&do=export_html" % \
                 (lang, urllib.parse.quote(name))
 
-            f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
+            # Add User-Agent header to bypass nginx bot detection in dev
+            req = urllib.request.Request(
+                httplib2.iri2uri(url),
+                headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'}
+            )
+
+            f = urllib.request.urlopen(req, None, 15)
             data = f.read()
             data = data.replace(
                 b"/lib/exe/fetch.php",
