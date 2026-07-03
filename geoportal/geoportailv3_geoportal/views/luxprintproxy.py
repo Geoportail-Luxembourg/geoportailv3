@@ -270,6 +270,10 @@ class LuxPrintProxy(PrintProxy):
             spec["attributes"].pop('longUrl', None)
         if "firstPagesUrls" in spec["attributes"]:
             spec["attributes"].pop('firstPagesUrls', None)
+        if "pagesBeforeMap" in spec["attributes"]:
+            spec["attributes"].pop('pagesBeforeMap', None)
+        if "pagesAfterMap" in spec["attributes"]:
+            spec["attributes"].pop('pagesAfterMap', None)
         self.request.body = str.encode(json.dumps(spec))
 
         resp = self._proxy("%s/report.%s" % (
@@ -337,7 +341,45 @@ class LuxPrintProxy(PrintProxy):
             ),
         )
 
+    def _is_allowed_external_url(self, url):
+        if url is None or not isinstance(url, str):
+            return False
+        parsed = urllib.parse.urlparse(url)
+        return parsed.scheme in ["http", "https"] and len(parsed.netloc) > 0
+
+    def _create_pdf_page_buffer(self, page_url, log_prefix):
+        if page_url is None or not isinstance(page_url, dict):
+            log.error("%s page ignored: invalid payload", log_prefix)
+            return None
+
+        page_type = str(page_url.get("type", "html")).lower()
+        if page_type == 'pdf':
+            if not self._is_allowed_external_url(page_url.get('url')):
+                log.error("%s PDF URL ignored", log_prefix)
+                return None
+            opener = urllib.request.build_opener(
+                urllib.request.HTTPHandler())
+            pdf_content = opener.open(page_url['url']).read()
+            return BytesIO(pdf_content)
+
+        page_buffer = BytesIO()
+        if "html" in page_url and page_url["html"] is not None:
+            weasyprint.HTML(string=page_url["html"]).write_pdf(
+                page_buffer
+            )
+        else:
+            if not self._is_allowed_external_url(page_url.get('url')):
+                log.error("%s HTML URL ignored", log_prefix)
+                return None
+            weasyprint.HTML(page_url['url']).write_pdf(
+                page_buffer
+            )
+        return page_buffer
+
     def _create_legend_from_image(self, url, title, access_constraints):
+        if not self._is_allowed_external_url(url):
+            raise ValueError("Only HTTP/HTTPS URLs are allowed for legend images")
+
         css = weasyprint.CSS(
             string="img {max-height: 800px}"
         )
@@ -373,6 +415,9 @@ class LuxPrintProxy(PrintProxy):
 
     @cache_region.cache_on_arguments()
     def _create_legend_from_url(self, url):
+        if not self._is_allowed_external_url(url):
+            raise ValueError("Only HTTP/HTTPS URLs are allowed for legend pages")
+
         css = weasyprint.CSS(
             string="img {max-height: 800px}"
         )
@@ -429,30 +474,52 @@ class LuxPrintProxy(PrintProxy):
             print_title = re.sub(r" ", "_", print_title)
             print_title = re.sub(r"[^a-zA-Z0-9\-\_]", "", print_title)
 
-            if is_pdf and "firstPagesUrls" in attributes and\
-                    attributes["firstPagesUrls"] is not None and\
-                    len(attributes["firstPagesUrls"]) > 0:
-                attributes["firstPagesUrls"].reverse()
-                for pageUrl in attributes["firstPagesUrls"]:
+            before_map_pages = []
+            if is_pdf and isinstance(attributes.get("firstPagesUrls"), list):
+                before_map_pages.extend(attributes["firstPagesUrls"])
+            if is_pdf and isinstance(attributes.get("pagesBeforeMap"), list):
+                before_map_pages.extend(attributes["pagesBeforeMap"])
+
+            if is_pdf and len(before_map_pages) > 0:
+                before_map_pages.reverse()
+                for pageUrl in before_map_pages:
                     try:
                         merger = PdfFileMerger(strict=False)
-                        if pageUrl['type'].lower() == 'pdf':
-                            opener = urllib.request.build_opener(
-                                urllib.request.HTTPHandler())
-                            pdf_content = opener.open(pageUrl['url']).read()
-                            merger.append(BytesIO(pdf_content))
-                        else:
-                            first_page = BytesIO()
-                            weasyprint.HTML(pageUrl['url']).write_pdf(
-                                first_page
-                            )
-                            merger.append(first_page)
+                        page_buffer = self._create_pdf_page_buffer(
+                            pageUrl,
+                            "Unsafe pre-map"
+                        )
+                        if page_buffer is None:
+                            continue
+                        merger.append(page_buffer)
                         merger.append(BytesIO(content))
                         content = BytesIO()
                         merger.write(content)
                         content = content.getvalue()
                     except Exception as e:
                         log.exception(e)
+
+            after_map_pages = []
+            if is_pdf and isinstance(attributes.get("pagesAfterMap"), list):
+                after_map_pages.extend(attributes["pagesAfterMap"])
+
+            if is_pdf and len(after_map_pages) > 0:
+                merger = PdfFileMerger(strict=False)
+                merger.append(BytesIO(content))
+                for pageUrl in after_map_pages:
+                    try:
+                        page_buffer = self._create_pdf_page_buffer(
+                            pageUrl,
+                            "Unsafe post-map"
+                        )
+                        if page_buffer is not None:
+                            merger.append(page_buffer)
+                    except Exception as e:
+                        log.exception(e)
+
+                content = BytesIO()
+                merger.write(content)
+                content = content.getvalue()
 
             if is_pdf and "legend" in attributes and\
                     attributes["legend"] is not None:
