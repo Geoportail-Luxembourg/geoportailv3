@@ -136,7 +136,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Serif" size="6"/>
 				</textElement>
-                <textFieldExpression><![CDATA[$P{dateText}+(new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm z"){{setTimeZone(java.util.TimeZone.getTimeZone("Europe/Luxembourg"));}}).format(new java.util.Date())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dateText}+java.time.ZonedDateTime.now(java.time.ZoneId.of("Europe/Luxembourg")).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm z"))]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
