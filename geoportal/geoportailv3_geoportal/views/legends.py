@@ -106,15 +106,7 @@ class Legends(object):
                   (lang, urllib.parse.quote(name))
 
         legend_buffer = BytesIO()
-        
-        # Add User-Agent header to bypass nginx bot detection in dev
-        req = urllib.request.Request(
-            httplib2.iri2uri(url),
-            headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'}
-        )
-        html_content = urllib.request.urlopen(req, None, 15).read().decode('utf-8')
-        
-        weasyprint.HTML(string=html_content, media_type="screen").write_png(
+        weasyprint.HTML(url, media_type="screen").write_png(
             legend_buffer,
             stylesheets=css
         )
@@ -221,13 +213,7 @@ class Legends(object):
                 "id=%s:legend:%s&do=export_html" % \
                 (lang, urllib.parse.quote(name))
 
-            # Add User-Agent header to bypass nginx bot detection in dev
-            req = urllib.request.Request(
-                httplib2.iri2uri(url),
-                headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'}
-            )
-
-            f = urllib.request.urlopen(req, None, 15)
+            f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
             data = f.read()
             data = data.replace(
                 b"/lib/exe/fetch.php",
