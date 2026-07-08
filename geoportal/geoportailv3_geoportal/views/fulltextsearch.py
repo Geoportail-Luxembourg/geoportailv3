@@ -449,15 +449,18 @@ class FullTextSearchView(object):
                 separator = '?'
                 if url.find(separator) > 0:
                     separator = '&'
+                parsed_url = urllib.parse.urlparse(url)
+                url_query_params = urllib.parse.parse_qs(parsed_url.query)
+                output_format = url_query_params.get('f', ['json'])[0]
                 body = {
-                    'f': 'json',
+                    'f': output_format,
                     'returnGeometry': 'true',
                     'where': f"lower({search_column}) like '%{query.lower()}%'",
                     'outSR': '3857',
                     'outFields': '*'
                 }
                 if layer.use_auth:
-                    auth_token = get_arcgis_token(self.request, log, service_url=result.rest_url)
+                    auth_token = get_arcgis_token(self.request, log, service_url=layer.rest_url)
                     if 'token' in auth_token:
                         body["token"] = auth_token['token']
                 if extent:
@@ -481,8 +484,9 @@ class FullTextSearchView(object):
 
                 try:
                     mf = fiona.MemoryFile(content)
-                    esricoll = mf.open(driver='ESRIJSON')
-                except:
+                    driver = 'GeoJSON' if output_format.lower() == 'geojson' else 'ESRIJSON'
+                    esricoll = mf.open(driver=driver)
+                except Exception:
                     raise
                 cnt = 0
                 for rawfeature in esricoll:
