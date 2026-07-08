@@ -445,10 +445,17 @@ class FullTextSearchView(object):
                 if url.find("@") > -1:
                     url = self._get_url_with_token(url)
 
+                # remove any existing output format from base url
+                # so that body['f'] stays authoritative
+                parsed_url = urllib.parse.urlparse(url)
+                parsed_query = urllib.parse.parse_qsl(parsed_url.query, keep_blank_values=True)
+                parsed_query = [(k, v) for k, v in parsed_query if k.lower() != 'f']
+                url = urllib.parse.urlunparse(
+                    parsed_url._replace(query=urllib.parse.urlencode(parsed_query))
+                )
+
                 # construct url for get request
-                separator = '?'
-                if url.find(separator) > 0:
-                    separator = '&'
+                separator = '&' if urllib.parse.urlparse(url).query else '?'
                 body = {
                     'f': 'json',
                     'returnGeometry': 'true',
@@ -457,7 +464,7 @@ class FullTextSearchView(object):
                     'outFields': '*'
                 }
                 if layer.use_auth:
-                    auth_token = get_arcgis_token(self.request, log, service_url=result.rest_url)
+                    auth_token = get_arcgis_token(self.request, log, service_url=layer.rest_url)
                     if 'token' in auth_token:
                         body["token"] = auth_token['token']
                 if extent:
@@ -482,7 +489,7 @@ class FullTextSearchView(object):
                 try:
                     mf = fiona.MemoryFile(content)
                     esricoll = mf.open(driver='ESRIJSON')
-                except:
+                except Exception:
                     raise
                 cnt = 0
                 for rawfeature in esricoll:
