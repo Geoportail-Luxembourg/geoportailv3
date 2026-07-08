@@ -445,15 +445,19 @@ class FullTextSearchView(object):
                 if url.find("@") > -1:
                     url = self._get_url_with_token(url)
 
-                # construct url for get request
-                separator = '?'
-                if url.find(separator) > 0:
-                    separator = '&'
+                # remove any existing output format from base url
+                # so that body['f'] stays authoritative
                 parsed_url = urllib.parse.urlparse(url)
-                url_query_params = urllib.parse.parse_qs(parsed_url.query)
-                output_format = url_query_params.get('f', ['json'])[0]
+                parsed_query = urllib.parse.parse_qsl(parsed_url.query, keep_blank_values=True)
+                parsed_query = [(k, v) for k, v in parsed_query if k.lower() != 'f']
+                url = urllib.parse.urlunparse(
+                    parsed_url._replace(query=urllib.parse.urlencode(parsed_query))
+                )
+
+                # construct url for get request
+                separator = '&' if urllib.parse.urlparse(url).query else '?'
                 body = {
-                    'f': output_format,
+                    'f': 'json',
                     'returnGeometry': 'true',
                     'where': f"lower({search_column}) like '%{query.lower()}%'",
                     'outSR': '3857',
@@ -484,8 +488,7 @@ class FullTextSearchView(object):
 
                 try:
                     mf = fiona.MemoryFile(content)
-                    driver = 'GeoJSON' if output_format.lower() == 'geojson' else 'ESRIJSON'
-                    esricoll = mf.open(driver=driver)
+                    esricoll = mf.open(driver='ESRIJSON')
                 except Exception:
                     raise
                 cnt = 0
