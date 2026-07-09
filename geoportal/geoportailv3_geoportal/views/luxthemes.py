@@ -290,7 +290,13 @@ class LuxThemes(Theme):
             if prefetched_layer.style:  # pragma: no cover
                 layer_theme["style"] = prefetched_layer.style
             public_wms_url = os.environ.get("PUBLIC_WMS_URL")
-            if prefetched_layer.public and public_wms_url and not self._is_public_wms_override_excluded(prefetched_layer):
+            is_time_layer = getattr(prefetched_layer, "time_mode", "disabled") != "disabled"
+            if (
+                prefetched_layer.public
+                and public_wms_url
+                and not is_time_layer
+                and not self._is_public_wms_override_excluded(prefetched_layer)
+            ):
                 layer_theme["url"] = public_wms_url
                 layer_theme["layers"] = layer_theme["id"]
             wms, wms_errors = self._wms_layers(prefetched_layer.ogc_server)
