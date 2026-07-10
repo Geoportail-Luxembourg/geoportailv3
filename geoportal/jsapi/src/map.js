@@ -1288,6 +1288,18 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 };
 
 
+/**
+ * Returns true if the given layer config corresponds to an MVT layer,
+ * i.e. if its name or any of its aliases is a key in lux.MVT_KEYWORDS.
+ * @param {Object} layerConf The layer config object.
+ * @return {string|null} The matching MVT keyword key, or null.
+ * @private
+ */
+lux.Map.prototype.getMVTKey_ = function(layerConf) {
+  return lux.findMVTKey_(layerConf);
+};
+
+
 lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, mapBoxStyle, mapBoxStyleXYZ) {
 
   return new lux.MapBoxLayer({
@@ -1318,11 +1330,10 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options
     }
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
-        if (layer == 'basemap_2015_global' ||
-          layer == 'topogr_global' ||
-          layer == 'topo_bw_jpeg') {
+      var mvtKey = this.getMVTKey_(layerConf);
+      if (mvtKey !== null) {
         if (this.mvtLayer_ === undefined) {
-          this.mvtLayer_ = this.MVTLayerFactory_(options, layer);
+          this.mvtLayer_ = this.MVTLayerFactory_(options, layerConf);
         }
         this.getLayers().push(this.mvtLayer_);
         return;
@@ -1336,19 +1347,25 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options
   }.bind(this));
 };
 
-lux.Map.prototype.MVTLayerFactory_ = function(options, layerName) {
+/**
+ * Mapping from layer name/alias to MapBox style name.
+ * Any layer whose name or alias appears as a key here will be treated as an MVT layer.
+ * @const {Object<string,string>}
+ */
+lux.MVT_KEYWORDS = {
+  'basemap_2015_global': 'roadmap_jsapi',
+  'topogr_global': 'topomap',
+  'topo_bw_jpeg': 'topomap_gray'
+};
+
+lux.Map.prototype.MVTLayerFactory_ = function(options, layerConf) {
   const target = this.getTargetElement();
   // FIXME: should be taken from the layer config
   // TODO: when config is handled by c2cgeoportal
   // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
   const host = new URL(window.location).host;
-  //let layer = 'roadmap_jsapi';
-  const keywords = {
-       'basemap_2015_global': 'roadmap_jsapi',
-       'topogr_global': 'topomap',
-       'topo_bw_jpeg': 'topomap_gray'
-  };
-  let layer = keywords[layerName] || layerName || 'roadmap_jsapi';
+  var mvtKey = this.getMVTKey_(layerConf);
+  let layer = (mvtKey ? lux.MVT_KEYWORDS[mvtKey] : null) || 'roadmap_jsapi';
   if (layer === 'roadmap_jsapi' && 
        this.grantedUrls.find(element => host.endsWith(element)) !== undefined) {
     layer = 'roadmap';
@@ -1362,7 +1379,7 @@ lux.Map.prototype.MVTLayerFactory_ = function(options, layerName) {
     mapBoxStyleXYZ = options.bgLayerStyleXYZ;
   }
   let mvtLayer_ = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
-  mvtLayer_.set('name', layerName);
+  mvtLayer_.set('name', layerConf ? layerConf.name : layer);
   return (mvtLayer_);
 };
 
@@ -1437,25 +1454,39 @@ lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
  * @private
  */
 lux.findLayerByName_ = function(name, layers) {
-  for (var i in layers) {
-    var layer = layers[i];
-    if (layer.name == name) {
-      return layer;
+  /**
+   * @param {unknown} rawAliases
+   * @return {Array<string>}
+   */
+  function normalizeAliases_(rawAliases) {
+    if (rawAliases === undefined || rawAliases === null) {
+      return [];
     }
-
-    var aliases = undefined;
-    if (layer.metadata && layer.metadata.layer_aliases !== undefined) {
-      aliases = layer.metadata.layer_aliases;
-    } else if (layer.layer_aliases !== undefined) {
-      aliases = layer.layer_aliases;
+    if (Array.isArray(rawAliases)) {
+      return rawAliases.map(function(alias) {
+        return alias != null ? alias.toString().trim() : '';
+      }).filter(function(alias) {
+        return alias.length > 0;
+      });
     }
-
-    if (Array.isArray(aliases) && aliases.indexOf(name) !== -1) {
-      return layer;
-    }
-
-    if (typeof aliases === 'string') {
-      var parsedAliases = aliases
+    if (typeof rawAliases === 'string') {
+      var raw = rawAliases.trim();
+      if (raw.length === 0) {
+        return [];
+      }
+      try {
+        var parsed = JSON.parse(raw.replace(/'/g, '"'));
+        if (Array.isArray(parsed)) {
+          return parsed.map(function(alias) {
+            return alias != null ? alias.toString().trim() : '';
+          }).filter(function(alias) {
+            return alias.length > 0;
+          });
+        }
+      } catch (e) {
+        // fall back to a simple split
+      }
+      return raw
         .replace(/^\s*\[/, '')
         .replace(/\]\s*$/, '')
         .split(',')
@@ -1465,12 +1496,66 @@ lux.findLayerByName_ = function(name, layers) {
         .filter(function(alias) {
           return alias.length > 0;
         });
-      if (parsedAliases.indexOf(name) !== -1) {
-        return layer;
+    }
+    if (typeof rawAliases === 'object') {
+      return Object.keys(rawAliases).filter(function(key) {
+        return !!rawAliases[key];
+      });
+    }
+    return [];
+  }
+
+  /**
+   * @param {Object} layer
+   * @return {Array<string>}
+   */
+  function extractAliases_(layer) {
+    if (!layer) {
+      return [];
+    }
+
+    var aliases = undefined;
+    if (layer.metadata && layer.metadata.layer_aliases !== undefined) {
+      aliases = layer.metadata.layer_aliases;
+    } else if (layer.layer_aliases !== undefined) {
+      aliases = layer.layer_aliases;
+    } else if (layer.aliases !== undefined) {
+      aliases = layer.aliases;
+    }
+
+    if (aliases === undefined && layer.metadata && typeof layer.metadata === 'object') {
+      var aliasKey = Object.keys(layer.metadata).find(function(k) {
+        return /alias/i.test(k);
+      });
+      if (aliasKey !== undefined) {
+        aliases = layer.metadata[aliasKey];
       }
     }
+
+    return normalizeAliases_(aliases);
   }
-  return;
+
+  if (layers && layers[name] !== undefined) {
+    return layers[name];
+  }
+
+  for (var i in layers) {
+    var layer = layers[i];
+    if (layer.name == name) {
+      return layer;
+    }
+
+    if (layer.id !== undefined && layer.id != null && layer.id.toString() === name.toString()) {
+      return layer;
+    }
+
+    var aliases = extractAliases_(layer);
+    if (aliases.indexOf(name) !== -1) {
+      return layer;
+    }
+  }
+
+  return undefined;
 };
 
 
@@ -1548,9 +1633,11 @@ lux.Map.prototype.addBgSelector = function(target, bglayers, elementType) {
           if (this.mvtLayer_ !== undefined) {
             this.mvtLayer_.setVisible(false);
           }
-          if (this.layersConfig[src.target.id] && this.layersConfig[src.target.id].name === 'basemap_2015_global') {
+          var selectedConf = this.layersConfig[src.target.id];
+          var mvtKey = this.getMVTKey_(selectedConf);
+          if (mvtKey !== null) {
             if (this.mvtLayer_ === undefined) {
-              this.mvtLayer_ = this.MVTLayerFactory_();
+              this.mvtLayer_ = this.MVTLayerFactory_(undefined, selectedConf);
             }
             this.getLayers().setAt(0, this.mvtLayer_);
             this.mvtLayer_.setVisible(true);
@@ -1599,9 +1686,11 @@ lux.Map.prototype.addBgSelector = function(target, bglayers, elementType) {
             if (this.mvtLayer_ !== undefined) {
               this.mvtLayer_.setVisible(false);
             }
-            if (this.layersConfig[src.target.id] && this.layersConfig[src.target.id].name === 'basemap_2015_global') {
+            var selectedConf = this.layersConfig[src.target.id];
+            var mvtKey = this.getMVTKey_(selectedConf);
+            if (mvtKey !== null) {
               if (this.mvtLayer_ === undefined) {
-                this.mvtLayer_ = this.MVTLayerFactory_();
+                this.mvtLayer_ = this.MVTLayerFactory_(undefined, selectedConf);
               }
               this.getLayers().setAt(0, this.mvtLayer_);
               this.mvtLayer_.setVisible(true);
@@ -1624,9 +1713,11 @@ lux.Map.prototype.addBgSelector = function(target, bglayers, elementType) {
         if (this.mvtLayer_ !== undefined) {
           this.mvtLayer_.setVisible(false);
         }
-        if (this.layersConfig[select.value] && this.layersConfig[select.value].name === 'basemap_2015_global') {
+        var selectedConf = this.layersConfig[select.value];
+        var mvtKey = this.getMVTKey_(selectedConf);
+        if (mvtKey !== null) {
           if (this.mvtLayer_ === undefined) {
-            this.mvtLayer_ = this.MVTLayerFactory_();
+            this.mvtLayer_ = this.MVTLayerFactory_(undefined, selectedConf);
           }
           this.getLayers().setAt(0, this.mvtLayer_);
           this.mvtLayer_.setVisible(true);
