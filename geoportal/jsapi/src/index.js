@@ -440,13 +440,59 @@ lux.intersects = function(one, two) {
 
 
 
-lux.normalizeBackgroundLayerName = function(label) {
-    const keywords = {
-        'basemap_2015_global': 'roadmap',
-        'topogr_global': 'topomap',
-        'topo_bw_jpeg': 'topomap_gray'
-    };
-    return keywords[label] || label;
+/**
+ * Mapping from layer name/alias to MapBox style name.
+ * Any layer whose name or alias appears as a key here will be treated as an MVT layer.
+ * @const {Object<string,string>}
+ */
+lux.MVT_KEYWORDS = {
+  'basemap_2015_global': 'roadmap_jsapi',
+  'topogr_global': 'topomap',
+  'topo_bw_jpeg': 'topomap_gray'
+};
+
+/**
+ * Finds the MVT_KEYWORDS key for a config by checking its name and aliases.
+ * @param {Object} config The layer config object.
+ * @return {string|null} The MVT_KEYWORDS key if found, null otherwise.
+ */
+lux.findMVTKey_ = function(config) {
+  if (!config) {
+    return null;
+  }
+  var names = [config['layer'], config['name']];
+  var rawAliases = (config['metadata'] && config['metadata']['layer_aliases'] !== undefined) ?
+    config['metadata']['layer_aliases'] :
+    (config['layer_aliases'] !== undefined ? config['layer_aliases'] : undefined);
+  if (rawAliases !== undefined) {
+    if (Array.isArray(rawAliases)) {
+      names = names.concat(rawAliases);
+    } else if (typeof rawAliases === 'string') {
+      names = names.concat(rawAliases.split(',').map(function(a) {
+        return a.trim().replace(/^['"\[]+|['"\]]+$/g, '');
+      }));
+    }
+  }
+  for (var i = 0; i < names.length; i++) {
+    if (names[i] && lux.MVT_KEYWORDS[names[i]] !== undefined) {
+      return names[i];
+    }
+  }
+  return null;
+};
+
+/**
+ * Returns the MapBox style name for a layer config, checking its name and all
+ * aliases against lux.MVT_KEYWORDS. Falls back to config['layer'] if no match.
+ * @param {Object} config The layer config object.
+ * @return {string} The normalized layer name.
+ */
+lux.normalizeBackgroundLayerName = function(config) {
+  var mvtKey = lux.findMVTKey_(config);
+  if (mvtKey !== null) {
+    return lux.MVT_KEYWORDS[mvtKey];
+  }
+  return config['layer'];
 };
 
 lux.normalizeBackgroundLayerImageType = function(label, imageType) {
@@ -496,7 +542,7 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
       url: url,
       attributions: [''],
       tilePixelRatio: (retina ? 2 : 1),
-      layer: lux.normalizeBackgroundLayerName(config['layer']),
+      layer: lux.normalizeBackgroundLayerName(config),
       matrixSet: config['matrixSet'] + (retina ? '_HD' : ''),
       format: format,
       requestEncoding: 'REST',
