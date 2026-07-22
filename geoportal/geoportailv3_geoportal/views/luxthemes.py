@@ -291,8 +291,10 @@ class LuxThemes(Theme):
                 layer_theme["style"] = prefetched_layer.style
             public_wms_url = os.environ.get("PUBLIC_WMS_URL")
             is_time_layer = getattr(prefetched_layer, "time_mode", "disabled") != "disabled"
+            hidpi = self.request.params.get("hidpi", "false") == "true"
             if (
-                prefetched_layer.public
+                not hidpi
+                and prefetched_layer.public
                 and public_wms_url
                 and not is_time_layer
                 and not self._is_public_wms_override_excluded(prefetched_layer)
