@@ -1,9 +1,13 @@
 from pyramid.view import view_config
 from owslib.wms import WebMapService
 from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models import main
 from c2cgeoportal_commons.models.main import Theme as ThemeModel
 from c2cgeoportal_geoportal.views.theme import Theme
 from c2cgeoportal_geoportal.lib.caching import get_region, invalidate_region
+from c2cgeoportal_geoportal.lib.caching import PRIVATE_CACHE, set_common_headers
+from c2cgeoportal_geoportal.lib import is_intranet
+from c2cgeoportal_geoportal.lib.layers import get_private_layers, get_protected_layers
 from c2cgeoportal_geoportal.lib.wmstparsing import parse_extent, TimeInformation
 from c2cgeoportal_commons import models
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
@@ -11,10 +15,12 @@ from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 from sqlalchemy.orm import selectinload
 from datetime import datetime
+import asyncio
 import os
 import urllib
 import json
 import sys
+import time
 
 import logging
 
@@ -80,7 +86,104 @@ class LuxThemes(Theme):
 
     @view_config(route_name="themes", renderer="json")
     def themes(self):
-        return super().themes()
+        interface = self.request.params.get("interface", "desktop")
+        sets = self.request.params.get("set", "all")
+        min_levels = int(self.request.params.get("min_levels", 1))
+        group = self.request.params.get("group")
+        background_layers_group = self.request.params.get("background")
+        hidpi = self.request.params.get("hidpi", "false")
+
+        set_common_headers(self.request, "themes", PRIVATE_CACHE)
+
+        def get_theme():
+            export_themes = sets in ("all", "themes")
+            export_group = group is not None and sets in ("all", "group")
+            export_background = background_layers_group is not None and sets in ("all", "background")
+
+            result = {}
+            all_errors = set()
+            log.debug("Start preload")
+            start_time = time.time()
+            asyncio.run(self.preload(all_errors))
+            log.debug("End preload")
+            log.info("Do preload in %.3fs.", time.time() - start_time)
+
+            result["ogcServers"] = {}
+            for ogc_server in models.DBSession.query(main.OGCServer).all():
+                url_internal_wfs, url, url_wfs = self.get_url_internal_wfs(ogc_server, all_errors)
+
+                attributes = None
+                namespace = None
+                if ogc_server.wfs_support:
+                    attributes, namespace, errors = self._get_features_attributes(url_internal_wfs)
+                    all_errors |= errors
+
+                    all_private_layers = get_private_layers([ogc_server.id]).values()
+                    protected_layers_name = [
+                        l.name for l in get_protected_layers(self.request, [ogc_server.id]).values()
+                    ]
+                    private_layers_name = []
+                    for layers in [
+                        v.layer for v in all_private_layers if v.name not in protected_layers_name
+                    ]:
+                        private_layers_name.extend(layers.split(","))
+
+                    if attributes is not None:
+                        for name in private_layers_name:
+                            if name in attributes:
+                                del attributes[name]
+
+                result["ogcServers"][ogc_server.name] = {
+                    "url": url,
+                    "urlWfs": url_wfs,
+                    "type": ogc_server.type,
+                    "credential": ogc_server.auth != main.OGCSERVER_AUTH_NOAUTH,
+                    "imageType": ogc_server.image_type,
+                    "wfsSupport": ogc_server.wfs_support,
+                    "isSingleTile": ogc_server.is_single_tile,
+                    "namespace": namespace,
+                    "attributes": attributes,
+                }
+
+            if export_themes:
+                themes, errors = self._themes(interface, True, min_levels)
+                result["themes"] = themes
+                all_errors |= errors
+
+            if export_group:
+                exported_group, errors = self._get_group(group, interface)
+                if exported_group is not None:
+                    result["group"] = exported_group
+                all_errors |= errors
+
+            if export_background:
+                exported_group, errors = self._get_group(background_layers_group, interface)
+                result["background_layers"] = exported_group["children"] if exported_group is not None else []
+                all_errors |= errors
+
+            result["errors"] = list(all_errors)
+            if all_errors:
+                log.info("Theme errors:\n%s", "\n".join(all_errors))
+            return result
+
+        @cache_region.cache_on_arguments()
+        def get_theme_anonymous(intranet, interface, sets, min_levels, group, background_layers_group, host, hidpi):
+            # Only for cache key
+            del intranet, interface, sets, min_levels, group, background_layers_group, host, hidpi
+            return get_theme()
+
+        if self.request.user is None:
+            return get_theme_anonymous(
+                is_intranet(self.request),
+                interface,
+                sets,
+                min_levels,
+                group,
+                background_layers_group,
+                self.request.headers.get("Host"),
+                hidpi,
+            )
+        return get_theme()
 
     @view_config(route_name='isthemeprivate', renderer='json')
     def is_theme_private(self):
@@ -336,7 +439,7 @@ class LuxThemes(Theme):
 
     @view_config(route_name="lux_themes", renderer="json")
     def lux_themes(self):
-        themes = super().themes()
+        themes = self.themes()
         sets = self.request.params.get("set", "all")
         if sets in ("all", "3d"):
             themes["lux_3d"] = self.get_lux_3d_layers()
