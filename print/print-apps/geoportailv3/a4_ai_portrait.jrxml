@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="595" pageHeight="842" columnWidth="469" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="34" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
+	<parameter name="mapSubReport" class="java.lang.String"/>
+	<parameter name="scalebarSubReport" class="java.lang.String"/>
+	<parameter name="northArrowSubReport" class="java.lang.String"/>
+	<parameter name="disclaimer" class="java.lang.String"/>
+	<parameter name="dateText" class="java.lang.String"/>
+	<parameter name="scaleTitle" class="java.lang.String"/>
+	<parameter name="appTitle" class="java.lang.String"/>
+	<parameter name="name" class="java.lang.String"/>
+	<parameter name="scale" class="java.lang.String">
+		<defaultValueExpression><![CDATA[5000]]></defaultValueExpression>
+	</parameter>
+	<parameter name="url" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://g-o.lu/start"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="qrimage" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://dev.geoportail.lu/shorten/qr?url=http%3A%2F%2Fdevv3.geoportail.lu%2Fmain"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dataOwner" class="java.lang.String">
+		<defaultValueExpression><![CDATA["TEST"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="description" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Description par défaut"]]></defaultValueExpression>
+	</parameter>
+	<field name="table" class="net.sf.jasperreports.engine.data.JRMapCollectionDataSource"/>
+	<field name="displayName" class="java.lang.String"/>
+	<field name="reportTemplate" class="java.lang.String"/>
+	<title>
+		<band height="752" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="55" width="470" height="200" uuid="550e8400-e29b-41d4-a716-446644474000">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="DejaVu Sans" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="255" width="470" height="433" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<subreportExpression><![CDATA[$P{mapSubReport}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="252" y="716" width="217" height="30" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportExpression><![CDATA[$P{scalebarSubReport}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="251" y="33" width="219" height="20" uuid="245a4b0e-d6e2-4c82-a5ec-072b3cc182e4"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape">
+				<reportElement x="0" y="0" width="230" height="51" uuid="70bbdaea-7cb7-4c97-b3ad-fd38c75a98ad"/>
+				<imageExpression><![CDATA["LOGO_ACT.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="258" y="708" width="171" height="30" uuid="eeaea6dd-01ac-4bbe-9216-e47772a7bcd9">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{scaleTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="359" y="708" width="71" height="40" uuid="7a0a9863-e339-4697-b24b-d6178dbb85c5"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{scale}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="429" y="708" width="40" height="40" uuid="4e19a7b3-e5c9-4db3-ba26-65fd8e83fba6">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{qrimage}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="-1" y="708" width="251" height="42" uuid="90411500-de3c-418d-9c8d-cac869972f42"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="DejaVu Sans" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{disclaimer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Transparent" x="470" y="601" width="10" height="104" backcolor="#FFFFFF" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
+				<textElement textAlignment="Left" rotation="Left">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{url}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="145" y="1" width="325" height="50" uuid="fd29083c-bfba-421b-a36e-e8a9a1677993"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="12"/>
+				</textElement>
+				<text><![CDATA[map.geoportail.lu]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="16" width="325" height="30" uuid="d5a258a2-e688-4af1-a571-c79db3fb443a"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{appTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="0" y="660" width="470" height="47" uuid="6659a107-e37b-4a3a-9ce2-cebd8adf86cc"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="html">
+					<font fontName="DejaVu Sans" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[CONCATENATE("<span style=\"background-color:#ddd7d4\">",$P{dataOwner},"</span>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="-10" y="507" width="10" height="200" uuid="596db574-7a37-40d5-b449-e038170154e6">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Serif" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateText}+java.time.ZonedDateTime.now(java.time.ZoneId.of("Europe/Luxembourg")).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm z"))]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="420" y="270" width="40" height="40" uuid="8a359794-4174-4dce-81e8-c2519764d559"/>
+				<subreportExpression><![CDATA[$P{northArrowSubReport}]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+</jasperReport>

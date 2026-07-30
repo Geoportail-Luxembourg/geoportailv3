@@ -1,210 +1,458 @@
 {
-    "layout": "A4 portrait",
-    "outputFormat": "pdf",
-    "attributes": {
-        "name": "Carte vélo exemple",
-        "scale": "60000",
-        "url":"http://g-o.lu/0mf4r",
-        "qrimage":"http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r",
-        "legend": {
-            "name": "",
-           "classes": [{
-                "name": "Arbres",
-                "icons": ["https://cdn.public.lu/pictures/logos/gov/gov-light.png"]
-            }]
+  "attributes": {
+    "map": {
+      "center": [
+        681651.2955614,
+        6374590.893839696
+      ],
+      "dpi": 127,
+      "projection": "EPSG:3857",
+      "rotation": 0,
+      "scale": 3856.068717098845,
+      "layers": [
+        {
+          "geoJson": {
+            "type": "FeatureCollection",
+            "features": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    681651.2955614,
+                    6374590.893839696
+                  ]
+                },
+                "properties": {
+                  "_mfp_style": "1"
+                },
+                "id": "061C00204002980_8699_1"
+              }
+            ]
+          },
+          "opacity": 1,
+          "style": {
+            "version": 2,
+            "[_mfp_style = '1']": {
+              "symbolizers": [
+                {
+                  "type": "point",
+                  "pointRadius": 10,
+                  "fillColor": "#ffff00",
+                  "fillOpacity": 0.6,
+                  "strokeColor": "#ff9b37",
+                  "strokeOpacity": 1,
+                  "strokeWidth": 3
+                }
+              ]
+            }
+          },
+          "type": "geojson"
         },
-        "scalebar": {
-          "projection": "EPSG:2169"
+        {
+          "type": "wmts",
+          "baseURL": "https://wmts3.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png",
+          "dimensions": [],
+          "dimensionParams": {},
+          "imageFormat": "image/png",
+          "layer": "addresses",
+          "matrices": [
+            {
+              "identifier": "00",
+              "scaleDenominator": 559082264.0285715,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                1,
+                1
+              ]
+            },
+            {
+              "identifier": "01",
+              "scaleDenominator": 279541132.01428574,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                2,
+                2
+              ]
+            },
+            {
+              "identifier": "02",
+              "scaleDenominator": 139770566.00714287,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                4,
+                4
+              ]
+            },
+            {
+              "identifier": "03",
+              "scaleDenominator": 69885283.00357144,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                8,
+                8
+              ]
+            },
+            {
+              "identifier": "04",
+              "scaleDenominator": 34942641.50178572,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                16,
+                16
+              ]
+            },
+            {
+              "identifier": "05",
+              "scaleDenominator": 17471320.75089286,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                32,
+                32
+              ]
+            },
+            {
+              "identifier": "06",
+              "scaleDenominator": 8735660.375464285,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                64,
+                64
+              ]
+            },
+            {
+              "identifier": "07",
+              "scaleDenominator": 4367830.187714286,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                128,
+                128
+              ]
+            },
+            {
+              "identifier": "08",
+              "scaleDenominator": 2183915.093860714,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                256,
+                256
+              ]
+            },
+            {
+              "identifier": "09",
+              "scaleDenominator": 1091957.546932143,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                512,
+                512
+              ]
+            },
+            {
+              "identifier": "10",
+              "scaleDenominator": 545978.7734642858,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                1024,
+                1024
+              ]
+            },
+            {
+              "identifier": "11",
+              "scaleDenominator": 272989.38673285715,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                2048,
+                2048
+              ]
+            },
+            {
+              "identifier": "12",
+              "scaleDenominator": 136494.69336642858,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                4096,
+                4096
+              ]
+            },
+            {
+              "identifier": "13",
+              "scaleDenominator": 68247.34668321429,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                8192,
+                8192
+              ]
+            },
+            {
+              "identifier": "14",
+              "scaleDenominator": 34123.673341607144,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                16384,
+                16384
+              ]
+            },
+            {
+              "identifier": "15",
+              "scaleDenominator": 17061.836670785713,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                32768,
+                32768
+              ]
+            },
+            {
+              "identifier": "16",
+              "scaleDenominator": 8530.918335392857,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                65536,
+                65536
+              ]
+            },
+            {
+              "identifier": "17",
+              "scaleDenominator": 4265.459167714285,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                131072,
+                131072
+              ]
+            },
+            {
+              "identifier": "18",
+              "scaleDenominator": 2132.7295838500004,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                262144,
+                262144
+              ]
+            },
+            {
+              "identifier": "19",
+              "scaleDenominator": 1066.3647919250002,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                524288,
+                524288
+              ]
+            },
+            {
+              "identifier": "20",
+              "scaleDenominator": 533.1823959625001,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                1048576,
+                1048576
+              ]
+            },
+            {
+              "identifier": "21",
+              "scaleDenominator": 266.59119798125005,
+              "tileSize": [
+                256,
+                256
+              ],
+              "topLeftCorner": [
+                -20037508.342789244,
+                20037508.342789244
+              ],
+              "matrixSize": [
+                2097152,
+                2097152
+              ]
+            }
+          ],
+          "matrixSet": "GLOBAL_WEBMERCATOR_4_V3",
+          "opacity": 1,
+          "requestEncoding": "REST",
+          "style": "default",
+          "version": "1.0.0",
+          "customParams": {
+            "TRANSPARENT": true,
+            "MAP_RESOLUTION": 127
+          }
         },
-        "map": {
-          "bbox": [668126, 6368118, 689717, 6389761],
-          "projection": "EPSG:3857",
-          "dpi": 128,
-          "rotation": 0,
+        {
+          "baseURL": "https://wms.geoportail.lu/vectortiles_wms_4_print/service",
+          "imageFormat": "image/png",
           "layers": [
-                  {
-                  "baseURL": "http://ws.geoportail.lu/mymaps?category_id=106",
-                  "opacity": 1,
-                  "type": "WMS",
-                  "layers": [
-                    "category"
-                  ],
-                  "imageFormat": "image/png",
-                  
-                  "customParams": {
-                    "TRANSPARENT": "true"
-                  }
-                  },
-                  {
-                  "baseURL": "http://ws.geoportail.lu/mymaps?category_id=105",
-                  "opacity": 1,
-                  "type": "WMS",
-                  "layers": [
-                    "category"
-                  ],
-                  "imageFormat": "image/png",
-                  
-                  "customParams": {
-                    "TRANSPARENT": "true"
-                  }
-                  },
-                  {
-                    "type":"WMTS",
-                    "baseURL": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/basemap_global/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png",
-                    "opacity": "0.5",
-                    "layer": "basemap_global",
-                    "requestEncoding":"REST",
-                    "version":"1.0.0",
-                    "dimensions":[],
-                    "dimensionParams":{},
-                    "matrixSet":"GLOBAL_WEBMERCATOR",
-                    "matrices":[
-                            {
-                              "identifier": "00",
-                              "matrixSize": [1, 1],
-                              "scaleDenominator": 559082264.029,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "01",
-                              "matrixSize": [2, 2],
-                              "scaleDenominator": 279541132.014,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "02",
-                              "matrixSize": [4, 4],
-                              "scaleDenominator": 139770566.007,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "03",
-                              "matrixSize": [8, 8],
-                              "scaleDenominator": 69885283.0036,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "04",
-                              "matrixSize": [16, 16],
-                              "scaleDenominator": 34942641.5018,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "05",
-                              "matrixSize": [32, 32],
-                              "scaleDenominator": 17471320.7509,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "06",
-                              "matrixSize": [64, 64],
-                              "scaleDenominator": 8735660.37545,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "07",
-                              "matrixSize": [128, 128],
-                              "scaleDenominator": 4367830.18772,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "08",
-                              "matrixSize": [256, 256],
-                              "scaleDenominator": 2183915.09386,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "09",
-                              "matrixSize": [512, 512],
-                              "scaleDenominator": 1091957.54693,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "10",
-                              "matrixSize": [1024, 1024],
-                              "scaleDenominator": 545978.773466,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "11",
-                              "matrixSize": [2048, 2048],
-                              "scaleDenominator": 272989.386733,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "12",
-                              "matrixSize": [4096, 4096],
-                              "scaleDenominator": 136494.693366,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "13",
-                              "matrixSize": [8192, 8192],
-                              "scaleDenominator": 68247.3466832,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "14",
-                              "matrixSize": [16384, 16384],
-                              "scaleDenominator": 34123.6733416,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "15",
-                              "matrixSize": [32768, 32768],
-                              "scaleDenominator": 17061.8366708,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "16",
-                              "matrixSize": [65536, 65536],
-                              "scaleDenominator": 8530.9183354,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              },
-                              {
-                              "identifier": "17",
-                              "matrixSize": [131072, 131072],
-                              "scaleDenominator": 4265.4591677,
-                              "tileSize": [256,256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              }
-                              ,{
-                              "identifier": "18",
-                              "matrixSize": [262144, 262144],
-                              "scaleDenominator": 2132.72958385,
-                              "tileSize": [256, 256],
-                              "topLeftCorner": [-20037508.3428,20037508.3428]
-                              }
-                            ],
-                            "imageFormat": "png"
-                    },
-                  {
-                  "baseURL": "http://wsinspire.geoportail.lu/oi",
-                  "opacity": 1,
-                  "type": "WMS",
-                  "layers": [
-                    "1"
-                  ],
-                  "imageFormat": "image/jpeg"
-                  }
-          ]
+            "roadmap"
+          ],
+          "customParams": {
+            "TRANSPARENT": true,
+            "MAP_RESOLUTION": 127
+          },
+          "type": "wms",
+          "opacity": 1,
+          "version": "1.1.1",
+          "useNativeAngle": true
         }
-    }
+      ]
+    },
+    "disclaimer": "www.geoportail.lu est un portail d'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. \nDroits d'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright",
+    "scaleTitle": "Echelle approximative 1:",
+    "appTitle": "Le géoportail national du Grand-Duché du Luxembourg",
+    "scale": 2500,
+    "name": "",
+    "url": "https://g-o.lu/3/XSdZA",
+    "qrimage": "https://map.geoportail.lu/qr?url=https://g-o.lu/3/XSdZA",
+    "lang": "fr",
+    "legend": null,
+    "scalebar": {
+      "geodetic": true
+    },
+    "dataOwner": "&copy; <a href='https://www.maptiler.com/copyright/'>MapTiler</a> &copy; <a href=\"https://openstreetmap.org/copyright\">OpenStreetMap</a> contributors for data outside of Luxembourg",
+    "dateText": "Date d'impression:",
+    "queryResults": "<h1 class=\"lux-poi-title\">Adresses</h1><div class=\"lux-feature-info\"><h4></h4><div>1, Rue Charles Darwin<br>L-1433 Luxembourg</div><div><a class=\"print:hidden\" href=\"https://map.geoportail.lu/theme/main?version=3&amp;lang=fr&amp;X=666422&amp;Y=6367720&amp;zoom=17&amp;rotation=0&amp;features=&amp;layers=152&amp;opacities=1&amp;time=&amp;bgLayer=roadmap&amp;fid=152_061C00204002980_8699_1\" target=\"_blank\">Lien direct vers cet objet</a></div></div>"
+  },
+  "format": "pdf",
+  "layout": "A4 portrait AI"
 }
