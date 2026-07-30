@@ -337,7 +337,7 @@ class Geocode(object):
                     func.ST_Centroid(
                         func.ST_Collect(Address.geom)))).label("geom"),
                             Address.localite).filter(text(
-                            " lower(localite) = lower(:locality)").bindparams(locality=locality)).\
+                            " unaccent(lower(localite)) = lower(:locality)").bindparams(locality=locality)).\
                             group_by(Address.localite).all()
                 for feature in features:
                     locality_info.locality = feature.localite
@@ -436,7 +436,7 @@ class Geocode(object):
                 (func.ST_AsText(func.ST_Centroid(
                     func.ST_Collect(Address.geom)))).
                 label("geom"), Address.localite).\
-                filter(text(" lower(localite) = lower(:p_locality)").bindparams(p_locality=p_locality)).\
+                filter(text(" unaccent(lower(localite)) = lower(:p_locality)").bindparams(p_locality=p_locality)).\
                 group_by(Address.localite)
             for feature in features.all():
                 res.localite = feature.localite
@@ -768,7 +768,7 @@ class Geocode(object):
         results = []
         # List of zip code belonging to the locality
         if len(p_locality) > 0:
-            filter = " lower(localite) = '" + p_locality + \
+            filter = " unaccent(lower(localite)) = '" + p_locality + \
                 "' and lower('" + str(p_num).replace("'", "") + \
                 "') = ANY  (regexp_split_to_array (lower(numero), '-'))"
             features = p_session.query(Address).filter(text(filter)).all()
@@ -798,7 +798,7 @@ class Geocode(object):
                 Address.id_caclr_loca,
                 Address.id_caclr_rue, Address.rue,
                 Address.code_postal, Address.localite).filter(
-                text(" lower(localite) = lower(:p_locality)").bindparams(p_locality=p_locality)).\
+                text(" unaccent(lower(localite)) = lower(:p_locality)").bindparams(p_locality=p_locality)).\
                 group_by(
                     Address.id_caclr_loca,
                     Address.id_caclr_rue,
