@@ -119,6 +119,7 @@ class Feature(Base):
     angle = Column(Float, default=0)
     font_size = Column(Integer, default=15)
     opacity = Column(Float, default=0.5)
+    is_visible = Column(Boolean, default=True)
     shape = Column(Unicode(255))
     last_modified_by = Column(Unicode(50))
     display_order = Column(Integer, default=0)
