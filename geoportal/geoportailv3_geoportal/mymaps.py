@@ -166,6 +166,8 @@ class Feature(Base):
             len(str(symbol_id)) == 0\
             else symbol_id
 
+        self.is_visible = feature.properties.get('isVisible', True)
+
         opacity = feature.properties.get('opacity')
         self.opacity = opacity if opacity is not None and\
             str(opacity).replace('.', '', 1).isnumeric() else 0.5
@@ -245,6 +247,7 @@ class Feature(Base):
                           if self.font_size is not None else 15,
                           opacity=self.opacity
                           if self.opacity is not None else 0.5,
+                          isVisible=self.is_visible if self.is_visible is not None else True,
                           shape=self.shape,
                           display_order=self.display_order
                           if self.display_order is not None else 0,
