@@ -126,6 +126,7 @@ class Getfeatureinfo(object):
                 pdf_name = None
                 try:
                     url_request = urllib.request.Request(url1)
+                    log.error(url1)
                     result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                     attachmentInfos = json.loads(data)["attachmentInfos"]
@@ -735,6 +736,8 @@ class Getfeatureinfo(object):
                     if info_format == 'application/json':
                         filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
                         template = 'json_' + l_template if isfile(filename) else 'json.html'
+                        log.error("------------"+path + template+"-----------")
+                        log.error("------------"+str(context)+"-----------")
                         r['tooltip'] = render(
                             'geoportailv3_geoportal:' + path + template, context)
                     elif info_format == 'text/xml':
