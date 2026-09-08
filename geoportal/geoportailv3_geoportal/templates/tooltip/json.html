@@ -1,18 +1,24 @@
 <% import numbers, json %>
 ## -*- coding: utf-8 -*-
 <%
+from decimal import Decimal
 # Build the JSON structure
 result = []
 for feature in features:
     feature_data = {}
     for attr in feature['attributes']:
-        if isinstance(feature['attributes'][attr], numbers.Number) or (isinstance(feature['attributes'][attr], str) and feature['attributes'][attr] != ''):
+        value = feature['attributes'][attr]
+        # Convert Decimal to float if necessary
+        if isinstance(value, Decimal):
+            value = float(value)
+    
+        if isinstance(value, numbers.Number) or (isinstance(value, str) and value != ''):
             # Use translated field name if available, otherwise use original attribute name
             if _c(_t('f_' + attr)) != 'f_' + attr:
                 key = _c(_t('f_' + attr))
             else:
                 key = attr
-            feature_data[key] = feature['attributes'][attr]
+            feature_data[key] = value
     
     if feature_data:  # Only add if there are valid attributes
         result.append(feature_data)
