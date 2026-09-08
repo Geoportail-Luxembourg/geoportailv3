@@ -736,8 +736,6 @@ class Getfeatureinfo(object):
                     if info_format == 'application/json':
                         filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
                         template = 'json_' + l_template if isfile(filename) else 'json.html'
-                        log.error("------------"+path + template+"-----------")
-                        log.error("------------"+str(context)+"-----------")
                         r['tooltip'] = render(
                             'geoportailv3_geoportal:' + path + template, context)
                     elif info_format == 'text/xml':
