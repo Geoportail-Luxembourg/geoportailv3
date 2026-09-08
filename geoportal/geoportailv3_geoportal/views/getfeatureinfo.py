@@ -126,7 +126,6 @@ class Getfeatureinfo(object):
                 pdf_name = None
                 try:
                     url_request = urllib.request.Request(url1)
-                    log.error(url1)
                     result = read_request_with_token(url_request, self.request, log, renew_token=use_auth)
                     data = result.data
                     attachmentInfos = json.loads(data)["attachmentInfos"]
