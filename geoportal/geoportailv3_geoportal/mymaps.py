@@ -119,6 +119,7 @@ class Feature(Base):
     angle = Column(Float, default=0)
     font_size = Column(Integer, default=15)
     opacity = Column(Float, default=0.5)
+    is_visible = Column(Boolean, default=True)
     shape = Column(Unicode(255))
     last_modified_by = Column(Unicode(50))
     display_order = Column(Integer, default=0)
@@ -164,6 +165,8 @@ class Feature(Base):
         self.symbol_id = None if symbol_id is not None and\
             len(str(symbol_id)) == 0\
             else symbol_id
+
+        self.is_visible = feature.properties.get('isVisible', True)
 
         opacity = feature.properties.get('opacity')
         self.opacity = opacity if opacity is not None and\
@@ -244,6 +247,7 @@ class Feature(Base):
                           if self.font_size is not None else 15,
                           opacity=self.opacity
                           if self.opacity is not None else 0.5,
+                          isVisible=self.is_visible if self.is_visible is not None else True,
                           shape=self.shape,
                           display_order=self.display_order
                           if self.display_order is not None else 0,
