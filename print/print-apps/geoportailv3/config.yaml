@@ -305,4 +305,22 @@ templates:
         width: 715
         height: 505
     processors: *processors
+  A4 landscape AI: !template
+    pdfConfig: !pdfConfig
+      title: "A4 Landscape AI by geoportail.lu"
+      keywords: ["map"]
+    reportTemplate: a4_ai_landscape.jrxml
+    attributes:
+      <<: *attributes
+      description: !string
+        default: ""
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 537
+        height: 450
+      scalebar: !scalebar
+        width: 150
+        height: 30
+    processors: *processors
 
