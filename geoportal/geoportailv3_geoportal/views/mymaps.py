@@ -94,7 +94,7 @@ class Mymaps(object):
         map_id = id = self.request.matchdict.get("map_id")
         if map_id is None:
             return HTTPBadRequest("map_id is required")
-        features = self._features(self.db_mymaps, map_id)
+        features = self._features(self.db_mymaps, map_id, user=self.request.user)
         if features is None:
             return HTTPNotFound()
         gpx = gpxpy.gpx.GPX()
@@ -865,7 +865,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_features")
     def features(self):
         id = self.request.matchdict.get("map_id")
-        features = self._features(self.db_mymaps, id)
+        features = self._features(self.db_mymaps, id, user=self.request.user)
 
         if features is None:
             return HTTPNotFound()
@@ -880,17 +880,18 @@ class Mymaps(object):
         headers = {'Content-Type': 'application/json'}
         return Response(gjson_features, headers=headers)
 
-    def _features(self, session, id):
+    def _features(self, session, id, user = None):
         map = Map.get(id, session)
 
         if map is None:
             return None
 
-        return session.query(Feature).filter(
+        query = session.query(Feature).filter(
                 Feature.map_id == map.uuid
-            ).order_by(
-                Feature.display_order
-            ).all()
+            )
+        if not user or user.username.lower() != map.user_login.lower():
+            query = query.filter(Feature.is_visible == True)
+        return query.order_by(Feature.display_order).all()
 
     @view_config(route_name="mymaps_map_info")
     def map_info(self):
