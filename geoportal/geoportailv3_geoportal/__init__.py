@@ -60,12 +60,15 @@ def add_cors_headers_response_callback(event):
 
 def add_cors_origin_headers_response_callback(event):
     def cors_headers(request, response):
-        if "cors" in request.POST or "cors" in request.GET:
             origin = request.headers.get("Origin")
+            log.error("-----------------------------------1")
+            log.error(origin)
+            log.error("-----------------------------------1")
             # Allowlist of trusted domains; ideally, load from settings
             allowed_origins = os.environ.get(
-                "CORS_ALLOWED_ORIGINS", ""
+                "CORS_ALLOWED_ORIGINS", "localhost:5173"
             )
+            allowed_origins = "localhost:5173,localhost:8080,localhost"
             if isinstance(allowed_origins, str):
                 allowed_origins = [
                     origin.strip() for origin in allowed_origins.split(",")
@@ -297,6 +300,9 @@ def main(global_config, **settings):
     config.add_route("reverse_geocode", "/geocode/reverse")
     config.add_route("geocode", "/geocode/search")
     config.add_route("get_address_by_parcel", "/geocode/get_address_by_parcel")
+    config.add_route("geocode_batch_upload", "/geocode/batch/upload", request_method="POST")
+    config.add_route("geocode_batch_status", "/geocode/batch/{job_id}", request_method="GET")
+    config.add_route("geocode_batch_download", "/geocode/batch/{job_id}/download", request_method="GET")
     config.add_route("feedback", "/feedback")
     config.add_route("feedbackanf", "/feedbackanf")
     config.add_route("feedbackcrues", "/feedbackcrues")

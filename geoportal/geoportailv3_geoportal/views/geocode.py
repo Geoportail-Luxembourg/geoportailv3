@@ -29,11 +29,14 @@ log = logging.getLogger(__name__)
 
 class Geocode(object):
 
-    def __init__(self, request):
+    def __init__(self, request=None):
         self.request = request
         self.returnParcelInfo = False
         self.db_ecadastre = DBSessions['ecadastre']
-        self.config = self.request.registry.settings
+        if request is not None and hasattr(request, 'registry'):
+            self.config = request.registry.settings
+        else:
+            self.config = {}
 
     # View used to get an adress from a coordinate.
     @view_config(route_name="reverse_geocode", renderer="json")
@@ -1788,7 +1791,6 @@ class Geocode(object):
             if stripped_address[0:i].isdigit():
                 num = stripped_address[0:i]
                 stripped_address = stripped_address[i:]
-            else:
                 break
 
         # Si L is followed by a number this is the post code
