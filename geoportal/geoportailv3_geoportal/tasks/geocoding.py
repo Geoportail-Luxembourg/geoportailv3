@@ -4,6 +4,7 @@ import csv
 import json
 import os
 from datetime import datetime
+import logging
 
 try:
     from celery import Celery
@@ -18,16 +19,17 @@ except ImportError:  # pragma: no cover
                 return func
             return decorator
 
-
 from geoportailv3_geoportal.views.geocode import Geocode
+
+log = logging.getLogger(__name__)
 
 
 JOB_DIR = os.environ.get("GEOCODE_BATCH_DIR", "/tmp/geocode_jobs")
 
 app = Celery(
     "geoportailv3_geoportal",
-    broker=os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0"),
-    backend=os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0"),
+    broker=os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/2"),
+    backend=os.environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379/2"),
 )
 
 
@@ -57,58 +59,93 @@ def geocode_batch_task(job_id, file_path):
 
     result_path = os.path.join(JOB_DIR, "%s_result.csv" % job_id)
     try:
-        geocoder = Geocode(None)
-        with open(file_path, newline="") as input_file, open(result_path, "w", newline="") as output_file:
-            reader = csv.DictReader(input_file)
-            fieldnames = [
-                "row",
-                "street",
-                "num",
-                "zip",
-                "locality",
-                "status",
-                "result",
-            ]
-            writer = csv.DictWriter(output_file, fieldnames=fieldnames)
-            writer.writeheader()
+        from sqlalchemy import create_engine
+        from sqlalchemy.orm import sessionmaker
+        
+        # Create a session for 'ecadastre' database
+        db_url = os.environ.get('DB_ECADASTRE')
+        if not db_url:
+            error_msg = "DB_ECADASTRE environment variable is not set"
+            log.error(error_msg)
+            update_job(job_id, status="FAILURE", error=error_msg)
+            return {"job_id": job_id, "status": "FAILURE", "error": error_msg}
+        
+        try:
+            engine = create_engine(db_url)
+            Session = sessionmaker(bind=engine)
+            db_session = Session()
+        except Exception as e:
+            error_msg = "Failed to create database session: %s" % str(e)
+            log.error(error_msg)
+            update_job(job_id, status="FAILURE", error=error_msg)
+            return {"job_id": job_id, "status": "FAILURE", "error": error_msg}
+        
+        try:
+            geocoder = Geocode(None)
+            geocoder.db_ecadastre = db_session
+                
+            with open(file_path, newline="") as input_file, open(result_path, "w", newline="") as output_file:
+                reader = csv.DictReader(input_file)
+                fieldnames = [
+                    "row",
+                    "id",
+                    "num",
+                    "street",
+                    "zip",
+                    "locality",
+                    "country",
+                    "status",
+                    "result",
+                ]
+                writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+                writer.writeheader()
 
-            for row_number, row in enumerate(reader, start=1):
-                street = (row.get("street") or row.get("rue") or "").strip()
-                num = (row.get("num") or row.get("numero") or "").strip()
-                zip_code = (row.get("zip") or row.get("postal_code") or row.get("code_postal") or "").strip()
-                locality = (row.get("locality") or row.get("commune") or "").strip()
+                for row_number, row in enumerate(reader, start=1):
+                    id = (row.get("id") or "").strip()
+                    street = (row.get("street") or row.get("rue") or "").strip()
+                    num = (row.get("num") or row.get("numero") or "").strip()
+                    zip_code = (row.get("zip") or row.get("postal_code") or row.get("code_postal") or "").strip()
+                    locality = (row.get("locality") or row.get("commune") or "").strip()
+                    country = (row.get("country") or row.get("pays") or "LUXEMBOURG").strip()
+                    try:
+                        res = geocoder.start_search(
+                            0.7,
+                            num,
+                            street,
+                            zip_code,
+                            locality,
+                            country,
+                            geocoder.db_ecadastre,
+                        )
+                        best = geocoder.keep_the_best_result(res, street)
+                        result_payload = best[0] if best else {"status": "not_found"}
+                        output_value = json.dumps(result_payload, default=str)
+                        status = "OK" if best else "NOT_FOUND"
+                    except Exception as exc:  # pragma: no cover
+                        output_value = json.dumps({"status": "ERROR", "message": str(exc)})
+                        status = "ERROR"
+                        log.error("Error geocoding row %d: %s", row_number, str(exc))
 
-                try:
-                    res = geocoder.start_search(
-                        0.7,
-                        num,
-                        street,
-                        zip_code,
-                        locality,
-                        "lu",
-                        geocoder.db_ecadastre,
-                    )
-                    best = geocoder.keep_the_best_result(res, street)
-                    result_payload = best[0] if best else {"status": "not_found"}
-                    output_value = json.dumps(result_payload, default=str)
-                    status = "OK" if best else "NOT_FOUND"
-                except Exception as exc:  # pragma: no cover
-                    output_value = json.dumps({"status": "ERROR", "message": str(exc)})
-                    status = "ERROR"
+                    writer.writerow({
+                        "row": row_number,
+                        "id": id,
+                        "num": num,
+                        "street": street,
+                        "zip": zip_code,
+                        "locality": locality,
+                        "country": country,
+                        "status": status,
+                        "result": output_value,
+                    })
 
-                writer.writerow({
-                    "row": row_number,
-                    "street": street,
-                    "num": num,
-                    "zip": zip_code,
-                    "locality": locality,
-                    "status": status,
-                    "result": output_value,
-                })
-
-        update_job(job_id, status="SUCCESS", result_file=result_path)
-        return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
+            update_job(job_id, status="SUCCESS", result_file=result_path)
+            return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
+        
+        finally:
+            db_session.close()
 
     except Exception as exc:
-        update_job(job_id, status="FAILURE", error=str(exc))
+        error_msg = str(exc)
+        log.exception("Task failed with error: %s", error_msg)
+        update_job(job_id, status="FAILURE", error=error_msg)
         raise
