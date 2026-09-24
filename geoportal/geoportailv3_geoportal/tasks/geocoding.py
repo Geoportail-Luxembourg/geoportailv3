@@ -24,11 +24,7 @@ from geoportailv3_geoportal.views.geocode import Geocode
 log = logging.getLogger(__name__)
 
 
-<<<<<<< HEAD
-JOB_DIR = os.environ.get("GEOCODE_BATCH_DIR", "/tmp/celery/jobs" )
-=======
 JOB_DIR = os.environ.get("GEOCODE_BATCH_DIR", "/tmp/geocode_jobs")
->>>>>>> origin/master
 
 app = Celery(
     "geoportailv3_geoportal",
@@ -57,20 +53,6 @@ def update_job(job_id, **kwargs):
         json.dump(job, job_file)
 
 
-<<<<<<< HEAD
-def _count_input_rows(file_path):
-    try:
-        with open(file_path, newline="") as input_file:
-            reader = csv.DictReader(input_file)
-            if reader.fieldnames is None:
-                return 0
-            return sum(1 for _ in reader)
-    except Exception:
-        return 0
-
-
-=======
->>>>>>> origin/master
 @app.task(name="geoportailv3_geoportal.geocode_batch_task")
 def geocode_batch_task(job_id, file_path):
     update_job(job_id, status="STARTED")
@@ -79,11 +61,7 @@ def geocode_batch_task(job_id, file_path):
     try:
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
-<<<<<<< HEAD
-
-=======
         
->>>>>>> origin/master
         # Create a session for 'ecadastre' database
         db_url = os.environ.get('DB_ECADASTRE')
         if not db_url:
@@ -91,11 +69,7 @@ def geocode_batch_task(job_id, file_path):
             log.error(error_msg)
             update_job(job_id, status="FAILURE", error=error_msg)
             return {"job_id": job_id, "status": "FAILURE", "error": error_msg}
-<<<<<<< HEAD
-
-=======
         
->>>>>>> origin/master
         try:
             engine = create_engine(db_url)
             Session = sessionmaker(bind=engine)
@@ -105,7 +79,6 @@ def geocode_batch_task(job_id, file_path):
             log.error(error_msg)
             update_job(job_id, status="FAILURE", error=error_msg)
             return {"job_id": job_id, "status": "FAILURE", "error": error_msg}
-<<<<<<< HEAD
 
         try:
             geocoder = Geocode(None)
@@ -114,13 +87,6 @@ def geocode_batch_task(job_id, file_path):
             total_rows = _count_input_rows(file_path)
             update_job(job_id, total_rows=total_rows, processed_rows=0)
 
-=======
-        
-        try:
-            geocoder = Geocode(None)
-            geocoder.db_ecadastre = db_session
-                
->>>>>>> origin/master
             with open(file_path, newline="") as input_file, open(result_path, "w", newline="") as output_file:
                 reader = csv.DictReader(input_file)
                 fieldnames = [
@@ -175,7 +141,6 @@ def geocode_batch_task(job_id, file_path):
                         "result": output_value,
                     })
 
-<<<<<<< HEAD
                     processed_rows = row_number
                     update_job(
                         job_id,
@@ -187,11 +152,6 @@ def geocode_batch_task(job_id, file_path):
             update_job(job_id, status="SUCCESS", result_file=result_path, processed_rows=total_rows, total_rows=total_rows)
             return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
 
-=======
-            update_job(job_id, status="SUCCESS", result_file=result_path)
-            return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
-        
->>>>>>> origin/master
         finally:
             db_session.close()
 
