@@ -60,17 +60,16 @@ def add_cors_headers_response_callback(event):
 
 def add_cors_origin_headers_response_callback(event):
     def cors_headers(request, response):
+        if "cors" in request.POST or "cors" in request.GET:
             origin = request.headers.get("Origin")
             # Allowlist of trusted domains; ideally, load from settings
             allowed_origins = os.environ.get(
-                "CORS_ALLOWED_ORIGINS"
+                "CORS_ALLOWED_ORIGINS", ""
             )
             if isinstance(allowed_origins, str):
                 allowed_origins = [
                     origin.strip() for origin in allowed_origins.split(",")
                 ]
-            log.error(f"CORS allowed origins: {allowed_origins}")
-            log.error(origin)
             if origin:
                 try:
                     origin_domain = urlparse(origin).netloc
