@@ -53,6 +53,17 @@ def update_job(job_id, **kwargs):
         json.dump(job, job_file)
 
 
+def _count_input_rows(file_path):
+    try:
+        with open(file_path, newline="") as input_file:
+            reader = csv.DictReader(input_file)
+            if reader.fieldnames is None:
+                return 0
+            return sum(1 for _ in reader)
+    except Exception:
+        return 0
+
+
 @app.task(name="geoportailv3_geoportal.geocode_batch_task")
 def geocode_batch_task(job_id, file_path):
     update_job(job_id, status="STARTED")
