@@ -70,8 +70,6 @@ def add_cors_origin_headers_response_callback(event):
                 allowed_origins = [
                     origin.strip() for origin in allowed_origins.split(",")
                 ]
-            log.error(f"CORS allowed origins: {allowed_origins}")
-            log.error(origin)
             if origin:
                 try:
                     origin_domain = urlparse(origin).netloc
@@ -297,6 +295,9 @@ def main(global_config, **settings):
     config.add_route("reverse_geocode", "/geocode/reverse")
     config.add_route("geocode", "/geocode/search")
     config.add_route("get_address_by_parcel", "/geocode/get_address_by_parcel")
+    config.add_route("geocode_batch_upload", "/geocode/batch/upload", request_method="POST")
+    config.add_route("geocode_batch_status", "/geocode/batch/{job_id}", request_method="GET")
+    config.add_route("geocode_batch_download", "/geocode/batch/{job_id}/download", request_method="GET")
     config.add_route("feedback", "/feedback")
     config.add_route("feedbackanf", "/feedbackanf")
     config.add_route("feedbackcrues", "/feedbackcrues")
