@@ -79,11 +79,14 @@ def geocode_batch_task(job_id, file_path):
             log.error(error_msg)
             update_job(job_id, status="FAILURE", error=error_msg)
             return {"job_id": job_id, "status": "FAILURE", "error": error_msg}
-        
+
         try:
             geocoder = Geocode(None)
             geocoder.db_ecadastre = db_session
-                
+
+            total_rows = _count_input_rows(file_path)
+            update_job(job_id, total_rows=total_rows, processed_rows=0)
+
             with open(file_path, newline="") as input_file, open(result_path, "w", newline="") as output_file:
                 reader = csv.DictReader(input_file)
                 fieldnames = [
@@ -138,9 +141,17 @@ def geocode_batch_task(job_id, file_path):
                         "result": output_value,
                     })
 
-            update_job(job_id, status="SUCCESS", result_file=result_path)
+                    processed_rows = row_number
+                    update_job(
+                        job_id,
+                        processed_rows=processed_rows,
+                        total_rows=total_rows,
+                        progress="%d/%d traitées" % (processed_rows, total_rows),
+                    )
+
+            update_job(job_id, status="SUCCESS", result_file=result_path, processed_rows=total_rows, total_rows=total_rows)
             return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
-        
+
         finally:
             db_session.close()
 
