@@ -75,6 +75,10 @@ class BatchGeocode(object):
         if job is None:
             return HTTPBadRequest("Job not found")
 
+        progress = job.get("progress")
+        if not progress and job.get("total_rows"):
+            progress = "%s/%s traitées" % (job.get("processed_rows", 0), job.get("total_rows"))
+
         return {
             "job_id": job["job_id"],
             "status": job["status"],
@@ -83,6 +87,9 @@ class BatchGeocode(object):
             "updated_at": job["updated_at"],
             "result_file": job.get("result_file"),
             "error": job.get("error"),
+            "processed_rows": job.get("processed_rows"),
+            "total_rows": job.get("total_rows"),
+            "progress": progress,
         }
 
     @view_config(route_name="geocode_batch_download")
