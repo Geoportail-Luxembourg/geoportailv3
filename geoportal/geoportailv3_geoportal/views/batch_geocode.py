@@ -85,7 +85,7 @@ class BatchGeocode(object):
             "error": job.get("error"),
         }
 
-    @view_config(route_name="geocode_batch_download", renderer="json")
+    @view_config(route_name="geocode_batch_download")
     def download(self):
         job_id = self.request.matchdict["job_id"]
         job = self._read_job(job_id)
@@ -93,17 +93,44 @@ class BatchGeocode(object):
             return HTTPBadRequest("Job not found")
 
         if job.get("status") != "SUCCESS" or not job.get("result_file"):
-            return HTTPBadRequest("Job not completed")
+            return HTTPBadRequest("Job not completed or no result file")
 
         result_path = job["result_file"]
         if not os.path.exists(result_path):
-            return HTTPBadRequest("Result file not found")
+            return HTTPBadRequest("Result file not found on disk")
 
+        # Read the result file into memory, then remove files from disk
         with open(result_path, "rb") as input_file:
             content = input_file.read()
 
+        # Delete the result file and the job metadata, and attempt to remove the original upload
+        try:
+            # remove result file
+            try:
+                os.remove(result_path)
+            except OSError:
+                pass
+
+            # remove job json
+            try:
+                os.remove(self._job_path(job_id))
+            except OSError:
+                pass
+
+            # remove original uploaded file if present: job_id_filename
+            upload_candidate = os.path.join(JOB_DIR, "%s_%s" % (job_id, job.get("filename") or ""))
+            if os.path.exists(upload_candidate):
+                try:
+                    os.remove(upload_candidate)
+                except OSError:
+                    pass
+        except Exception:
+            # ensure we never fail the response delivery on cleanup errors
+            pass
+
+        file_name = os.path.basename(result_path)
         return Response(
             body=content,
-            content_type="application/octet-stream",
-            content_disposition='attachment; filename="%s"' % os.path.basename(result_path),
+            content_type="text/csv",
+            content_disposition='attachment; filename="%s"' % file_name,
         )

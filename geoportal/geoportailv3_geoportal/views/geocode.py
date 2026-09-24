@@ -32,7 +32,12 @@ class Geocode(object):
     def __init__(self, request=None):
         self.request = request
         self.returnParcelInfo = False
-        self.db_ecadastre = DBSessions['ecadastre']
+        # Only access DBSessions if request is provided (web context)
+        # Otherwise, the db_ecadastre will be set externally (e.g., from Celery)
+        if request is not None:
+            self.db_ecadastre = DBSessions['ecadastre']
+        else:
+            self.db_ecadastre = None
         if request is not None and hasattr(request, 'registry'):
             self.config = request.registry.settings
         else:
