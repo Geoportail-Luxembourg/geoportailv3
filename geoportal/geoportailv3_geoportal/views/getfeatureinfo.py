@@ -1099,7 +1099,7 @@ class Getfeatureinfo(object):
                         splitted_value = value.rsplit("/", 1)
                         feature['attributes'][key] =\
                             f"<a href='{value}' target='_blank'>{splitted_value[1] if len(splitted_value)>1 else splitted_value[0]}</a>"
-                    elif 'Photo station' in key:
+                    elif 'Photo station' in key or 'image_url' in key.lower():
                         feature['attributes'][key] =\
                             "<img src='%s' width='300px'/>" % (value)
 
