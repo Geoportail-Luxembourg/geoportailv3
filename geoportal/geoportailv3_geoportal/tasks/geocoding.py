@@ -64,6 +64,36 @@ def _count_input_rows(file_path):
         return 0
 
 
+def _normalize_row_fields(row):
+    """Extract and normalize address fields from a CSV row."""
+    return {
+        'id': (row.get("id") or "").strip(),
+        'street': (row.get("street") or row.get("rue") or "").strip(),
+        'num': (row.get("num") or row.get("numero") or "").strip(),
+        'zip_code': (row.get("zip") or row.get("postal_code") or row.get("code_postal") or "").strip(),
+        'locality': (row.get("locality") or row.get("commune") or "").strip(),
+        'country': (row.get("country") or row.get("pays") or "LUXEMBOURG").strip(),
+    }
+
+
+def _apply_fallback_encoding(geocoder, best, zip_code, locality):
+    """Apply fallback encoding when no result found: zip+locality -> zip -> locality -> country."""
+    if best is not None and len(best) == 0:
+        # Try zip code + locality
+        if zip_code and locality:
+            best.append(geocoder.encoded_post_code_locality_result(zip_code, locality))
+        # Try zip code alone
+        elif zip_code:
+            best.append(geocoder.encoded_post_code_result(zip_code))
+        # Try locality alone
+        elif locality:
+            best.append(geocoder.encoded_locality_result(locality))
+        # Fallback to country
+        else:
+            best.append(geocoder.encoded_country_result())
+    return best
+
+
 @app.task(name="geoportailv3_geoportal.geocode_batch_task")
 def geocode_batch_task(job_id, file_path):
     update_job(job_id, status="STARTED")
@@ -115,23 +145,21 @@ def geocode_batch_task(job_id, file_path):
                 writer.writeheader()
 
                 for row_number, row in enumerate(reader, start=1):
-                    id = (row.get("id") or "").strip()
-                    street = (row.get("street") or row.get("rue") or "").strip()
-                    num = (row.get("num") or row.get("numero") or "").strip()
-                    zip_code = (row.get("zip") or row.get("postal_code") or row.get("code_postal") or "").strip()
-                    locality = (row.get("locality") or row.get("commune") or "").strip()
-                    country = (row.get("country") or row.get("pays") or "LUXEMBOURG").strip()
+                    fields = _normalize_row_fields(row)
+                    
                     try:
                         res = geocoder.start_search(
                             0.7,
-                            num,
-                            street,
-                            zip_code,
-                            locality,
-                            country,
+                            fields['num'],
+                            fields['street'],
+                            fields['zip_code'],
+                            fields['locality'],
+                            fields['country'],
                             geocoder.db_ecadastre,
                         )
-                        best = geocoder.keep_the_best_result(res, street)
+                        best = geocoder.keep_the_best_result(res, fields['street'])
+                        best = _apply_fallback_encoding(geocoder, best, fields['zip_code'], fields['locality'])
+
                         result_payload = best[0] if best else {"status": "not_found"}
                         output_value = json.dumps(result_payload, default=str)
                         status = "OK" if best else "NOT_FOUND"
@@ -142,23 +170,24 @@ def geocode_batch_task(job_id, file_path):
 
                     writer.writerow({
                         "row": row_number,
-                        "id": id,
-                        "num": num,
-                        "street": street,
-                        "zip": zip_code,
-                        "locality": locality,
-                        "country": country,
+                        "id": fields['id'],
+                        "num": fields['num'],
+                        "street": fields['street'],
+                        "zip": fields['zip_code'],
+                        "locality": fields['locality'],
+                        "country": fields['country'],
                         "status": status,
                         "result": output_value,
                     })
 
-                    processed_rows = row_number
-                    update_job(
-                        job_id,
-                        processed_rows=processed_rows,
-                        total_rows=total_rows,
-                        progress="%d/%d traitées" % (processed_rows, total_rows),
-                    )
+                    # Update progress every 50 rows to reduce disk I/O
+                    if row_number % 10 == 0 or row_number == total_rows:
+                        update_job(
+                            job_id,
+                            processed_rows=row_number,
+                            total_rows=total_rows,
+                            progress="%d/%d traitées" % (row_number, total_rows),
+                        )
 
             update_job(job_id, status="SUCCESS", result_file=result_path, processed_rows=total_rows, total_rows=total_rows)
             return {"job_id": job_id, "status": "SUCCESS", "result_file": result_path}
