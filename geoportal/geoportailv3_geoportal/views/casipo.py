@@ -1,4 +1,4 @@
-﻿# -*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -78,13 +78,35 @@ class Casipo(object):
         self.link += "/download"
         os.remove(self.filename)
         return
+    def __send_file_as_attachment(self, email):
+        msg = MIMEText(self.localizer.translate(_("CASIPO Mail the report is attached")), 'plain', 'utf-8')
+        me = 'support@geoportail.lu'
+        you = email
+        mails = [you]
+        if "bcc_address" in self.config["casipo"]:
+            bcc = self.config["casipo"]["bcc_address"]
+            msg['BCC'] = bcc
+            mails.append(bcc)
+        msg['Subject'] = 'Rapport CASIPO'
+        msg['From'] = me
+        msg['To'] = you
+        # Attach the file
+        with open(self.filename, 'rb') as fp:
+            attachment = MIMEText(fp.read(), 'base64', 'utf-8')
+            attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(self.filename))
+            msg.attach(attachment)
+        s = smtplib.SMTP(self.config["casipo"]["smtp_server"])
+        s.sendmail(me, mails, msg.as_string())
+        s.quit()
+        os.remove(self.filename)
+        return
 
     def __send_mail(self, email):
         if self.link == 'error':
             mailtext = _("CASIPO Error during report generation")
         else:
             mailtext = _("CASIPO Mail the report link ${link}",
-                         mapping={'link': self.link})
+                        mapping={'link': self.link})
         msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
         me = 'support@geoportail.lu'
         you = email
@@ -115,11 +137,17 @@ class Casipo(object):
                  mapping={'email': email.encode('utf-8')})
         try:
             self.__download(oid)
-            self.__upload2owncloud()
+            if os.getenv('USE_OWNCLOUD', 'True').lower() == 'true':
+                self.__upload2owncloud()
+
         except Exception as e:
             log.exception(e)
             self.link = 'error'
         self.__log_download_stats(oid, self.link)
-        self.__send_mail(email)
+        if os.getenv('USE_OWNCLOUD', 'True').lower() == 'true':
+            self.__send_mail(email)
+        else:
+            self.__send_file_as_attachment(email)
+
         headers = {"Content-Type": 'text/html'}
         return Response(self.localizer.translate(resp), headers=headers)
