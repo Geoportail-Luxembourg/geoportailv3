@@ -1,155 +1,314 @@
 # SOME DESCRIPTIVE TITLE
 # This file is distributed under the same license as the PACKAGE package.
 # Translators:
-# eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2016
+# dhorper <danielle.horper@act.etat.lu>, 2020
+# dhorper <danielle.horper@act.etat.lu>, 2020
+# eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2016,2024
 # Jeff Konnen <jaykayone@gmail.com>, 2015
-# Jeff Konnen <jaykayone@gmail.com>, 2015-2016
+# Jeff Konnen <jaykayone@gmail.com>, 2015-2016,2019
 # Patrick Weber <pweber@spatialbit.com>, 2015
 # Patrick Weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2019-01-07 08:28+0000\n"
-"Last-Translator: Jeff Konnen <jeff.konnen@act.etat.lu>\n"
-"Language-Team: English (http://www.transifex.com/geoportail/geoportailv3-lu/language/en/)\n"
+"POT-Creation-Date: 2026-10-20 10:18+0000\n"
+"PO-Revision-Date: 2015-01-21 08:08+0000\n"
+"Last-Translator: Patrick Weber <pweber@spatialbit.com>, 2015\n"
+"Language-Team: English (http://app.transifex.com/geoportail/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Lingua 3.8\n"
+"Generated-By: Lingua 4.14\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ./geoportailv3/views/pag.py:124
+#: ./geoportal/geoportailv3_geoportal/models.py:22
+msgid "Url for download"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:23
+msgid "Urls for download"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:29
+#: ./geoportal/geoportailv3_geoportal/models.py:94
+#: ./geoportal/geoportailv3_geoportal/models.py:273
+#: ./geoportal/geoportailv3_geoportal/models.py:291
+#: ./geoportal/geoportailv3_geoportal/models.py:309
+msgid "Url"
+msgstr "Url"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:32
+msgid "Only connected user can download ?"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:40
+msgid "Surveying login"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:41
+msgid "Surveying logins"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:44
+msgid "Login"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:47
+msgid "Commune number"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:55
+msgid "Surveying file config"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:56
+msgid "Surveying file configs"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:62
+msgid "Name"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:65
+msgid "Town code"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:68
+msgid "Path"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:71
+msgid "Path (dwg)"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:74
+msgid "Path (star)"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:83
+msgid "Internal WMS layer"
+msgstr "Internal WMS layer"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:84
+msgid "Internal WMS layers"
+msgstr "Internal WMS layers"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:97
+msgid "Layers"
+msgstr "Layers"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:100
+msgid "Is a POI"
+msgstr "Is a POI"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:103
+#: ./geoportal/geoportailv3_geoportal/models.py:196
+msgid "Authentication needed"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:106
+msgid "Collection ID"
+msgstr "Collection ID"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:109
+msgid "REST url"
+msgstr "REST url"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:142
+msgid "External WMS layer"
+msgstr "External WMS layer"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:143
+msgid "External WMS layers"
+msgstr "External WMS layers"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:152
+msgid "Category ID"
+msgstr "Category ID"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:175
+msgid "Getfeature definition"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:176
+msgid "Getfeature definitions"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:185
+msgid "Table name"
+msgstr "Table name"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:189
+#: ./geoportal/geoportailv3_geoportal/models.py:197
+msgid "URL Rest"
+msgstr "URL Rest"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:202
+msgid "Engine"
+msgstr "Engine"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:205
+msgid "Layer"
+msgstr "Layer"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:208
+msgid "Template file name"
+msgstr "Template file name"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:211
+msgid "Remote template (or local) ?"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:214
+msgid "Python function"
+msgstr "Python function"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:217
+msgid "Role"
+msgstr "Role"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:220
+msgid "Attributes to remove"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:223
+msgid "Id of the poi collection"
+msgstr "Id of the poi collection"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:226
+msgid "Geometry column name"
+msgstr "Geometry column name"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:230
+msgid "Search column name"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:236
+msgid "Order of columns"
+msgstr "Order of columns"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:239
+msgid "ID column name"
+msgstr "ID column name"
+
+#: ./geoportal/geoportailv3_geoportal/models.py:242
+msgid "Is a profile displayed ?"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:245
+msgid "Limit the results. If < 0 then not limit."
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:249
+msgid "Zoom level"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:260
+msgid "Print job"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:261
+msgid "Print jobs"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:267
+msgid "Spec."
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:270
+#: ./geoportal/geoportailv3_geoportal/models.py:294
+msgid "Creation date"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:276
+msgid "Error"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:284
+msgid "Print server"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:285
+msgid "Print servers"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:302
+#: ./geoportal/geoportailv3_geoportal/models.py:303
+msgid "Predefined wms"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/models.py:313
+msgid "Label"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/views/casipo.py:84
+msgid "CASIPO Error during report generation"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/views/casipo.py:86
+#, python-format
+msgid "CASIPO Mail the report link ${link}"
+msgstr "Bonjour!\n<br>\n<br>\nVotre extrait du cadastre des sites potentiellement pollués est finalisé.\n<br>\n<br>\n<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et de l'Administration de l'Environnement"
+
+#: ./geoportal/geoportailv3_geoportal/views/casipo.py:86
+#, python-format
+msgid "CASIPO Mail the report with attachment"
+msgstr "Bonjour!\n<br>\n<br>\nVotre extrait du cadastre des sites potentiellement pollués est finalisé.\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et de l'Administration de l'Environnement"
+
+#: ./geoportal/geoportailv3_geoportal/views/casipo.py:114
+#, python-format
+msgid "CASIPO webservice response ${email}"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/views/luxprintproxy.py:393
+msgid "Access constraints"
+msgstr "Access constraints"
+
+#: ./geoportal/geoportailv3_geoportal/views/pag.py:66
+msgid "PAG Error during report generation"
+msgstr "Bonjour!\n<br>\nil y a eu un souci avec la génération de votre rapport.\nNous sommes désolés.\n<br>\nVeuillez réessayer plus tard\n<br>\n<br>\nMeilleures salutations\n\n<br>\nLe Géoportail."
+
+#: ./geoportal/geoportailv3_geoportal/views/pag.py:68
+#, python-format
+msgid "PAG Mail the report link ${link}"
+msgstr "Bonjour!\n<br>\n<br>\nVotre rapport PAG est finalisé.\n<br>\n<br>\n<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et du Ministère des Affaires intérieures"
+
+#: ./geoportal/geoportailv3_geoportal/views/pag.py:68
+#, python-format
+msgid "PAG Mail the report with attachment"
+msgstr "Bonjour!\n<br>\n<br>\nVotre rapport PAG est finalisé.\n<br>\n<br>\n\nMeilleures salutations\n<br>\nL'équipe du géoportail et du Ministère des Affaires intérieures"
+
+#: ./geoportal/geoportailv3_geoportal/views/pag.py:123
 #, python-format
 msgid "PAG webservice response ${email}"
 msgstr "Votre rapport est en train d'être généré.\n<br>Un email vous sera envoyé à l'adresse ${email} dès qu'il sera disponible"
 
-#: ./geoportailv3/views/pag.py:66
-msgid "PAG Error during report generation"
-msgstr "Bonjour!\n<br>\nil y a eu un souci avec la génération de votre rapport.\nNous sommes désolés.\n<br>\nVeuillez réessayer plus tard\n<br>\n<br>\nMeilleures salutations\n\n<br>\nLe Géoportail."
+#: ./geoportal/geoportailv3_geoportal/views/pds.py:50
+msgid ""
+"Bonjour,\n"
+" Il y a eu un souci lors de la                          creation de votre                          attestation \"Plans directeurs                          sectoriels\".\n"
+"\n"
+"Veuillez essayer                          plus tard\".\n"
+"\n"
+"Meilleures salutations,\n"
+"                          L'Equipe de geoportail.lu et du DAT"
+msgstr ""
 
-#: ./geoportailv3/views/pag.py:68
+#: ./geoportal/geoportailv3_geoportal/views/pds.py:58
+msgid ""
+"Bonjour,\n"
+" Veuillez trouver en annexe                          votre attestation \"Plans directeurs                          sectoriels\".\n"
+"\n"
+"Meilleures salutations,\n"
+"                          L'Equipe de geoportail.lu et du DAT"
+msgstr ""
+
+#: ./geoportal/geoportailv3_geoportal/views/pds.py:97
 #, python-format
-msgid "PAG Mail the report link ${link}"
-msgstr "Bonjour!\n<br>\n<br>\nVotre rapport PAG est finalisé.\n<br>\n<br>\n<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et du Ministère de l'Intérieur"
-
-#: ./geoportailv3/views/luxprintproxy.py:215
-msgid "Access constraints"
-msgstr "Access constraints"
-
-#: ./geoportailv3/models.py:27
-msgid "Base url for download"
+msgid "PDS webservice response ${email}"
 msgstr ""
 
-#: ./geoportailv3/models.py:42
-msgid "Allowed surveying for a user"
-msgstr ""
-
-#: ./geoportailv3/models.py:54
-msgid "Surveying file config"
-msgstr ""
-
-#: ./geoportailv3/models.py:67
-msgid "Internal WMS layer"
-msgstr "Internal WMS layer"
-
-#: ./geoportailv3/models.py:68
-msgid "Internal WMS layers"
-msgstr "Internal WMS layers"
-
-#: ./geoportailv3/models.py:89
-msgid "External WMS layer"
-msgstr "External WMS layer"
-
-#: ./geoportailv3/models.py:90
-msgid "External WMS layers"
-msgstr "External WMS layers"
-
-#: ./geoportailv3/models.py:37 ./geoportailv3/models.py:81
-#: ./geoportailv3/models.py:167
-msgid "Url"
-msgstr "Url"
-
-#: ./geoportailv3/models.py:38
-msgid "Only connected user can download"
-msgstr ""
-
-#: ./geoportailv3/models.py:82
-msgid "Layers"
-msgstr "Layers"
-
-#: ./geoportailv3/models.py:83
-msgid "Is a POI"
-msgstr "Is a POI"
-
-#: ./geoportailv3/models.py:84
-msgid "Collection ID"
-msgstr "Collection ID"
-
-#: ./geoportailv3/models.py:85
-msgid "REST url"
-msgstr "REST url"
-
-#: ./geoportailv3/models.py:103
-msgid "Category ID"
-msgstr "Category ID"
-
-#: ./geoportailv3/models.py:116
-msgid "Table name"
-msgstr "Table name"
-
-#: ./geoportailv3/models.py:117
-msgid "URL Rest"
-msgstr "URL Rest"
-
-#: ./geoportailv3/models.py:118
-msgid "Engine"
-msgstr "Engine"
-
-#: ./geoportailv3/models.py:119
-msgid "Layer"
-msgstr "Layer"
-
-#: ./geoportailv3/models.py:120
-msgid "Template file name"
-msgstr "Template file name"
-
-#: ./geoportailv3/models.py:122
-msgid "Is the template local or remote"
-msgstr "Is the template local or remote"
-
-#: ./geoportailv3/models.py:123
-msgid "Python function"
-msgstr "Python function"
-
-#: ./geoportailv3/models.py:124
-msgid "Role"
-msgstr "Role"
-
-#: ./geoportailv3/models.py:125
-msgid "Attributes to remove"
-msgstr ""
-
-#: ./geoportailv3/models.py:126
-msgid "Id of the poi collection"
-msgstr "Id of the poi collection"
-
-#: ./geoportailv3/models.py:127
-msgid "Geometry column name"
-msgstr "Geometry column name"
-
-#: ./geoportailv3/models.py:128
-msgid "Order of columns"
-msgstr "Order of columns"
-
-#: ./geoportailv3/models.py:129
-msgid "ID column name"
-msgstr "ID column name"
-
-#: ./geoportailv3/models.py:131
-msgid "Is a profile displayed in template ?"
-msgstr ""
-
-#: ./geoportailv3/models.py:133
-msgid "Limit the results. If < 0 then not limit."
+#: ./geoportal/geoportailv3_geoportal/views/profile.py:75
+msgid "distance"
 msgstr ""

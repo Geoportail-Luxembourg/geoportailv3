@@ -65,8 +65,7 @@ class Pag(object):
         if self.link == 'error':
             mailtext = _("PAG Error during report generation")
         else:
-            mailtext = _("PAG Mail the report link ${link}",
-                         mapping={'link': self.link})
+            mailtext = _("PAG Mail the report with attachment")
         msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
         me = 'support@geoportail.lu'
         you = email

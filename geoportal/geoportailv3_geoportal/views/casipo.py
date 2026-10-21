@@ -79,7 +79,11 @@ class Casipo(object):
         os.remove(self.filename)
         return
     def __send_file_as_attachment(self, email):
-        msg = MIMEText(self.localizer.translate(_("CASIPO Mail the report is attached")), 'plain', 'utf-8')
+        if self.link == 'error':
+            mailtext = _("CASIPO Error during report generation")
+        else:
+            mailtext = _("CASIPO Mail the report with attachment")
+        msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
         me = 'support@geoportail.lu'
         you = email
         mails = [you]
