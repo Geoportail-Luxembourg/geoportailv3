@@ -10,6 +10,8 @@ import os
 import smtplib
 import urllib.request
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
 import time
 import datetime
 import pytz
@@ -79,11 +81,9 @@ class Casipo(object):
         os.remove(self.filename)
         return
     def __send_file_as_attachment(self, email):
-        if self.link == 'error':
-            mailtext = _("CASIPO Error during report generation")
-        else:
-            mailtext = _("CASIPO Mail the report with attachment")
-        msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
+        mailtext = _("CASIPO Mail the report with attachment")
+        msg = MIMEMultipart()
+        msg.attach(MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8'))
         me = 'support@geoportail.lu'
         you = email
         mails = [you]
@@ -96,7 +96,10 @@ class Casipo(object):
         msg['To'] = you
         # Attach the file
         with open(self.filename, 'rb') as fp:
-            attachment = MIMEText(fp.read(), 'base64', 'utf-8')
+            attachment = MIMEBase('application', 'octet-stream')
+            attachment.set_payload(fp.read())
+            from email import encoders
+            encoders.encode_base64(attachment)
             attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(self.filename))
             msg.attach(attachment)
         s = smtplib.SMTP(self.config["casipo"]["smtp_server"])
@@ -147,8 +150,8 @@ class Casipo(object):
         except Exception as e:
             log.exception(e)
             self.link = 'error'
-        self.__log_download_stats(oid, self.link)
         if os.getenv('USE_OWNCLOUD', 'False').lower() == 'true':
+            self.__log_download_stats(oid, self.link)
             self.__send_mail(email)
         else:
             self.__send_file_as_attachment(email)

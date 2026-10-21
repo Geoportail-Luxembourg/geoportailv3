@@ -9,6 +9,8 @@ import os
 import smtplib
 import urllib.request
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
 import time
 import sys
 from geoportailv3_geoportal.portail import PagDownload
@@ -79,7 +81,10 @@ class Pag(object):
         msg['To'] = you
         # Attach the file
         with open(self.filename, 'rb') as fp:
-            attachment = MIMEText(fp.read(), 'base64', 'utf-8')
+            attachment = MIMEBase('application', 'octet-stream')
+            attachment.set_payload(fp.read())
+            from email import encoders
+            encoders.encode_base64(attachment)
             attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(self.filename))
             msg.attach(attachment)
 
