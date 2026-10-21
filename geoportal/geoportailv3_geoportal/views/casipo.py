@@ -141,14 +141,14 @@ class Casipo(object):
                  mapping={'email': email.encode('utf-8')})
         try:
             self.__download(oid)
-            if os.getenv('USE_OWNCLOUD', 'True').lower() == 'true':
+            if os.getenv('USE_OWNCLOUD', 'False').lower() == 'true':
                 self.__upload2owncloud()
 
         except Exception as e:
             log.exception(e)
             self.link = 'error'
         self.__log_download_stats(oid, self.link)
-        if os.getenv('USE_OWNCLOUD', 'True').lower() == 'true':
+        if os.getenv('USE_OWNCLOUD', 'False').lower() == 'true':
             self.__send_mail(email)
         else:
             self.__send_file_as_attachment(email)
