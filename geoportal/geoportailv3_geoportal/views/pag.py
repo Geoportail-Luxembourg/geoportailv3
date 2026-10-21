@@ -61,6 +61,34 @@ class Pag(object):
         os.remove(self.filename)
         return
 
+    def __send_file_as_attachment(self, email):
+        if self.link == 'error':
+            mailtext = _("PAG Error during report generation")
+        else:
+            mailtext = _("PAG Mail the report with attachment")
+        msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
+        me = 'support@geoportail.lu'
+        you = email
+        mails = [you]
+        if "bcc_address" in self.config["pag"] and self.link == 'error':
+            bcc = self.config["pag"]["bcc_address"]
+            msg['BCC'] = bcc
+            mails.append(bcc)
+        msg['Subject'] = 'Rapport PAG'
+        msg['From'] = me
+        msg['To'] = you
+        # Attach the file
+        with open(self.filename, 'rb') as fp:
+            attachment = MIMEText(fp.read(), 'base64', 'utf-8')
+            attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(self.filename))
+            msg.attach(attachment)
+
+        s = smtplib.SMTP(self.config["pag"]["smtp_server"])
+        s.sendmail(me, mails, msg.as_string())
+        s.quit()
+        os.remove(self.filename)
+        return
+
     def __send_mail(self, email):
         if self.link == 'error':
             mailtext = _("PAG Error during report generation")
@@ -124,11 +152,15 @@ class Pag(object):
                  mapping={'email': email.encode('utf-8')})
         try:
             self.__download(oid)
-            self.__upload2owncloud()
+            if os.getenv('USE_OWNCLOUD', 'False').lower() == 'true':
+                self.__upload2owncloud()
         except Exception as e:
             log.exception(e)
             self.link = 'error'
         self.__log_download_stats(oid, self.link)
-        self.__send_mail(email)
+        if os.getenv('USE_OWNCLOUD', 'False').lower() == 'true':
+            self.__send_mail(email)
+        else:
+            self.__send_file_as_attachment(email)
         headers = {"Content-Type": 'text/html'}
         return Response(self.localizer.translate(resp), headers=headers)
