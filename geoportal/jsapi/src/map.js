@@ -203,6 +203,7 @@ export function getElevation(coordinate) {
  * @property {boolean} [click] If set, the popup is displayed when clicking the feature.
  * @property {function} [onClick] If set, and if click is true then the function is called with the feature as parameter.
  * @property {Element|string} [target] The container for the feature popup, either the element itself or the `id` of the element.
+ * @property {boolean} [visible] If set, the layer is visible depending on the value. Default is true.
  */
 
 /**
