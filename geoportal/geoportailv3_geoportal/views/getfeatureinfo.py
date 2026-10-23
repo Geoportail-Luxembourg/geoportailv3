@@ -692,7 +692,7 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinition.remote_template,
                             self.content_count))
 
-        if self.request.params.get('tooltip', None) is not None:
+        if self.request.params.get('tooltip', None) is not None and self.request.params.get('tooltip', None) != '0':
             path = 'templates/tooltip/'
             localizer = self.request.localizer
             server = TranslationStringFactory("geoportailv3_geoportal-server")
@@ -700,57 +700,59 @@ class Getfeatureinfo(object):
             client = TranslationStringFactory("geoportailv3_geoportal-client")
             info_format = self.request.params.get('INFO_FORMAT', self.request.params.get('info_format', 'text/html'))
             for r in results:
-                l_template = r['template']
-                filename = resource_filename('geoportailv3_geoportal', path + l_template)
-                template = l_template if isfile(filename) else 'default.html'
-                features = r['features']
-                context = {
-                    "_s": lambda s: localizer.translate(server(s)),
-                    "_t": lambda s: localizer.translate(tooltips(s)),
-                    "_c": lambda s: localizer.translate(client(s)),
-                    "features": features}
-                if r['remote_template'] is not None and\
-                   r['remote_template']:
-                    data = ""
-                    try:
-                        DBSession.rollback()
-                        url_remote = urllib.request.urlopen(
-                            l_template + "&render=apiv4", None, 15)
-                        data = url_remote.read()
-                    except Exception as e:
-                        log.exception(e)
-                        log.error(l_template)
-                        return HTTPBadGateway()
-                    remote_template = Template(data.decode('utf-8'))
-                    if "${features" in data.decode('utf-8'):
-                        r['tooltip'] =\
-                            remote_template.render(features=features)
-                    else:
-                        if len(features) > 0:
+                try:
+                    l_template = r['template']
+                    filename = resource_filename('geoportailv3_geoportal', path + l_template)
+                    template = l_template if isfile(filename) else 'default.html'
+                    features = r['features']
+                    context = {
+                        "_s": lambda s: localizer.translate(server(s)),
+                        "_t": lambda s: localizer.translate(tooltips(s)),
+                        "_c": lambda s: localizer.translate(client(s)),
+                        "features": features}
+                    if r['remote_template'] is not None and\
+                    r['remote_template']:
+                        data = ""
+                        try:
+                            DBSession.rollback()
+                            url_remote = urllib.request.urlopen(
+                                l_template + "&render=apiv4", None, 15)
+                            data = url_remote.read()
+                        except Exception as e:
+                            log.exception(e)
+                            log.error(l_template)
+                            return HTTPBadGateway()
+                        remote_template = Template(data.decode('utf-8'))
+                        if "${features" in data.decode('utf-8'):
                             r['tooltip'] =\
-                                remote_template.render(feature=features[0])
+                                remote_template.render(features=features)
                         else:
-                            r['tooltip'] = ''
-                else:
-                    if info_format == 'application/json':
-                        filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
-                        template = 'json_' + l_template if isfile(filename) else 'json.html'
-                        r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + template, context)
-                    elif info_format == 'text/xml':
-                        filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
-                        template = 'xml_' + l_template if isfile(filename) else 'xml.html'
-                        r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + template, context)
-                    elif info_format == 'text/plain':
-                        filename = resource_filename('geoportailv3_geoportal', path + 'text_' + l_template)
-                        template = 'text_' + l_template if isfile(filename) else 'text.html'
-                        r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + template, context)
+                            if len(features) > 0:
+                                r['tooltip'] =\
+                                    remote_template.render(feature=features[0])
+                            else:
+                                r['tooltip'] = ''
                     else:
-                        r['tooltip'] = render(
-                            'geoportailv3_geoportal:' + path + template, context)
-
+                        if info_format == 'application/json':
+                            filename = resource_filename('geoportailv3_geoportal', path + 'json_' + l_template)
+                            template = 'json_' + l_template if isfile(filename) else 'json.html'
+                            r['tooltip'] = render(
+                                'geoportailv3_geoportal:' + path + template, context)
+                        elif info_format == 'text/xml':
+                            filename = resource_filename('geoportailv3_geoportal', path + 'xml_' + l_template)
+                            template = 'xml_' + l_template if isfile(filename) else 'xml.html'
+                            r['tooltip'] = render(
+                                'geoportailv3_geoportal:' + path + template, context)
+                        elif info_format == 'text/plain':
+                            filename = resource_filename('geoportailv3_geoportal', path + 'text_' + l_template)
+                            template = 'text_' + l_template if isfile(filename) else 'text.html'
+                            r['tooltip'] = render(
+                                'geoportailv3_geoportal:' + path + template, context)
+                        else:
+                            r['tooltip'] = render(
+                                'geoportailv3_geoportal:' + path + template, context)
+                except Exception as e:
+                    log.exception(e)
         return results
 
     def transform_(self, geometry, source, dest):
@@ -1316,7 +1318,7 @@ class Getfeatureinfo(object):
                          attributes_to_remove=""):
         DBSession.rollback()
         features = []
-        
+
         # Define custom camelCase mappings for PF data
         pf_custom_mapping = {
             'section_name': 'sectionDesignation',
@@ -1340,12 +1342,15 @@ class Getfeatureinfo(object):
             url = f"{base_url}/parcelles/pf/{fid}"
             hdr = {'api-key': api_key}
             try:
-                req = urllib.request.Request(url, headers=hdr)
-                response = urllib.request.urlopen(req)
-                pf_data = json.loads(response.read())
-                #attributes['PF'] = dict(pf_data)
-                #attributes['PF'] = dict(self._add_snake_case_aliases(pf_data))
-                attributes['PF'] = self._add_camel_case_aliases(pf_data, pf_custom_mapping)
+                if self.request.params.get('noPF', 'false').lower() != 'true':
+                    req = urllib.request.Request(url, headers=hdr)
+                    response = urllib.request.urlopen(req)
+                    pf_data = json.loads(response.read())
+                    #attributes['PF'] = dict(pf_data)
+                    #attributes['PF'] = dict(self._add_snake_case_aliases(pf_data))
+                    attributes['PF'] = self._add_camel_case_aliases(pf_data, pf_custom_mapping)
+                else:
+                    attributes['PF'] = {}
             except Exception as e:
                 log.exception(e)
                 log.error(url)
