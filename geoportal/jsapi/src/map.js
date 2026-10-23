@@ -2368,6 +2368,9 @@ class Map extends OpenLayersMap {
     if (opt_options.name) {
       options.name = opt_options.name;
     }
+    if (opt_options.visible !== undefined) {
+      options.visible = opt_options.visible;
+    }
     return this.layersPromise.then(function () {
       vector = new VectorLayer(options);
 
