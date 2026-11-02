@@ -30,7 +30,6 @@ from shapely.geometry import MultiLineString, mapping, shape
 from shapely.ops import transform
 from shapely.wkt import loads as wkt_loads
 from functools import partial
-from arcgis2geojson import arcgis2geojson
 from geoportailv3_geoportal.lib.esri_authentication import ESRITokenException
 from geoportailv3_geoportal.lib.esri_authentication import get_arcgis_token, read_request_with_token
 from geoportailv3_geoportal.views.download import Download
@@ -42,6 +41,69 @@ class Getfeatureinfo(object):
     def __init__(self, request):
         self.request = request
         self.content_count = 0
+
+    def _arcgis_geometry_to_geojson(self, geometry):
+        """Convert a raw ArcGIS geometry dict into a GeoJSON-like geometry dict."""
+        if geometry is None:
+            return None
+
+        if 'type' in geometry:
+            return geometry
+
+        if 'x' in geometry and 'y' in geometry:
+            return {
+                'type': 'Point',
+                'coordinates': [geometry['x'], geometry['y']]
+            }
+
+        if 'points' in geometry:
+            points = geometry['points']
+            if len(points) == 1:
+                return {
+                    'type': 'Point',
+                    'coordinates': points[0]
+                }
+            return {
+                'type': 'MultiPoint',
+                'coordinates': points
+            }
+
+        if 'paths' in geometry:
+            paths = geometry['paths']
+            if len(paths) == 1:
+                return {
+                    'type': 'LineString',
+                    'coordinates': paths[0]
+                }
+            return {
+                'type': 'MultiLineString',
+                'coordinates': paths
+            }
+
+        if 'rings' in geometry:
+            rings = geometry['rings']
+            if len(rings) == 0:
+                return {'type': 'GeometryCollection', 'geometries': []}
+            return {
+                'type': 'Polygon',
+                'coordinates': rings
+            }
+
+        if ('xmin' in geometry and 'ymin' in geometry and
+                'xmax' in geometry and 'ymax' in geometry):
+            return {
+                'type': 'Polygon',
+                'coordinates': [[
+                    [geometry['xmin'], geometry['ymin']],
+                    [geometry['xmax'], geometry['ymin']],
+                    [geometry['xmax'], geometry['ymax']],
+                    [geometry['xmin'], geometry['ymax']],
+                    [geometry['xmin'], geometry['ymin']]
+                ]]
+            }
+
+        return geometry
+
     @view_config(route_name='download_resource')
     def download_resource(self):
         fid = self.request.params.get('fid', None)
@@ -874,7 +936,7 @@ class Getfeatureinfo(object):
                     if not bypass_public and not cur_layer.public:
                         if self.request.user is None:
                             continue
-                        # Check if the layer has a resctriction area
+                        # Check if the layer has a resctiction area
                         restriction = DBSession.query(RestrictionArea).filter(
                             RestrictionArea.roles.any(
                                 Role.id == self.request.user.settings_role.id)).filter(
@@ -1833,7 +1895,9 @@ class Getfeatureinfo(object):
                     if len(contentgeojson['features']) > 0:
                         geojsonrawfeature = contentgeojson['features'][i]
                     else:
-                        geojsonrawfeature = arcgis2geojson(rawfeature)
+                        geojsonrawfeature = {
+                            'geometry': self._arcgis_geometry_to_geojson(rawfeature['geometry'])
+                        }
                     geometry = geojsonrawfeature['geometry']
 
                 if geometry != '':
