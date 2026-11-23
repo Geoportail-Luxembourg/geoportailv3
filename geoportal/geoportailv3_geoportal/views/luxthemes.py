@@ -310,7 +310,7 @@ class LuxThemes(Theme):
                     layers[layer.name + '__' + sublayer] = layer_dict
             # if no esri time layer defined => standard WMS server
             else:
-                for sublayer in layer.layers.split(","):
+                for sublayer in (layer.layers.split(",") if layer.layers is not None else ""):
                     wms_info = {
                         "info": {
                             "name": layer.name + '__' + sublayer,
